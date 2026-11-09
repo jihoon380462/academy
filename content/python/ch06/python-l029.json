@@ -1,0 +1,172 @@
+{
+  "id": "python-l029",
+  "order": 4,
+  "title": "집합과 중복 제거",
+  "subtitle": "위치보다 포함 여부와 서로 다른 값의 종류가 중요할 때 집합을 사용합니다.",
+  "minutes": 14,
+  "goal": "집합으로 중복과 포함 여부를 다루고, 순서가 필요한 목록과 구분하여 기본 집합 연산을 적용한다.",
+  "intro": "신청 목록에 같은 이름이 여러 번 들어 있어도 서로 다른 신청자가 몇 명인지는 따로 알고 싶을 수 있습니다. 앞에서 리스트는 순서와 같은 값의 반복을 보존했고, 딕셔너리는 키와 값을 연결했습니다. 이번에는 값이 들어 있는지와 서로 다른 값의 종류에 초점을 맞추는 집합을 살펴봅니다.",
+  "sections": [
+    {
+      "title": "집합은 같은 값을 한 번만 보관합니다.",
+      "body": [
+        "집합의 타입 이름은 set입니다. {\"독서\", \"코딩\", \"독서\"}처럼 값들을 중괄호 안에 적으면 같은 값은 하나로 다룹니다. set(목록)은 이미 있는 리스트 등의 값을 읽어 집합을 만들며, 원래 목록을 수정하지 않습니다. len으로 집합에 담긴 서로 다른 값의 개수를 셀 수 있습니다.",
+        "빈 집합은 set()으로 만듭니다. {}는 앞 레슨에서 배운 빈 딕셔너리이므로 기호 모양이 비슷해도 구별해야 합니다. 딕셔너리의 중괄호 안에는 키: 값 관계가 있고, 집합에는 값만 있습니다.",
+        "집합의 출력이나 순회 순서는 정해진 학습 결과로 기대하지 않습니다. sorted(values)는 값들을 정렬한 새 리스트로 돌려주는 함수입니다. 아래처럼 모두 같은 종류인 문자열이나 숫자를 정렬하면 내용을 일정한 순서로 확인하기 쉽습니다. sorted가 원래 집합에 순서를 붙이거나 집합을 리스트로 바꾸어 저장하는 것은 아닙니다."
+      ],
+      "code": {
+        "source": "names = [\"민서\", \"지우\", \"민서\"]\nunique = set(names)\nprint(len(unique))\nprint(sorted(unique))\nprint(names)\nprint(type(set()))\nprint(type({}))",
+        "kind": "python",
+        "output": "2\n['민서', '지우']\n['민서', '지우', '민서']\n<class 'set'>\n<class 'dict'>",
+        "error": null
+      }
+    },
+    {
+      "title": "집합에서는 위치 대신 포함 여부를 묻습니다.",
+      "body": [
+        "\"독서\" in hobbies는 독서라는 값이 집합에 있는지 True 또는 False로 알려 줍니다. \"운동\" not in hobbies는 운동이 없는지 확인합니다. 리스트나 딕셔너리에서 썼던 in도 자료형에 따라 무엇이 포함되는지 읽어야 합니다. 딕셔너리에서는 키, 여기서는 집합의 값입니다.",
+        "집합에는 첫 번째·두 번째 위치라는 약속이 없습니다. hobbies[0]처럼 인덱스로 조회하면 TypeError가 납니다. 순서를 유지하거나 같은 값의 횟수를 보존해야 한다면 리스트가 목적에 더 잘 맞습니다.",
+        "for로 집합의 값들을 방문할 수 있지만 어느 값이 먼저 나올지 의존하지 않습니다. 정렬해 보여 주려면 sorted로 얻은 리스트를 순회할 수 있습니다. 같은 값이 두 번 왔다는 정보는 집합을 만드는 순간 사라지므로 나중에 집합만으로 원래의 횟수와 순서를 복원할 수 없습니다."
+      ],
+      "code": {
+        "source": "hobbies = {\"독서\", \"코딩\"}\nprint(\"독서\" in hobbies)\nprint(\"운동\" not in hobbies)\nfor hobby in sorted(hobbies):\n    print(hobby)",
+        "kind": "python",
+        "output": "True\nTrue\n독서\n코딩",
+        "error": null
+      }
+    },
+    {
+      "title": "추가와 제거는 원래 집합을 변경합니다.",
+      "body": [
+        "values.add(value)는 값을 집합에 추가합니다. 이미 있는 값이면 하나를 더 쌓지 않습니다. values.discard(value)는 값이 있으면 제거하고, 없어도 오류 없이 그대로 둡니다. 두 메서드 모두 원래 집합을 변경하고 반환값은 None입니다.",
+        "따라서 values = values.add(\"새 값\")처럼 쓰면 이름을 None에 다시 연결하게 됩니다. 집합을 바꾸려는 목적이면 values.add(\"새 값\")를 실행한 다음 values를 읽습니다. 처리 결과를 새 이름에 연결하는 문자열 메서드와 구별하세요.",
+        "집합에 담는 값은 해시 가능한 값이어야 합니다. 해시는 값을 찾아 비교할 때 쓰는 정수 표식이며, 해시 가능한 값은 실행 중 같은 객체의 표식이 변하지 않고 같은 것으로 비교되는 값은 같은 표식을 가진다는 약속을 지킵니다. 세부 계산법보다 이번에는 문자열과 정수를 사용할 수 있다는 점부터 확인하면 됩니다. 리스트는 해시 가능하지 않아 직접 집합의 원소가 될 수 없으므로 TypeError가 납니다. 튜플도 안의 값이 모두 해시 가능할 때 사용할 수 있으며, 단순히 괄호로 감쌌다는 이유만으로 모든 내용이 허용되는 것은 아닙니다."
+      ],
+      "code": {
+        "source": "tags = {\"기초\"}\nresult = tags.add(\"연습\")\ntags.add(\"연습\")\ntags.discard(\"준비\")\nprint(sorted(tags))\nprint(result)\ntags.discard(\"기초\")\nprint(sorted(tags))",
+        "kind": "python",
+        "output": "['기초', '연습']\nNone\n['연습']",
+        "error": null
+      }
+    },
+    {
+      "title": "공통 값과 합친 값도 집합으로 표현합니다.",
+      "body": [
+        "두 집합 a와 b에서 a & b는 양쪽에 모두 있는 값의 집합인 교집합입니다. a | b는 어느 한쪽에라도 있는 값을 합친 합집합이고, a - b는 a에는 있지만 b에는 없는 차집합입니다. 이름보다 어떤 포함 조건을 표현하는지 먼저 읽으세요.",
+        "이 연산들은 결과 집합을 돌려주며 a와 b를 직접 수정하지 않습니다. a - b와 b - a는 출발점이 다르므로 결과가 같을 필요가 없습니다. 공통 원소가 없어 빈 집합이 나오는 것도 정상입니다.",
+        "정렬된 표시를 보고 집합 자체가 순서를 저장한다고 오해하지 마세요. 집합 연산으로 포함 관계를 계산하고, 결과를 사람에게 보여 줄 때만 sorted로 정렬한 리스트를 사용합니다."
+      ],
+      "code": {
+        "source": "morning = {\"민서\", \"지우\"}\nevening = {\"지우\", \"하린\"}\nprint(sorted(morning & evening))\nprint(sorted(morning | evening))\nprint(sorted(morning - evening))\nprint(sorted(evening - morning))",
+        "kind": "python",
+        "output": "['지우']\n['민서', '지우', '하린']\n['민서']\n['하린']",
+        "error": null
+      }
+    }
+  ],
+  "worked": {
+    "question": "같은 사람이 여러 번 신청한 목록에서 서로 다른 신청자 수를 구하고, 이미 확인한 사람을 제외한 나머지를 이름순으로 보여 주려면 어떻게 연결할까요?",
+    "code": {
+      "source": "requests = [\"하린\", \"민서\", \"하린\", \"지우\"]\npeople = set(requests)\nchecked = {\"민서\"}\nwaiting = people - checked\nprint(len(people))\nprint(sorted(waiting))\nprint(requests)",
+      "kind": "python",
+      "output": "3\n['지우', '하린']\n['하린', '민서', '하린', '지우']",
+      "error": null
+    },
+    "steps": [
+      "set(requests)는 중복된 하린을 한 번만 담아 서로 다른 세 이름을 보관합니다. requests의 순서와 중복은 그대로 남습니다.",
+      "people - checked는 신청자 중 확인한 사람 집합에 없는 값을 고릅니다. 민서를 제외한 지우와 하린이 남습니다.",
+      "집합의 내부 순서에 기대지 않고 sorted(waiting)으로 표시용 리스트를 만듭니다. 처음 신청한 사람의 순서가 필요하다면 이 정렬 결과만으로 대신할 수는 없습니다."
+    ],
+    "answer": "중복 여부 계산에는 집합을, 원래 신청 순서와 반복 기록에는 리스트를 사용합니다. 하나의 자료형으로 모든 정보를 보존하려 하지 않고 목적을 나눕니다."
+  },
+  "misconception": {
+    "question": "집합으로 중복을 없앤 뒤 다시 리스트로 만들면 처음 순서도 돌아오나요?",
+    "answer": "집합은 위치와 중복 횟수를 보관하지 않으므로 원래 순서를 복원할 수 없습니다. sorted로 얻은 결과는 정렬 순서이고, 처음 나온 순서가 아닙니다. 처음 순서나 같은 값의 횟수가 필요하다면 원래 리스트를 유지해야 합니다."
+  },
+  "keypoints": [
+    "set은 중복을 한 번만 보관하며 포함 여부를 다룹니다. 빈 집합은 set(), 빈 딕셔너리는 {}입니다.",
+    "집합에는 인덱스와 순서 약속이 없습니다. sorted는 표시할 새 리스트를 만들 뿐 원래 순서를 복원하지 않습니다.",
+    "add·discard는 원래 집합을 바꾸고 None을 반환합니다. &, |, -는 포함 관계를 계산한 결과 집합을 돌려줍니다."
+  ],
+  "examples": [
+    {
+      "question": "신청 번호 codes = [4, 2, 4, 1, 2]에서 서로 다른 번호의 개수와 작은 번호부터 정렬한 표시를 출력하세요. codes도 출력해 원본의 중복이 남는지 확인하세요.",
+      "skill": "중복과 원본 보존",
+      "solution": {
+        "answer": "서로 다른 번호는 3개이고 정렬된 표시는 [1, 2, 4]입니다. 원래 codes는 바뀌지 않습니다.",
+        "code": {
+          "source": "codes = [4, 2, 4, 1, 2]\nunique = set(codes)\nprint(len(unique))\nprint(sorted(unique))\nprint(codes)",
+          "kind": "python",
+          "output": "3\n[1, 2, 4]\n[4, 2, 4, 1, 2]",
+          "error": null
+        }
+      },
+      "explanation": "set은 읽어 온 값을 중복 없이 담지만 전달받은 리스트를 수정하지 않습니다. sorted 결과는 정렬된 새 리스트입니다."
+    },
+    {
+      "question": "아래 코드는 집합의 첫 값을 읽으려 합니다. 오류 종류를 확인한 뒤 마지막 줄을 값 \"B\"가 포함되어 있는지 출력하도록 고치세요. 특정 위치를 읽는 것이 이번 목적에 맞지 않는 이유도 적으세요.",
+      "skill": "집합의 조회 방식",
+      "solution": {
+        "answer": "원본은 TypeError가 납니다. \"B\" in labels로 고치면 True입니다. 집합에는 첫 위치라는 약속이 없습니다.",
+        "code": {
+          "source": "labels = {\"A\", \"B\"}\nprint(\"B\" in labels)",
+          "kind": "python",
+          "output": "True",
+          "error": null
+        }
+      },
+      "explanation": "집합이 보관하는 것은 포함 관계이지 순서가 아닙니다. 포함 여부를 묻는 요구에는 in의 결과가 맞습니다.",
+      "code": "labels = {\"A\", \"B\"}\nprint(labels[0])",
+      "codeKind": "python",
+      "codeLabel": "직접 확인하거나 고칠 코드"
+    },
+    {
+      "question": "아래 코드는 값을 추가한 뒤 tags가 None이 됩니다. 반환값을 tags에 대입하지 않도록 고쳐 기초·연습 두 값이 남게 하세요. 이어 없는 값 준비를 discard해도 되는지 확인하세요.",
+      "skill": "변경 메서드의 반환값",
+      "solution": {
+        "answer": "tags.add(\"연습\")를 독립된 명령으로 실행하면 됩니다. 정렬해 보면 ['기초', '연습']이며 없는 값의 discard는 오류를 내지 않습니다.",
+        "code": {
+          "source": "tags = {\"기초\"}\ntags.add(\"연습\")\ntags.discard(\"준비\")\nprint(sorted(tags))",
+          "kind": "python",
+          "output": "['기초', '연습']",
+          "error": null
+        }
+      },
+      "explanation": "add는 원래 집합을 바꾸고 None을 반환합니다. 그 None에 이름을 다시 연결하지 않아야 다음에도 집합을 사용할 수 있습니다.",
+      "code": "tags = {\"기초\"}\ntags = tags.add(\"연습\")\nprint(tags)",
+      "codeKind": "python",
+      "codeLabel": "직접 확인하거나 고칠 코드"
+    },
+    {
+      "question": "reading = {\"민서\", \"지우\"}, coding = {\"지우\", \"도윤\"}에서 두 활동을 모두 하는 사람, 하나 이상 하는 사람, 독서만 하는 사람을 각각 이름순으로 출력하세요.",
+      "skill": "포함 관계의 조합",
+      "solution": {
+        "answer": "교집합은 지우, 합집합은 도윤·민서·지우, reading에서 coding을 뺀 결과는 민서입니다.",
+        "code": {
+          "source": "reading = {\"민서\", \"지우\"}\ncoding = {\"지우\", \"도윤\"}\nprint(sorted(reading & coding))\nprint(sorted(reading | coding))\nprint(sorted(reading - coding))",
+          "kind": "python",
+          "output": "['지우']\n['도윤', '민서', '지우']\n['민서']",
+          "error": null
+        }
+      },
+      "explanation": "모두는 &, 하나 이상은 |, 독서에는 있으나 코딩에는 없음은 reading - coding으로 옮깁니다. 차집합의 왼쪽이 기준 집합입니다."
+    },
+    {
+      "question": "위치 쌍 (1, 2)를 빈 집합에 추가하고, 같은 쌍을 다시 추가한 뒤 개수와 포함 여부를 출력하세요. 아래처럼 리스트 [1, 2]를 추가하면 왜 실패하는지도 확인하세요.",
+      "skill": "집합 원소의 조건",
+      "solution": {
+        "answer": "튜플 (1, 2)를 두 번 추가해도 개수는 1이고 포함 여부는 True입니다. 리스트를 추가하는 원본은 TypeError입니다.",
+        "code": {
+          "source": "points = set()\npoints.add((1, 2))\npoints.add((1, 2))\nprint(len(points))\nprint((1, 2) in points)",
+          "kind": "python",
+          "output": "1\nTrue",
+          "error": null
+        }
+      },
+      "explanation": "여기서는 두 정수로 된 튜플이 해시 가능하므로 원소가 됩니다. 리스트는 직접 원소로 넣을 수 없습니다. 빈 집합을 만들 때도 {}가 아니라 set()을 사용합니다.",
+      "code": "points = set()\npoints.add([1, 2])",
+      "codeKind": "python",
+      "codeLabel": "직접 확인하거나 고칠 코드"
+    }
+  ]
+}

@@ -1,0 +1,192 @@
+[
+  {
+    "question": "같은 곡을 여러 번 재생한 순서가 중요합니다. 기록은 \"봄\", \"여름\", \"봄\"입니다. 원래 순서와 두 번의 봄을 보존할 자료형을 골라 만들고 첫 항목과 길이를 출력하세요. 집합으로 대신하면 어떤 정보가 사라지는지도 설명하세요.",
+    "skill": "자료구조 선택: 순서와 중복",
+    "solution": {
+      "answer": "리스트 ['봄', '여름', '봄']이 맞고 첫 항목은 봄, 길이는 3입니다. 집합은 봄의 반복과 재생 위치를 보존하지 않습니다.",
+      "code": {
+        "source": "plays = [\"봄\", \"여름\", \"봄\"]\nprint(plays[0])\nprint(len(plays))",
+        "kind": "python",
+        "output": "봄\n3",
+        "error": null
+      }
+    },
+    "explanation": "여러 값이라는 사실만으로 집합을 고르지 않습니다. 이 요구에서는 같은 값이 나온 횟수와 순서가 기록의 일부이므로 리스트를 유지합니다.",
+    "related": [
+      "python-l026",
+      "python-l029"
+    ]
+  },
+  {
+    "question": "책의 한 위치를 두 정수 3과 7의 고정된 쌍으로 묶고, 각 책의 대출 가능 수량은 책 이름으로 찾고 갱신하려 합니다. 위치에는 튜플, 수량에는 딕셔너리를 사용해 각각 만들고 위치 언패킹 값과 \"기초\"의 수량 2를 출력하세요. 두 자료형의 선택 이유도 적으세요.",
+    "skill": "자료구조 선택: 묶음과 이름표",
+    "solution": {
+      "answer": "위치는 (3, 7)을 row, column으로 언패킹하고 수량은 {'기초': 2}에서 키로 조회합니다. 출력은 3 7과 2입니다.",
+      "code": {
+        "source": "position = (3, 7)\nrow, column = position\navailable = {\"기초\": 2}\nprint(row, column)\nprint(available[\"기초\"])",
+        "kind": "python",
+        "output": "3 7\n2",
+        "error": null
+      }
+    },
+    "explanation": "튜플은 함께 묶은 위치 쌍을 바꾸지 않겠다는 목적이고, 딕셔너리는 책 이름이라는 키로 수량을 찾고 갱신하는 목적입니다. 정해진 순서의 쌍과 키-값 관계는 다른 요구입니다.",
+    "related": [
+      "python-l027",
+      "python-l028"
+    ]
+  },
+  {
+    "question": "신청한 활동은 [\"독서\", \"코딩\", \"독서\", \"운동\"]입니다. 서로 다른 활동의 수와 코딩 포함 여부만 필요할 때 알맞은 자료형으로 변환하고 두 결과를 출력하세요. 정렬된 표시도 출력하되 이것이 신청 순서를 복원한 것인지 설명하세요.",
+    "skill": "자료구조 선택: 포함과 중복 제거",
+    "solution": {
+      "answer": "집합으로 변환하면 서로 다른 활동은 3개이고 코딩 포함은 True입니다. 정렬 표시는 ['독서', '운동', '코딩']이며 원래 신청 순서는 아닙니다.",
+      "code": {
+        "source": "requests = [\"독서\", \"코딩\", \"독서\", \"운동\"]\nactivities = set(requests)\nprint(len(activities))\nprint(\"코딩\" in activities)\nprint(sorted(activities))",
+        "kind": "python",
+        "output": "3\nTrue\n['독서', '운동', '코딩']",
+        "error": null
+      }
+    },
+    "explanation": "집합은 존재 여부와 중복 제거에 맞습니다. 정렬한 새 리스트는 표시를 위한 순서이며 집합에 담으며 잃은 신청 순서나 횟수를 되살리지 않습니다.",
+    "related": [
+      "python-l029"
+    ]
+  },
+  {
+    "question": "아래 코드를 실행하기 전에 removed와 마지막 queue를 예상하세요. pop의 반환값과 del의 동작, append를 서로 구분해 결과가 나온 이유를 설명하세요.",
+    "skill": "변경 결과: 위치와 반환값",
+    "solution": {
+      "answer": "removed는 B이고 마지막 queue는 ['C', 'D']입니다. pop은 뺀 값을 돌려주고 del은 지정한 위치를 삭제합니다.",
+      "code": {
+        "source": "queue = [\"A\", \"B\", \"C\"]\nremoved = queue.pop(1)\nqueue.append(\"D\")\ndel queue[0]\nprint(removed)\nprint(queue)",
+        "kind": "python",
+        "output": "B\n['C', 'D']",
+        "error": null
+      }
+    },
+    "explanation": "처음 pop(1)이 B를 빼면 A·C가 남습니다. D를 추가한 뒤 del queue[0]이 A를 삭제하므로 C·D가 남습니다. 삭제 후 인덱스는 남은 항목의 현재 위치로 다시 읽습니다.",
+    "code": "queue = [\"A\", \"B\", \"C\"]\nremoved = queue.pop(1)\nqueue.append(\"D\")\ndel queue[0]\nprint(removed)\nprint(queue)",
+    "codeKind": "python",
+    "codeLabel": "직접 확인하거나 고칠 코드",
+    "related": [
+      "python-l026"
+    ]
+  },
+  {
+    "question": "아래 출력 세 줄을 예상한 뒤 실행하세요. get으로 기본값을 읽었을 때 키가 자동 추가되는지 설명하고, 이어서 note 키에 실제 값 0을 넣은 뒤 포함 여부와 값을 확인하세요.",
+    "skill": "변경 결과: 없는 키와 저장된 0",
+    "solution": {
+      "answer": "처음은 0, False, 1입니다. get은 키를 추가하지 않습니다. 직접 note에 0을 대입한 뒤에는 True와 0입니다.",
+      "code": {
+        "source": "counts = {\"pen\": 2}\nprint(counts.get(\"note\", 0))\nprint(\"note\" in counts)\nprint(len(counts))\ncounts[\"note\"] = 0\nprint(\"note\" in counts)\nprint(counts[\"note\"])",
+        "kind": "python",
+        "output": "0\nFalse\n1\nTrue\n0",
+        "error": null
+      }
+    },
+    "explanation": "없을 때 돌려줄 기본값과 딕셔너리에 저장된 값은 다릅니다. 실제 0도 유효한 값일 수 있으므로 존재 여부는 in으로, 값은 조회로 구분합니다.",
+    "code": "counts = {\"pen\": 2}\nprint(counts.get(\"note\", 0))\nprint(\"note\" in counts)\nprint(len(counts))",
+    "codeKind": "python",
+    "codeLabel": "직접 확인하거나 고칠 코드",
+    "related": [
+      "python-l028"
+    ]
+  },
+  {
+    "question": "아래 파일은 튜플의 값을 서로 바꾸려고 합니다. 오류 종류를 확인하고, 튜플 항목을 수정하는 대신 새 튜플 (오른쪽 값, 왼쪽 값)을 만들어 pair에 다시 대입하세요. 두 이름으로 언패킹하여 8 3을 출력하세요.",
+    "skill": "변경 결과: 튜플과 재대입",
+    "solution": {
+      "answer": "원본은 TypeError입니다. left, right = pair로 읽고 pair = (right, left)로 다시 연결하면 8 3을 출력할 수 있습니다.",
+      "code": {
+        "source": "pair = (3, 8)\nleft, right = pair\npair = (right, left)\nleft, right = pair\nprint(left, right)",
+        "kind": "python",
+        "output": "8 3",
+        "error": null
+      }
+    },
+    "explanation": "튜플 내부 항목 대입은 허용되지 않지만 이름을 새 튜플에 연결하는 대입은 가능합니다. 값을 읽은 순서와 새로 묶은 순서를 나누어 생각합니다.",
+    "code": "pair = (3, 8)\npair[0] = 8\npair[1] = 3",
+    "codeKind": "python",
+    "codeLabel": "직접 확인하거나 고칠 코드",
+    "related": [
+      "python-l027"
+    ]
+  },
+  {
+    "question": "주문 orders = {\"연필\": 3, \"공책\": 0, \"지우개\": 2}에서 items로 읽어 수량이 양수인 주문만 이름과 수량을 한 줄씩 출력하고 전체 양수 수량의 합도 마지막에 출력하세요. 원본의 항목을 삭제하지 말고 조건으로 고르세요.",
+    "skill": "순회 적용: 키·값과 누적",
+    "solution": {
+      "answer": "연필 3, 지우개 2가 나오고 합은 5입니다. 0인 공책은 출력·합계에서 제외합니다.",
+      "code": {
+        "source": "orders = {\"연필\": 3, \"공책\": 0, \"지우개\": 2}\ntotal = 0\nfor name, count in orders.items():\n    if count > 0:\n        print(name, count)\n        total = total + count\nprint(total)",
+        "kind": "python",
+        "output": "연필 3\n지우개 2\n5",
+        "error": null
+      }
+    },
+    "explanation": "items의 쌍을 이름과 수량으로 언패킹합니다. if가 선택한 값만 출력하고 누적하면 읽는 딕셔너리를 변경하지 않아도 요구를 만족합니다.",
+    "related": [
+      "python-l028",
+      "python-l030"
+    ]
+  },
+  {
+    "question": "길이 목록 lengths = [0, 3, -1, 5]에서 양수인 길이만 골라 두 배로 만든 리스트를 컴프리헨션으로 작성하세요. 같은 결과를 일반 for·if·append로도 만들고 원본이 유지되는지 확인하세요.",
+    "skill": "순회 적용: 필터와 변환",
+    "solution": {
+      "answer": "두 결과는 [6, 10]이고 원본은 [0, 3, -1, 5]입니다. 0은 양수가 아니어서 제외됩니다.",
+      "code": {
+        "source": "lengths = [0, 3, -1, 5]\nshort = [length * 2 for length in lengths if length > 0]\nlong = []\nfor length in lengths:\n    if length > 0:\n        long.append(length * 2)\nprint(short)\nprint(long)\nprint(lengths)",
+        "kind": "python",
+        "output": "[6, 10]\n[6, 10]\n[0, 3, -1, 5]",
+        "error": null
+      }
+    },
+    "explanation": "조건 length > 0은 먼저 담을 대상을 고르고, 결과 식 length * 2가 선택한 값을 변환합니다. 새 결과를 만드는 작업이므로 원본에서 항목을 지우거나 교체하지 않습니다.",
+    "related": [
+      "python-l030"
+    ]
+  },
+  {
+    "question": "아래 코드에서 마지막 original, first, second를 예상한 뒤 실행하세요. 같은 리스트의 변경과 first라는 이름의 재대입을 구분하고, second가 어느 목록을 계속 읽는지 설명하세요.",
+    "skill": "별칭 오개념: 연결과 변경",
+    "solution": {
+      "answer": "original과 second는 모두 ['A', 'B']이고 first는 ['C']입니다. second는 처음 공유한 리스트를 계속 가리킵니다.",
+      "code": {
+        "source": "original = [\"A\"]\nfirst = original\nsecond = first\nfirst.append(\"B\")\nfirst = [\"C\"]\nprint(original)\nprint(first)\nprint(second)",
+        "kind": "python",
+        "output": "['A', 'B']\n['C']\n['A', 'B']",
+        "error": null
+      }
+    },
+    "explanation": "first.append가 공유한 리스트에 B를 넣습니다. 이후 first = [\"C\"]는 first의 연결만 바꾸므로 original과 second가 가리키는 리스트는 남아 있습니다.",
+    "code": "original = [\"A\"]\nfirst = original\nsecond = first\nfirst.append(\"B\")\nfirst = [\"C\"]\nprint(original)\nprint(first)\nprint(second)",
+    "codeKind": "python",
+    "codeLabel": "직접 확인하거나 고칠 코드",
+    "related": [
+      "python-l026",
+      "python-l031"
+    ]
+  },
+  {
+    "question": "원본 original = [[1, 2], [3, 4]]의 각 행은 정수만 담은 리스트입니다. 아래처럼 바깥만 copy한 뒤 첫 행을 바꾸면 원본도 바뀝니다. 각 행을 copy해 새 바깥 리스트에 담는 한 단계 컴프리헨션으로 고쳐, working[0][0]을 9로 바꾸어도 원본은 유지되게 하세요.",
+    "skill": "별칭 오개념: 얕은 복사의 범위",
+    "solution": {
+      "answer": "working = [row.copy() for row in original]로 각 행을 따로 복사하면 원본은 [[1, 2], [3, 4]], 작업용은 [[9, 2], [3, 4]]입니다.",
+      "code": {
+        "source": "original = [[1, 2], [3, 4]]\nworking = [row.copy() for row in original]\nworking[0][0] = 9\nprint(original)\nprint(working)",
+        "kind": "python",
+        "output": "[[1, 2], [3, 4]]\n[[9, 2], [3, 4]]",
+        "error": null
+      }
+    },
+    "explanation": "단순 original.copy()는 안쪽 행을 공유합니다. 각 행이 정수만 담는다는 이번 전제에서는 행별로 새 리스트를 만들면 안쪽 칸 교체도 분리됩니다. 더 깊이 중첩된 값까지 모두 복사하는 일반 해법이라고 확대하지 않습니다.",
+    "code": "original = [[1, 2], [3, 4]]\nworking = original.copy()\nworking[0][0] = 9\nprint(original)",
+    "codeKind": "python",
+    "codeLabel": "직접 확인하거나 고칠 코드",
+    "related": [
+      "python-l030",
+      "python-l031"
+    ]
+  }
+]

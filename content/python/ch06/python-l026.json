@@ -1,0 +1,177 @@
+{
+  "id": "python-l026",
+  "order": 1,
+  "title": "리스트의 생성·조회·변경",
+  "subtitle": "순서가 있는 여러 값을 하나로 묶고, 필요한 위치를 읽거나 바꿉니다.",
+  "minutes": 14,
+  "goal": "리스트의 항목을 인덱스로 조회하고, 대입·append·pop·del의 목적과 결과를 구분해 수정한다.",
+  "intro": "준비물마다 다른 변수 이름을 만들면 항목이 늘어날 때마다 코드를 다시 적어야 합니다. 여러 값을 순서대로 한 묶음에 담으면 위치로 찾거나 같은 규칙으로 반복할 수 있습니다. 앞에서 split의 결과와 for의 반복 대상으로 만났던 리스트를 이번에는 직접 만들고, 항목을 추가·수정·삭제하며 변화를 추적해 봅시다.",
+  "sections": [
+    {
+      "title": "대괄호 안에 항목을 순서대로 적습니다.",
+      "body": [
+        "리스트는 여러 값을 순서대로 담는 자료형입니다. [\"연필\", \"공책\", \"지우개\"]처럼 대괄호 안에 값을 쉼표로 구분해 적습니다. 각 값을 항목이라고 부르며, 같은 값이 여러 번 들어갈 수도 있습니다. []는 항목이 없는 빈 리스트입니다.",
+        "리스트의 항목은 문자열뿐 아니라 숫자 등 다른 값일 수도 있습니다. 한 리스트에 서로 다른 종류를 담을 수 있지만, 모두 점수나 모두 준비물처럼 목적이 일관되면 뒤의 처리를 이해하기 쉽습니다. 여기서는 목록이 맡은 역할을 먼저 정하고 값을 담습니다.",
+        "len(items)는 리스트에 담긴 항목 수입니다. print(items)는 대괄호와 쉼표를 포함해 리스트 전체를 보여 주며, 문자열 항목 주위의 따옴표는 항목의 종류를 드러내는 표시입니다. 문자열 하나의 글자 수와 리스트의 항목 수를 구분하세요."
+      ],
+      "code": {
+        "source": "items = [\"연필\", \"공책\", \"연필\"]\nprint(items)\nprint(len(items))\nempty = []\nprint(empty)\nprint(len(empty))",
+        "kind": "python",
+        "output": "['연필', '공책', '연필']\n3\n[]\n0",
+        "error": null,
+        "caption": "같은 값이 두 번 있어도 각각 하나의 항목으로 셉니다."
+      }
+    },
+    {
+      "title": "인덱스는 항목의 위치를 가리킵니다.",
+      "body": [
+        "문자열과 마찬가지로 리스트의 인덱스는 앞에서 0부터 셉니다. items[0]은 첫 항목이고 items[-1]은 마지막 항목입니다. 문자열 인덱스가 문자 하나를 읽었다면 리스트 인덱스는 그 자리에 들어 있는 값 하나를 읽습니다.",
+        "항목 수가 n인 리스트에서 앞쪽 인덱스는 0부터 n - 1까지입니다. items[len(items)]는 끝 바로 다음 위치이므로 IndexError가 납니다. 빈 리스트에는 첫 항목이나 마지막 항목이 없어 [0]과 [-1] 모두 사용할 수 없습니다. if items:로 비어 있지 않은지 확인한 뒤 읽을 수 있습니다.",
+        "items[1:3]처럼 슬라이싱하면 끝 인덱스 3을 포함하지 않는 구간의 항목들을 담은 리스트를 얻습니다. 범위가 클 때 잘리는 점은 문자열 슬라이싱과 같습니다. 슬라이싱과 복사의 관계는 이 챕터 마지막 레슨에서 더 자세히 확인합니다."
+      ],
+      "code": {
+        "source": "scores = [70, 85, 90]\nprint(scores[0])\nprint(scores[-1])\nprint(scores[1:3])\nif scores:\n    print(scores[len(scores) - 1])",
+        "kind": "python",
+        "output": "70\n90\n[85, 90]\n90",
+        "error": null,
+        "caption": "리스트에서 한 항목을 읽은 결과와 여러 항목을 담은 리스트를 구분합니다."
+      }
+    },
+    {
+      "title": "항목 대입은 수정이고 append는 끝에 하나를 더합니다.",
+      "body": [
+        "리스트는 만들어진 뒤 항목을 바꿀 수 있습니다. scores[1] = 88은 기존 두 번째 항목을 88로 바꾸며 항목 수는 유지합니다. 문자열은 특정 위치를 직접 바꿀 수 없었지만 리스트는 가능합니다. 단, 이미 존재하는 위치여야 하므로 없는 끝 위치에 대입한다고 새 항목이 생기지는 않습니다.",
+        "items.append(value)는 끝에 value 하나를 추가하는 메서드입니다. 원래 리스트를 직접 변경하므로 items.append(\"지우개\")라는 호출 자체로 추가가 끝납니다. append의 반환값은 변경한 리스트가 아니라 None입니다.",
+        "따라서 items = items.append(\"지우개\")라고 쓰면 이름 items를 None에 다시 연결해 버립니다. 원래 리스트를 바꾸는 작업과 반환값을 사용하는 작업을 구분하세요. 문자열 메서드가 돌려준 새 문자열을 대입했던 방식과 모든 메서드가 같지는 않습니다."
+      ],
+      "code": {
+        "source": "scores = [70, 85]\nscores[1] = 88\nresult = scores.append(92)\nprint(scores)\nprint(len(scores))\nprint(result)",
+        "kind": "python",
+        "output": "[70, 88, 92]\n3\nNone",
+        "error": null,
+        "caption": "항목 수정은 개수를 유지하고 append는 하나 늘립니다. 반환값 result는 None입니다."
+      }
+    },
+    {
+      "title": "pop은 꺼낸 값을 돌려주고 del은 지정 위치를 지웁니다.",
+      "body": [
+        "items.pop()은 마지막 항목을 리스트에서 제거하고 그 값을 반환합니다. items.pop(0)처럼 인덱스를 주면 그 위치의 항목을 꺼냅니다. 제거한 값을 이후 출력하거나 계산할 필요가 있을 때 반환값을 이름에 연결할 수 있습니다.",
+        "del items[0]은 그 위치의 항목을 지우는 문장입니다. del은 괄호로 호출하는 메서드가 아니고, 꺼낸 값을 반환받는 식으로 사용하지 않습니다. 항목을 지우면 그 뒤 항목들의 인덱스가 하나씩 앞으로 당겨집니다.",
+        "빈 리스트의 pop이나 존재하지 않는 인덱스의 pop·del도 IndexError를 일으킵니다. 작업 전 현재 항목 수를 확인해야 합니다. 리스트를 for로 읽는 도중에 항목을 지우면 아직 읽지 않은 항목의 위치가 바뀌어 건너뛸 수 있으므로, 이번 레슨에서는 삭제 작업을 반복과 분리해 순서대로 확인합니다."
+      ],
+      "code": {
+        "source": "tasks = [\"읽기\", \"쓰기\", \"복습\"]\nfinished = tasks.pop(0)\nprint(finished)\nprint(tasks)\ndel tasks[1]\nprint(tasks)\nlast = tasks.pop()\nprint(last)\nprint(tasks)",
+        "kind": "python",
+        "output": "읽기\n['쓰기', '복습']\n['쓰기']\n쓰기\n[]",
+        "error": null,
+        "caption": "매 작업 뒤의 현재 리스트를 기준으로 다음 인덱스를 읽습니다."
+      }
+    }
+  ],
+  "worked": {
+    "question": "준비물 목록 [\"펜\", \"종이\"]의 첫 항목을 연필로 바꾸고 지우개를 추가한 뒤, 마지막 항목을 꺼내 별도로 보여 주세요.",
+    "code": {
+      "source": "items = [\"펜\", \"종이\"]\nitems[0] = \"연필\"\nitems.append(\"지우개\")\nprint(items)\nremoved = items.pop()\nprint(\"꺼낸 항목:\", removed)\nprint(\"남은 목록:\", items)",
+      "kind": "python",
+      "output": "['연필', '종이', '지우개']\n꺼낸 항목: 지우개\n남은 목록: ['연필', '종이']",
+      "error": null,
+      "caption": "수정·추가·꺼내기는 서로 다른 상태 변화를 만듭니다."
+    },
+    "steps": [
+      "인덱스 0의 펜을 연필로 바꾸어 두 항목이라는 길이는 유지합니다.",
+      "append가 끝에 지우개 하나를 추가해 세 항목이 됩니다. 반환값을 다시 items에 대입하지 않습니다.",
+      "pop은 마지막 항목 지우개를 제거하며 그 값을 반환합니다. removed는 꺼낸 문자열을, items는 남은 두 항목의 리스트를 가리킵니다."
+    ],
+    "answer": "위치 대입은 기존 항목 수정, append는 추가, pop은 제거와 반환입니다. 각 동작 뒤에 목록과 필요한 반환값을 따로 확인합니다."
+  },
+  "misconception": {
+    "question": "리스트 메서드는 실행 뒤 항상 그 리스트를 반환하나요?",
+    "answer": "그렇지 않습니다. append는 원래 리스트를 변경하고 None을 반환하지만, pop은 제거한 항목을 반환합니다. 메서드가 무엇을 변경하는지와 무엇을 돌려주는지는 따로 확인해야 합니다. items = items.append(...)라고 쓰면 items가 리스트가 아니라 None에 연결됩니다."
+  },
+  "keypoints": [
+    "리스트는 대괄호 안에 순서대로 담은 값들의 묶음입니다. len은 항목 수이며 인덱스는 0부터 시작하고 음수는 뒤에서 셉니다.",
+    "존재하는 위치의 대입은 항목 수정, append는 끝에 항목 하나 추가입니다. append는 리스트를 직접 변경하며 None을 반환합니다.",
+    "pop은 제거한 항목을 반환하고 del은 지정 위치를 지웁니다. 삭제 뒤의 인덱스 변화와 빈 리스트·범위를 벗어난 위치를 확인합니다."
+  ],
+  "examples": [
+    {
+      "question": "책, 노트, 책을 그 순서로 담은 리스트를 직접 만들고 전체 목록·항목 수·첫 항목·마지막 항목을 차례로 출력하세요. 같은 책이 두 번 있어도 항목 수가 3인 이유를 설명하세요.",
+      "skill": "리스트 생성과 위치 조회",
+      "solution": {
+        "answer": "목록은 ['책', '노트', '책'], 항목 수는 3이며 첫 항목과 마지막 항목은 모두 책입니다.",
+        "code": {
+          "source": "items = [\"책\", \"노트\", \"책\"]\nprint(items)\nprint(len(items))\nprint(items[0])\nprint(items[-1])",
+          "kind": "python",
+          "output": "['책', '노트', '책']\n3\n책\n책",
+          "error": null
+        }
+      },
+      "explanation": "리스트는 같은 값을 자동으로 합치지 않습니다. 두 위치에 있는 책을 각각 하나의 항목으로 담으므로 길이는 3입니다."
+    },
+    {
+      "question": "아래 코드에서 출력될 세 리스트를 먼저 적고 실행하세요. 첫 변경이 항목 수를 유지하고, 뒤의 두 변경이 수를 늘리거나 줄이는 이유를 설명하세요.",
+      "skill": "수정·추가·삭제 상태 추적",
+      "solution": {
+        "answer": "순서대로 [4, 9, 6], [4, 9, 6, 8], [9, 6, 8]입니다.",
+        "code": {
+          "source": "values = [4, 5, 6]\nvalues[1] = 9\nprint(values)\nvalues.append(8)\nprint(values)\ndel values[0]\nprint(values)",
+          "kind": "python",
+          "output": "[4, 9, 6]\n[4, 9, 6, 8]\n[9, 6, 8]",
+          "error": null
+        }
+      },
+      "explanation": "위치 대입은 한 항목을 교체합니다. append는 끝에 추가하고 del은 첫 항목을 지우므로, 삭제 후 9가 인덱스 0이 됩니다.",
+      "code": "values = [4, 5, 6]\nvalues[1] = 9\nprint(values)\nvalues.append(8)\nprint(values)\ndel values[0]\nprint(values)",
+      "codeKind": "python",
+      "codeLabel": "직접 확인하거나 고칠 코드"
+    },
+    {
+      "question": "아래 코드는 목록에 파랑을 추가하려는데 None을 출력합니다. 이유를 설명하고 items가 두 색을 담은 리스트로 남도록 고치세요.",
+      "skill": "append 반환값을 잘못 대입한 코드 수정",
+      "solution": {
+        "answer": "append의 반환값 None을 items에 대입한 것이 문제입니다. 대입 없이 호출하면 ['빨강', '파랑']이 남습니다.",
+        "code": {
+          "source": "items = [\"빨강\"]\nitems.append(\"파랑\")\nprint(items)",
+          "kind": "python",
+          "output": "['빨강', '파랑']",
+          "error": null
+        }
+      },
+      "explanation": "append는 호출하는 동안 기존 리스트를 바꿉니다. 반환값을 다시 저장할 필요가 없으며 그 반환값은 새 리스트가 아닙니다.",
+      "code": "items = [\"빨강\"]\nitems = items.append(\"파랑\")\nprint(items)",
+      "codeKind": "python",
+      "codeLabel": "직접 확인하거나 고칠 코드"
+    },
+    {
+      "question": "아래 코드의 오류 종류를 확인하고 마지막 값 30을 읽도록 고치세요. 이어서 빈 리스트일 때는 인덱스를 사용하지 않고 비어 있음이라고 출력하도록 if·else를 작성해 두 경우를 확인하세요.",
+      "skill": "끝 인덱스와 빈 리스트 경계",
+      "solution": {
+        "answer": "len(values)는 2라서 인덱스 2는 범위 밖이며 IndexError가 납니다. 비어 있지 않을 때 [-1]을 읽으면 30이고, 빈 리스트에서는 비어 있음을 출력합니다.",
+        "code": {
+          "source": "values = [10, 30]\nif values:\n    print(values[-1])\nelse:\n    print(\"비어 있음\")\nvalues = []\nif values:\n    print(values[-1])\nelse:\n    print(\"비어 있음\")",
+          "kind": "python",
+          "output": "30\n비어 있음",
+          "error": null
+        }
+      },
+      "explanation": "항목 수와 마지막 인덱스는 다릅니다. 빈 리스트는 참 거짓 판정에서 거짓이므로 if로 나눈 뒤 존재하는 경우에만 마지막 항목을 읽습니다.",
+      "code": "values = [10, 30]\nprint(values[len(values)])",
+      "codeKind": "python",
+      "codeLabel": "직접 확인하거나 고칠 코드"
+    },
+    {
+      "question": "대기 목록 [\"민수\", \"지연\", \"하나\"]에서 첫 사람을 꺼내 이름을 출력하세요. 이어서 남은 목록의 마지막 사람은 이름을 따로 쓰지 않고 삭제하세요. 최종 목록을 출력하고 pop과 del을 선택한 이유를 적으세요.",
+      "skill": "제거한 값의 필요 여부에 맞는 작업 선택",
+      "solution": {
+        "answer": "민수를 꺼내 출력하고 하나를 삭제하므로 최종 목록은 ['지연']입니다.",
+        "code": {
+          "source": "waiting = [\"민수\", \"지연\", \"하나\"]\ncalled = waiting.pop(0)\nprint(called)\ndel waiting[-1]\nprint(waiting)",
+          "kind": "python",
+          "output": "민수\n['지연']",
+          "error": null
+        }
+      },
+      "explanation": "첫 항목은 제거한 이름을 사용해야 하므로 pop의 반환값을 받습니다. 마지막 항목은 제거만 필요하므로 del을 사용할 수 있습니다. 같은 요구를 만족하는 다른 풀이도 가능합니다."
+    }
+  ]
+}
