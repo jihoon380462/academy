@@ -1,6 +1,6 @@
 # 파이썬 콘텐츠 형식
 
-이 형식은 `python-ch01`·`python-ch02`·`python-ch03`의 콘텐츠 구현용이다. 수학 중1의 `content/SCHEMA.md`와 별개이며, 후속 챕터에서도 목록형 문제를 유지하며 기존 ID를 바꾸지 않는다. 집필 의도와 범위는 [시작 문서](../../docs/START-HERE.md), [집필 기준](../../docs/AUTHORING.md), [파이썬 목차](../../docs/curriculum/python.md)를 먼저 읽는다.
+이 형식은 `python-ch01`·`python-ch02`·`python-ch03`·`python-ch04`의 콘텐츠 구현용이다. 수학 중1의 `content/SCHEMA.md`와 별개이며, 후속 챕터에서도 목록형 문제를 유지하며 기존 ID를 바꾸지 않는다. 집필 의도와 범위는 [시작 문서](../../docs/START-HERE.md), [집필 기준](../../docs/AUTHORING.md), [파이썬 목차](../../docs/curriculum/python.md)를 먼저 읽는다.
 
 ## 원본과 생성물
 
@@ -12,12 +12,14 @@
 | `content/python/ch02/review.json` | 챕터 2 복습 10개 |
 | `content/python/ch03/python-l011.json` ~ `python-l015.json` | 챕터 3의 레슨 객체, 각각 예제 5개 |
 | `content/python/ch03/review.json` | 챕터 3 복습 10개 |
+| `content/python/ch04/python-l016.json` ~ `python-l020.json` | 챕터 4의 레슨 객체, 각각 예제 5개 |
+| `content/python/ch04/review.json` | 챕터 4 복습 10개 |
 | `build-python.py` | 원본 검사와 콘텐츠 묶음 생성 |
-| `python-content.js` | 자동 생성된 `window.PYTHON_COURSES` 배열과 `PYTHON_CH01`·`PYTHON_CH02`·`PYTHON_CH03` 별칭, 직접 수정하지 않음 |
+| `python-content.js` | 자동 생성된 `window.PYTHON_COURSES` 배열과 `PYTHON_CH01`·`PYTHON_CH02`·`PYTHON_CH03`·`PYTHON_CH04` 별칭, 직접 수정하지 않음 |
 | `python-ui.js` · `python.css` | 본문·코드·문제 세로 목록·접힌 예시 답과 해설·복습 화면 및 반응형 디자인 |
 | `app.js` | 경로, 과목별 읽음·최근 레슨 저장 상태 연결. 수학 문제 기능은 기존 방식 유지 |
 
-레슨 ID는 챕터 1 `python-l001`~`python-l005`, 챕터 2 `python-l006`~`python-l010`, 챕터 3 `python-l011`~`python-l015`다. 각 챕터 안의 `order`는 1~5다. 제목은 과목 문서와 정확히 맞춘다. 다음 미구현 챕터 4의 첫 ID는 `python-l016`이다.
+레슨 ID는 챕터 1 `python-l001`~`python-l005`, 챕터 2 `python-l006`~`python-l010`, 챕터 3 `python-l011`~`python-l015`, 챕터 4 `python-l016`~`python-l020`이다. 각 챕터 안의 `order`는 1~5다. 제목은 과목 문서와 정확히 맞춘다. 다음 미구현 챕터 5의 첫 ID는 `python-l021`이다.
 
 ## 레슨 객체
 
@@ -111,7 +113,7 @@
 
 첫 챕터에서는 변수·입력·반복 등 아직 배우지 않은 문법을 정답 도출의 전제로 삼지 않는다. 들여쓰기 소개의 `if True:`는 주어진 블록이 실행된다는 설명과 함께 구조를 읽는 데만 사용한다. 사이트 내부 입력창이나 코드 실행기를 요구하지 않고 PC의 편집기·터미널에서 타이핑하고 확인하도록 안내한다.
 
-복습은 챕터마다 레슨의 예제와 별도 문항 10개다. 챕터 1은 실행 흐름 3개·코드 읽기 3개·오류 위치 2개·작은 수정 2개, 챕터 2는 값과 이름 3개·연산 예측 3개·변환 오류 2개·입출력 적용 2개, 챕터 3은 범위 해석 3개·결과 예측 3개·변환 조합 3개·불변성 오개념 1개다. `related`는 해당 챕터에 속한 ID만 사용하고 합집합은 그 챕터의 다섯 레슨 전체를 포함해야 한다. 이후 복습 문항을 바꿀 때도 실제 설명과 문제 수, 연결할 레슨을 함께 확인한다.
+복습은 챕터마다 레슨의 예제와 별도 문항 10개다. 챕터 1은 실행 흐름 3개·코드 읽기 3개·오류 위치 2개·작은 수정 2개, 챕터 2는 값과 이름 3개·연산 예측 3개·변환 오류 2개·입출력 적용 2개, 챕터 3은 범위 해석 3개·결과 예측 3개·변환 조합 3개·불변성 오개념 1개, 챕터 4는 분기 추적 3개·조건 설계 3개·경계값 3개·None 오개념 1개다. `related`는 해당 챕터에 속한 ID만 사용하고 합집합은 그 챕터의 다섯 레슨 전체를 포함해야 한다. 이후 복습 문항을 바꿀 때도 실제 설명과 문제 수, 연결할 레슨을 함께 확인한다.
 
 ## 생성·검증 절차
 
@@ -128,7 +130,7 @@ node --check app.js
 
 `--check-code`를 붙이면 작성자가 관리하는 본문·작동 예시와 문항의 `solution.code` 중 `kind: "python"` 블록을 임시 `.py` 파일로 만들어 현재 Python의 격리 모드 `-I`에서 실행한다. `input` 문자열을 stdin으로 전달하며 생략하면 빈 stdin을 전달한다. 학습자 입력을 실행하는 기능은 아니다. 블록마다 5초 제한을 두고 예상 stdout과 오류 종류를 비교한다. 의도적인 오류는 비정상 종료 및 해당 오류 이름이 stderr에 있는지 확인한다. 출력 끝의 개행은 비교에서 제외하지만 줄 내부의 공백·순서·내용은 보존한다.
 
-이 검사는 악성 코드를 위한 보안 샌드박스가 아니다. 작성자가 검토한 코드만 넣으며 네트워크 요청·외부 파일 변경·패키지 설치가 필요한 블록을 챕터 1~3에 넣지 않는다. 콘솔 블록, 오류 메시지 텍스트, 질문의 `code` 문자열은 자동 실행 대상이 아니므로 질문의 조건·예시 답·해설이 서로 맞는지 별도로 검토한다. 공식 근거와 코드 실험, PC·모바일 화면 검증을 각각 구분하여 기록한다.
+이 검사는 악성 코드를 위한 보안 샌드박스가 아니다. 작성자가 검토한 코드만 넣으며 네트워크 요청·외부 파일 변경·패키지 설치가 필요한 블록을 챕터 1~4에 넣지 않는다. 콘솔 블록, 오류 메시지 텍스트, 질문의 `code` 문자열은 자동 실행 대상이 아니므로 질문의 조건·예시 답·해설이 서로 맞는지 별도로 검토한다. 공식 근거와 코드 실험, PC·모바일 화면 검증을 각각 구분하여 기록한다.
 
 코드 확인 환경은 Python 3.12.14다. 챕터별 실제 검증 결과는 `verification.md`에 기록한다. `--check-code` 실행 시 생성물의 `testedVersion`에는 실제 실행한 버전이 기록된다. 이 옵션 없이 재생성하면 `testedVersion`은 `null`이므로, 코드 검증 후 최종 생성물을 만들 때는 옵션을 포함한다. JSON 원본과 생성된 `python-content.js`를 함께 커밋한다.
 
@@ -144,9 +146,12 @@ node --check app.js
 - 챕터 3 목차: `#/python/ch03`
 - 챕터 3 레슨: `#/python/ch03/lesson/python-l011`부터 `python-l015`까지
 - 챕터 3 복습: `#/python/ch03/review`
+- 챕터 4 목차: `#/python/ch04`
+- 챕터 4 레슨: `#/python/ch04/lesson/python-l016`부터 `python-l020`까지
+- 챕터 4 복습: `#/python/ch04/review`
 - 통합 학습 기록: `#/progress`
 
-파이썬 localStorage 키는 챕터 1 `academy-python-ch01-v1`, 챕터 2 `academy-python-ch02-v1`, 챕터 3 `academy-python-ch03-v1`이다. 각 키는 해당 챕터 레슨만 담으며 챕터 추가로 기존 기록을 초기화하지 않는다. 읽음 레슨 배열 `completed`, 최근 레슨 `last`, 최근 방문 시각 `visitedAt`을 이어서 사용한다. 문제별 답안이나 새 점수는 저장하지 않는다.
+파이썬 localStorage 키는 챕터 1 `academy-python-ch01-v1`, 챕터 2 `academy-python-ch02-v1`, 챕터 3 `academy-python-ch03-v1`, 챕터 4 `academy-python-ch04-v1`이다. 각 키는 해당 챕터 레슨만 담으며 챕터 추가로 기존 기록을 초기화하지 않는다. 읽음 레슨 배열 `completed`, 최근 레슨 `last`, 최근 방문 시각 `visitedAt`을 이어서 사용한다. 문제별 답안이나 새 점수는 저장하지 않는다.
 
 이전 객관식 버전의 `scores` 데이터는 삭제하지 않고 보존하되 UI에 표시하지 않는다. 과거 점수 사전의 키는 레슨 ID 또는 `review`이며 각 값에 `latest`, `best`, ISO 시각 문자열 `date`가 있었다. 이 필드는 기존 기록을 보존하기 위한 것이며 현재 문제 풀이·진도 판단에 사용하지 않는다. 점수를 없애려고 저장 키 전체를 초기화하거나 읽음·최근 레슨을 지우지 않는다.
 
