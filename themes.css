@@ -359,15 +359,33 @@
 :root[data-theme]:not([data-theme="light"]) :is(.py-quiz-code pre,pre.py-quiz-code,.py-option-code) { color:var(--code-ink); background:var(--code-bg); }
 :root[data-theme]:not([data-theme="light"]) pre:focus-visible { outline:2px solid var(--accent); outline-offset:3px; }
 
+/* Reading and review panels share the same inset on math and Python homes. */
+:root[data-theme]:not([data-theme="light"]) .home-bottom {
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:24px;
+}
+:root[data-theme]:not([data-theme="light"]) .home-bottom > div {
+  min-width:0;
+  padding:28px 32px;
+  border:1px solid var(--line);
+}
+@media(max-width:760px) {
+  :root[data-theme]:not([data-theme="light"]) .home-bottom {
+    grid-template-columns:minmax(0,1fr);
+    gap:20px;
+  }
+  :root[data-theme]:not([data-theme="light"]) .home-bottom > div { padding:24px 20px; }
+}
+
 /* Carry the modern type and surfaces beyond the Python preview. */
 :root:not([data-theme="light"]):is([data-theme="matte"],[data-theme="glass"]) :is(h1,h2,h3,.hero-equation,.factor-pill,.catalog-totals b,.progress-panel b) { font-family:var(--sans); }
 :root:not([data-theme="light"]):is([data-theme="matte"],[data-theme="glass"]) h1 { font-weight:650; }
 :root:not([data-theme="light"]):is([data-theme="matte"],[data-theme="glass"]) :is(h2,h3) { font-weight:600; }
 :root:not([data-theme="light"]):is([data-theme="matte"],[data-theme="glass"]) :is(.sidebar-unit a,.quiz-option,.search input,.topic-list span,.score-chip) { border-radius:8px; }
 :root:not([data-theme="light"]):is([data-theme="matte"],[data-theme="glass"]) #quiz { border-radius:14px; }
-:root:not([data-theme="light"])[data-theme="matte"] :is(.hero-figure,.visual,.review-band,.learning-resume) { border:1px solid var(--line); border-radius:8px; }
+:root:not([data-theme="light"])[data-theme="matte"] :is(.hero-figure,.visual,.review-band,.learning-resume,.home-bottom > div) { border:1px solid var(--line); border-radius:8px; }
 :root:not([data-theme="light"])[data-theme="matte"] .subject-card.available { background:var(--surface); }
-:root:not([data-theme="light"])[data-theme="glass"] :is(.hero-figure,.visual,.review-band,.learning-resume,.chapter-banner) { background:var(--surface); border:1px solid #465874; border-radius:14px; }
+:root:not([data-theme="light"])[data-theme="glass"] :is(.hero-figure,.visual,.review-band,.learning-resume,.chapter-banner,.home-bottom > div) { background:var(--surface); border:1px solid #465874; border-radius:14px; }
 :root:not([data-theme="light"])[data-theme="glass"] .subject-card.available { background:linear-gradient(145deg,#1b202a,var(--surface)); }
 :root:not([data-theme="light"])[data-theme="glass"] .subject-card:hover { background:var(--elevated); }
 :root:not([data-theme="light"])[data-theme="glass"] .sidebar-unit a.current { background:var(--elevated); }
