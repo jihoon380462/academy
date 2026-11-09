@@ -1,0 +1,174 @@
+{
+  "id": "python-l006",
+  "order": 1,
+  "title": "변수는 값에 붙이는 이름",
+  "subtitle": "이름이 지금 가리키는 값을 따라가면, 값이 바뀌는 코드가 읽힙니다.",
+  "minutes": 10,
+  "goal": "대입의 오른쪽을 먼저 계산한 뒤 이름에 연결하고, 재대입 전후에 각 이름이 가리키는 값을 설명한다.",
+  "intro": "앞 챕터에서는 print 안에 숫자와 글자를 바로 적었습니다. 그런데 같은 가격을 여러 곳에서 사용하거나 계산한 결과를 다음 줄에서 다시 쓰려면, 매번 값을 새로 적는 일이 불편해집니다. 값에 의미 있는 이름을 붙이면 무엇을 다루는지 드러나고, 그 이름으로 현재 값을 다시 사용할 수 있습니다.",
+  "sections": [
+    {
+      "title": "이름을 붙이면 값의 역할이 보입니다.",
+      "body": [
+        "price = 1200은 숫자 1200에 price라는 이름을 연결하는 대입입니다. 이처럼 값에 연결해 사용하는 이름을 변수라고 부릅니다. price라는 철자가 원래부터 가격을 계산하는 기능을 가진 것은 아닙니다. 사람이 코드의 뜻을 읽기 좋도록 붙인 이름입니다.",
+        "그다음 줄에서 price를 쓰면 그 이름에 연결된 현재 값을 사용합니다. print(price)는 1200을 출력하지만, print(\"price\")는 따옴표 안의 글자를 출력합니다. 앞 챕터에서 배운 문자열의 경계가 이름과 문자 값을 구분할 때도 중요합니다."
+      ],
+      "code": {
+        "source": "price = 1200\nprint(price)\nprint(\"price\")",
+        "kind": "python",
+        "output": "1200\nprice",
+        "error": null,
+        "caption": "대입은 이름과 값을 연결합니다. 대입문 자체가 값을 화면에 출력하지는 않습니다."
+      }
+    },
+    {
+      "title": "대입은 오른쪽 값을 먼저 구한 뒤 연결합니다.",
+      "body": [
+        "count = count + 1을 수학의 등식으로 읽으면 같은 수가 자신보다 1 커야 하므로 이상해 보입니다. 하지만 파이썬의 =는 양쪽이 같다고 주장하는 기호가 아닙니다. 오른쪽의 값을 구한 뒤 왼쪽 이름이 그 값을 가리키도록 하는 동작입니다.",
+        "아래에서는 count가 먼저 2에 연결되어 있습니다. 두 번째 대입의 오른쪽 count + 1은 현재 값 2를 사용하여 3이 됩니다. 그 계산이 끝난 뒤 count를 3에 다시 연결합니다. 같은 이름에 다시 대입하는 일을 재대입이라고 하며, 이후의 count는 새 값을 사용합니다."
+      ],
+      "code": {
+        "source": "count = 2\nprint(count)\ncount = count + 1\nprint(count)",
+        "kind": "python",
+        "output": "2\n3",
+        "error": null,
+        "caption": "오른쪽에서 이전 값 2를 읽고, 계산 결과 3을 왼쪽 이름에 다시 연결합니다."
+      }
+    },
+    {
+      "title": "다른 이름에 대입해도 두 이름이 계속 함께 바뀌지는 않습니다.",
+      "body": [
+        "saved_price = price는 price라는 이름 자체를 saved_price에 묶는 명령이 아닙니다. 그 시점에 price가 가리키는 값을 구하고, saved_price도 그 값에 연결합니다. 아래에서는 두 이름이 모두 숫자 1000을 가리키는 순간이 생깁니다.",
+        "이후 price = 1200을 실행하면 price가 가리키는 값만 달라집니다. 이미 있던 숫자 1000 자체를 1200으로 고치는 것이 아니므로 saved_price는 여전히 1000을 가리킵니다. 지금 다루는 숫자의 재대입에서는 이름마다 현재 연결을 따로 따라가면 됩니다.",
+        "계산 결과를 대입할 때도 같습니다. total = price + 500은 그 순간의 덧셈 결과에 total을 연결합니다. 계산 공식을 계속 보관하며 price를 감시하는 기능이 아니므로, 나중에 price가 바뀌었을 때 새 합계가 필요하면 다시 계산해야 합니다."
+      ],
+      "code": {
+        "source": "price = 1000\nsaved_price = price\nprice = 1200\nprint(price)\nprint(saved_price)",
+        "kind": "python",
+        "output": "1200\n1000",
+        "error": null,
+        "caption": "price를 새 숫자에 연결해도 saved_price의 기존 연결은 남아 있습니다."
+      }
+    },
+    {
+      "title": "이름은 사용하기 전에 연결하고, 뜻이 드러나게 적습니다.",
+      "body": [
+        "파이썬이 이름의 현재 값을 찾으려면 그 이름에 먼저 값이 연결되어 있어야 합니다. 아래 파일은 total_price를 출력하는 줄이 대입보다 앞에 있습니다. 이 파일을 새로 실행하면 첫 줄에서 NameError가 나고 다음 대입까지 진행하지 못합니다. 대화형 창에서 예전에 만든 이름이 남아 있는 상황과 새 파일 실행을 구분하세요.",
+        "이 과정에서는 영문 소문자와 숫자, 밑줄을 사용해 total_price처럼 이름을 적습니다. 숫자로 시작하거나 이름 중간에 공백을 넣을 수 없으며, if처럼 문법에 이미 쓰이는 단어는 변수 이름으로 사용할 수 없습니다. price와 Price는 서로 다른 이름이므로 철자와 대소문자도 맞춰야 합니다.",
+        "의미를 알 수 있는 이름은 메모 역할도 합니다. a보다 total_price가 계산값의 쓰임을 드러냅니다. 이미 출력에 쓰는 print 같은 이름을 다른 값에 대입하면 원래 기능을 쓰기 어려워지므로 새 변수 이름으로 덮어쓰지 않습니다."
+      ],
+      "code": {
+        "source": "print(total_price)\ntotal_price = 1200",
+        "kind": "python",
+        "output": "",
+        "error": "NameError",
+        "caption": "먼저 이름을 사용한 뒤 나중에 대입해도 첫 줄의 오류가 해결되지는 않습니다. 대입 줄을 위로 옮겨야 합니다."
+      }
+    }
+  ],
+  "worked": {
+    "question": "기본 요금에 500을 더해 합계를 구한 뒤 기본 요금이 달라졌습니다. 아래 두 출력이 왜 다른지, 각 대입이 실행되는 시점의 값을 따라가 보세요.",
+    "code": {
+      "source": "base_price = 1000\ntotal = base_price + 500\nbase_price = 1200\nprint(total)\ntotal = base_price + 500\nprint(total)",
+      "kind": "python",
+      "output": "1500\n1700",
+      "error": null,
+      "caption": "계산한 값을 보관하는 것과 현재 값을 사용해 다시 계산하는 것을 비교합니다."
+    },
+    "steps": [
+      "base_price가 1000일 때 첫 덧셈을 계산하므로 total은 1500에 연결됩니다.",
+      "base_price를 1200에 다시 연결해도 total의 기존 값은 1500입니다. 첫 print가 그 값을 보여 줍니다.",
+      "두 번째 total 대입에서 현재 base_price인 1200을 읽고 500을 더합니다. 이제 total이 1700에 연결되어 두 번째 출력이 달라집니다."
+    ],
+    "answer": "출력은 1500과 1700입니다. total은 계산식을 자동으로 다시 계산하는 이름이 아니라, 대입할 때 구한 값에 연결되는 이름입니다."
+  },
+  "misconception": {
+    "question": "b = a를 한 뒤 a를 바꾸면 b도 자동으로 바뀌나요?",
+    "answer": "숫자에 연결된 a를 다른 숫자로 재대입해도 b의 연결은 자동으로 바뀌지 않습니다. b = a는 그때 a가 가리키던 값에 b를 연결합니다. 여기서는 숫자 값 자체의 변경과 이름의 재연결을 구분하는 것이 핵심입니다. 나중에 리스트처럼 내용을 바꿀 수 있는 값을 배울 때는 같은 값을 함께 사용하는 상황을 따로 살펴봅니다."
+  },
+  "keypoints": [
+    "변수는 값에 붙이는 이름입니다. 따옴표 없는 이름은 현재 값을 읽고, 따옴표 안의 이름 모양은 문자 값입니다.",
+    "대입은 오른쪽 값을 먼저 구한 뒤 왼쪽 이름에 연결합니다. 재대입한 뒤에는 새 값을 읽습니다.",
+    "다른 이름의 재대입이나 원래 재료의 변경이 이미 계산한 숫자를 자동으로 갱신하지는 않습니다."
+  ],
+  "examples": [
+    {
+      "question": "book_price에 800을 대입하고, 다음 두 줄에 그 값과 book_price라는 글자를 각각 출력하세요. 파일을 실행해 두 출력이 왜 다른지도 설명해 보세요.",
+      "skill": "이름과 문자 값 구분",
+      "solution": {
+        "answer": "첫 줄에는 800, 둘째 줄에는 book_price가 나타납니다.",
+        "code": {
+          "source": "book_price = 800\nprint(book_price)\nprint(\"book_price\")",
+          "kind": "python",
+          "output": "800\nbook_price",
+          "error": null
+        }
+      },
+      "explanation": "따옴표 없는 book_price는 연결된 값 800을 읽습니다. 따옴표로 감싼 표현은 이름을 찾지 않고 그 글자 자체를 사용합니다."
+    },
+    {
+      "question": "아래 코드를 직접 입력하고, 실행 전에 두 번째 대입의 오른쪽과 실행 후 count의 값을 적어 보세요. 이어서 실행해 예상과 비교하세요.",
+      "skill": "이전 값으로 재대입",
+      "solution": {
+        "answer": "오른쪽 count + 2는 4 + 2이므로 6입니다. 계산한 뒤 count가 6에 연결되어 6을 출력합니다.",
+        "code": {
+          "source": "count = 4\ncount = count + 2\nprint(count)",
+          "kind": "python",
+          "output": "6",
+          "error": null
+        }
+      },
+      "explanation": "왼쪽 이름을 먼저 지우는 것이 아닙니다. 오른쪽에서 현재 값을 읽어 계산한 다음, 왼쪽 이름이 계산 결과를 가리키도록 합니다.",
+      "code": "count = 4\ncount = count + 2\nprint(count)",
+      "codeKind": "python"
+    },
+    {
+      "question": "아래 파일의 두 출력을 먼저 적어 보고 실행하세요. price를 1100에 다시 대입해도 saved_price가 어떻게 되는지 자신의 말로 설명하세요.",
+      "skill": "두 이름의 현재 값 추적",
+      "solution": {
+        "answer": "saved_price는 900, price는 1100을 출력합니다.",
+        "code": {
+          "source": "price = 900\nsaved_price = price\nprice = 1100\nprint(saved_price)\nprint(price)",
+          "kind": "python",
+          "output": "900\n1100",
+          "error": null
+        }
+      },
+      "explanation": "saved_price에는 대입 당시의 값 900이 연결되어 있습니다. price라는 이름에 대한 재대입은 saved_price의 연결을 바꾸지 않습니다.",
+      "code": "price = 900\nsaved_price = price\nprice = 1100\nprint(saved_price)\nprint(price)",
+      "codeKind": "python"
+    },
+    {
+      "question": "아래 파일을 새로 실행하면 이름을 찾지 못하는 오류가 납니다. 두 줄의 순서만 바꾸어 20을 출력하게 고치고, 왜 대입이 먼저 필요한지 설명하세요.",
+      "skill": "이름을 사용하기 전 대입",
+      "solution": {
+        "answer": "points = 20을 먼저 실행하고 print(points)를 실행하면 20이 출력됩니다.",
+        "code": {
+          "source": "points = 20\nprint(points)",
+          "kind": "python",
+          "output": "20",
+          "error": null
+        }
+      },
+      "explanation": "기존 파일은 아직 points에 값이 연결되지 않은 상태에서 그 이름을 읽으려 합니다. 출력할 시점에 값을 찾을 수 있도록 대입이 앞에 있어야 합니다.",
+      "code": "print(points)\npoints = 20",
+      "codeKind": "python"
+    },
+    {
+      "question": "아래 코드는 기본값을 1400으로 바꾼 뒤에도 이전 합계를 출력합니다. base를 바꾼 다음 total을 다시 계산하는 한 줄을 추가하여 1600을 출력하세요. 숫자 1600을 print에 직접 적지 마세요.",
+      "skill": "계산 결과 다시 구하기",
+      "solution": {
+        "answer": "base = 1400 다음에 total = base + 200을 추가하면 현재 기본값으로 합계를 다시 계산합니다.",
+        "code": {
+          "source": "base = 1000\ntotal = base + 200\nbase = 1400\ntotal = base + 200\nprint(total)",
+          "kind": "python",
+          "output": "1600",
+          "error": null
+        }
+      },
+      "explanation": "원래 total의 값은 1200입니다. base에 새 값을 대입하는 일과 total을 다시 계산하는 일은 별개이므로, 새 합계가 필요할 때 계산을 다시 실행합니다.",
+      "code": "base = 1000\ntotal = base + 200\nbase = 1400\nprint(total)",
+      "codeKind": "python"
+    }
+  ]
+}

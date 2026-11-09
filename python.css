@@ -486,3 +486,76 @@ pre.py-quiz-code,
   .py-code-source pre, pre.py-code-source, .py-code-output pre { white-space: pre-wrap; overflow-wrap: anywhere; }
   .py-course-note { break-inside: avoid; }
 }
+
+/* Sample input is separate from source and output, and follows every theme. */
+.py-code-input {
+  min-width: 0;
+  max-width: 100%;
+  padding-top: 12px;
+  border-top: 1px solid var(--line, #d2dcc5);
+  background: var(--surface, #eff1e7);
+}
+
+.py-code-input > strong {
+  display: block;
+  padding: 0 21px;
+  color: var(--forest, #31553e);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: .6px;
+  line-height: 1.7;
+}
+
+.py-code-input pre {
+  margin: 0;
+  padding: 8px 21px 16px;
+  min-width: 0;
+  max-width: 100%;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  white-space: pre;
+  word-break: normal;
+  overflow-wrap: normal;
+  tab-size: 4;
+  font: 14px/1.85 ui-monospace, SFMono-Regular, Menlo, Consolas, 'Liberation Mono', monospace;
+  color: var(--code-ink, #284b35);
+  background: transparent;
+}
+
+.py-code-input pre:focus-visible {
+  outline: 2px solid var(--forest, #31553e);
+  outline-offset: -3px;
+}
+
+@media (max-width: 760px) {
+  .py-code-input > strong { padding: 0 16px; }
+  .py-code-input pre { padding: 7px 16px 13px; font-size: 13px; }
+}
+
+@media (max-width: 380px) {
+  .py-code-input > strong { padding-left: 13px; padding-right: 13px; }
+  .py-code-input pre { padding-left: 13px; padding-right: 13px; font-size: 12px; }
+}
+
+@media print {
+  .py-code-input pre { white-space: pre-wrap; overflow-wrap: anywhere; }
+}
+
+.py-home-chapter + .py-home-chapter {
+  margin-top: 42px;
+}
+
+.py-chapter-actions {
+  margin-top: 22px;
+}
+
+.py-reading-note a,
+.py-course-note p a {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+@media (max-width: 760px) {
+  .py-home-chapter + .py-home-chapter { margin-top: 32px; }
+  .py-chapter-actions { margin-top: 18px; }
+}
