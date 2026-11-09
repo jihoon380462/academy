@@ -2,8 +2,24 @@
 window.ACADEMY_SUBJECTS = [
   {id:'math',title:'수학',english:'MATHEMATICS',symbol:'∑',status:'available',description:'수와 식, 도형과 자료. 공식을 외우기 전에 그 이유부터 이해합니다.',topics:['수와 연산','문자와 식','좌표와 그래프','도형','자료의 해석'],course:{id:'middle-1',title:'중학교 1학년',route:'/math/middle-1'}},
   {id:'python',title:'파이썬',english:'PYTHON',symbol:'Py',status:'planned',description:'짧은 코드에서 시작해, 생각을 프로그램으로 표현하는 방법을 배웁니다.',topics:['기초 문법','자료형과 컬렉션','함수','모듈','객체 지향']},
-  {id:'c-family',title:'C 계열',english:'C · C++ · C#',symbol:'{ }',status:'planned',description:'C, C++, C#의 기초와 각 언어가 프로그램을 구성하는 방식을 살펴봅니다.',topics:['C','C++','C#','메모리와 포인터','객체 지향']},
+  {id:'c-family',title:'C++/#',english:'C++ · C#',symbol:'{ }',status:'planned',description:'C++와 C#의 기초와 각 언어가 프로그램을 구성하는 방식을 살펴봅니다.',topics:['C++','C#','메모리와 포인터','객체 지향']},
   {id:'algorithms',title:'알고리즘·자료구조',english:'ALGORITHMS & DATA STRUCTURES',symbol:'[ ]',status:'planned',description:'데이터를 어떻게 담고 처리할지, 문제를 어떤 순서로 풀지 생각합니다.',topics:['복잡도','배열과 연결 리스트','스택과 큐','트리와 그래프','탐색과 정렬']},
   {id:'cs',title:'CS',english:'COMPUTER SCIENCE',symbol:'01',status:'planned',description:'코드 너머에서 컴퓨터와 시스템이 작동하는 기본 원리를 연결합니다.',topics:['컴퓨터 구조','데이터 표현','네트워크','데이터베이스','소프트웨어 기초']},
-  {id:'operating-systems',title:'운영체제',english:'OPERATING SYSTEMS',symbol:'OS',status:'planned',description:'프로그램과 하드웨어 사이에서 자원을 관리하는 원리를 이해합니다.',topics:['프로세스와 스레드','CPU 스케줄링','메모리 관리','동기화','파일 시스템']}
+  {id:'operating-systems',title:'운영체제',english:'OPERATING SYSTEMS',symbol:'OS',status:'planned',description:'프로그램과 하드웨어 사이에서 자원을 관리하는 원리를 이해합니다.',topics:['프로세스와 스레드','CPU 스케줄링','메모리 관리','동기화','파일 시스템']},
+  {id:'debugging-testing',title:'디버깅·테스트',english:'DEBUGGING & TESTING',symbol:'✓',status:'planned',description:'오류의 원인을 좁혀 가고, 코드가 의도대로 동작하는지 확인하는 방법을 배웁니다.',topics:['오류 읽기','디버거','단위 테스트','테스트 케이스','회귀 테스트']},
+  {id:'object-design',title:'개체지향·설계',english:'OBJECT-ORIENTED DESIGN',symbol:'◇',status:'planned',description:'역할과 책임을 나누고, 변경하기 쉬운 프로그램 구조를 생각합니다.',topics:['객체와 클래스','캡슐화','상속과 합성','인터페이스','설계 원칙']},
+  {id:'ai-collaboration',title:'AI와 협업',english:'WORKING WITH AI',symbol:'↔',status:'planned',description:'목표와 맥락을 전달하고, AI가 만든 결과를 검토하며 함께 작업하는 방법을 익힙니다.',topics:['요구사항 정리','맥락 전달','코드 검토','결과 검증','작업 나누기']},
+  {id:'data-files',title:'데이터 파일 다루기',english:'DATA & FILES',symbol:'./',status:'planned',description:'파일을 읽고 쓰는 기초부터, 필요한 형식으로 데이터를 정리하는 방법을 배웁니다.',topics:['파일과 경로','텍스트와 인코딩','CSV','JSON','파일 처리 오류']},
+  {id:'python-practice',title:'파이썬 실전',english:'PYTHON IN PRACTICE',symbol:'Py',status:'planned',description:'배운 문법을 연결해 작은 도구를 만들고, 실제 문제를 해결하는 과정을 경험합니다.',topics:['작은 프로젝트','업무 자동화','명령줄 도구','패키지 활용','프로젝트 정리']},
+  {id:'web',title:'웹',english:'WEB',symbol:'<>',status:'planned',description:'브라우저에 페이지가 나타나는 원리부터, 웹의 화면과 동작을 구성하는 기초를 배웁니다.',topics:['브라우저와 서버','HTML','CSS','JavaScript','웹 접근성']},
+  {id:'http-api-sdk',title:'HTTP·API·SDK',english:'HTTP · API · SDK',symbol:'↗',status:'planned',description:'요청과 응답으로 서비스를 연결하고, API와 SDK를 사용하는 흐름을 이해합니다.',topics:['HTTP 요청과 응답','상태 코드','API 문서 읽기','인증','SDK 활용']},
+  {id:'sql',title:'SQL',english:'SQL',symbol:'DB',status:'planned',description:'표에 담긴 데이터를 조건에 맞게 찾고, 여러 관계를 연결해 필요한 답을 얻습니다.',topics:['테이블과 관계','SELECT','필터와 정렬','JOIN','집계']},
+  {id:'data-analysis',title:'데이터 분석',english:'DATA ANALYSIS',symbol:'∿',status:'planned',description:'질문을 세우고 데이터를 정리하며, 숫자와 그래프에서 의미를 읽는 과정을 배웁니다.',topics:['분석 질문','데이터 정제','탐색적 분석','시각화','결과 해석']},
+  {id:'ai-ml-basics',title:'AI·머신러닝 기초',english:'AI & MACHINE LEARNING',symbol:'ML',status:'planned',description:'데이터에서 규칙을 배우는 원리와, 모델의 예측을 평가하는 기본 흐름을 이해합니다.',topics:['학습 데이터','지도 학습','비지도 학습','모델 평가','과적합']},
+  {id:'llm-basics',title:'LLM 기초',english:'LARGE LANGUAGE MODELS',symbol:'Aa',status:'planned',description:'언어 모델이 텍스트를 다루는 기본 원리와 활용할 때 확인해야 할 한계를 살펴봅니다.',topics:['토큰','언어 모델','문맥과 생성','임베딩','생성 결과 검증']},
+  {id:'linux',title:'리눅스',english:'LINUX',symbol:'~',status:'planned',description:'리눅스 환경에서 파일과 권한, 프로세스를 다루는 기본기를 익힙니다.',topics:['파일 시스템','사용자와 권한','프로세스','패키지 관리','셸 환경']},
+  {id:'assembly',title:'어셈블리어',english:'ASSEMBLY',symbol:'ASM',status:'planned',description:'명령어와 레지스터, 메모리를 따라 프로그램이 실행되는 과정을 살펴봅니다.',topics:['명령어','레지스터','메모리 주소','스택','분기와 함수 호출']},
+  {id:'terminal-git',title:'터미널·Git',english:'TERMINAL & GIT',symbol:'>_',status:'planned',description:'명령줄로 작업하고, 코드의 변경 이력을 기록하며 되돌리는 방법을 배웁니다.',topics:['명령줄 기본','경로와 명령','저장소와 커밋','브랜치','병합']},
+  {id:'github',title:'GitHub',english:'GITHUB',symbol:'GH',status:'planned',description:'원격 저장소에서 코드를 관리하고, 변경 사항을 공유하고 검토하는 흐름을 익힙니다.',topics:['원격 저장소','push와 pull','이슈','Pull Request','코드 리뷰']},
+  {id:'vim',title:'vim',english:'VIM',symbol:':w',status:'planned',description:'키보드로 텍스트를 탐색하고 편집하며, 반복 작업을 줄이는 기본 조작을 익힙니다.',topics:['모드 전환','커서 이동','텍스트 편집','검색과 치환','저장과 종료']}
 ];
