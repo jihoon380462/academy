@@ -1,0 +1,183 @@
+{
+  "id": "python-l019",
+  "order": 4,
+  "title": "빈 값·None·참 거짓 판정",
+  "subtitle": "값이 비었는지, 아직 없는지, 숫자가 양수인지는 서로 다른 질문입니다.",
+  "minutes": 14,
+  "goal": "bool과 if의 참 거짓 판정, None 여부, 숫자 비교를 구분해 의도에 맞는 조건을 선택한다.",
+  "intro": "0점을 입력했는데 미입력으로 표시되거나, \"False\"를 읽었는데 참인 분기로 들어가는 일이 생길 수 있습니다. if에 전달하는 값이 어떤 의미인지와 Python이 그 값을 참 또는 거짓으로 판정하는 방식은 같지 않을 수 있기 때문입니다. 이번에는 빈 문자열, 숫자 0, 아직 값이 없다는 표시를 구분해 정확한 질문을 만들어 봅시다.",
+  "sections": [
+    {
+      "title": "bool은 조건에서 어떻게 판정되는지 보여 줍니다.",
+      "body": [
+        "if의 조건에는 비교식뿐 아니라 값 자체를 쓸 수도 있습니다. Python은 그 값을 참 또는 거짓으로 판정해 실행할 블록을 정합니다. bool(value)는 같은 판정 결과를 True나 False라는 불리언 값으로 만들어 주므로, 낯선 값이 조건에서 어떻게 읽히는지 출력해 확인할 수 있습니다.",
+        "지금까지 배운 값 중 False, 숫자 0과 0.0, 빈 문자열 \"\"는 거짓으로 판정됩니다. 0이 아닌 숫자와 비어 있지 않은 문자열은 참으로 판정됩니다. 음수도 0이 아니므로 참입니다. 이 판정은 값이 올바른 입력인지, 숫자가 양수인지를 검사한 결과가 아닙니다.",
+        "예를 들어 count가 -2이면 if count:의 블록은 실행되지만 count > 0은 False입니다. 수량이 양수인지가 요구라면 양수 비교를 직접 써야 합니다. bool은 참 거짓 판정을 보여 줄 뿐 원래 변수의 값을 바꾸지 않습니다."
+      ],
+      "code": {
+        "source": "print(bool(False))\nprint(bool(0))\nprint(bool(0.0))\nprint(bool(\"\"))\ncount = -2\nprint(bool(count))\nprint(count > 0)\nif count:\n    print(\"0이 아닌 수\")",
+        "kind": "python",
+        "output": "False\nFalse\nFalse\nFalse\nTrue\nFalse\n0이 아닌 수",
+        "error": null,
+        "caption": "음수도 조건에서는 참일 수 있으므로 양수 요구는 별도 비교로 적습니다."
+      }
+    },
+    {
+      "title": "문자열의 내용은 자동으로 불리언 문법이 되지 않습니다.",
+      "body": [
+        "문자열 \"0\"은 숫자 0과 다르고, 문자열 \"False\"는 불리언 False와 다릅니다. 문자열 자체의 참 거짓은 내용이 무슨 뜻처럼 보이는지가 아니라 비어 있는지로 판정됩니다. 따라서 \"0\", \"False\", 빈칸 하나가 든 \" \"는 모두 참입니다.",
+        "input()의 반환값도 문자열입니다. 아무 글자 없이 Enter만 누르면 빈 문자열이고, 빈칸 한 개를 입력한 뒤 Enter를 누르면 빈칸이 들어 있는 문자열입니다. if text:는 빈 문자열인지만 구별하므로, 사람이 보기에 빈칸뿐인 입력까지 잘못된 입력으로 자동 판정하지는 않습니다.",
+        "입력 글자가 정확히 \"yes\"일 때만 동의로 처리하려면 text == \"yes\"처럼 명시적으로 비교합니다. bool(text)는 단어를 해석하는 변환기가 아니므로 \"False\"를 불리언 False로 읽어 주지 않습니다. 대소문자와 다른 입력을 어떻게 받을지도 프로그램의 요구로 정해야 합니다."
+      ],
+      "code": {
+        "source": "print(bool(\"0\"))\nprint(bool(\"False\"))\nprint(bool(\" \"))\ntext = \"False\"\nif text:\n    print(\"문자열이 비어 있지 않음\")\nprint(text == \"yes\")",
+        "kind": "python",
+        "output": "True\nTrue\nTrue\n문자열이 비어 있지 않음\nFalse",
+        "error": null,
+        "caption": "문자열이 있는지 확인하는 조건과 특정 동의 표현인지를 비교하는 조건은 다릅니다."
+      }
+    },
+    {
+      "title": "None은 아직 값이 없다는 뜻으로 정해 사용할 수 있습니다.",
+      "body": [
+        "None은 아직 결과가 없거나 값이 주어지지 않았다는 상태를 나타낼 때 쓰는 특별한 값입니다. 첫 글자는 대문자이며 따옴표를 붙이지 않습니다. 예를 들어 score = None으로 아직 점수를 입력하지 않았음을 나타내고, score = 0으로 실제 0점을 나타내면 두 상태를 구별할 수 있습니다.",
+        "score is None은 score가 None인지를 확인하고, score is not None은 None이 아닌지를 확인합니다. None 확인에는 이 표현을 사용합니다. 이것을 일반 숫자나 문자열의 값 비교까지 확대하지 마세요. 두 숫자나 문자열의 값이 같은지는 앞에서 배운 ==로 비교하며, is와 ==는 서로 바꿔 쓰는 기호가 아닙니다.",
+        "None도 거짓으로 판정되지만 0이나 빈 문자열과 같은 값은 아닙니다. 또 score = None을 쓴 뒤에는 score라는 이름이 이미 존재하고 None에 연결되어 있습니다. 아직 대입하지 않은 이름을 읽어서 생기는 NameError와도 다릅니다. \"None\"처럼 따옴표를 붙이면 네 글자의 문자열이며 None 확인은 거짓이 됩니다."
+      ],
+      "code": {
+        "source": "score = None\nprint(bool(score))\nprint(score is None)\nif score is None:\n    print(\"점수 미입력\")\nscore = 0\nprint(score is not None)\nif score is not None:\n    print(\"입력한 점수:\", score)\ntext = \"None\"\nprint(text is None)",
+        "kind": "python",
+        "output": "False\nTrue\n점수 미입력\nTrue\n입력한 점수: 0\nFalse",
+        "error": null,
+        "caption": "0점은 입력된 값이므로 None 여부를 확인하면 미입력 상태와 구분됩니다."
+      }
+    },
+    {
+      "title": "값의 존재와 그 값이 요구에 맞는지는 나누어 확인합니다.",
+      "body": [
+        "이번 예제에서 temperature는 숫자 또는 None만 갖는다고 정합니다. None이 아니면 측정값이 있다는 뜻이고, 그 숫자가 0보다 큰지는 영상인지를 묻는 다른 조건입니다. 0도와 음수 온도도 정상적인 측정값이므로 if temperature:만으로 측정 여부를 정하면 0도를 놓칩니다.",
+        "if temperature is None:에서 미측정 상태를 먼저 나누고, elif temperature > 0:에서 숫자를 비교할 수 있습니다. 앞 조건이 거짓인 경우에만 elif로 진행하므로 이 전제에서는 None을 숫자와 크기 비교하지 않습니다. None > 0은 허용되지 않아 TypeError가 나므로 비교 전에 값의 상태를 구분하는 이유이기도 합니다.",
+        "여기서 is not None은 숫자라는 검사가 아닙니다. 문자열도 None은 아니므로, 값을 숫자 또는 None으로만 정한 전제가 있어야 뒤의 숫자 비교가 맞습니다. 여러 종류의 잘못된 입력을 모두 처리하는 방법까지 이 조건 하나로 해결했다고 생각하지 않습니다."
+      ],
+      "code": {
+        "source": "temperature = 0\nif temperature is None:\n    print(\"미측정\")\nelif temperature > 0:\n    print(\"영상\")\nelse:\n    print(\"측정됨: 0도 이하\")\nprint(temperature is not None)\nprint(bool(temperature))",
+        "kind": "python",
+        "output": "측정됨: 0도 이하\nTrue\nFalse",
+        "error": null,
+        "caption": "같은 값 0에 대해 측정값 존재는 참이고 참 거짓 판정은 거짓입니다."
+      }
+    }
+  ],
+  "worked": {
+    "question": "아직 작성하지 않은 점수는 None, 입력한 점수는 0~100의 정수로 저장한다고 정했습니다. 0점은 미입력이 아니라 입력된 점수로 보여 주려면 어떤 조건을 써야 할까요?",
+    "code": {
+      "source": "score = None\nif score is None:\n    print(\"점수를 입력하세요\")\nelse:\n    print(\"입력한 점수:\", score)\nscore = 0\nif score is None:\n    print(\"점수를 입력하세요\")\nelse:\n    print(\"입력한 점수:\", score)",
+      "kind": "python",
+      "output": "점수를 입력하세요\n입력한 점수: 0",
+      "error": null,
+      "caption": "두 번의 확인은 미입력과 실제 0점이라는 서로 다른 상태를 비교합니다."
+    },
+    "steps": [
+      "처음에는 score가 None이므로 score is None이 True입니다. 미입력 안내를 출력합니다.",
+      "score에 0을 대입한 뒤에는 score is None이 False입니다. else로 가서 실제 입력한 0점을 출력합니다.",
+      "if score:를 썼다면 None과 0이 둘 다 거짓이어서 구별되지 않습니다. 요구는 참으로 판정되는 값인지가 아니라 미입력 표시인 None인지 확인하는 것입니다."
+    ],
+    "answer": "미입력을 None으로 정했다면 is None으로 확인합니다. 0도 유효한 입력값이라는 요구를 보존하려면 일반적인 참 거짓 판정과 구분해야 합니다."
+  },
+  "misconception": {
+    "question": "if value:가 거짓이면 값이 없거나 잘못된 입력이라는 뜻인가요?",
+    "answer": "그렇게 단정할 수 없습니다. 0점이나 빈 문자열이 정상적인 값인 상황도 있습니다. 반대로 \"False\"나 빈칸 하나는 조건에서 참이지만 사용자가 요구한 동의나 이름이 아닐 수 있습니다. None을 미입력 표시로 정했다면 is None, 양수인지라면 > 0, 특정 문자열인지라면 ==처럼 프로그램이 실제로 묻는 질문을 적어야 합니다."
+  },
+  "keypoints": [
+    "bool과 if의 참 거짓 판정에서 False·0·0.0·빈 문자열·None은 거짓입니다. 0이 아닌 음수와 비어 있지 않은 문자열은 참입니다.",
+    "\"0\"·\"False\"·\" \"는 모두 비어 있지 않은 문자열입니다. bool은 글자의 의미를 해석하지 않으므로 특정 입력 요구는 명시적으로 비교합니다.",
+    "None을 값이 없는 상태로 정했다면 is None 또는 is not None으로 확인합니다. 존재 여부·양수 여부·입력의 유효성은 서로 다른 질문입니다."
+  ],
+  "examples": [
+    {
+      "question": "아래 다섯 값의 bool 결과를 먼저 예상하고 실행하세요. 마지막 값 -3이 참으로 판정되는 것이 양수라는 뜻은 아닌 이유를 설명하고, -3 > 0의 결과도 출력하세요.",
+      "skill": "참 거짓 판정과 숫자 부호",
+      "solution": {
+        "answer": "순서대로 False, False, False, False, True이며 -3 > 0은 False입니다. 0이 아닌 수는 음수라도 참입니다.",
+        "code": {
+          "source": "print(bool(False))\nprint(bool(0))\nprint(bool(0.0))\nprint(bool(\"\"))\nprint(bool(-3))\nprint(-3 > 0)",
+          "kind": "python",
+          "output": "False\nFalse\nFalse\nFalse\nTrue\nFalse",
+          "error": null
+        }
+      },
+      "explanation": "bool은 숫자의 양수 여부를 묻지 않습니다. 0인지가 참 거짓 판정에 영향을 주며, 양수 요구에는 > 0이라는 비교가 필요합니다.",
+      "code": "print(bool(False))\nprint(bool(0))\nprint(bool(0.0))\nprint(bool(\"\"))\nprint(bool(-3))",
+      "codeKind": "python",
+      "codeLabel": "직접 확인하거나 고칠 코드"
+    },
+    {
+      "question": "text를 \"0\", \"False\", 빈칸 하나인 \" \"로 각각 바꾸어 bool 결과를 확인하세요. 아래 시작 코드가 동의를 출력하는 이유를 설명하고, 정확히 \"yes\"일 때만 동의를 출력하도록 if 조건을 고치세요.",
+      "skill": "문자열의 존재와 의미 구분",
+      "solution": {
+        "answer": "세 문자열의 bool 결과는 모두 True입니다. 조건을 text == \"yes\"로 바꾸면 주어진 \"False\"에서는 동의 아님을 출력합니다.",
+        "code": {
+          "source": "print(bool(\"0\"))\nprint(bool(\"False\"))\nprint(bool(\" \"))\ntext = \"False\"\nif text == \"yes\":\n    print(\"동의\")\nelse:\n    print(\"동의 아님\")",
+          "kind": "python",
+          "output": "True\nTrue\nTrue\n동의 아님",
+          "error": null
+        }
+      },
+      "explanation": "비어 있지 않은 문자열은 내용과 관계없이 참으로 판정됩니다. 특정 동의 표현을 확인하는 요구에는 문자열 값 비교가 맞습니다.",
+      "code": "text = \"False\"\nif text:\n    print(\"동의\")\nelse:\n    print(\"동의 아님\")",
+      "codeKind": "python",
+      "codeLabel": "직접 확인하거나 고칠 코드"
+    },
+    {
+      "question": "값을 아직 받지 못했으면 None, 받았다면 정수를 저장한다고 정했습니다. 아래 코드는 실제 값 0을 미입력으로 잘못 표시합니다. 0을 값: 0으로 출력하고 None은 미입력으로 출력하도록 고친 뒤 두 경우를 확인하세요.",
+      "skill": "None과 유효한 0 구분",
+      "solution": {
+        "answer": "value is None으로 미입력을 확인합니다. 0은 값: 0, None은 미입력입니다.",
+        "code": {
+          "source": "value = 0\nif value is None:\n    print(\"미입력\")\nelse:\n    print(\"값:\", value)\nvalue = None\nif value is None:\n    print(\"미입력\")\nelse:\n    print(\"값:\", value)",
+          "kind": "python",
+          "output": "값: 0\n미입력",
+          "error": null
+        }
+      },
+      "explanation": "if value는 0과 None을 모두 거짓으로 판정합니다. 미입력 표시를 None으로 정했다면 None 여부를 확인해야 0을 보존할 수 있습니다.",
+      "code": "value = 0\nif value:\n    print(\"값:\", value)\nelse:\n    print(\"미입력\")",
+      "codeKind": "python",
+      "codeLabel": "직접 확인하거나 고칠 코드"
+    },
+    {
+      "question": "reading은 숫자 또는 None만 갖는다고 정했습니다. 아래 코드의 오류 종류를 확인하고, None이면 미측정, 양수면 영상, 그 밖의 숫자면 0도 이하를 출력하도록 고치세요. reading이 None일 때와 -2일 때를 확인하세요.",
+      "skill": "존재 확인 뒤 숫자 비교",
+      "solution": {
+        "answer": "원래 None > 0에서 TypeError가 납니다. None 여부를 먼저 나눈 뒤 비교하면 None은 미측정, -2는 0도 이하입니다.",
+        "code": {
+          "source": "reading = None\nif reading is None:\n    print(\"미측정\")\nelif reading > 0:\n    print(\"영상\")\nelse:\n    print(\"0도 이하\")\nreading = -2\nif reading is None:\n    print(\"미측정\")\nelif reading > 0:\n    print(\"영상\")\nelse:\n    print(\"0도 이하\")",
+          "kind": "python",
+          "output": "미측정\n0도 이하",
+          "error": null
+        }
+      },
+      "explanation": "None은 0의 다른 표기가 아니며 숫자와 크기 비교를 할 수 없습니다. 앞의 None 분기를 통과하지 않은 경우만 숫자 비교를 하므로 정해 둔 입력 범위에서 안전하게 상태를 나눕니다.",
+      "code": "reading = None\nif reading > 0:\n    print(\"영상\")\nelse:\n    print(\"0도 이하\")",
+      "codeKind": "python",
+      "codeLabel": "직접 확인하거나 고칠 코드"
+    },
+    {
+      "question": "아래 코드가 출력할 bool 결과와 None 확인 결과를 예상하고 실행하세요. 같은 두 확인을 실제 None으로도 수행하고, 따옴표가 값의 종류와 판정을 어떻게 바꾸는지 설명하세요.",
+      "skill": "None 표시와 문자열 구별",
+      "solution": {
+        "answer": "문자열 \"None\"은 True와 False, 실제 None은 False와 True입니다. 따옴표가 있으면 값이 없다는 표시가 아니라 네 글자의 문자열입니다.",
+        "code": {
+          "source": "value = \"None\"\nprint(bool(value))\nprint(value is None)\nvalue = None\nprint(bool(value))\nprint(value is None)",
+          "kind": "python",
+          "output": "True\nFalse\nFalse\nTrue",
+          "error": null
+        }
+      },
+      "explanation": "문자열은 비어 있지 않아서 참으로 판정되고 None과는 별개입니다. 실제 None은 거짓으로 판정되며 is None 확인에서 참입니다. None인지 확인하는 is를 일반 문자열 내용 비교 대신 사용하지 않습니다.",
+      "code": "value = \"None\"\nprint(bool(value))\nprint(value is None)",
+      "codeKind": "python",
+      "codeLabel": "직접 확인하거나 고칠 코드"
+    }
+  ]
+}

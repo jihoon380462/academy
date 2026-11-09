@@ -24,6 +24,10 @@ SPECS = [
          description='문자의 위치와 범위를 읽고, 문자열을 정리하고 나누고 합쳐 읽기 좋은 결과를 만듭니다.',
          prerequisite='선행 학습: 챕터 2 · 값·이름·연산',
          titles=['인덱스와 음수 인덱스', '슬라이싱과 범위', '문자열 메서드와 반환값', '나누기·합치기·검색하기', '형식에 맞춰 출력하기']),
+    dict(number=4, first=16, title='조건에 따라 흐름 바꾸기',
+         description='조건으로 실행할 블록을 나누고, 빈 값과 경계값에서도 의도한 흐름인지 확인합니다.',
+         prerequisite='선행 학습: 챕터 2 · 값·이름·연산',
+         titles=['if와 들여쓰기 블록', 'elif와 else로 경우 나누기', '여러 조건을 연결하기', '빈 값·None·참 거짓 판정', '경계값과 중첩 조건']),
 ]
 parser = argparse.ArgumentParser()
 parser.add_argument('--check-code', action='store_true')
