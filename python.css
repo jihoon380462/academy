@@ -542,7 +542,7 @@ pre.py-quiz-code,
 }
 
 .py-home-chapter + .py-home-chapter {
-  margin-top: 42px;
+  margin-top: 24px;
 }
 
 .py-chapter-actions {
@@ -556,6 +556,45 @@ pre.py-quiz-code,
 }
 
 @media (max-width: 760px) {
-  .py-home-chapter + .py-home-chapter { margin-top: 32px; }
+  .py-home-chapter + .py-home-chapter { margin-top: 20px; }
   .py-chapter-actions { margin-top: 18px; }
+}
+
+/* Native chapter disclosures: closed by default, with no nested summary links. */
+.py-chapter-toggle {
+  cursor: pointer;
+  list-style: none;
+}
+.py-chapter-toggle::-webkit-details-marker { display: none; }
+.py-chapter-toggle::marker { content: ''; }
+.py-chapter-overview { min-width: 0; }
+.py-chapter-disclosure {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 16px;
+  color: var(--forest);
+  font-size: 12px;
+  line-height: 1.7;
+}
+.py-disclosure-chevron {
+  width: 8px;
+  height: 8px;
+  border-right: 1.5px solid currentColor;
+  border-bottom: 1.5px solid currentColor;
+  transform: rotate(45deg) translateY(-2px);
+  flex: none;
+}
+.py-disclosure-open,
+.py-home-chapter[open] > .py-chapter-toggle .py-disclosure-closed { display: none; }
+.py-home-chapter[open] > .py-chapter-toggle .py-disclosure-open { display: inline; }
+.py-home-chapter[open] > .py-chapter-toggle .py-disclosure-chevron {
+  transform: rotate(225deg) translate(-2px, -1px);
+}
+.py-chapter-contents { min-width: 0; }
+.py-chapter-contents .py-lesson-list { margin-bottom: 0; }
+.py-chapter-toggle:focus-visible {
+  outline: 2px solid var(--forest);
+  outline-offset: 5px;
 }
