@@ -128,3 +128,10 @@
 - GitHub Actions 실행 `42672277458`의 공개 Annotations에서 `Internal server error. Correlation ID: abf2a3f3-6ddd-4f86-893e-3702d35e892a`를 확인했다. build/deploy 작업 로그가 생성되지 않았고 report-build-status만 `CONCLUSION: abandoned`를 보고했다.
 - 공개 사이트가 로드한 파일은 `python-ui.js?v=20261110-python-ch02-1`이었으며 새 목차 버전 `20261110-chapter-fold-1`이 아니었다. 따라서 공개 파일이 갱신되기 전까지 접기 UI가 보이지 않는다.
 - 앱 코드나 Pages의 main·root 설정을 바꾸지 않고 이 원인 기록 커밋으로 배포를 재요청한다. 성공 여부는 해당 Actions 결과와 실제 공개 화면을 각각 확인한다.
+
+## 챕터 목차 접기 배포 재시도 PR (2026-11-10 KST)
+
+- 추가 재배포 [실행 42673541120](https://github.com/jihoon380462/academy/actions/runs/42673541120)도 작업 시작 전 `Internal server error`로 실패했다. Correlation ID: `530d57f2-6723-4500-9a17-e7aa5682c9ec`. 공개 사이트에서 구버전 `python-ui.js?v=20261110-python-ch02-1`과 접이식 챕터 요소 0개를 다시 확인했다.
+- 접기 구현은 이미 main의 `744c5506`에 포함되어 있다. 이 PR은 최신 실패 기록과 공개 반영 확인 절차를 정리한다. 앱 기능·콘텐츠·학습 기록·Pages main/root 설정은 변경하지 않는다.
+- 사용자의 요청에 따라 PR만 생성한다. PR 생성은 병합 또는 배포 성공을 뜻하지 않는다. 병합하면 기존 배포 흐름이 다시 실행될 수 있지만, GitHub 내부 오류 해결을 보장하지 않는다.
+- 병합 이후 확인: 해당 커밋의 Pages 배포 성공 → 공개 HTML의 `python.css`·`python-ui.js` 참조 버전 `20261110-chapter-fold-1` → 챕터 두 개 기본 접힘 → 카드 클릭 펼침·다시 접힘 → 레슨·복습 링크 이동. 배포가 실패하면 공개 반영 완료로 표시하지 않는다.
