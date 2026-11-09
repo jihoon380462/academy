@@ -20,7 +20,7 @@
 | 표시 순서 | 대분류 | 현재 상태 |
 | --- | --- | --- |
 | 01 | 수학 | 중학교 1학년 과정 학습 가능 |
-| 02 | 파이썬 | 기초 챕터 1~6 소스 구현 (챕터 5·6 로컬 검증 완료, 배포 상태는 검증 기록 참고) |
+| 02 | 파이썬 | 기초 9챕터·46레슨 구현, 챕터 7~9 로컬 검증·PR #6 병합·Pages 배포·공개 화면 확인 완료. 확인 범위는 검증 기록 참고 |
 | 03 | C++/# | 준비 중 |
 | 04 | 알고리즘·자료구조 | 준비 중 |
 | 05 | CS | 준비 중 |
@@ -42,7 +42,7 @@
 | 21 | GitHub | 준비 중 |
 | 22 | vim | 준비 중 |
 
-현재 수학과 파이썬의 **2개 분야 · 총 61개 레슨**이 구현되어 있습니다. 나머지 20개 분야에는 예정 주제와 안내 화면만 있으며, 아직 레슨은 제공하지 않습니다. 파이썬 기초와 파이썬 실전, 터미널·Git과 GitHub 등은 각각 별도의 분야로 구분합니다. 실제 배포·화면 검증 기록은 [verification.md](verification.md)를 확인합니다.
+현재 수학과 파이썬의 **2개 분야 · 총 76개 레슨**이 구현되어 있습니다. 나머지 20개 분야에는 예정 주제와 안내 화면만 있으며, 아직 레슨은 제공하지 않습니다. 파이썬 기초와 파이썬 실전, 터미널·Git과 GitHub 등은 각각 별도의 분야로 구분합니다. 실제 배포·화면 검증 기록은 [verification.md](verification.md)를 확인합니다.
 
 ## 수학 과정 구성
 
@@ -55,7 +55,7 @@
 
 ## 파이썬 과정 구성
 
-기초 과정의 챕터 1 **프로그램을 읽고 실행하기**, 챕터 2 **값·이름·연산**, 챕터 3 **문자열을 다루는 기본 도구**, 챕터 4 **조건에 따라 흐름 바꾸기**, 챕터 5 **반복으로 같은 규칙 적용하기**, 챕터 6 **여러 값을 담는 방법**을 구성합니다. 챕터 1~5는 각각 5레슨, 챕터 6은 6레슨이며, 챕터 5·6은 구현·로컬 검증 완료입니다. 병합·Pages 배포·공개 화면 확인은 검증 기록에서 구분합니다. 다음 미구현 범위는 챕터 7과 `python-l032`입니다. 이후 목표와 목차는 [파이썬 설계 문서](docs/curriculum/python.md)에 있습니다.
+기초 과정의 설계된 **9챕터·46레슨**을 모두 구현했습니다. 챕터 1~5·7~9는 각각 5레슨, 챕터 6은 6레슨입니다. 챕터 7~9는 구현·로컬 검증 후 [PR #6](https://github.com/jihoon380462/academy/pull/6)으로 main에 병합했습니다. 병합 SHA `e6f8c77`의 [Pages 배포](https://github.com/jihoon380462/academy/actions/runs/42688604917)가 성공했고 [공개 사이트](https://jihoon380462.github.io/academy/)의 PC·모바일 화면을 확인했습니다. 실제 확인 범위와 소스 SHA는 [검증 기록](verification.md)에 구분합니다. 현재 기초 목차에 미구현 레슨은 없으며 추가 집필은 사용자 요청에 따릅니다. 목표와 과목 경계는 [파이썬 과목 문서](docs/curriculum/python.md)에 있습니다. 이후 운영 문서 변경은 위 코드 배포 SHA와 별도이며, `VERSION`의 `0.1.0`은 아직 릴리스 태그로 확정하지 않은 목표 번호입니다.
 
 - 챕터 1: 프로그램·실행 결과, 인터프리터·파일, 문자열 출력, 순서·들여쓰기·주석, 오류 읽기의 5레슨
 - 챕터 2: 변수와 재대입, 정수·실수 연산, 문자열·숫자 변환, 비교·불리언·논리 연산, 입력받아 계산하고 출력하는 5레슨
@@ -63,15 +63,18 @@
 - 챕터 4: if와 들여쓰기, elif·else, 논리 조건 결합, 빈 값·None·참 거짓 판정, 경계값·중첩 조건의 5레슨
 - 챕터 5: for·range·while, 합계·개수·최댓값 누적, break·continue·중첩 반복의 5레슨
 - 챕터 6: 리스트·튜플·딕셔너리·집합, 순회·컴프리헨션, 별칭·얕은 복사의 6레슨
+- 챕터 7: 함수 정의·호출, 매개변수·반환값, 이름 범위, 기본값·가변 객체 공유, 작은 함수 조합의 5레슨
+- 챕터 8: 표준·내 모듈, 실행 진입점, traceback·예외 처리, 텍스트 파일·with, 가상환경·패키지의 5레슨
+- 챕터 9: 객체·타입·메서드, 클래스·인스턴스, 초기화·상태, 함수와 클래스 선택, 기초 스크립트 통합의 5레슨
 - 레슨별 개념 설명, 코드와 예상 출력, 작동 예시, 오해 바로잡기, 핵심 요점
-- 레슨마다 예제 5개: **총 155문제**를 본문에 세로로 나열
-- 챕터마다 복습 10개: **총 60문제**를 세로로 나열하고, 각 챕터의 핵심 다시 보기·관련 레슨 연결 제공
+- 레슨마다 예제 5개: **총 230문제**를 본문에 세로로 나열
+- 챕터마다 복습 10개: **총 90문제**를 세로로 나열하고, 각 챕터의 핵심 다시 보기·관련 레슨 연결 제공
 - 각 문제의 접힌 예시 답·해설을 펼쳐 자신의 코드와 비교
 - 읽음 표시, 최근 레슨에서 이어 배우기
 
 파이썬 문제는 사용자가 PC에서 직접 타이핑할 수 있도록 나열하는 방식입니다. 코드를 작성·실행·수정하거나 예상 결과와 이유를 적은 뒤, 필요한 문제의 예시 답과 해설을 펼쳐 확인합니다. 객관식 선택, 퀴즈 모달, 자동 채점과 점수 표시는 제공하지 않습니다. 다음 파이썬 챕터도 이 형식을 이어갑니다.
 
-기본 Python 3 코드로 작성했으며 코드 검증 환경은 **Python 3.12.14**입니다. PC·모바일에서 문제와 설명을 읽을 수 있고, 직접 실행하는 IDLE·터미널 절차는 레슨 2에서 안내합니다. 챕터 2의 `input()` 코드에 표시된 입력 예시는 읽기 전용 자료입니다. 실제 입력은 PC에서 코드를 실행할 때 하며 사이트에 코드 실행기는 없습니다. 공식 문서와 확인 범위는 [파이썬 과목 문서](docs/curriculum/python.md)에 기록했습니다.
+기본 Python 3 코드로 작성했으며 코드 검증 환경은 **Python 3.12.14**입니다. PC·모바일에서 문제와 설명을 읽을 수 있고, 직접 실행하는 IDLE·터미널 절차는 레슨 2에서 안내합니다. `input()` 예시 입력과 여러 파일 실습의 파일명·함께 둘 파일·실행 후 파일은 읽기 전용 자료입니다. 학습자는 PC에서 파일을 준비하고 실행하며 사이트에 코드 실행기는 없습니다. 가상환경의 경로·버전처럼 환경별로 다른 출력은 고정 정답으로 표시하지 않으며, 연습용 venv 생성·실행 경로·pip 확인은 네트워크 패키지 설치 없이 검증했습니다. 공식 문서와 확인 범위는 [파이썬 과목 문서](docs/curriculum/python.md)에 기록했습니다.
 
 ## 실행
 
@@ -126,9 +129,15 @@ python3 -m http.server 8000
 | `content/python/ch05/review.json` | 파이썬 챕터 5 복습 10문제 |
 | `content/python/ch06/python-l026.json` ~ `python-l031.json` | 파이썬 챕터 6의 6레슨과 30예제 |
 | `content/python/ch06/review.json` | 파이썬 챕터 6 복습 10문제 |
+| `content/python/ch07/python-l032.json` ~ `python-l036.json` | 파이썬 챕터 7의 5레슨과 25예제 |
+| `content/python/ch07/review.json` | 파이썬 챕터 7 복습 10문제 |
+| `content/python/ch08/python-l037.json` ~ `python-l041.json` | 파이썬 챕터 8의 5레슨과 25예제 |
+| `content/python/ch08/review.json` | 파이썬 챕터 8 복습 10문제 |
+| `content/python/ch09/python-l042.json` ~ `python-l046.json` | 파이썬 챕터 9의 5레슨과 25예제 |
+| `content/python/ch09/review.json` | 파이썬 챕터 9 복습 10문제 |
 | `content/python/SCHEMA.md` | 파이썬 레슨·문제·코드 블록 형식과 검증 범위 |
 | `build-python.py` | 파이썬 구조 검사, 선택적 코드 실행 검사, 묶음 생성 |
-| `python-content.js` | `window.PYTHON_COURSES`의 여섯 챕터 콘텐츠 묶음, 자동 생성 |
+| `python-content.js` | `window.PYTHON_COURSES`의 아홉 챕터 콘텐츠 묶음, 자동 생성 |
 | `preview.html` | PC·모바일 화면 비교 |
 | `previews/` | 과목 홈페이지와 기존 중1 화면 캡처 |
 | `verification.md` | 검증 범위와 알려진 제약 |
@@ -154,7 +163,7 @@ node --check python-ui.js
 node --check app.js
 ```
 
-수정한 `content/python/ch01/*.json`·`content/python/ch02/*.json`·`content/python/ch03/*.json`·`content/python/ch04/*.json`·`content/python/ch05/*.json`·`content/python/ch06/*.json`과 생성된 `python-content.js`를 함께 커밋합니다. 생성물은 `window.PYTHON_COURSES` 배열이며 `window.PYTHON_CH01`·`window.PYTHON_CH02`·`window.PYTHON_CH03`·`window.PYTHON_CH04`·`window.PYTHON_CH05`·`window.PYTHON_CH06` 별칭도 제공해 기존 미리보기와 호환합니다. `--check-code`는 본문·풀이 예시 및 문항의 `solution.code` 중 Python 코드 블록을 임시 파일에서 실행하며, `input()` 코드에는 블록의 고정 입력 예시를 전달합니다. 터미널 명령·대화형 기록과 질문에 제시한 코드 문자열은 자동 실행 대상이 아니므로 문항의 요구, 예시 답과 해설이 맞는지도 별도로 검토합니다. 이 검사는 브라우저 사용성이나 배포 검증을 대신하지 않습니다.
+수정한 `content/python/ch01/*.json`·`content/python/ch02/*.json`·`content/python/ch03/*.json`·`content/python/ch04/*.json`·`content/python/ch05/*.json`·`content/python/ch06/*.json`·`content/python/ch07/*.json`·`content/python/ch08/*.json`·`content/python/ch09/*.json`과 생성된 `python-content.js`를 함께 커밋합니다. 생성물은 `window.PYTHON_COURSES` 배열이며 `window.PYTHON_CH01`·`window.PYTHON_CH02`·`window.PYTHON_CH03`·`window.PYTHON_CH04`·`window.PYTHON_CH05`·`window.PYTHON_CH06`·`window.PYTHON_CH07`·`window.PYTHON_CH08`·`window.PYTHON_CH09` 별칭도 제공해 기존 미리보기와 호환합니다. `--check-code`는 본문·풀이 예시 및 문항의 `solution.code` 중 Python 블록을 각각 새 임시 폴더에서 실행합니다. `input`은 고정 stdin, `files`는 함께 둘 UTF-8 파일, `expectedFiles`는 실행 후 파일의 정확한 내용입니다. 파일 결과는 마지막 줄바꿈까지 비교하고, 예상 stdout은 끝의 개행만 제외해 비교합니다. `filename`으로 주 실행 파일명을 정할 수 있으며 로컬 모듈을 함께 둘 때는 해당 블록 폴더만 검색 경로에 추가합니다. 필드 제약과 표시 방식은 [콘텐츠 스키마](content/python/SCHEMA.md)를 따릅니다. 터미널 명령·환경별 출력 코드·질문의 코드 문자열은 자동 실행 대상이 아니므로 문항의 요구·예시 답·해설과 실제 환경은 별도로 검토합니다. 이 검사는 브라우저 사용성이나 배포 검증을 대신하지 않습니다.
 
 ## 페이지 경로
 
@@ -179,6 +188,15 @@ node --check app.js
 - `#/python/ch06`: 파이썬 챕터 6 목차
 - `#/python/ch06/lesson/python-l026`: 파이썬 챕터 6 첫 레슨 (`python-l031`까지)
 - `#/python/ch06/review`: 파이썬 챕터 6 복습
+- `#/python/ch07`: 파이썬 챕터 7 목차
+- `#/python/ch07/lesson/python-l032`: 파이썬 챕터 7 첫 레슨 (`python-l036`까지)
+- `#/python/ch07/review`: 파이썬 챕터 7 복습
+- `#/python/ch08`: 파이썬 챕터 8 목차
+- `#/python/ch08/lesson/python-l037`: 파이썬 챕터 8 첫 레슨 (`python-l041`까지)
+- `#/python/ch08/review`: 파이썬 챕터 8 복습
+- `#/python/ch09`: 파이썬 챕터 9 목차
+- `#/python/ch09/lesson/python-l042`: 파이썬 챕터 9 첫 레슨 (`python-l046`까지)
+- `#/python/ch09/review`: 파이썬 챕터 9 복습
 - `#/math/middle-1`: 중학교 1학년 목차
 - `#/math/middle-1/lesson/<레슨 ID>`: 수학 레슨
 - `#/math/middle-1/review`: 중1 챕터 복습
@@ -190,7 +208,7 @@ node --check app.js
 
 ## 학습 기록
 
-기존 수학 저장 키(`understand-math-grade1-v1`)와 수학의 예제·복습 점수 기능을 유지합니다. 파이썬 챕터 1은 기존 `academy-python-ch01-v1`에서 읽음 표시와 최근 레슨을 이어가고, 챕터 2는 `academy-python-ch02-v1`, 챕터 3은 `academy-python-ch03-v1`, 챕터 4는 `academy-python-ch04-v1`, 챕터 5는 `academy-python-ch05-v1`, 챕터 6은 `academy-python-ch06-v1`에 별도로 기록합니다. 파이썬의 이전 버전에서 저장한 유효한 `scores` 데이터는 삭제하지 않지만 표시하거나 새로 채점하지 않습니다. 새 챕터를 추가해도 기존 챕터 1~4·수학 기록과 테마 설정은 유지합니다.
+기존 수학 저장 키(`understand-math-grade1-v1`)와 수학의 예제·복습 점수 기능을 유지합니다. 파이썬은 `academy-python-ch01-v1`·`academy-python-ch02-v1`·`academy-python-ch03-v1`·`academy-python-ch04-v1`·`academy-python-ch05-v1`·`academy-python-ch06-v1`·`academy-python-ch07-v1`·`academy-python-ch08-v1`·`academy-python-ch09-v1`에 챕터별 읽음 표시와 최근 레슨을 따로 기록합니다. 파이썬의 이전 버전에서 저장한 유효한 `scores` 데이터는 삭제하지 않지만 표시하거나 새로 채점하지 않습니다. 새 챕터를 추가해도 기존 모든 파이썬 챕터·수학 기록과 테마 설정은 유지합니다.
 
 학습 기록은 현재 브라우저의 `localStorage`에 저장됩니다. 서버 계정 기반 저장이나 기기 간 자동 동기화는 구현하지 않았습니다. 다른 도메인으로 접속하면 기존 사이트의 학습 기록은 자동 이전되지 않습니다.
 
