@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#17191b">
+  <title>Academy · 다크모드 시안 6개</title>
+  <link rel="stylesheet" href="gallery.css">
+</head>
+<body>
+  <main class="gallery">
+    <header class="gallery-heading">
+      <div>
+        <p class="eyebrow">ACADEMY · DARK MODE STUDIES</p>
+        <h1>다크모드, 여섯 가지 방향.</h1>
+        <p class="intro">같은 파이썬 레슨으로 비교해 보세요.</p>
+      </div>
+      <a id="fullscreen" class="fullscreen" href="frame.html?theme=forest&amp;view=lesson" target="_blank" rel="noopener">전체 화면으로 보기 <span aria-hidden="true">↗</span></a>
+    </header>
+
+    <div class="theme-options" role="group" aria-label="다크모드 시안">
+      <button type="button" class="theme-option" data-theme="forest" aria-pressed="true">
+        <span class="option-number">01</span><span class="option-title">딥 포레스트</span>
+        <span class="swatches forest-swatches" aria-hidden="true"><i></i><i></i><i></i></span>
+      </button>
+      <button type="button" class="theme-option" data-theme="midnight" aria-pressed="false">
+        <span class="option-number">02</span><span class="option-title">미드나이트 블루</span>
+        <span class="swatches midnight-swatches" aria-hidden="true"><i></i><i></i><i></i></span>
+      </button>
+      <button type="button" class="theme-option" data-theme="charcoal" aria-pressed="false">
+        <span class="option-number">03</span><span class="option-title">웜 차콜</span>
+        <span class="swatches charcoal-swatches" aria-hidden="true"><i></i><i></i><i></i></span>
+      </button>
+      <button type="button" class="theme-option" data-theme="matte" aria-pressed="false">
+        <span class="option-number">04</span><span class="option-title">매트 블랙</span>
+        <span class="swatches matte-swatches" aria-hidden="true"><i></i><i></i><i></i></span>
+      </button>
+      <button type="button" class="theme-option" data-theme="glass" aria-pressed="false">
+        <span class="option-number">05</span><span class="option-title">블랙 글래스</span>
+        <span class="swatches glass-swatches" aria-hidden="true"><i></i><i></i><i></i></span>
+      </button>
+      <button type="button" class="theme-option" data-theme="ink" aria-pressed="false">
+        <span class="option-number">06</span><span class="option-title">먹빛 서재</span>
+        <span class="swatches ink-swatches" aria-hidden="true"><i></i><i></i><i></i></span>
+      </button>
+    </div>
+
+    <div class="view-bar">
+      <div class="view-options" role="group" aria-label="비교할 화면">
+        <button type="button" data-view="lesson" aria-pressed="true">개념 레슨</button>
+        <button type="button" data-view="practice" aria-pressed="false">예제 목록</button>
+        <button type="button" data-view="home" aria-pressed="false">파이썬 홈</button>
+      </div>
+      <span class="draft-label">DESIGN PREVIEW</span>
+    </div>
+
+    <div class="preview-grid">
+      <section class="desktop-preview" aria-label="PC 미리보기">
+        <div class="screen-label"><span>DESKTOP</span><span>1440 PX</span></div>
+        <div class="desktop-screen"><iframe id="desktop" title="PC 다크모드 시안"></iframe></div>
+      </section>
+      <section class="mobile-preview" aria-label="모바일 미리보기">
+        <div class="screen-label"><span>MOBILE</span><span>390 PX</span></div>
+        <div class="mobile-screen"><iframe id="mobile" title="모바일 다크모드 시안"></iframe></div>
+        <div class="theme-note" aria-live="polite">
+          <p id="selected-name">01 · 딥 포레스트</p>
+          <p id="selected-description">깊은 초록과 부드러운 세이지. 익숙한 교과서의 분위기를 밤에도 이어갑니다.</p>
+          <p class="preview-disclaimer">시안용 화면 · 학습 기록은 저장하지 않습니다.</p>
+        </div>
+      </section>
+    </div>
+  </main>
+  <script>
+    (() => {
+      'use strict';
+      const themes = {
+        forest: { name: '01 · 딥 포레스트', description: '깊은 초록과 부드러운 세이지. 익숙한 교과서의 분위기를 밤에도 이어갑니다.' },
+        midnight: { name: '02 · 미드나이트 블루', description: '잉크빛 네이비와 선명한 블루. 코드와 설명의 경계를 또렷하게 보여 줍니다.' },
+        charcoal: { name: '03 · 웜 차콜', description: '따뜻한 차콜과 은은한 샌드. 오래 펼쳐 두고 읽는 책처럼 차분하게.' },
+        matte: { name: '04 · 매트 블랙', description: '무채색 블랙과 정돈된 평면. 간결한 글자와 여백으로 읽기에 집중합니다.' },
+        glass: { name: '05 · 블랙 글래스', description: '깊은 블랙 위에 겹친 은은한 표면. 절제된 블루 포인트로 내용을 구분합니다.' },
+        ink: { name: '06 · 먹빛 서재', description: '깊은 먹빛에 은은한 한지 결을 더했습니다. 차분한 명조체로 책을 펼친 듯 읽어갑니다.' }
+      };
+      const views = ['lesson', 'practice', 'home'];
+      const params = new URLSearchParams(location.search);
+      let theme = Object.hasOwn(themes, params.get('theme')) ? params.get('theme') : 'forest';
+      let view = views.includes(params.get('view')) ? params.get('view') : 'lesson';
+      const frames = [...document.querySelectorAll('iframe')];
+      function render(updateUrl = true) {
+        const search = new URLSearchParams({ theme, view });
+        const frameUrl = 'frame.html?' + search;
+        document.querySelectorAll('[data-theme]').forEach(button => button.setAttribute('aria-pressed', String(button.dataset.theme === theme)));
+        document.querySelectorAll('[data-view]').forEach(button => button.setAttribute('aria-pressed', String(button.dataset.view === view)));
+        document.getElementById('selected-name').textContent = themes[theme].name;
+        document.getElementById('selected-description').textContent = themes[theme].description;
+        document.getElementById('fullscreen').href = frameUrl;
+        document.title = themes[theme].name + ' · Academy 다크모드';
+        for (const frame of frames) if (frame.getAttribute('src') !== frameUrl) frame.src = frameUrl;
+        if (updateUrl) history.replaceState(null, '', location.pathname + '?' + search);
+      }
+      document.querySelectorAll('[data-theme]').forEach(button => button.addEventListener('click', () => { theme = button.dataset.theme; render(); }));
+      document.querySelectorAll('[data-view]').forEach(button => button.addEventListener('click', () => { view = button.dataset.view; render(); }));
+      function resizeFrames() {
+        for (const frame of frames) {
+          const surface = frame.parentElement;
+          const scale = surface.clientWidth / (frame.id === 'desktop' ? 1440 : 390);
+          frame.style.transform = 'scale(' + scale + ')';
+          const borders = surface.offsetHeight - surface.clientHeight;
+          surface.style.height = ((frame.id === 'desktop' ? 1120 : 890) * scale + borders) + 'px';
+        }
+      }
+      new ResizeObserver(resizeFrames).observe(document.querySelector('.preview-grid'));
+      window.addEventListener('resize', resizeFrames);
+      render(false);
+      resizeFrames();
+    })();
+  </script>
+</body>
+</html>

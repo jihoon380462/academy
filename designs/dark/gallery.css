@@ -1,0 +1,96 @@
+:root {
+  color-scheme: dark;
+  --canvas: #17191b;
+  --text: #e7e9e6;
+  --muted: #a5aca7;
+  --line: #3a403c;
+}
+* { box-sizing: border-box; }
+html { background: var(--canvas); }
+body { margin: 0; color: var(--text); font-family: 'Noto Sans CJK KR', 'Noto Sans KR', Arial, sans-serif; }
+button, a { -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+button { font: inherit; color: inherit; cursor: pointer; }
+button:focus-visible, a:focus-visible { outline: 2px solid #d8e8cc; outline-offset: 4px; }
+.gallery { width: min(1244px, 100%); padding: 18px 28px 20px; margin: 0 auto; }
+.gallery-heading { display: flex; justify-content: space-between; align-items: center; gap: 20px; }
+.eyebrow { margin: 0 0 4px; color: var(--muted); font-size: 8px; letter-spacing: 1.7px; }
+h1 { margin: 0; font-size: 24px; line-height: 1.35; font-weight: 500; letter-spacing: -1px; word-break: keep-all; }
+.intro { margin: 3px 0 0; font-size: 11px; color: var(--muted); line-height: 1.45; }
+.fullscreen { font-size: 11px; color: #c6cfc8; text-decoration: none; white-space: nowrap; padding: 9px 0; }
+.fullscreen span { margin-left: 8px; }
+.theme-options { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 8px; margin-top: 12px; }
+.theme-option { display: flex; align-items: center; gap: 8px; min-width: 0; background: #1d2022; border: 1px solid var(--line); min-height: 43px; padding: 9px 12px; text-align: left; border-radius: 4px; }
+.theme-option[aria-pressed="true"] { border-color: #b5c5b4; background: #272e28; }
+.theme-option[data-theme="matte"][aria-pressed="true"] { border-color: #d2d2d7; background: #28282c; }
+.theme-option[data-theme="glass"][aria-pressed="true"] { border-color: #91b5ff; background: #202632; }
+.theme-option[data-theme="ink"][aria-pressed="true"] { border-color: #e6dfcf; background: #282923; }
+.theme-option:hover { border-color: #8d9c90; }
+.option-number { font: 12px Georgia, serif; color: #a6b4a8; }
+.option-title { font-size: 13px; line-height: 1.5; min-width: 0; white-space: nowrap; }
+.swatches { display: flex; flex-shrink: 0; margin-left: auto; padding-left: 4px; }
+.swatches i { display: block; width: 14px; height: 14px; margin-left: -3px; border: 1px solid #6b726b; border-radius: 50%; }
+.forest-swatches i:nth-child(1) { background: #111b18; }
+.forest-swatches i:nth-child(2) { background: #233b31; }
+.forest-swatches i:nth-child(3) { background: #a6c495; }
+.midnight-swatches i:nth-child(1) { background: #10151f; }
+.midnight-swatches i:nth-child(2) { background: #1c2c44; }
+.midnight-swatches i:nth-child(3) { background: #8fb9f4; }
+.charcoal-swatches i:nth-child(1) { background: #1c1a17; }
+.charcoal-swatches i:nth-child(2) { background: #36302a; }
+.charcoal-swatches i:nth-child(3) { background: #d9bc83; }
+.matte-swatches i:nth-child(1) { background: #0e0e10; }
+.matte-swatches i:nth-child(2) { background: #19191c; }
+.matte-swatches i:nth-child(3) { background: #f0f0f2; }
+.glass-swatches i:nth-child(1) { background: #08090b; }
+.glass-swatches i:nth-child(2) { background: #14161b; }
+.glass-swatches i:nth-child(3) { background: #91b5ff; }
+.ink-swatches i:nth-child(1) { background: #10110f; }
+.ink-swatches i:nth-child(2) { background: #282923; }
+.ink-swatches i:nth-child(3) { background: #e6dfcf; }
+.view-bar { display: flex; align-items: center; justify-content: space-between; gap: 15px; margin: 8px 0 10px; }
+.view-options { display: flex; gap: 20px; }
+.view-options button { padding: 4px 0; border: 0; border-bottom: 1px solid transparent; background: none; font-size: 11px; line-height: 1.5; color: #a8afa9; }
+.view-options button[aria-pressed="true"] { color: #e5ece3; border-bottom-color: #c3d4bd; }
+.draft-label { color: #949d96; font-size: 8px; letter-spacing: 1.3px; }
+.preview-grid { display: grid; grid-template-columns: minmax(0, 920px) 244px; gap: 24px; }
+.screen-label { display: flex; justify-content: space-between; margin-bottom: 8px; color: #a0aaa2; font-size: 9px; letter-spacing: 1px; line-height: 1.5; }
+.desktop-screen { width: 100%; aspect-ratio: 1440 / 1120; border: 1px solid #49534b; border-radius: 9px; overflow: hidden; background: #111915; }
+iframe { display: block; border: 0; transform-origin: top left; background: #111915; }
+.desktop-screen iframe { width: 1440px; height: 1120px; }
+.mobile-screen { width: 244px; height: 544px; border: 5px solid #546058; border-radius: 26px; overflow: hidden; background: #111915; }
+.mobile-screen iframe { width: 390px; height: 890px; }
+.theme-note { padding: 16px 2px 0; font-size: 11px; line-height: 1.85; color: #a4afa6; word-break: keep-all; }
+.theme-note p { margin: 0 0 8px; }
+.theme-note p:first-child { color: #e0e8de; font-size: 12px; }
+.preview-disclaimer { margin-top: 14px !important; font-size: 10px; color: #929e95; }
+@media (min-width: 761px) and (max-width: 1200px) {
+  .theme-option { padding-inline: 8px; gap: 6px; }
+  .theme-options .swatches { display: none; }
+  .option-title { font-size: 12px; }
+}
+@media (min-width: 761px) and (max-width: 950px) {
+  .theme-options { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@media (max-width: 760px) {
+  .gallery { padding: 22px 18px 30px; }
+  .gallery-heading { align-items: start; gap: 12px; }
+  h1 { font-size: 23px; }
+  .fullscreen { font-size: 10px; padding-top: 2px; }
+  .fullscreen span { margin-left: 0; }
+  .theme-options { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 7px; }
+  .theme-option { min-height: 47px; padding: 9px 10px; gap: 8px; }
+  .option-title { white-space: normal; word-break: keep-all; overflow-wrap: anywhere; font-size: 12px; }
+  .theme-options .swatches { display: none; }
+  .view-bar { margin: 13px 0 17px; }
+  .view-options { gap: 18px; }
+  .draft-label { display: none; }
+  .preview-grid { display: block; }
+  .desktop-preview { display: none; }
+  .mobile-preview { max-width: 430px; margin: 0 auto; }
+  .mobile-screen { width: 100%; height: auto; aspect-ratio: 390 / 890; border-radius: 23px; }
+  .theme-note { font-size: 12px; }
+}
+@media (max-width: 370px) {
+  .gallery-heading { display: block; }
+  .fullscreen { display: inline-block; margin-top: 9px; }
+}
