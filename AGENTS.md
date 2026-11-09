@@ -9,6 +9,13 @@
 3. `docs/AUTHORING.md` — 챕터/레슨/문제 구성과 검증 기준.
 4. 담당 `docs/curriculum/<subject-id>.md` — 챕터·레슨 ID와 각 레슨의 도달점.
 5. 구현 작업이면 `README.md`, `subjects.js`, `app.js`, 실제 관련 콘텐츠. 기존 중1 콘텐츠 수정이면 `content/SCHEMA.md`, 파이썬 수정이면 `content/python/SCHEMA.md`, `build-python.py`, `python-ui.js`도 읽는다.
+6. 모든 변경 전에 `docs/VERSIONING.md`, `VERSION`, `CHANGELOG.md`, 최근 `verification.md`를 읽는다. 다른 대화에서 이어서 작업할 때도 버전 관리를 생략하지 않는다.
+
+## 버전 관리
+
+- [버전 관리 규칙](docs/VERSIONING.md)에 따라 코드·학습 콘텐츠 변경 시 목표 버전과 `CHANGELOG.md`의 `Unreleased`를 함께 관리한다. 운영 문서만 수정할 때는 앱 버전을 올리지 않는다. 버전은 커밋마다가 아니라 공개할 변경 묶음마다 정한다.
+- PR에 변경 범위, 버전 변경 여부와 이유, 실제 검증 결과를 남긴다. 구현·병합·Pages 배포·공개 화면 확인은 각각 구분하며, 검증한 SHA와 배포 실행 링크를 기록한다. 사용자가 PR만 요청했다면 자동 병합·릴리스·추가 배포를 하지 않는다.
+- 사이트 버전, 자산의 캐시 식별자, 학습 기록 저장 형식은 독립적으로 관리한다. 버전 업데이트를 이유로 기존 학습 기록이나 테마 저장 키를 바꾸지 않는다. 공유한 이력과 릴리스 태그를 덮어쓰지 않는다.
 
 ## 유지할 의도
 
