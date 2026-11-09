@@ -121,3 +121,10 @@
 - 실제 브라우저에서 기본 접힘, 챕터 1 열기/닫기, 챕터 2 열기, 레슨 이동과 홈 복귀, 320px 프레임의 복습 링크 이동을 확인했다. PC Enter/Space로 토글할 수 있으며 기본 키보드 초점·펼침 상태를 사용한다.
 - 840px PC·390px 모바일·320px 좁은 화면에서 가로 넘침 없음. 밝은 테마와 블랙 글래스에서 토글을 확인했다. 현재 콘텐츠의 읽음 표시와 독립 챕터 전체 목차, 수학 홈 구조는 유지한다.
 - UI 변경에 맞춰 CSS·JavaScript 캐시 버전을 갱신하고 후속 작업 지침에 기본 접힘 원칙을 남겼다. 화면 기록은 `previews/chapter-folded.jpg`다.
+
+## 챕터 목차 배포 실패 원인 확인 (2026-11-10 KST)
+
+- 목차 접기 소스는 `744c5506`에 반영됐고 동일 소스 재배포 `1b21ec7b`까지 두 번 실패하여 공개 사이트가 이전 `74a685eb` 화면에 머물렀다.
+- GitHub Actions 실행 `42672277458`의 공개 Annotations에서 `Internal server error. Correlation ID: abf2a3f3-6ddd-4f86-893e-3702d35e892a`를 확인했다. build/deploy 작업 로그가 생성되지 않았고 report-build-status만 `CONCLUSION: abandoned`를 보고했다.
+- 공개 사이트가 로드한 파일은 `python-ui.js?v=20261110-python-ch02-1`이었으며 새 목차 버전 `20261110-chapter-fold-1`이 아니었다. 따라서 공개 파일이 갱신되기 전까지 접기 UI가 보이지 않는다.
+- 앱 코드나 Pages의 main·root 설정을 바꾸지 않고 이 원인 기록 커밋으로 배포를 재요청한다. 성공 여부는 해당 Actions 결과와 실제 공개 화면을 각각 확인한다.
