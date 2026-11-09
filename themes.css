@@ -375,4 +375,30 @@
 :root:not([data-theme="light"])[data-theme="ink"] :is(.catalog-hero h1,.page-title h1,.home-hero h1) { font-weight:500; }
 :root:not([data-theme="light"])[data-theme="ink"] .sidebar-unit a.current { background:#252820; box-shadow:inset 2px 0 #929879; }
 
+/* Filled chapter cards need inner spacing, unlike the original open light band. */
+:root[data-theme]:not([data-theme="light"]) .chapter-banner {
+  padding:30px 32px;
+  grid-template-columns:minmax(0,1fr) auto;
+}
+:root[data-theme]:not([data-theme="light"]) .chapter-banner > div,
+:root[data-theme]:not([data-theme="light"]) .chapter-stats > div { min-width:0; }
+@media(max-width:760px) {
+  :root[data-theme]:not([data-theme="light"]) .chapter-banner { padding:24px 20px; }
+  :root[data-theme]:not([data-theme="light"]) .chapter-banner .chapter-stats {
+    display:grid;
+    grid-auto-flow:column;
+    grid-auto-columns:minmax(0,1fr);
+    gap:12px;
+    max-width:none;
+  }
+  :root[data-theme]:not([data-theme="light"]) .chapter-banner .chapter-stats > div {
+    align-items:center;
+    text-align:center;
+  }
+  :root[data-theme]:not([data-theme="light"]) .chapter-banner .chapter-stats span { word-break:keep-all; }
+  :root:not([data-theme="light"]):is([data-theme="matte"],[data-theme="glass"]) .chapter-stats b {
+    font-size:clamp(28px,8vw,36px);
+  }
+}
+
 }
