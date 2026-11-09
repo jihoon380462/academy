@@ -1,0 +1,459 @@
+/* Python uses the existing Academy type, spacing, and paper palette. */
+.py-home,
+.py-article,
+.py-progress,
+.py-hero > *,
+.py-intro-card,
+.py-lesson-list,
+.py-code,
+.py-code > * {
+  min-width: 0;
+}
+
+.py-hero {
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+}
+
+.py-intro-card {
+  padding: 29px;
+  background: var(--tint);
+  border-top: 1px solid #aab89a;
+}
+
+.py-intro-card > .eyebrow {
+  margin-bottom: 20px;
+}
+
+.py-intro-card > p {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.9;
+  margin: 18px 0 0;
+}
+
+.py-intro-card .py-code {
+  margin: 0;
+  background: var(--paper);
+}
+
+.py-section-note,
+.py-course-note,
+.py-reading-note {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.95;
+}
+
+.py-section-note {
+  margin: 16px 0 25px;
+}
+
+.py-course-note {
+  padding: 21px 0 25px;
+  margin: 27px 0 42px;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+.py-course-note h2,
+.py-course-note h3 {
+  margin: 0 0 11px;
+  color: var(--ink);
+  font: 500 21px/1.6 var(--serif);
+}
+
+.py-course-note p {
+  margin: 0;
+}
+
+.py-reading-note {
+  padding: 14px 18px;
+  border-left: 2px solid #bac6a8;
+  background: #f0f2e8;
+  margin: 23px 0;
+}
+
+.py-lesson-list {
+  margin: 24px 0 35px;
+}
+
+.py-lesson-list .lesson-row,
+.py-progress .lesson-row {
+  margin-left: 0;
+}
+
+.py-goal {
+  padding: 17px 21px;
+  margin: 25px 0 26px;
+  background: #edf0e5;
+  border-left: 2px solid #8c9f7a;
+  font-size: 14px;
+  color: #50634c;
+  line-height: 1.95;
+}
+
+.py-goal > small,
+.py-goal > strong {
+  display: block;
+  color: var(--forest);
+  margin-bottom: 6px;
+  font-size: 11px;
+  letter-spacing: .3px;
+  font-weight: 600;
+}
+
+.py-goal p {
+  margin: 0;
+}
+
+.py-article .concept-step p + p {
+  margin-top: 14px;
+}
+
+.py-code {
+  display: block;
+  margin: 23px 0;
+  max-width: 100%;
+  border: 1px solid #cfd8c6;
+  background: #f4f5ed;
+  overflow: hidden;
+}
+
+.py-code-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 10px 17px;
+  border-bottom: 1px solid #d8dfcf;
+  color: var(--muted);
+  font-size: 10px;
+  letter-spacing: .5px;
+  line-height: 1.7;
+}
+
+.py-code-label {
+  color: var(--forest);
+  font-weight: 600;
+}
+
+.py-code-kind {
+  text-align: right;
+}
+
+.py-code-source {
+  margin: 0;
+  max-width: 100%;
+  min-width: 0;
+  background: #f5f6ef;
+}
+
+.py-code-source pre,
+pre.py-code-source,
+.py-code-output pre,
+.py-quiz-code pre,
+pre.py-quiz-code,
+.py-option-code {
+  margin: 0;
+  padding: 19px 21px;
+  max-width: 100%;
+  min-width: 0;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  white-space: pre;
+  word-break: normal;
+  overflow-wrap: normal;
+  tab-size: 4;
+  font: 14px/1.85 ui-monospace, SFMono-Regular, Menlo, Consolas, 'Liberation Mono', monospace;
+  color: #284b35;
+}
+
+.py-code code,
+.py-quiz-code code,
+.py-option-code code {
+  font: inherit;
+  white-space: inherit;
+  word-break: inherit;
+  overflow-wrap: inherit;
+}
+
+.py-code-output {
+  padding-top: 12px;
+  background: #e9efdf;
+  border-top: 1px solid #d2dcc5;
+}
+
+.py-code-output > strong {
+  display: block;
+  padding: 0 21px;
+  color: #65765c;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: .6px;
+  line-height: 1.7;
+}
+
+.py-code-output pre {
+  padding-top: 8px;
+  padding-bottom: 16px;
+  color: #334d2d;
+}
+
+.py-code-output > p {
+  margin: 0;
+  padding: 8px 21px 16px;
+  color: #65765c;
+  font-size: 12px;
+  line-height: 1.8;
+}
+
+.py-code-error {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px 13px;
+  padding: 13px 21px;
+  border-top: 1px solid #ddcfb7;
+  background: #f1e9d9;
+  color: #735331;
+  font-size: 12px;
+  line-height: 1.9;
+  overflow-wrap: anywhere;
+}
+
+.py-code-error > strong {
+  font-size: 10px;
+  font-weight: 500;
+  flex-shrink: 0;
+}
+
+.py-code-error code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, 'Liberation Mono', monospace;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.py-code-caption {
+  padding: 12px 17px;
+  border-top: 1px solid #d8dfcf;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.85;
+  background: #f7f7f0;
+}
+
+.py-sidebar-links {
+  border-top: 1px solid var(--line);
+  padding-top: 12px;
+}
+
+.py-sidebar-links a {
+  display: block;
+  padding: 11px 10px;
+  margin: 0 0 5px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.9;
+}
+
+.py-sidebar-links a.current,
+.py-sidebar-links a[aria-current='page'] {
+  background: #e7ebdd;
+  color: var(--forest);
+  font-weight: 600;
+}
+
+.py-sidebar-links a:hover {
+  background: #eff1e8;
+}
+
+.py-sidebar > p {
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.9;
+}
+
+.py-progress {
+  padding-top: 30px;
+  margin: 38px 0 55px;
+  border-top: 1px solid var(--ink);
+}
+
+.py-progress-head {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.py-progress-head h2 {
+  font: 500 28px/1.5 var(--serif);
+  letter-spacing: -.7px;
+  margin: 9px 0 6px;
+}
+
+.py-progress-head p {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.85;
+}
+
+.py-progress-head .text-link {
+  flex-shrink: 0;
+}
+
+.py-review-summary {
+  padding-left: 19px;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.95;
+}
+
+.py-review-summary li + li {
+  margin-top: 6px;
+}
+
+.py-quiz-code {
+  max-width: 100%;
+  min-width: 0;
+  border: 1px solid #d0dac5;
+  background: #eef2e6;
+  margin: 0 0 23px;
+  overflow-x: auto;
+}
+
+.py-quiz-options {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.py-quiz-options .quiz-option {
+  min-width: 0;
+  align-items: start;
+}
+
+.py-quiz-options .py-option-code,
+.quiz-option .py-option-code {
+  flex: 1;
+  padding: 0;
+  font-size: 14px;
+}
+
+.quiz-code {
+  min-width: 0;
+  max-width: 100%;
+  margin: 0 0 23px;
+}
+
+.quiz-code .py-code {
+  margin: 0;
+}
+
+.quiz-options.code-options {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.quiz-options.code-options .quiz-option {
+  min-width: 0;
+  align-items: baseline;
+}
+
+.quiz-option .choice-code {
+  display: block;
+  flex: 1;
+  min-width: 0;
+  max-width: 100%;
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+  white-space: pre;
+  overflow-wrap: normal;
+  word-break: normal;
+  tab-size: 4;
+  font: 14px/1.85 ui-monospace, SFMono-Regular, Menlo, Consolas, 'Liberation Mono', monospace;
+  color: inherit;
+}
+
+.quiz-option .choice-text {
+  font: inherit;
+  color: inherit;
+  flex: 1;
+  min-width: 0;
+  white-space: pre-wrap;
+}
+
+.learning-resume {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 22px 25px;
+  margin: 27px 0 32px;
+  background: var(--tint);
+}
+
+.learning-resume p {
+  font-size: 14px;
+  line-height: 1.85;
+  margin: 9px 0 0;
+}
+
+.learning-resume .text-link {
+  flex-shrink: 0;
+}
+
+.subject-progress {
+  min-width: 0;
+  margin-bottom: 60px;
+}
+
+@media (max-width: 1100px) {
+  .py-hero { gap: 34px; }
+  .py-intro-card { padding: 23px; }
+}
+
+@media (max-width: 760px) {
+  .py-hero { grid-template-columns: minmax(0, 1fr); gap: 28px; }
+  .py-intro-card { padding: 21px 18px; }
+  .py-intro-card > .eyebrow { margin-bottom: 16px; }
+  .py-intro-card > p { font-size: 12px; }
+  .py-section-note, .py-course-note, .py-reading-note { font-size: 12px; }
+  .py-course-note { margin: 23px 0 34px; padding: 19px 0; }
+  .py-course-note h2, .py-course-note h3 { font-size: 20px; }
+  .py-reading-note { padding: 13px 15px; }
+  .py-goal { padding: 15px 17px; margin: 22px 0; font-size: 13px; }
+  .py-code { margin: 21px 0; }
+  .py-code-head { padding: 9px 14px; font-size: 9px; }
+  .py-code-source pre, pre.py-code-source, .py-code-output pre,
+  .py-quiz-code pre, pre.py-quiz-code { padding: 16px; font-size: 13px; line-height: 1.85; }
+  .py-code-output > strong { padding: 0 16px; }
+  .py-code-output pre { padding-top: 7px; padding-bottom: 13px; }
+  .py-code-output > p { padding: 7px 16px 13px; font-size: 11px; }
+  .py-code-error { padding: 11px 16px; font-size: 11px; gap: 6px 11px; }
+  .py-code-caption { padding: 11px 14px; font-size: 10px; }
+  .py-article .concept-step p + p { margin-top: 12px; }
+  .py-progress { padding-top: 24px; margin-top: 29px; margin-bottom: 42px; }
+  .py-progress-head { display: block; }
+  .py-progress-head h2 { font-size: 25px; }
+  .py-progress-head p { font-size: 12px; }
+  .py-progress-head .text-link { display: inline-block; margin: 4px 0 8px; }
+  .py-review-summary { font-size: 13px; }
+  .py-quiz-options .py-option-code, .quiz-option .py-option-code { font-size: 12px; }
+  .quiz-option .choice-code { font-size: 12px; }
+  .learning-resume { align-items: start; flex-direction: column; gap: 10px; padding: 20px; margin: 23px 0 28px; }
+  .learning-resume p { font-size: 13px; }
+  .subject-progress { margin-bottom: 42px; }
+}
+
+@media (max-width: 380px) {
+  .py-intro-card { padding: 17px 14px; }
+  .py-code-source pre, pre.py-code-source, .py-code-output pre,
+  .py-quiz-code pre, pre.py-quiz-code { padding-left: 13px; padding-right: 13px; font-size: 12px; }
+  .py-code-output > strong { padding-left: 13px; padding-right: 13px; }
+  .py-goal { padding: 13px 15px; }
+  .py-code-head { gap: 10px; padding-left: 12px; padding-right: 12px; }
+}
+
+@media print {
+  .py-code { break-inside: avoid; border-color: #aaa; }
+  .py-code-source pre, pre.py-code-source, .py-code-output pre { white-space: pre-wrap; overflow-wrap: anywhere; }
+  .py-course-note { break-inside: avoid; }
+}
