@@ -1,0 +1,195 @@
+[
+  {
+    "question": "아래 코드를 읽고 출력 순서와 출력 줄 수를 예상한 뒤 실행하세요. 반복 밖의 끝은 몇 번 나오며, word가 빈 문자열이면 무엇이 출력되는지도 확인하세요.",
+    "skill": "반복 추적 · 항목과 블록 범위",
+    "solution": {
+      "answer": "원본은 시작, A, 확인, B, 확인, 끝의 6줄입니다. word를 빈 문자열로 바꾸면 시작과 끝만 출력합니다.",
+      "code": {
+        "source": "word = \"AB\"\nprint(\"시작\")\nfor letter in word:\n    print(letter)\n    print(\"확인\")\nprint(\"끝\")",
+        "kind": "python",
+        "output": "시작\nA\n확인\nB\n확인\n끝",
+        "error": null
+      }
+    },
+    "explanation": "for 본문의 두 print가 문자마다 함께 실행됩니다. 빈 문자열에는 받을 문자가 없어 본문은 한 번도 실행되지 않지만 반복 밖의 두 출력은 남습니다.",
+    "related": [
+      "python-l021"
+    ],
+    "code": "word = \"AB\"\nprint(\"시작\")\nfor letter in word:\n    print(letter)\n    print(\"확인\")\nprint(\"끝\")",
+    "codeKind": "python",
+    "codeLabel": "읽거나 수정할 코드"
+  },
+  {
+    "question": "아래 코드에서 while 조건을 검사할 때의 remaining 값과 출력값을 각각 순서대로 적고 실행하세요. 마지막으로 조건을 검사하지만 본문은 실행하지 않는 값도 포함하세요.",
+    "skill": "반복 추적 · 검사 시점과 갱신 시점",
+    "solution": {
+      "answer": "조건은 remaining이 5, 3, 1, -1일 때 검사합니다. 출력은 3, 1, -1입니다. 마지막 -1에서는 조건이 거짓이어서 본문이 다시 실행되지 않습니다.",
+      "code": {
+        "source": "remaining = 5\nwhile remaining > 0:\n    remaining = remaining - 2\n    print(remaining)",
+        "kind": "python",
+        "output": "3\n1\n-1",
+        "error": null
+      }
+    },
+    "explanation": "조건은 본문에 들어가기 전에 검사하고, 출력은 2를 뺀 뒤 실행합니다. 따라서 마지막 출력이 양수여야 한다고 단정할 수 없습니다. 원하는 출력 범위와 반복 진입 조건을 구분해야 합니다.",
+    "related": [
+      "python-l023"
+    ],
+    "code": "remaining = 5\nwhile remaining > 0:\n    remaining = remaining - 2\n    print(remaining)",
+    "codeKind": "python",
+    "codeLabel": "읽거나 수정할 코드"
+  },
+  {
+    "question": "아래 중첩 반복에서 값이 출력되는 row·column 조합을 순서대로 적은 뒤 실행하세요. column이 2에서 멈추어도 다음 row가 시작되는 이유를 설명하세요.",
+    "skill": "반복 추적 · 건너뛰기와 안쪽 종료",
+    "solution": {
+      "answer": "1 1 다음에 2 1이 출력됩니다. 각 행에서 column 0은 continue, column 1은 출력, column 2는 break를 실행합니다.",
+      "code": {
+        "source": "for row in range(1, 3):\n    for column in range(3):\n        if column == 0:\n            continue\n        if column == 2:\n            break\n        print(row, column)",
+        "kind": "python",
+        "output": "1 1\n2 1",
+        "error": null
+      }
+    },
+    "explanation": "continue는 column 0의 남은 부분만 건너뛰고, break는 column 반복만 끝냅니다. 바깥 row는 계속 진행되며 다음 행에서도 안쪽 range를 새로 순회합니다.",
+    "related": [
+      "python-l022",
+      "python-l025"
+    ],
+    "code": "for row in range(1, 3):\n    for column in range(3):\n        if column == 0:\n            continue\n        if column == 2:\n            break\n        print(row, column)",
+    "codeKind": "python",
+    "codeLabel": "읽거나 수정할 코드"
+  },
+  {
+    "question": "문자열 \"AABA\"를 한 글자씩 읽어 A의 개수와 전체 문자 개수를 각각 출력하세요. 문자열을 \"BBB\"와 빈 문자열로 바꾼 경우도 확인하세요. 별도의 문자열 메서드 없이 누적 변수 두 개를 사용하세요.",
+    "skill": "누적 처리 · 선택 개수와 전체 개수",
+    "solution": {
+      "answer": "AABA에서는 A가 3개, 전체 4개입니다. BBB에서는 0과 3, 빈 문자열에서는 0과 0입니다.",
+      "code": {
+        "source": "a_count = 0\ntotal_count = 0\nfor letter in \"AABA\":\n    total_count = total_count + 1\n    if letter == \"A\":\n        a_count = a_count + 1\nprint(a_count)\nprint(total_count)",
+        "kind": "python",
+        "output": "3\n4",
+        "error": null
+      }
+    },
+    "explanation": "전체 개수는 매번 1 늘리고, A 개수는 이번 글자가 A일 때만 늘립니다. 초기화를 반복 밖에 두면 빈 문자열에서도 두 개수가 모두 0으로 남습니다.",
+    "related": [
+      "python-l021",
+      "python-l024"
+    ]
+  },
+  {
+    "question": "온도 기록 [-4, 5, -9, 0, -2] 중 0 이하인 기록만 골라 그중 최댓값을 출력하세요. 양수는 후보에 넣지 않고, [3, 5]처럼 선택한 기록이 없으면 해당 기록 없음으로 안내하세요. 조건으로 고르는 단계와 최댓값 갱신 단계를 나누어 작성하세요.",
+    "skill": "누적 처리 · 조건으로 고른 최댓값",
+    "solution": {
+      "answer": "처음 목록에서는 0 이하인 -4, -9, 0, -2 중 최댓값 0이 나옵니다. [3, 5]에서는 후보가 끝까지 None이므로 해당 기록 없음입니다.",
+      "code": {
+        "source": "best = None\nfor temperature in [-4, 5, -9, 0, -2]:\n    if temperature <= 0:\n        if best is None or temperature > best:\n            best = temperature\nif best is None:\n    print(\"해당 기록 없음\")\nelse:\n    print(best)",
+        "kind": "python",
+        "output": "0",
+        "error": null
+      }
+    },
+    "explanation": "전체 목록의 최댓값 5를 찾는 문제가 아닙니다. 바깥 if가 대상을 먼저 고르고, 안쪽 if는 그 대상 안에서만 후보를 갱신합니다. 유효한 0과 후보가 없는 None도 구분해야 합니다.",
+    "related": [
+      "python-l024"
+    ]
+  },
+  {
+    "question": "순서대로 입력하는 세 줄의 작업 시간 중 음수가 아닌 값만 합계와 개수에 반영하세요. 첫 입력 5, 둘째 -1, 셋째 0을 넣어 합계와 유효 개수를 출력하고, 0이 개수에 포함되는 이유를 설명하세요. 입력은 모두 정수로 변환할 수 있다고 가정합니다.",
+    "skill": "누적 처리 · 정해진 횟수의 입력 선택",
+    "solution": {
+      "answer": "합계는 5이고 유효 개수는 2입니다. 0도 음수가 아닌 기록이므로 개수에 포함됩니다.",
+      "code": {
+        "source": "total = 0\ncount = 0\nfor turn in range(3):\n    minutes = int(input())\n    if minutes >= 0:\n        total = total + minutes\n        count = count + 1\nprint(total)\nprint(count)",
+        "kind": "python",
+        "output": "5\n2",
+        "error": null,
+        "input": "5\n-1\n0\n"
+      }
+    },
+    "explanation": "range(3)으로 input을 세 번 실행합니다. 각 입력을 숫자로 바꿔 조건을 확인하고, 유효한 값일 때만 합계와 개수를 함께 갱신합니다. -1은 둘 다 갱신하지 않습니다.",
+    "related": [
+      "python-l022",
+      "python-l024"
+    ]
+  },
+  {
+    "question": "아래 코드는 3, 2, 1을 출력하려 하지만 멈추지 않습니다. 원본은 실행하지 말고 count의 값이 바뀌는지 읽어 확인하세요. 종료 조건으로 가까워지도록 한 줄을 추가한 코드만 실행하세요.",
+    "skill": "종료 오류 · 상태 갱신 없음",
+    "solution": {
+      "answer": "반복 안에서 count를 1 줄이는 줄이 필요합니다. 수정 후 3, 2, 1이 출력되고 count가 0이 되면 종료됩니다.",
+      "code": {
+        "source": "count = 3\nwhile count > 0:\n    print(count)\n    count = count - 1",
+        "kind": "python",
+        "output": "3\n2\n1",
+        "error": null
+      }
+    },
+    "explanation": "출력만으로 count의 값은 변하지 않습니다. count > 0을 거짓으로 만들 수 있는 갱신이 있어야 while이 끝납니다. 반복 밖에서 한 번 줄이는 것만으로는 충분하지 않습니다.",
+    "related": [
+      "python-l023"
+    ],
+    "code": "count = 3\nwhile count > 0:\n    print(count)",
+    "codeKind": "python",
+    "codeLabel": "실행하지 말고 읽고 고칠 코드"
+  },
+  {
+    "question": "아래 코드는 row + column이 3인 첫 조합만 출력하려 하지만 다음 행에서도 검색합니다. 원본 출력을 확인한 뒤, 안쪽 반복이 끝난 자리에서 found를 검사해 바깥 반복도 종료하게 고치세요. 목표 출력은 1 2 다음 줄의 검색 끝입니다.",
+    "code": "found = False\nfor row in range(1, 4):\n    for column in range(1, 4):\n        if row + column == 3:\n            print(row, column)\n            found = True\n            break\nprint(\"검색 끝\")",
+    "codeKind": "python",
+    "codeLabel": "안쪽 반복만 끝내는 코드",
+    "skill": "종료 오류 · 중첩 반복의 종료 범위",
+    "solution": {
+      "answer": "원본은 1 2, 2 1, 검색 끝을 출력합니다. 안쪽 for 다음이면서 바깥 for 안인 위치에 if found:와 break를 두면 첫 조합 뒤 바깥 반복도 끝납니다.",
+      "code": {
+        "source": "found = False\nfor row in range(1, 4):\n    for column in range(1, 4):\n        if row + column == 3:\n            print(row, column)\n            found = True\n            break\n    if found:\n        break\nprint(\"검색 끝\")",
+        "kind": "python",
+        "output": "1 2\n검색 끝",
+        "error": null
+      }
+    },
+    "explanation": "첫 break는 가장 안쪽 column 반복만 끝냅니다. 찾았다는 상태를 found에 남기면 바깥 반복이 이어지는 위치에서도 그 상태를 확인할 수 있습니다. 두 번째 break는 row 반복 안에서 실행되어 그 반복을 끝냅니다.",
+    "related": [
+      "python-l025"
+    ]
+  },
+  {
+    "question": "1부터 n까지 모든 정수의 합계를 구하려고 아래 코드를 작성했습니다. n = 4에서 원본 출력을 확인하고, n도 포함하도록 한 곳을 수정하세요. n을 1과 0으로 바꾼 결과도 설명하세요. n은 0 이상의 정수입니다.",
+    "skill": "범위 경계 · 끝값 포함과 빈 반복",
+    "solution": {
+      "answer": "원본은 6을 출력합니다. range(1, n + 1)로 고치면 n = 4는 10, n = 1은 1, n = 0은 0입니다.",
+      "code": {
+        "source": "n = 4\ntotal = 0\nfor number in range(1, n + 1):\n    total = total + number\nprint(total)",
+        "kind": "python",
+        "output": "10",
+        "error": null
+      }
+    },
+    "explanation": "range의 끝값은 포함하지 않으므로 n까지 처리하려면 끝 경계를 n + 1로 둡니다. n이 0이면 range(1, 1)은 비어 있어 누적값은 초기 0으로 남습니다.",
+    "related": [
+      "python-l022",
+      "python-l024"
+    ],
+    "code": "n = 4\ntotal = 0\nfor number in range(1, n):\n    total = total + number\nprint(total)",
+    "codeKind": "python",
+    "codeLabel": "읽거나 수정할 코드"
+  },
+  {
+    "question": "8, 6, 4, 2를 순서대로 출력하는 range를 작성하세요. 끝값을 2로 쓰면 왜 2가 빠지는지 확인하고, 같은 시작·끝에 간격을 양수 2로 바꿨을 때 출력이 있는지도 설명하세요.",
+    "skill": "범위 경계 · 감소 방향과 제외되는 끝",
+    "solution": {
+      "answer": "range(8, 1, -2)는 8, 6, 4, 2를 출력합니다. range(8, 2, -2)는 2를 제외하고, range(8, 1, 2)는 방향이 맞지 않아 비어 있습니다.",
+      "code": {
+        "source": "for number in range(8, 1, -2):\n    print(number)",
+        "kind": "python",
+        "output": "8\n6\n4\n2",
+        "error": null
+      }
+    },
+    "explanation": "음수 간격으로 줄어들 때도 끝 경계는 포함하지 않습니다. 마지막 2를 포함하려면 2보다 작은 끝 경계를 고릅니다. 시작이 끝보다 큰데 양의 간격이면 처음부터 처리할 값이 없습니다.",
+    "related": [
+      "python-l022"
+    ]
+  }
+]

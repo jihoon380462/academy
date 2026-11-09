@@ -28,6 +28,14 @@ SPECS = [
          description='조건으로 실행할 블록을 나누고, 빈 값과 경계값에서도 의도한 흐름인지 확인합니다.',
          prerequisite='선행 학습: 챕터 2 · 값·이름·연산',
          titles=['if와 들여쓰기 블록', 'elif와 else로 경우 나누기', '여러 조건을 연결하기', '빈 값·None·참 거짓 판정', '경계값과 중첩 조건']),
+    dict(number=5, first=21, title='반복으로 같은 규칙 적용하기',
+         description='반복 대상과 종료 조건을 읽고, 합계·개수·최댓값을 갱신하며 반복 흐름을 조절합니다.',
+         prerequisite='선행 학습: 챕터 4 · 조건에 따라 흐름 바꾸기',
+         titles=['for와 반복 대상', 'range와 횟수·범위', 'while과 종료 조건', '누적값과 개수 세기', 'break·continue와 중첩 반복']),
+    dict(number=6, first=26, title='여러 값을 담는 방법',
+         description='목적에 맞게 컬렉션을 고르고, 조회·변경·순회와 별칭·얕은 복사의 차이를 확인합니다.',
+         prerequisite='선행 학습: 챕터 3 · 문자열을 다루는 기본 도구, 챕터 5 · 반복으로 같은 규칙 적용하기',
+         titles=['리스트의 생성·조회·변경', '튜플과 언패킹', '딕셔너리의 키와 값', '집합과 중복 제거', '컬렉션 순회와 간단한 컴프리헨션', '컬렉션의 별칭과 얕은 복사']),
 ]
 parser = argparse.ArgumentParser()
 parser.add_argument('--check-code', action='store_true')

@@ -1,0 +1,176 @@
+{
+  "id": "python-l031",
+  "order": 6,
+  "title": "컬렉션의 별칭과 얕은 복사",
+  "subtitle": "이름이 가리키는 리스트와 그 안의 값들을 나누어 추적합니다.",
+  "minutes": 16,
+  "goal": "대입으로 같은 리스트를 공유하는 경우와 바깥 리스트만 복사하는 경우를 구분하고 중첩 변경의 영향을 추적한다.",
+  "intro": "목록을 다른 변수에도 저장한 뒤 한쪽을 고쳤는데 양쪽 출력이 바뀌면 당황할 수 있습니다. 앞에서 문자열은 내부를 바꿀 수 없었지만 리스트는 항목을 바꿀 수 있었습니다. 이제 값의 변경과 이름의 재대입, 바깥 목록의 복사와 그 안쪽 값의 공유를 따로 읽어 봅시다.",
+  "sections": [
+    {
+      "title": "다른 이름에 대입해도 리스트를 복사하지는 않습니다.",
+      "body": [
+        "alias = original은 original이 가리키는 리스트를 alias라는 이름으로도 가리키게 합니다. 같은 리스트를 부르는 이름이 하나 더 생긴 상태를 여기서는 별칭이라고 합니다. 리스트 항목들을 새로 복사하라는 명령이 아닙니다.",
+        "alias.append(\"복습\")처럼 리스트 자체를 변경하면 original로 읽어도 바뀐 항목이 보입니다. 두 이름이 같은 리스트를 읽기 때문입니다. original과 alias가 서로 값을 주고받아 동기화하는 별도 목록 두 개가 아닙니다.",
+        "그림 대신 이름 → 리스트를 떠올리면 됩니다. 두 이름의 화살표가 같은 리스트를 가리키는 동안 항목 대입·append·del 같은 변경은 어느 이름에서 읽어도 관찰됩니다."
+      ],
+      "code": {
+        "source": "original = [\"기초\", \"연습\"]\nalias = original\nalias.append(\"복습\")\nprint(original)\nprint(alias)",
+        "kind": "python",
+        "output": "['기초', '연습', '복습']\n['기초', '연습', '복습']",
+        "error": null
+      }
+    },
+    {
+      "title": "copy와 전체 슬라이스는 새 바깥 리스트를 만듭니다.",
+      "body": [
+        "original.copy()는 original의 항목들을 같은 순서로 담은 새 리스트를 돌려줍니다. original[:]처럼 전체 범위를 슬라이싱해도 새 바깥 리스트를 얻습니다. 문자열에서 부분을 읽었던 슬라이싱을 리스트에도 적용할 수 있습니다.",
+        "copied = original.copy() 다음에 copied.append(...)를 하면 새 바깥 리스트에 항목을 추가합니다. original의 길이는 바뀌지 않습니다. copied[0] = ...도 복사한 리스트의 그 칸을 다른 값에 연결하는 변경입니다.",
+        "이 복사는 항목으로 들어 있던 값들을 연결해 담는 얕은 복사입니다. 정수·문자열만 담긴 예제에서는 각 칸을 교체해도 원본에 영향이 없지만, 안쪽에 변경 가능한 리스트가 있으면 그 안쪽 값은 여전히 공유할 수 있습니다."
+      ],
+      "code": {
+        "source": "original = [10, 20]\ncopied = original.copy()\nsliced = original[:]\ncopied[0] = 99\nsliced.append(30)\nprint(original)\nprint(copied)\nprint(sliced)",
+        "kind": "python",
+        "output": "[10, 20]\n[99, 20]\n[10, 20, 30]",
+        "error": null
+      }
+    },
+    {
+      "title": "안쪽 리스트는 얕은 복사 뒤에도 공유될 수 있습니다.",
+      "body": [
+        "rows = [[1, 2], [3, 4]]는 리스트의 각 항목이 다시 리스트인 중첩 구조입니다. rows[0]은 첫 안쪽 리스트 [1, 2]이고, rows[0][1]은 그 리스트의 두 번째 값 2입니다. 대괄호를 한 단계씩 읽으면 어느 목록의 어느 칸인지 구별할 수 있습니다.",
+        "copied = rows.copy()는 바깥 리스트만 새로 만듭니다. copied[0]과 rows[0]은 같은 안쪽 리스트를 가리키므로 copied[0].append(9)나 copied[0][0] = 8은 원본 쪽에서도 보입니다.",
+        "반면 copied[1] = [0]은 복사한 바깥 리스트의 두 번째 칸을 다른 리스트에 연결합니다. 원래 rows[1]의 연결은 유지됩니다. 안쪽 리스트를 변경한 것인지, 바깥 리스트의 칸을 다른 값으로 교체한 것인지를 따로 추적하세요.",
+        "새 바깥 리스트를 얻었다는 사실만으로 모든 깊이의 값이 독립적이라고 결론내릴 수 없습니다. 더 깊은 복사 방법을 외우기보다 이번에는 어느 단계가 새로 생겼고 어느 값이 공유되는지 설명하는 것이 목표입니다."
+      ],
+      "code": {
+        "source": "rows = [[1, 2], [3, 4]]\ncopied = rows.copy()\ncopied[0].append(9)\ncopied[1] = [0]\nprint(rows)\nprint(copied)",
+        "kind": "python",
+        "output": "[[1, 2, 9], [3, 4]]\n[[1, 2, 9], [0]]",
+        "error": null
+      }
+    },
+    {
+      "title": "이름의 재대입과 공유한 값의 변경은 다릅니다.",
+      "body": [
+        "alias = [새 항목]은 alias라는 이름을 다른 리스트에 다시 연결합니다. 이미 공유하던 리스트의 항목을 변경하는 동작이 아닙니다. 따라서 original이라는 다른 이름의 연결은 그대로 남습니다.",
+        "alias.append(...)는 이름을 새 값에 연결하는 대입이 아니라, 그때 alias가 가리키는 리스트를 변경하는 호출입니다. original[0] = ...도 original이라는 이름 자체를 바꾸지 않고 그 리스트의 칸을 바꿉니다.",
+        "복사가 필요한지는 다음 작업에 따라 정합니다. 같은 목록을 함께 수정하려면 공유가 의도일 수 있고, 바깥 항목 구성을 따로 바꾸려면 새 리스트가 필요합니다. 중첩된 값까지 독립적이어야 한다면 얕은 복사만으로 충분한지 다시 판단해야 합니다."
+      ],
+      "code": {
+        "source": "original = [1, 2]\nalias = original\nalias = [7, 8]\nalias.append(9)\nprint(original)\nprint(alias)",
+        "kind": "python",
+        "output": "[1, 2]\n[7, 8, 9]",
+        "error": null
+      }
+    }
+  ],
+  "worked": {
+    "question": "원본 두 줄을 복사해 첫 줄에는 값을 덧붙이고 두 번째 줄은 통째로 교체했습니다. 어떤 변경이 원본에도 보이는지 단계별로 예측해 봅시다.",
+    "code": {
+      "source": "original = [[\"읽기\"], [\"쓰기\"]]\nplan = original.copy()\nplan[0].append(\"복습\")\nplan[1] = [\"실습\"]\nplan.append([\"기록\"])\nprint(original)\nprint(plan)",
+      "kind": "python",
+      "output": "[['읽기', '복습'], ['쓰기']]\n[['읽기', '복습'], ['실습'], ['기록']]",
+      "error": null
+    },
+    "steps": [
+      "copy는 바깥 목록만 새로 만들고 읽기·쓰기라는 안쪽 리스트는 공유합니다.",
+      "plan[0].append는 공유한 첫 안쪽 리스트를 바꾸므로 original에서도 복습이 보입니다. plan[1] = [\"실습\"]은 복사한 바깥 칸의 연결만 바꾸므로 original의 쓰기는 남습니다.",
+      "plan.append는 새 바깥 리스트에 세 번째 칸을 추가합니다. original 바깥 리스트의 길이는 2로 유지됩니다."
+    ],
+    "answer": "안쪽 리스트의 변경은 공유한 양쪽에서 보이고, 복사한 바깥 리스트의 칸 교체와 항목 추가는 그 바깥 리스트에만 영향을 줍니다."
+  },
+  "misconception": {
+    "question": "copy로 새 리스트를 만들었으니 안쪽 값도 전부 따로 복사된 건가요?",
+    "answer": "copy와 전체 슬라이스는 바깥 리스트만 새로 만드는 얕은 복사입니다. 각 칸이 가리키는 안쪽 리스트는 공유될 수 있습니다. copied[0].append는 공유한 안쪽 값을 바꾸고, copied[0] = [...]는 복사한 바깥 칸의 연결만 바꾼다는 차이를 추적해야 합니다."
+  },
+  "keypoints": [
+    "b = a는 같은 리스트를 가리키는 이름을 추가합니다. 리스트 변경과 이름 재대입은 다른 동작입니다.",
+    "a.copy()와 a[:]는 새 바깥 리스트를 만들며, 그 바깥 리스트의 항목 추가·교체는 원본 바깥 리스트와 분리됩니다.",
+    "얕은 복사는 안쪽의 변경 가능한 값까지 전부 복사하지 않습니다. 어느 리스트의 어느 칸을 바꾸는지 단계별로 읽습니다."
+  ],
+  "examples": [
+    {
+      "question": "아래 두 출력 값을 먼저 예상하고 실행하세요. alias[0]의 변경이 original에서도 보이는 이유를 이름과 리스트의 관계로 설명하세요.",
+      "skill": "별칭으로 공유한 변경",
+      "solution": {
+        "answer": "두 출력은 모두 [9, 2]입니다. 두 이름이 같은 리스트를 가리킵니다.",
+        "code": {
+          "source": "original = [1, 2]\nalias = original\nalias[0] = 9\nprint(original)\nprint(alias)",
+          "kind": "python",
+          "output": "[9, 2]\n[9, 2]",
+          "error": null
+        }
+      },
+      "explanation": "alias = original은 복사가 아니라 이름 연결입니다. 첫 칸을 교체한 리스트 하나를 두 이름으로 읽습니다.",
+      "code": "original = [1, 2]\nalias = original\nalias[0] = 9\nprint(original)\nprint(alias)",
+      "codeKind": "python",
+      "codeLabel": "직접 확인하거나 고칠 코드"
+    },
+    {
+      "question": "원본 list_a = [3, 4]를 유지하면서 list_b에만 5를 추가하고 싶습니다. 아래 대입 한 곳을 copy 호출로 고친 뒤 두 리스트를 출력하세요.",
+      "skill": "독립된 바깥 리스트",
+      "solution": {
+        "answer": "list_b = list_a.copy()로 고치면 원본은 [3, 4], 결과는 [3, 4, 5]입니다.",
+        "code": {
+          "source": "list_a = [3, 4]\nlist_b = list_a.copy()\nlist_b.append(5)\nprint(list_a)\nprint(list_b)",
+          "kind": "python",
+          "output": "[3, 4]\n[3, 4, 5]",
+          "error": null
+        }
+      },
+      "explanation": "append가 어느 리스트를 변경하는지 먼저 구분합니다. 새 바깥 리스트를 만들면 list_b의 추가가 list_a의 길이를 늘리지 않습니다.",
+      "code": "list_a = [3, 4]\nlist_b = list_a\nlist_b.append(5)\nprint(list_a)\nprint(list_b)",
+      "codeKind": "python",
+      "codeLabel": "직접 확인하거나 고칠 코드"
+    },
+    {
+      "question": "items = [\"A\", \"B\"]에서 전체 슬라이스로 새 리스트 result를 만들고 result[1]만 \"C\"로 바꾸세요. 원본이 유지되는지 확인하고, 두 리스트의 칸이 왜 따로 바뀌는지 설명하세요.",
+      "skill": "슬라이싱과 칸 교체",
+      "solution": {
+        "answer": "items는 ['A', 'B'], result는 ['A', 'C']입니다.",
+        "code": {
+          "source": "items = [\"A\", \"B\"]\nresult = items[:]\nresult[1] = \"C\"\nprint(items)\nprint(result)",
+          "kind": "python",
+          "output": "['A', 'B']\n['A', 'C']",
+          "error": null
+        }
+      },
+      "explanation": "items[:]는 두 문자열을 연결해 담은 새 바깥 리스트를 만듭니다. result[1] 대입은 그 새 리스트의 칸만 다른 문자열에 연결합니다."
+    },
+    {
+      "question": "아래 출력 두 줄을 예상하고 실행하세요. copied[0].append와 copied[1] 대입이 각각 어느 단계의 리스트에 작용하는지 설명하세요.",
+      "skill": "중첩 구조의 얕은 복사",
+      "solution": {
+        "answer": "rows는 [[1, 7], [2]], copied는 [[1, 7], [9]]입니다. 첫 안쪽 리스트만 양쪽에 변경이 보입니다.",
+        "code": {
+          "source": "rows = [[1], [2]]\ncopied = rows.copy()\ncopied[0].append(7)\ncopied[1] = [9]\nprint(rows)\nprint(copied)",
+          "kind": "python",
+          "output": "[[1, 7], [2]]\n[[1, 7], [9]]",
+          "error": null
+        }
+      },
+      "explanation": "copy는 바깥을 새로 만들지만 안쪽 값은 공유합니다. append는 그 안쪽을 바꾸며, copied[1] 대입은 새 바깥 리스트의 칸만 교체합니다.",
+      "code": "rows = [[1], [2]]\ncopied = rows.copy()\ncopied[0].append(7)\ncopied[1] = [9]\nprint(rows)\nprint(copied)",
+      "codeKind": "python",
+      "codeLabel": "직접 확인하거나 고칠 코드"
+    },
+    {
+      "question": "아래에서 alias를 새 리스트에 재대입한 뒤 변경하면 original도 바뀔까요? 출력 두 줄을 먼저 적고 실행하세요. alias = [8] 대신 alias.append(8)을 사용한 경우와 결과를 비교하세요.",
+      "skill": "재대입과 변경의 구분",
+      "solution": {
+        "answer": "원본 코드는 [1, 2]와 [8, 9]를 출력합니다. 재대입 대신 append(8)을 했다면 같은 리스트에 8과 9가 추가되어 두 출력 모두 [1, 2, 8, 9]입니다.",
+        "code": {
+          "source": "original = [1, 2]\nalias = original\nalias = [8]\nalias.append(9)\nprint(original)\nprint(alias)",
+          "kind": "python",
+          "output": "[1, 2]\n[8, 9]",
+          "error": null
+        }
+      },
+      "explanation": "재대입은 alias의 연결을 다른 리스트로 바꾸지만 append는 연결된 리스트 자체를 변경합니다. 나머지 이름 original의 연결이 바뀌는지는 따로 추적합니다.",
+      "code": "original = [1, 2]\nalias = original\nalias = [8]\nalias.append(9)\nprint(original)\nprint(alias)",
+      "codeKind": "python",
+      "codeLabel": "직접 확인하거나 고칠 코드"
+    }
+  ]
+}

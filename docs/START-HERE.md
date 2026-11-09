@@ -34,20 +34,20 @@ PC와 모바일에서 모두 읽고 사용할 수 있어야 한다. 여백 중�
 | 전체 사이트 | 22개 분야의 홈 카드·소개·준비 안내 구현 |
 | 화면 테마 | 상단 설정 (`#/settings`)에서 기본 밝은 테마+다크 6개 선택. `academy-theme-v1`에 저장·첫 화면 복원, 동일 브라우저 탭 동기화. 기기 간 자동 동기화 없음 |
 | 수학 중1 | 한 챕터, 8단원, 30레슨, 레슨별 5예제, 종합 복습 10문제 공개 |
-| 파이썬 기초 | 챕터 1~4 (`python-ch01`~`python-ch04`): 20레슨, 레슨별 5예제(100문제), 챕터별 10복습(40문제). 총 140문항을 직접 작성·실행·수정하는 세로 목록으로 제공. 챕터 4는 구현·로컬 검증 완료. 챕터 3은 구현·로컬 검증·main 병합·Pages 배포 완료, 공개 화면 미확인. 챕터 5 이후는 설계만 완료 |
-| 공개 대상으로 구현된 수업 | 수학·파이썬 2개 분야, 총 50레슨. 나머지 20개 분야는 준비 중 |
+| 파이썬 기초 | 챕터 1~6 (`python-ch01`~`python-ch06`): 31레슨, 레슨별 5예제(155문제), 챕터별 10복습(60문제). 챕터 1~5는 각각 5레슨, 챕터 6은 6레슨. 총 215문항을 직접 작성·실행·수정하는 세로 목록으로 제공. 챕터 5·6은 구현·로컬 검증 완료. 병합·Pages 배포·공개 화면 확인은 검증 기록에서 구분. 챕터 7 이후는 설계만 완료 |
+| 공개 대상으로 구현된 수업 | 수학·파이썬 2개 분야, 총 61레슨. 나머지 20개 분야는 준비 중 |
 | 교육과정 설계 | 22개 분야 전체의 챕터·레슨 뼈대, 범위·도달점·연결 기준, 후속 집필 지침 |
 | 파이썬 구현 | 분야 홈·챕터 목차·레슨·복습, 읽음·최근 레슨·내 학습 연결. 본문과 예상 출력은 기본 Python 3, 코드 샘플 검증 환경은 Python 3.12.14 |
-| 학습 기록 | 현재 브라우저 localStorage. 수학 `understand-math-grade1-v1`의 문제·점수 기능 유지. 파이썬은 기존 `academy-python-ch01-v1`·`academy-python-ch02-v1`·`academy-python-ch03-v1`과 새 `academy-python-ch04-v1`에 챕터별 읽음·최근 레슨 저장. 이전의 유효한 scores는 보존하되 표시하지 않음. 기기 간 자동 동기화 없음 |
+| 학습 기록 | 현재 브라우저 localStorage. 수학 `understand-math-grade1-v1`의 문제·점수 기능 유지. 파이썬은 기존 `academy-python-ch01-v1`·`academy-python-ch02-v1`·`academy-python-ch03-v1`·`academy-python-ch04-v1`과 새 `academy-python-ch05-v1`·`academy-python-ch06-v1`에 챕터별 읽음·최근 레슨 저장. 이전의 유효한 scores는 보존하되 표시하지 않음. 기기 간 자동 동기화 없음 |
 | 화면·배포 검증 | 실제로 수행한 범위와 결과는 저장소 루트 `verification.md`에 기록. 위 구현 상태만으로 배포 성공을 뜻하지 않음 |
 
-교육과정 뼈대에는 미래 레슨이 많지만, 이것을 수강 가능한 레슨 수나 완료율에 포함하지 않는다. 파이썬 챕터 5 이후의 미래 목차 화면과 본문 공개는 별도 구현 범위다. 분야 소개의 예정 주제는 전체 교육과정의 완전한 목차가 아니다.
+교육과정 뼈대에는 미래 레슨이 많지만, 이것을 수강 가능한 레슨 수나 완료율에 포함하지 않는다. 파이썬 챕터 7 이후의 미래 목차 화면과 본문 공개는 별도 구현 범위다. 분야 소개의 예정 주제는 전체 교육과정의 완전한 목차가 아니다.
 
-파이썬 작업의 출발점은 [과목 문서](curriculum/python.md), [콘텐츠 형식](../content/python/SCHEMA.md), `content/python/ch01/`·`content/python/ch02/`·`content/python/ch03/`·`content/python/ch04/`이다. `python3 build-python.py --check-code`로 본문·풀이 예시·문항의 예시 답에 있는 Python 코드의 출력·오류를 확인하고 `python-content.js`를 생성한다. 묶음은 `window.PYTHON_COURSES` 배열이며 `window.PYTHON_CH01`·`window.PYTHON_CH02`·`window.PYTHON_CH03`·`window.PYTHON_CH04` 별칭을 함께 제공한다. 화면과 접힌 예시 답·해설은 `python-ui.js`·`python.css`, 라우팅·읽음·최근 레슨 기록 연결은 `app.js`에 있다.
+파이썬 작업의 출발점은 [과목 문서](curriculum/python.md), [콘텐츠 형식](../content/python/SCHEMA.md), `content/python/ch01/`·`content/python/ch02/`·`content/python/ch03/`·`content/python/ch04/`·`content/python/ch05/`·`content/python/ch06/`이다. `python3 build-python.py --check-code`로 본문·풀이 예시·문항의 예시 답에 있는 Python 코드의 출력·오류를 확인하고 `python-content.js`를 생성한다. 묶음은 `window.PYTHON_COURSES` 배열이며 `window.PYTHON_CH01`·`window.PYTHON_CH02`·`window.PYTHON_CH03`·`window.PYTHON_CH04`·`window.PYTHON_CH05`·`window.PYTHON_CH06` 별칭을 함께 제공한다. 화면과 접힌 예시 답·해설은 `python-ui.js`·`python.css`, 라우팅·읽음·최근 레슨 기록 연결은 `app.js`에 있다.
 
 파이썬에서는 문제를 고르고 제출하는 화면을 만들지 않는다. 사용자가 PC의 편집기에서 직접 입력하고 실행한 뒤 각 문제의 예시 답·해설을 확인하는 것이 확정된 방식이다. 모바일에서도 문제·본문·해설을 읽을 수 있게 하며, 사이트 내부 코드 실행기나 자동 채점이 있다고 가정하지 않는다. 챕터 2의 `input()` 예제에 표시되는 입력값은 읽기 전용 예시이며 실제 입력은 PC에서 코드를 실행할 때 한다.
 
-파이썬 분야 홈은 `#/subjects/python`이다. 챕터 1은 `#/python/ch01`, `#/python/ch01/lesson/python-l001`부터 `python-l005`까지, `#/python/ch01/review`다. 챕터 2는 `#/python/ch02`, `#/python/ch02/lesson/python-l006`부터 `python-l010`까지, `#/python/ch02/review`다. 챕터 3은 `#/python/ch03`, `#/python/ch03/lesson/python-l011`부터 `python-l015`까지, `#/python/ch03/review`다. 챕터 4는 `#/python/ch04`, `#/python/ch04/lesson/python-l016`부터 `python-l020`까지, `#/python/ch04/review`다. 다음 미구현 범위는 챕터 5 `python-ch05`와 첫 레슨 `python-l021`이며, 사용자 요청 없이 다음 챕터를 자동 집필하지 않는다.
+파이썬 분야 홈은 `#/subjects/python`이다. 챕터 1은 `#/python/ch01`, `#/python/ch01/lesson/python-l001`부터 `python-l005`까지, `#/python/ch01/review`다. 챕터 2는 `#/python/ch02`, `#/python/ch02/lesson/python-l006`부터 `python-l010`까지, `#/python/ch02/review`다. 챕터 3은 `#/python/ch03`, `#/python/ch03/lesson/python-l011`부터 `python-l015`까지, `#/python/ch03/review`다. 챕터 4는 `#/python/ch04`, `#/python/ch04/lesson/python-l016`부터 `python-l020`까지, `#/python/ch04/review`다. 챕터 5는 `#/python/ch05`, `#/python/ch05/lesson/python-l021`부터 `python-l025`까지, `#/python/ch05/review`다. 챕터 6은 `#/python/ch06`, `#/python/ch06/lesson/python-l026`부터 `python-l031`까지, `#/python/ch06/review`다. 다음 미구현 범위는 챕터 7 `python-ch07`과 첫 레슨 `python-l032`이며, 사용자 요청 없이 다음 챕터를 자동 집필하지 않는다.
 
 ## 문서 지도
 
@@ -59,7 +59,7 @@ PC와 모바일에서 모두 읽고 사용할 수 있어야 한다. 여백 중�
 - [버전 관리·PR·배포·복구 규칙](VERSIONING.md)
 - [현재 소스의 목표 버전](../VERSION) · [변경 기록](../CHANGELOG.md) · [실제 검증 기록](../verification.md)
 
-과목 문서는 범위, 진입 지식, 완료 기준, 챕터별 도달점, 레슨별 ID·제목·이해/수행 목표, 복습의 확인 영역을 담는다. 구현된 수학 중1과 파이썬 챕터 1~4의 본문·문제·예시 답은 실제 콘텐츠 JSON에 있으며, 나머지 목차에는 아직 본문과 문제가 없다.
+과목 문서는 범위, 진입 지식, 완료 기준, 챕터별 도달점, 레슨별 ID·제목·이해/수행 목표, 복습의 확인 영역을 담는다. 구현된 수학 중1과 파이썬 챕터 1~6의 본문·문제·예시 답은 실제 콘텐츠 JSON에 있으며, 나머지 목차에는 아직 본문과 문제가 없다.
 
 ## 다음 대화에서 작업할 때
 

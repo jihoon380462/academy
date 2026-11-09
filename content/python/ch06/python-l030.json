@@ -1,0 +1,166 @@
+{
+  "id": "python-l030",
+  "order": 5,
+  "title": "컬렉션 순회와 간단한 컴프리헨션",
+  "subtitle": "반복해서 읽을 값과 새로 만들 결과를 구분하며 변환과 필터 규칙을 표현합니다.",
+  "minutes": 16,
+  "goal": "리스트·딕셔너리의 순회 대상을 구분하고 한 단계 리스트 컴프리헨션으로 변환과 필터를 작성한다.",
+  "intro": "자료를 담는 그릇을 골랐다면 그 안의 값에 같은 일을 적용할 차례입니다. 챕터 5의 for를 리스트와 딕셔너리에 연결하고, 읽는 원본과 새로 모을 결과를 분리해 봅시다. 반복의 동작을 이해한 뒤에는 한 단계의 변환이나 필터를 짧은 형태로 표현할 수도 있습니다.",
+  "sections": [
+    {
+      "title": "리스트를 순회하면 항목의 값을 차례로 읽습니다.",
+      "body": [
+        "for value in values:는 리스트의 첫 항목부터 차례로 값을 읽어 value에 연결합니다. 반복 변수에 다른 숫자를 대입한다고 원래 리스트의 해당 항목을 바꾸지는 않습니다. 원래 리스트를 변경하려면 앞 레슨처럼 인덱스로 대입하는 별도의 작업이 필요합니다.",
+        "enumerate(values)는 순서 번호와 값을 함께 읽게 하는 도구입니다. for index, value in enumerate(values):처럼 두 이름으로 언패킹합니다. 번호는 기본적으로 0부터 시작하고, enumerate(values, start=1)은 1부터 표시 번호를 붙입니다. start=1로 얻은 번호는 그대로 리스트 인덱스가 되는 것은 아닙니다.",
+        "읽는 중인 리스트의 항목을 추가하거나 삭제하면 다음에 방문할 항목이 달라져 건너뛰기나 예상 밖의 반복이 생길 수 있습니다. 이 레슨에서는 원본을 읽는 동안 그대로 두고 별도 결과 리스트에 값을 모읍니다."
+      ],
+      "code": {
+        "source": "items = [\"공책\", \"연필\"]\nfor number, item in enumerate(items, start=1):\n    print(number, item)\nfor item in items:\n    item = \"읽음\"\nprint(items)",
+        "kind": "python",
+        "output": "1 공책\n2 연필\n['공책', '연필']",
+        "error": null
+      }
+    },
+    {
+      "title": "딕셔너리는 키만 읽을지 키와 값을 읽을지 정합니다.",
+      "body": [
+        "for key in stock:처럼 딕셔너리를 직접 순회하면 키를 읽습니다. 값을 얻으려면 stock[key]로 조회할 수 있습니다. stock.items()는 각 키와 값을 한 쌍으로 함께 읽게 하며, for name, count in stock.items():에서 두 이름으로 언패킹합니다.",
+        "딕셔너리는 키가 들어온 순서를 유지합니다. 이것은 이름순이나 값 크기순으로 자동 정렬한다는 뜻이 아닙니다. 모든 키가 문자열인 이번 예제에서 이름순으로 보여 주려면 sorted(stock)으로 정렬한 키 리스트를 얻어 순회할 수 있습니다.",
+        "stock.values()는 값들만 읽게 합니다. 키가 필요한 작업에 값 순회만 사용하거나, 키 순회 결과를 값이라고 생각하지 않도록 무엇을 읽는지 명시하세요. 순회 중에 딕셔너리의 키를 추가하거나 삭제하지 않습니다."
+      ],
+      "code": {
+        "source": "stock = {\"연필\": 3, \"공책\": 2}\nfor name, count in stock.items():\n    print(name, count)\nprint(\"이름순\")\nfor name in sorted(stock):\n    print(name, stock[name])",
+        "kind": "python",
+        "output": "연필 3\n공책 2\n이름순\n공책 2\n연필 3",
+        "error": null
+      }
+    },
+    {
+      "title": "컴프리헨션은 새 리스트를 만드는 반복 규칙입니다.",
+      "body": [
+        "numbers의 각 수를 두 배로 만든 리스트가 필요하다면, 빈 결과 리스트를 만들고 for 안에서 계산한 값을 append할 수 있습니다. [number * 2 for number in numbers]도 같은 변환 규칙을 한 단계로 적은 리스트 컴프리헨션입니다.",
+        "먼저 for number in numbers에서 원본의 각 값을 읽고, 맨 앞의 number * 2를 계산해 결과 리스트에 차례로 담는다고 읽습니다. 대괄호는 새 리스트라는 결과 형식을 나타냅니다. 식을 짧게 썼다고 원본 리스트를 직접 수정하는 것은 아닙니다.",
+        "입력이 비어 있으면 선택할 값이 없으므로 결과도 빈 리스트입니다. 여기서는 한 겹의 for와 간단한 계산만 사용합니다. 중간 단계를 설명하기 어렵거나 출력·여러 상태 변경이 필요하면 일반 for로 나누어 쓰는 것이 읽기 쉽습니다."
+      ],
+      "code": {
+        "source": "numbers = [2, 5, -1]\ndoubled = []\nfor number in numbers:\n    doubled.append(number * 2)\nshort = [number * 2 for number in numbers]\nprint(doubled)\nprint(short)\nprint(numbers)",
+        "kind": "python",
+        "output": "[4, 10, -2]\n[4, 10, -2]\n[2, 5, -1]",
+        "error": null
+      }
+    },
+    {
+      "title": "뒤의 if는 넣을 값을 고르는 필터입니다.",
+      "body": [
+        "[number for number in numbers if number > 0]은 원본을 읽으면서 양수인 값만 새 리스트에 담습니다. 마지막 if는 어떤 값을 결과에 넣을지 고르는 필터입니다. 먼저 조건을 통과한 값에 맨 앞의 식을 적용합니다.",
+        "[number * 2 for number in numbers if number > 0]이라면 양수만 남긴 뒤 그 값들을 두 배로 표시합니다. 조건을 만족하는 값이 없으면 결과가 빈 리스트인 것이 정상입니다. 필터는 원본에서 항목을 지우는 명령이 아닙니다.",
+        "일반 for 안의 if·append와 한 단계씩 대응시켜 읽어 보세요. 같은 결과를 얻는 다른 코드도 가능합니다. 한 줄이라는 이유보다 원본·선택 조건·결과 식이 명확히 드러나는지를 기준으로 사용합니다."
+      ],
+      "code": {
+        "source": "numbers = [-2, 0, 3, 5]\npositive = [number for number in numbers if number > 0]\ndoubled_positive = [number * 2 for number in numbers if number > 0]\nprint(positive)\nprint(doubled_positive)\nprint(numbers)",
+        "kind": "python",
+        "output": "[3, 5]\n[6, 10]\n[-2, 0, 3, 5]",
+        "error": null
+      }
+    }
+  ],
+  "worked": {
+    "question": "가격 목록에서 1000원 이상인 물품만 고르고, 각 가격에 배송비 200원을 더한 새 목록을 만들려면 선택과 계산을 어떻게 나누어야 할까요?",
+    "code": {
+      "source": "prices = [800, 1500, 1000, 600]\ntotals = []\nfor price in prices:\n    if price >= 1000:\n        totals.append(price + 200)\nshort = [price + 200 for price in prices if price >= 1000]\nprint(totals)\nprint(short)\nprint(prices)",
+      "kind": "python",
+      "output": "[1700, 1200]\n[1700, 1200]\n[800, 1500, 1000, 600]",
+      "error": null
+    },
+    "steps": [
+      "for는 원래 순서대로 800, 1500, 1000, 600을 읽습니다. 필터 price >= 1000을 통과하는 값은 1500과 1000입니다.",
+      "선택한 각 값에 200을 더해 1700과 1200을 새 결과 리스트에 담습니다. 원래 가격의 위치를 직접 덮어쓰지 않습니다.",
+      "컴프리헨션에서는 마지막 if가 선택, 앞의 price + 200이 변환을 맡습니다. 두 코드의 결과가 같고 prices도 그대로인지 함께 확인합니다."
+    ],
+    "answer": "원본을 읽고 조건으로 고른 다음 결과 식을 계산해 새 리스트에 담습니다. 선택 기준과 표시할 값을 분리하면 한 줄 표현도 같은 반복으로 설명할 수 있습니다."
+  },
+  "misconception": {
+    "question": "컴프리헨션에 if가 있으면 원본 리스트에서 조건에 맞지 않는 값이 삭제되나요?",
+    "answer": "아닙니다. 컴프리헨션은 조건을 만족하는 값으로 새 리스트를 만듭니다. 원본에서 삭제하는 연산은 하지 않습니다. 원본과 결과를 함께 출력해 구분하세요. 다만 새 리스트라는 사실이 그 안에 담긴 변경 가능한 값까지 모두 복사했다는 뜻은 아니며, 그 차이는 다음 레슨에서 살펴봅니다."
+  },
+  "keypoints": [
+    "for는 컬렉션에서 무엇을 읽는지 먼저 정합니다. 리스트는 항목, 딕셔너리 직접 순회는 키, items는 키·값 쌍입니다.",
+    "enumerate는 순서 번호와 값을 함께 줍니다. 표시 번호의 시작과 실제 리스트 인덱스를 구분합니다.",
+    "[식 for 이름 in 원본 if 조건]은 선택한 값으로 새 리스트를 만듭니다. 같은 원리를 일반 for·if·append로 설명할 수 있어야 합니다."
+  ],
+  "examples": [
+    {
+      "question": "아래 반복을 실행한 뒤 numbers가 바뀌는지 확인하세요. 원본은 유지하면서 각 수에 1을 더한 새 리스트를 만들고 출력하도록 코드를 추가하세요.",
+      "skill": "반복 변수와 원본 구분",
+      "solution": {
+        "answer": "원래 numbers는 [2, 4]입니다. 새 결과는 [3, 5]입니다.",
+        "code": {
+          "source": "numbers = [2, 4]\nfor number in numbers:\n    number = number + 1\nprint(numbers)\nresult = [number + 1 for number in numbers]\nprint(result)",
+          "kind": "python",
+          "output": "[2, 4]\n[3, 5]",
+          "error": null
+        }
+      },
+      "explanation": "반복 변수 number에 계산 결과를 대입하는 것은 리스트 항목의 변경이 아닙니다. 별도 리스트의 append나 컴프리헨션으로 계산 결과를 모아야 합니다.",
+      "code": "numbers = [2, 4]\nfor number in numbers:\n    number = number + 1\nprint(numbers)",
+      "codeKind": "python",
+      "codeLabel": "직접 확인하거나 고칠 코드"
+    },
+    {
+      "question": "책 목록 books = [\"기초\", \"연습\", \"복습\"]을 enumerate로 읽어 1 기초, 2 연습, 3 복습을 각각 한 줄에 출력하세요. 번호 3을 그대로 books[3]에 쓰면 안 되는 이유도 설명하세요.",
+      "skill": "표시 번호와 인덱스",
+      "solution": {
+        "answer": "enumerate의 start=1을 사용합니다. 세 항목의 인덱스는 0, 1, 2여서 books[3]은 범위 밖입니다.",
+        "code": {
+          "source": "books = [\"기초\", \"연습\", \"복습\"]\nfor number, book in enumerate(books, start=1):\n    print(number, book)",
+          "kind": "python",
+          "output": "1 기초\n2 연습\n3 복습",
+          "error": null
+        }
+      },
+      "explanation": "enumerate가 붙이는 표시 번호를 1부터 정해도 리스트의 위치 번호 자체가 바뀌지는 않습니다."
+    },
+    {
+      "question": "stock = {\"연필\": 4, \"공책\": 1}에서 items로 키와 값을 함께 읽고 재고가 2개 이상인 물품만 이름과 재고를 출력하세요. 딕셔너리 자체를 순회할 때 무엇을 받는지도 적으세요.",
+      "skill": "키·값 순회와 조건",
+      "solution": {
+        "answer": "출력은 연필 4입니다. 딕셔너리를 직접 순회하면 키를 받으므로 items로 쌍을 읽습니다.",
+        "code": {
+          "source": "stock = {\"연필\": 4, \"공책\": 1}\nfor name, count in stock.items():\n    if count >= 2:\n        print(name, count)",
+          "kind": "python",
+          "output": "연필 4",
+          "error": null
+        }
+      },
+      "explanation": "두 이름의 언패킹으로 물품 이름과 재고를 나누어 받고, 재고 조건은 숫자 값에 적용합니다."
+    },
+    {
+      "question": "values = [1, 4, 6]의 각 값에서 1을 뺀 새 리스트를 일반 for·append와 한 단계 컴프리헨션으로 각각 만드세요. 두 결과와 원본을 출력해 비교하세요.",
+      "skill": "반복과 변환식 대응",
+      "solution": {
+        "answer": "두 결과는 모두 [0, 3, 5]이고 values는 [1, 4, 6]입니다.",
+        "code": {
+          "source": "values = [1, 4, 6]\nlong = []\nfor value in values:\n    long.append(value - 1)\nshort = [value - 1 for value in values]\nprint(long)\nprint(short)\nprint(values)",
+          "kind": "python",
+          "output": "[0, 3, 5]\n[0, 3, 5]\n[1, 4, 6]",
+          "error": null
+        }
+      },
+      "explanation": "맨 앞의 value - 1이 결과에 넣을 식입니다. 원본을 읽어 새 리스트에 담는다는 점은 일반 반복과 같습니다."
+    },
+    {
+      "question": "values = [-1, 0, 2, 5]에서 0 이상인 값만 골라 10을 더한 새 리스트를 컴프리헨션으로 만드세요. 이어 같은 코드를 values = [-3, -1]로 새로 실행해 조건을 통과한 값이 없을 때도 확인하세요.",
+      "skill": "필터와 경계값",
+      "solution": {
+        "answer": "첫 결과는 [10, 12, 15], 두 번째는 []입니다. 0도 조건에 포함합니다.",
+        "code": {
+          "source": "values = [-1, 0, 2, 5]\nresult = [value + 10 for value in values if value >= 0]\nprint(result)\nvalues = [-3, -1]\nresult = [value + 10 for value in values if value >= 0]\nprint(result)",
+          "kind": "python",
+          "output": "[10, 12, 15]\n[]",
+          "error": null
+        }
+      },
+      "explanation": "필터 value >= 0은 0을 남깁니다. 조건을 통과한 값에만 + 10을 적용하며 선택된 값이 없으면 빈 리스트가 됩니다."
+    }
+  ]
+}

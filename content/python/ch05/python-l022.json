@@ -1,0 +1,174 @@
+{
+  "id": "python-l022",
+  "order": 2,
+  "title": "range와 횟수·범위",
+  "subtitle": "끝값을 제외한 정수 범위를 만들면 횟수와 번호를 직접 늘리지 않고 반복할 수 있습니다.",
+  "minutes": 12,
+  "goal": "range의 시작·끝·간격이 만드는 정수들을 읽고, 빈 범위와 반복 횟수 및 마지막 값을 구분한다.",
+  "intro": "앞 레슨에서는 문자열이나 숫자 목록의 값을 차례로 읽었습니다. 인사말을 다섯 번 출력하거나 1번부터 10번까지 번호를 붙이려면 숫자를 전부 목록에 적는 대신 일정한 규칙으로 받을 수 있으면 편리합니다. range는 정수의 시작·끝·간격을 나타내어 for에 필요한 값을 제공합니다.",
+  "sections": [
+    {
+      "title": "range(n)은 0부터 n 직전까지의 정수를 제공합니다.",
+      "body": [
+        "range(4)는 0, 1, 2, 3을 순서대로 제공하는 범위를 만듭니다. 괄호 안의 4는 포함하지 않는 끝값입니다. 0부터 시작하기 때문에 끝값이 양의 정수 n일 때 range(n)으로 반복하는 횟수는 n번이 됩니다.",
+        "for index in range(4):에서는 index가 각 정수를 받아 같은 블록을 실행합니다. 반복 변수에 직접 1을 더하는 줄이 없어도 for가 range의 다음 값을 연결합니다. 변수 이름이 index여서 증가하는 것이 아니라 반복 대상이 이 정수들을 제공하기 때문입니다.",
+        "range는 모든 정수를 미리 담은 리스트와는 다른 값입니다. 범위의 규칙을 보관하고 필요한 정수를 제공하므로 print(range(4))는 항목 네 개가 아니라 range(0, 4)라는 표현을 보여 줍니다. 실제 값들을 하나씩 보려면 아래처럼 for로 읽습니다."
+      ],
+      "code": {
+        "source": "print(range(4))\nfor index in range(4):\n    print(index)",
+        "kind": "python",
+        "output": "range(0, 4)\n0\n1\n2\n3",
+        "error": null,
+        "caption": "출력할 횟수 네 번과 마지막으로 받는 숫자 3은 서로 다른 정보입니다."
+      }
+    },
+    {
+      "title": "시작을 적어도 끝값은 포함하지 않습니다.",
+      "body": [
+        "range(start, stop)은 start부터 시작해 stop보다 작은 정수를 1씩 증가시키며 제공합니다. range(2, 5)는 2, 3, 4를 제공하므로 세 번 반복합니다. stop이 5라는 이유로 다섯 번 반복하는 것은 아닙니다.",
+        "1부터 5까지 모두 포함하려면 range(1, 6)이라고 적습니다. 마지막으로 필요한 값보다 1 큰 경계를 두는 것입니다. 간격이 양수이면 끝 경계 자체를 선택하지 않는다는 규칙이 일관되게 적용됩니다.",
+        "반복 횟수와 표시할 번호를 구분하세요. 세 번 반복하면서 1, 2, 3을 번호로 쓰고 싶다면 range(1, 4)를 고르면 됩니다. 몇 번 처리할 것인지와 각 반복에서 필요한 값이 무엇인지 먼저 적으면 하나 차이 오류를 줄일 수 있습니다."
+      ],
+      "code": {
+        "source": "for number in range(2, 5):\n    print(number)\nprint(\"끝\")",
+        "kind": "python",
+        "output": "2\n3\n4\n끝",
+        "error": null,
+        "caption": "시작 2는 포함하지만 끝 경계 5는 포함하지 않습니다."
+      }
+    },
+    {
+      "title": "간격의 부호가 진행 방향을 정합니다.",
+      "body": [
+        "range(start, stop, step)의 세 번째 정수는 다음 값으로 이동할 간격입니다. range(1, 8, 2)는 1, 3, 5, 7을 제공합니다. 매번 2를 더하며 stop보다 작은 값만 제공하고, 끝 경계 8을 넘는 다음 값 9는 제공하지 않습니다.",
+        "step이 음수이면 값이 작아집니다. range(5, 0, -2)는 5, 3, 1을 제공합니다. 이 방향에서는 stop보다 큰 동안 값을 제공하므로 0은 포함하지 않고, 다음 값 -1도 범위를 벗어나 제공하지 않습니다.",
+        "시작값이 끝보다 크다고 자동으로 감소하지 않습니다. range(5, 0)은 간격이 기본값 1이라 앞으로 갈 값이 없습니다. 감소하는 범위에는 음수 간격을 명시하세요. 간격 0은 다음 값으로 진행할 수 없어 ValueError가 납니다."
+      ],
+      "code": {
+        "source": "for number in range(1, 8, 2):\n    print(number)\nprint(\"거꾸로\")\nfor number in range(5, 0, -2):\n    print(number)",
+        "kind": "python",
+        "output": "1\n3\n5\n7\n거꾸로\n5\n3\n1",
+        "error": null,
+        "caption": "간격에 맞는 값만 선택합니다. 끝 경계 가까이의 모든 정수를 반드시 방문하는 것은 아닙니다."
+      }
+    },
+    {
+      "title": "빈 범위와 항목 수를 함께 확인합니다.",
+      "body": [
+        "range(0)처럼 0에서 시작해 0 전에 멈추는 범위는 비어 있습니다. 기본 양수 간격에서 시작이 끝과 같거나 크면 받을 값이 없어서 for 블록은 0번 실행됩니다. 음수 간격에서는 시작이 끝보다 커야 값을 받을 수 있습니다.",
+        "len은 값 묶음의 항목 수를 정수로 알려 주는 기능입니다. len(range(2, 9, 3))은 2, 5, 8이라는 정수 세 개를 제공하므로 3입니다. 범위를 숫자로 출력한 모양이나 마지막 값 대신 실제 항목 수를 확인할 수 있습니다.",
+        "아래 range(5, 0)은 비어 있어서 아무 숫자도 출력하지 않습니다. 마지막 확인 완료는 블록 밖이므로 실행됩니다. range의 인수에는 여기서 사용하는 정수를 넣으며, 2.5 같은 실수 간격으로 반복하는 기능은 아닙니다."
+      ],
+      "code": {
+        "source": "print(len(range(2, 9, 3)))\nprint(len(range(5, 0)))\nfor number in range(5, 0):\n    print(number)\nprint(\"확인 완료\")",
+        "kind": "python",
+        "output": "3\n0\n확인 완료",
+        "error": null,
+        "caption": "len은 마지막 정수가 아니라 범위에 들어 있는 정수의 개수를 알려 줍니다."
+      }
+    }
+  ],
+  "worked": {
+    "question": "접수 번호 1부터 4까지를 한 줄씩 출력하고 마지막에 접수 준비 완료를 한 번 알리려면 어떤 range가 필요할까요?",
+    "code": {
+      "source": "for ticket in range(1, 5):\n    print(\"접수 \" + str(ticket))\nprint(\"접수 준비 완료\")",
+      "kind": "python",
+      "output": "접수 1\n접수 2\n접수 3\n접수 4\n접수 준비 완료",
+      "error": null,
+      "caption": "숫자를 문장에 붙일 때는 챕터 2에서 배운 str 변환을 사용합니다."
+    },
+    "steps": [
+      "첫 번호가 1이므로 시작값을 1로 둡니다. 마지막 번호 4를 포함하려면 끝 경계는 5로 둡니다.",
+      "range(1, 5)는 1, 2, 3, 4를 제공하고 ticket은 각 값을 받습니다. str(ticket)으로 숫자를 문자열로 나타내 안내 문장에 붙입니다.",
+      "받을 번호가 모두 끝나면 for 밖으로 나갑니다. 마지막 안내는 들여쓰지 않았으므로 네 번이 아니라 한 번 출력됩니다."
+    ],
+    "answer": "range(1, 5)를 사용하면 시작 번호 1부터 마지막 번호 4까지 네 번 처리합니다. 끝 경계 5는 출력하지 않습니다."
+  },
+  "misconception": {
+    "question": "range(2, 5)는 2부터 5까지라서 네 번 반복하나요?",
+    "answer": "아닙니다. range는 끝 경계를 포함하지 않으므로 2, 3, 4의 세 값입니다. 5도 필요하다면 간격 1에서는 range(2, 6)을 사용합니다. 끝값, 마지막으로 제공하는 값, 항목 수는 서로 다를 수 있으므로 각각 구분해야 합니다."
+  },
+  "keypoints": [
+    "range(stop)은 0부터, range(start, stop)은 지정한 시작부터 정수를 제공합니다. 끝 경계 stop은 포함하지 않습니다.",
+    "step은 다음 정수까지의 간격이며 음수이면 감소합니다. 방향이 맞지 않으면 빈 범위이고, 간격 0은 ValueError입니다.",
+    "range는 리스트와 다른 범위 값입니다. for로 정수를 차례로 받고 len으로 항목 수를 확인할 수 있습니다."
+  ],
+  "examples": [
+    {
+      "question": "for와 range를 사용해 준비라는 글자를 정확히 세 번 출력하세요. 반복 변수에 연결되는 세 숫자를 설명하고, 화면에 숫자도 자동으로 나오는지 확인하세요.",
+      "skill": "횟수와 출력 내용 구분",
+      "solution": {
+        "answer": "준비가 세 줄 출력됩니다. 반복 변수는 0, 1, 2를 받지만 print에 그 변수를 적지 않아 숫자는 출력되지 않습니다.",
+        "code": {
+          "source": "for count in range(3):\n    print(\"준비\")",
+          "kind": "python",
+          "output": "준비\n준비\n준비",
+          "error": null
+        }
+      },
+      "explanation": "range(3)은 세 항목을 제공하므로 블록이 세 번 실행됩니다. 반복 변수가 값을 받는 것과 그 값을 화면에 출력하는 것은 별개입니다."
+    },
+    {
+      "question": "아래 코드의 출력과 반복 횟수를 먼저 적고 실행하세요. 이어서 4도 출력되도록 끝 경계 한 곳만 고치세요.",
+      "skill": "끝을 제외하는 범위 수정",
+      "solution": {
+        "answer": "처음에는 1, 2, 3이 세 줄 나옵니다. 끝 경계를 5로 바꾸면 1부터 4까지 네 줄을 출력합니다.",
+        "code": {
+          "source": "for number in range(1, 5):\n    print(number)",
+          "kind": "python",
+          "output": "1\n2\n3\n4",
+          "error": null
+        }
+      },
+      "explanation": "끝 경계는 제공하지 않으므로 4를 포함하려면 4 다음의 5를 경계로 둡니다. 시작값은 그대로 1입니다.",
+      "code": "for number in range(1, 4):\n    print(number)",
+      "codeKind": "python"
+    },
+    {
+      "question": "아래 파일은 끝만 출력합니다. 4, 3, 2, 1을 한 줄씩 출력한 뒤 끝이 나오도록 range에 간격을 추가하고, 왜 원래 범위가 비어 있는지 설명하세요.",
+      "skill": "감소 방향과 빈 범위",
+      "solution": {
+        "answer": "range(4, 0, -1)로 고치면 4부터 1까지 출력합니다. 원래는 간격이 +1이라 시작 4에서 0보다 작은 값으로 진행할 수 없습니다.",
+        "code": {
+          "source": "for number in range(4, 0, -1):\n    print(number)\nprint(\"끝\")",
+          "kind": "python",
+          "output": "4\n3\n2\n1\n끝",
+          "error": null
+        }
+      },
+      "explanation": "음수 간격은 값을 줄이며 끝 경계 0보다 큰 값들을 제공합니다. 시작과 끝만 적는다고 Python이 방향을 추측해서 바꾸지 않습니다.",
+      "code": "for number in range(4, 0):\n    print(number)\nprint(\"끝\")",
+      "codeKind": "python"
+    },
+    {
+      "question": "아래 코드를 실행해 오류 종류를 확인하세요. 간격 한 곳만 고쳐 2, 4, 6을 차례로 출력하고, 왜 8은 포함하지 않는지도 설명하세요.",
+      "skill": "허용되지 않는 간격 수정",
+      "solution": {
+        "answer": "간격 0은 ValueError를 일으킵니다. 2로 바꾸면 2, 4, 6을 출력합니다.",
+        "code": {
+          "source": "for number in range(2, 8, 2):\n    print(number)",
+          "kind": "python",
+          "output": "2\n4\n6",
+          "error": null
+        }
+      },
+      "explanation": "간격 0은 같은 값에서 이동하지 않으므로 range가 허용하지 않습니다. 간격 2를 사용하면 두 칸씩 진행하며 끝 경계 8 직전까지의 값만 제공합니다.",
+      "code": "for number in range(2, 8, 0):\n    print(number)",
+      "codeKind": "python"
+    },
+    {
+      "question": "numbers = range(3, 11, 3)을 만들고 len(numbers)와 각 값을 한 줄씩 출력하세요. 끝 경계를 9로 바꾸어 다시 실행하면 항목 수가 왜 줄어드는지도 확인하세요.",
+      "skill": "간격이 있는 범위의 개수",
+      "solution": {
+        "answer": "끝이 11이면 항목 수 3 다음에 3, 6, 9가 출력됩니다. 끝이 9이면 항목 수 2 다음에 3, 6만 출력됩니다.",
+        "code": {
+          "source": "numbers = range(3, 11, 3)\nprint(len(numbers))\nfor number in numbers:\n    print(number)",
+          "kind": "python",
+          "output": "3\n3\n6\n9",
+          "error": null
+        }
+      },
+      "explanation": "간격 3으로 진행하므로 3, 6, 9를 제공합니다. 끝 경계를 9로 옮기면 그 값 자체를 제외하여 9가 사라지고 항목 수도 하나 줄어듭니다."
+    }
+  ]
+}

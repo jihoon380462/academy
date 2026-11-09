@@ -1,0 +1,172 @@
+{
+  "id": "python-l025",
+  "order": 5,
+  "title": "break·continue와 중첩 반복",
+  "subtitle": "멈출 반복과 건너뛸 한 번을 구별하고, 안쪽·바깥쪽 흐름을 읽습니다.",
+  "minutes": 14,
+  "goal": "break와 continue가 바꾸는 실행 경로를 추적하고, while의 상태 갱신과 중첩 반복의 종료 범위를 확인한다.",
+  "intro": "원하는 값을 찾았는데 남은 항목을 모두 확인할 필요가 있을까요? 처리 대상이 아닌 값 하나 때문에 나머지 기록까지 포기해야 할까요? 반복을 끝낼 때와 이번 항목만 건너뛸 때를 구분하면 목적에 맞게 흐름을 조절할 수 있습니다. 먼저 순서대로 따라 읽고, 중간에서 경로가 바뀌는 위치를 확인해 봅시다.",
+  "sections": [
+    {
+      "title": "break는 현재 반복을 바로 끝냅니다.",
+      "body": [
+        "break에 도달하면 자신을 직접 둘러싼 가장 안쪽 반복문을 끝내고 그 반복문 다음 줄로 이동합니다. 조건을 만족한 첫 항목만 필요할 때, 남은 항목을 처리하지 않도록 사용할 수 있습니다.",
+        "아래 코드는 5보다 큰 첫 값을 찾습니다. 4는 조건에 맞지 않아 다음 항목으로 가고, 9에서 출력 뒤 break를 실행합니다. 그 뒤의 2는 읽지 않으며 반복문 밖의 검색 끝은 실행합니다.",
+        "break는 프로그램 전체를 끝내는 명령이 아닙니다. 반복문 다음 코드도 실행됩니다. 조건을 만족하는 값이 없어 break가 한 번도 실행되지 않으면, for는 원래처럼 모든 항목을 처리하고 끝납니다."
+      ],
+      "code": {
+        "source": "for value in [4, 9, 2]:\n    if value > 5:\n        print(value)\n        break\nprint(\"검색 끝\")",
+        "kind": "python",
+        "output": "9\n검색 끝",
+        "error": null
+      }
+    },
+    {
+      "title": "continue는 이번 반복의 남은 부분만 건너뜁니다.",
+      "body": [
+        "continue에 도달하면 현재 한 번의 반복에서 남은 코드를 실행하지 않고 다음 반복 단계로 이동합니다. for에서는 다음 항목을 받고, while에서는 조건을 다시 검사합니다. 반복 자체를 끝내는 break와 다릅니다.",
+        "아래 코드는 음수만 건너뜁니다. -1에서는 continue 때문에 print에 도달하지 않지만, 뒤의 0과 6은 계속 처리합니다. 0을 제외하려는 것이 아니라면 < 0과 <= 0을 구분해야 합니다.",
+        "if value >= 0: 안에 처리 코드를 두어도 같은 목표를 이룰 수 있습니다. continue는 이번 항목을 제외한 뒤 아래 흐름을 진행하지 않겠다는 뜻을 분명히 나타내는 선택지입니다."
+      ],
+      "code": {
+        "source": "for value in [4, -1, 0, 6]:\n    if value < 0:\n        continue\n    print(value)",
+        "kind": "python",
+        "output": "4\n0\n6",
+        "error": null
+      }
+    },
+    {
+      "title": "while에서는 continue 경로에서도 상태가 바뀌어야 합니다.",
+      "body": [
+        "while의 조건이 언젠가 거짓이 되려면 그 조건에 영향을 주는 상태가 바뀌어야 합니다. 상태를 바꾸는 줄보다 앞에 continue를 넣으면 그 갱신을 건너뛰어 같은 값에서 멈추지 않을 수 있습니다.",
+        "아래에서는 먼저 number를 1 늘린 뒤 짝수인지 확인합니다. % 2가 0이면 짝수이므로 출력만 건너뜁니다. number는 모든 반복에서 증가하므로 5에 도달한 뒤 조건이 거짓이 되어 끝납니다.",
+        "조건을 만족하는 경로뿐 아니라 continue로 빠지는 경로도 따라 읽으세요. for의 다음 항목 이동과 달리 while의 숫자 갱신은 자동으로 일어나지 않습니다. 이 점을 빠뜨리면 반복 대상이 같아 보여도 종료 여부가 달라집니다."
+      ],
+      "code": {
+        "source": "number = 0\nwhile number < 5:\n    number = number + 1\n    if number % 2 == 0:\n        continue\n    print(number)",
+        "kind": "python",
+        "output": "1\n3\n5",
+        "error": null
+      }
+    },
+    {
+      "title": "중첩 반복에서는 안쪽 반복이 바깥 값마다 다시 시작합니다.",
+      "body": [
+        "반복 안에 다른 반복을 넣으면 바깥 항목 하나마다 안쪽 반복을 진행합니다. 아래에서는 row가 1일 때 column을 1부터 검사하고, 다음 row가 2일 때 column도 다시 1부터 시작합니다. print(row, column)은 두 값을 공백으로 구분해 같은 줄에 보여 줍니다.",
+        "column이 2일 때 break가 있으므로 각 행에서는 column 1만 출력합니다. break가 끝내는 대상은 안쪽 for뿐입니다. 바깥 for는 다음 row로 계속 이동합니다.",
+        "continue도 자신을 직접 둘러싼 반복의 다음 단계로 이동합니다. 안쪽 continue는 다음 column으로, 바깥 반복 본문에 있는 continue는 다음 row로 이동합니다. 들여쓰기와 가장 가까운 반복을 함께 읽으면 영향을 받는 범위를 구별할 수 있습니다."
+      ],
+      "code": {
+        "source": "for row in range(1, 3):\n    for column in range(1, 4):\n        if column == 2:\n            break\n        print(row, column)\nprint(\"전체 확인 끝\")",
+        "kind": "python",
+        "output": "1 1\n2 1\n전체 확인 끝",
+        "error": null
+      }
+    }
+  ],
+  "worked": {
+    "question": "기록 [3, -2, 4, 0, 9]를 앞에서 읽되 0을 만나면 기록 끝으로 보고 멈춥니다. 음수는 잘못된 기록으로 건너뛰고 양수만 합치려면 어떤 순서가 필요할까요?",
+    "code": {
+      "source": "total = 0\nfor value in [3, -2, 4, 0, 9]:\n    if value == 0:\n        break\n    if value < 0:\n        continue\n    total = total + value\nprint(total)",
+      "kind": "python",
+      "output": "7",
+      "error": null
+    },
+    "steps": [
+      "합계를 0으로 시작합니다. 3은 종료 표시도 음수도 아니므로 합계에 더합니다.",
+      "-2는 continue로 누적 줄을 건너뛰지만 반복을 끝내지는 않습니다. 다음 4는 합계에 반영하여 7이 됩니다.",
+      "0에서 break가 실행되므로 나머지 9는 확인하지 않습니다. 반복 뒤 print가 최종 합계 7을 출력합니다. 종료 표시와 제외할 항목을 서로 다른 경로로 처리했습니다."
+    ],
+    "answer": "break는 0 이후의 처리를 끝내고, continue는 음수 한 항목만 제외합니다. 결과에는 3과 4만 포함되어 7입니다."
+  },
+  "misconception": {
+    "question": "안쪽 반복에서 break를 쓰면 바깥 반복도 함께 끝나나요?",
+    "answer": "아닙니다. break는 자신을 직접 둘러싼 가장 안쪽 반복만 끝냅니다. 바깥 반복을 끝내려면 바깥 반복에서도 종료할 조건과 흐름을 따로 정해야 합니다. continue 역시 그 반복의 다음 단계로 갈 뿐이며, 프로그램 전체나 모든 중첩 반복에 동시에 적용되지 않습니다."
+  },
+  "keypoints": [
+    "break는 가장 안쪽 반복을 끝내고 그 다음 줄로 이동합니다. continue는 그 반복의 이번 실행에서 남은 부분만 건너뜁니다.",
+    "while에서 continue를 만나도 종료 조건에 필요한 상태 갱신이 이루어지는지 확인합니다.",
+    "중첩 반복은 바깥 항목마다 안쪽 반복을 진행합니다. break·continue가 어느 반복에 속하는지 들여쓰기로 추적합니다."
+  ],
+  "examples": [
+    {
+      "question": "아래 코드를 실행하면 무엇이 출력되는지 예상하세요. 2만 빼고 1, 3, 4를 출력하려는 의도에 맞게 한 단어를 바꾸고, break와 continue의 차이를 설명하세요.",
+      "skill": "전체 종료와 한 항목 제외",
+      "solution": {
+        "answer": "원본은 1만 출력합니다. break를 continue로 바꾸면 2에서 출력만 건너뛰고 3과 4를 계속 처리합니다.",
+        "code": {
+          "source": "for number in range(1, 5):\n    if number == 2:\n        continue\n    print(number)",
+          "kind": "python",
+          "output": "1\n3\n4",
+          "error": null
+        }
+      },
+      "explanation": "break는 남은 항목을 모두 처리하지 않고 반복을 끝냅니다. 하나의 값만 제외하려면 다음 항목으로 이동하는 continue가 요구에 맞습니다.",
+      "code": "for number in range(1, 5):\n    if number == 2:\n        break\n    print(number)",
+      "codeKind": "python",
+      "codeLabel": "읽거나 수정할 코드"
+    },
+    {
+      "question": "숫자 목록 [8, 3, -1, 10]에서 처음 나오는 음수 직전까지만 출력하세요. 음수 자체도 출력하지 않아야 합니다. 검사와 출력의 순서를 정하고, 음수가 맨 처음인 [-1, 8]도 확인하세요.",
+      "skill": "종료 검사의 위치",
+      "solution": {
+        "answer": "8과 3을 출력하고 -1에서 끝냅니다. [-1, 8]에서는 첫 검사에서 끝나므로 출력이 없습니다.",
+        "code": {
+          "source": "for number in [8, 3, -1, 10]:\n    if number < 0:\n        break\n    print(number)",
+          "kind": "python",
+          "output": "8\n3",
+          "error": null
+        }
+      },
+      "explanation": "음수를 발견한 뒤에도 출력하면 요구와 달라집니다. 음수 검사와 break를 출력보다 앞에 두면 종료 표시 자체와 이후 항목을 모두 제외할 수 있습니다."
+    },
+    {
+      "question": "아래 코드는 1부터 4까지 중 2만 제외하려 하지만 멈추지 않습니다. 원본은 실행하지 말고, number가 2가 된 뒤 어떤 줄을 건너뛰는지 읽어 보세요. 갱신을 continue 전에 항상 수행하도록 고친 코드만 실행하세요.",
+      "skill": "continue와 while 갱신 누락",
+      "solution": {
+        "answer": "원본은 number가 2일 때 갱신 줄을 건너뛰어 계속 2에 머뭅니다. 0에서 시작하여 반복마다 먼저 1 늘린 뒤 2를 제외하면 1, 3, 4가 출력되고 끝납니다.",
+        "code": {
+          "source": "number = 0\nwhile number < 4:\n    number = number + 1\n    if number == 2:\n        continue\n    print(number)",
+          "kind": "python",
+          "output": "1\n3\n4",
+          "error": null
+        }
+      },
+      "explanation": "while은 continue 뒤에 조건을 다시 검사할 뿐 number를 자동으로 바꾸지 않습니다. 모든 경로에서 number가 증가하도록 순서를 정하면 반복이 종료 조건 쪽으로 진행합니다.",
+      "code": "number = 1\nwhile number <= 4:\n    if number == 2:\n        continue\n    print(number)\n    number = number + 1",
+      "codeKind": "python",
+      "codeLabel": "실행하지 말고 읽고 고칠 코드"
+    },
+    {
+      "question": "아래 중첩 반복의 출력 순서를 예상하고 실행하세요. 안쪽 break를 continue로 바꾸면 어떤 줄이 추가되는지도 적은 뒤 확인하세요.",
+      "skill": "중첩 반복의 제어 범위",
+      "solution": {
+        "answer": "원본은 1 1, 2 1을 출력합니다. continue로 바꾸면 각 행에서 열 2만 건너뛰므로 1 1, 1 3, 2 1, 2 3입니다.",
+        "code": {
+          "source": "for row in range(1, 3):\n    for column in range(1, 4):\n        if column == 2:\n            continue\n        print(row, column)",
+          "kind": "python",
+          "output": "1 1\n1 3\n2 1\n2 3",
+          "error": null
+        }
+      },
+      "explanation": "break는 각 row의 안쪽 반복을 column 2에서 끝내지만 바깥 row는 이어집니다. continue는 column 2만 건너뛰므로 같은 row의 column 3에도 도달합니다.",
+      "code": "for row in range(1, 3):\n    for column in range(1, 4):\n        if column == 2:\n            break\n        print(row, column)",
+      "codeKind": "python",
+      "codeLabel": "읽거나 수정할 코드"
+    },
+    {
+      "question": "기록 [2, 5, -3, 7, 1]에서 음수는 건너뛰며 양수 합계가 10 이상이 되는 순간 멈추세요. 그 기준을 넘게 만든 값은 합계에 포함하고, 마지막 합계를 출력하세요. 누적 전과 후 중 어디에 종료 검사를 둘지도 설명하세요.",
+      "skill": "누적한 결과로 종료 결정",
+      "solution": {
+        "answer": "2와 5를 더하고 -3을 건너뛴 뒤 7을 더하면 14입니다. 이때 멈추므로 마지막 1은 포함하지 않습니다.",
+        "code": {
+          "source": "total = 0\nfor value in [2, 5, -3, 7, 1]:\n    if value < 0:\n        continue\n    total = total + value\n    if total >= 10:\n        break\nprint(total)",
+          "kind": "python",
+          "output": "14",
+          "error": null
+        }
+      },
+      "explanation": "이번 값을 포함한 합계로 멈출지 결정해야 하므로 누적 뒤에 total >= 10을 검사합니다. 음수에서 continue를 만나면 누적과 종료 검사를 함께 건너뛰지만 다음 기록은 계속 확인합니다."
+    }
+  ]
+}
