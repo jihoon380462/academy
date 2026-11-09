@@ -20,6 +20,10 @@ SPECS = [
          description='값에 이름을 붙이고, 알맞은 연산과 변환을 골라 입력을 결과로 연결합니다.',
          prerequisite='선행 학습: 챕터 1 · 프로그램을 읽고 실행하기',
          titles=['변수는 값에 붙이는 이름', '정수와 실수의 계산', '문자열과 숫자 변환', '비교·불리언·논리 연산', '입력받아 계산하고 출력하기']),
+    dict(number=3, first=11, title='문자열을 다루는 기본 도구',
+         description='문자의 위치와 범위를 읽고, 문자열을 정리하고 나누고 합쳐 읽기 좋은 결과를 만듭니다.',
+         prerequisite='선행 학습: 챕터 2 · 값·이름·연산',
+         titles=['인덱스와 음수 인덱스', '슬라이싱과 범위', '문자열 메서드와 반환값', '나누기·합치기·검색하기', '형식에 맞춰 출력하기']),
 ]
 parser = argparse.ArgumentParser()
 parser.add_argument('--check-code', action='store_true')
