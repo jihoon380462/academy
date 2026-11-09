@@ -1,0 +1,217 @@
+[
+  {
+    "question": "아래 코드는 math를 불러왔지만 이름을 찾지 못합니다. import 문장은 그대로 두고 함수 호출을 고쳐 64의 제곱근을 출력하세요. 모듈의 이름과 그 안의 함수 이름을 구분해 설명하세요.",
+    "skill": "모듈 경계: 이름의 소속",
+    "solution": {
+      "answer": "sqrt(64)를 math.sqrt(64)로 고치면 8.0입니다. import math는 math라는 이름을 연결하며 sqrt를 현재 코드에 직접 연결하지 않습니다.",
+      "code": {
+        "source": "import math\nprint(math.sqrt(64))",
+        "kind": "python",
+        "output": "8.0",
+        "error": null
+      }
+    },
+    "explanation": "모듈 이름을 통해 그 안의 이름에 접근하는 import 방식입니다. from math import sqrt를 사용한 경우와 현재 코드에 생기는 이름이 다릅니다.",
+    "code": "import math\nprint(sqrt(64))",
+    "codeKind": "python",
+    "codeLabel": "직접 확인하거나 고칠 코드",
+    "related": [
+      "python-l037"
+    ]
+  },
+  {
+    "question": "helpers.py에 값을 두 배로 돌려주는 double 함수를 작성하세요. helpers.py를 직접 실행할 때만 단독 확인: 6을 출력하고, main.py에서 import한 뒤 double(5)를 출력하면 10만 보이게 하세요. 두 파일을 같은 연습 폴더에 두고 각각 실행해 비교하세요.",
+    "skill": "모듈 경계: 실행 진입점",
+    "solution": {
+      "answer": "함수는 모듈에 두고 단독 확인 출력은 if __name__ == \"__main__\": 아래에 둡니다. main.py 출력은 10, helpers.py 직접 실행 출력은 단독 확인: 6입니다.",
+      "code": {
+        "source": "import helpers\nprint(helpers.double(5))",
+        "kind": "python",
+        "output": "10",
+        "error": null,
+        "filename": "main.py",
+        "files": {
+          "helpers.py": "def double(value):\n    return value * 2\n\nif __name__ == \"__main__\":\n    print(\"단독 확인:\", double(3))\n"
+        }
+      }
+    },
+    "explanation": "import할 때 모듈의 최상위 코드는 실행되지만 __name__은 helpers입니다. 직접 실행할 때만 __main__이 되어 확인 출력이 실행됩니다. 함수 정의는 두 경우 모두 준비됩니다.",
+    "related": [
+      "python-l037",
+      "python-l038"
+    ]
+  },
+  {
+    "question": "아래 코드를 실행하여 traceback의 마지막 오류 종류와 함수 안의 실패한 연산을 찾으세요. 호출에 전달하는 문자열만 \"4\"로 바꾸고 정상 결과를 확인하세요. 왜 return까지 결과가 전달되지 않았는지도 설명하세요.",
+    "skill": "오류 해석: 호출 경로",
+    "solution": {
+      "answer": "원본은 ValueError이며 int(\"넷\")에서 실패합니다. \"4\"로 바꾸면 8을 출력합니다. 원본에서는 int가 값을 만들지 못해 곱셈과 정상 return이 이어지지 않습니다.",
+      "code": {
+        "source": "def double_text(text):\n    return int(text) * 2\n\nprint(double_text(\"4\"))",
+        "kind": "python",
+        "output": "8",
+        "error": null
+      }
+    },
+    "explanation": "traceback은 호출한 줄과 함수 내부의 실패한 줄을 연결해 보여 줍니다. 마지막 오류 이름을 확인하고 실패한 변환에 들어간 값을 거슬러 읽습니다.",
+    "code": "def double_text(text):\n    return int(text) * 2\n\nprint(double_text(\"넷\"))",
+    "codeKind": "python",
+    "codeLabel": "직접 확인하거나 고칠 코드",
+    "related": [
+      "python-l039"
+    ]
+  },
+  {
+    "question": "아래 코드는 \"0\"을 정수로 바꾸는 데 성공합니다. 그런데 except ValueError에서 안내가 나오지 않는 이유를 설명하고, 실제 오류 종류만 처리하는 except를 추가해 0으로 나눌 수 없음이라고 출력하세요. 정상 결과 출력은 try의 else로 옮기세요.",
+    "skill": "오류 해석: 종류에 맞는 대응",
+    "solution": {
+      "answer": "정수 변환 뒤 12 / 0에서 ZeroDivisionError가 발생합니다. except ZeroDivisionError를 추가하면 0으로 나눌 수 없음을 출력합니다.",
+      "code": {
+        "source": "try:\n    count = int(\"0\")\n    result = 12 / count\nexcept ValueError:\n    print(\"정수 필요\")\nexcept ZeroDivisionError:\n    print(\"0으로 나눌 수 없음\")\nelse:\n    print(result)",
+        "kind": "python",
+        "output": "0으로 나눌 수 없음",
+        "error": null
+      }
+    },
+    "explanation": "예외 처리는 종류가 맞아야 실행됩니다. 0은 유효한 정수이지만 이 나눗셈의 분모로는 사용할 수 없습니다. 변환 오류와 연산 오류를 같은 것으로 취급하지 않습니다.",
+    "code": "try:\n    count = int(\"0\")\n    result = 12 / count\n    print(result)\nexcept ValueError:\n    print(\"정수 필요\")",
+    "codeKind": "python",
+    "codeLabel": "직접 확인하거나 고칠 코드",
+    "related": [
+      "python-l039"
+    ]
+  },
+  {
+    "question": "아래 코드는 올바른 정수 문자열인데도 입력 오류를 출력합니다. 잘못 적은 변수 이름을 찾고 고치세요. 정수 변환만 try에 두고 ValueError만 처리하며, 성공한 계산은 else로 옮겨 문제를 숨기지 않도록 바꾸세요.",
+    "skill": "오류 해석: 숨긴 버그 찾기",
+    "solution": {
+      "answer": "qunatity는 정의되지 않아 NameError가 발생합니다. quantity로 고치고 필요한 ValueError만 처리하면 1000을 출력합니다.",
+      "code": {
+        "source": "text = \"2\"\ntry:\n    quantity = int(text)\nexcept ValueError:\n    print(\"입력 오류\")\nelse:\n    print(quantity * 500)",
+        "kind": "python",
+        "output": "1000",
+        "error": null
+      }
+    },
+    "explanation": "오류 종류를 생략한 except는 이 NameError까지 입력 오류로 바꿔 보여 주었습니다. 예상한 변환 오류를 좁게 처리하면 계산 코드의 오타를 잘못된 사용자 입력처럼 숨기지 않을 수 있습니다.",
+    "code": "text = \"2\"\ntry:\n    quantity = int(text)\n    print(qunatity * 500)\nexcept:\n    print(\"입력 오류\")",
+    "codeKind": "python",
+    "codeLabel": "직접 확인하거나 고칠 코드",
+    "related": [
+      "python-l039"
+    ]
+  },
+  {
+    "question": "notes.txt에는 준비와 완료가 각각 한 줄에 있고 마지막에도 줄바꿈이 있습니다. 아래 코드의 두 불 값을 예상하고 실행하세요. 두 번째 read가 빈 문자열인 이유와 파일을 다시 열어 읽은 결과가 같은 이유를 설명하세요.",
+    "skill": "파일 흐름: 읽기 위치",
+    "solution": {
+      "answer": "두 출력은 True와 True입니다. 두 번째 read는 끝에서 읽어 빈 문자열이고, 다시 열면 처음부터 같은 원본을 읽습니다. notes.txt 내용은 변하지 않습니다.",
+      "code": {
+        "source": "with open(\"notes.txt\", \"r\", encoding=\"utf-8\") as file:\n    first = file.read()\n    print(file.read() == \"\")\nwith open(\"notes.txt\", \"r\", encoding=\"utf-8\") as file:\n    print(file.read() == first)",
+        "kind": "python",
+        "output": "True\nTrue",
+        "error": null,
+        "files": {
+          "notes.txt": "준비\n완료\n"
+        },
+        "expectedFiles": {
+          "notes.txt": "준비\n완료\n"
+        }
+      }
+    },
+    "explanation": "읽기 위치의 이동과 저장된 내용의 변경은 다릅니다. read만으로 원본 파일의 글이 지워지지 않으며 새로 연 파일은 처음부터 읽습니다.",
+    "code": "with open(\"notes.txt\", \"r\", encoding=\"utf-8\") as file:\n    first = file.read()\n    print(file.read() == \"\")\nwith open(\"notes.txt\", \"r\", encoding=\"utf-8\") as file:\n    print(file.read() == first)",
+    "codeKind": "python",
+    "codeLabel": "직접 확인하거나 고칠 코드",
+    "related": [
+      "python-l040"
+    ]
+  },
+  {
+    "question": "연습 파일 report.txt의 초기 내용은 이전과 줄바꿈입니다. 아래 코드를 한 번 실행한 뒤의 파일 내용과 화면 출력을 따로 적으세요. 파일을 초기화하지 않고 전체 코드를 두 번 실행하면 내용이 더 늘어나는지도 확인하세요.",
+    "skill": "파일 흐름: 쓰기와 재실행",
+    "solution": {
+      "answer": "파일은 합계: 3과 확인 두 줄이며 각 줄 끝에 줄바꿈이 있습니다. 화면은 완료입니다. 전체를 다시 실행하면 w로 초기화하므로 같은 두 줄만 남습니다.",
+      "code": {
+        "source": "with open(\"report.txt\", \"w\", encoding=\"utf-8\") as file:\n    file.write(\"합계: 3\\n\")\nwith open(\"report.txt\", \"a\", encoding=\"utf-8\") as file:\n    file.write(\"확인\\n\")\nprint(\"완료\")",
+        "kind": "python",
+        "output": "완료",
+        "error": null,
+        "files": {
+          "report.txt": "이전\n"
+        },
+        "expectedFiles": {
+          "report.txt": "합계: 3\n확인\n"
+        }
+      }
+    },
+    "explanation": "w는 여는 순간 이전 내용을 지우고 a는 현재 끝에 덧붙입니다. a 부분만 재실행하는 경우에는 확인 줄이 늘어나므로 어느 범위를 반복했는지 확인합니다.",
+    "code": "with open(\"report.txt\", \"w\", encoding=\"utf-8\") as file:\n    file.write(\"합계: 3\\n\")\nwith open(\"report.txt\", \"a\", encoding=\"utf-8\") as file:\n    file.write(\"확인\\n\")\nprint(\"완료\")",
+    "codeKind": "python",
+    "codeLabel": "직접 확인하거나 고칠 코드",
+    "related": [
+      "python-l040"
+    ]
+  },
+  {
+    "question": "practice.txt의 초기 내용은 이전과 줄바꿈입니다. 아래에서 정수 변환에 실패하면 파일은 닫힐까요? 화면의 두 줄과 마지막 파일 내용을 예상하고 실행하세요. with가 이전 내용을 복원해 주는지도 설명하세요.",
+    "skill": "파일 흐름: 예외 뒤 닫힘과 변경",
+    "solution": {
+      "answer": "화면은 변환 실패와 True입니다. 파일에는 시작과 줄바꿈만 남습니다. 파일은 닫히지만 이전 내용이 자동으로 복원되지는 않습니다.",
+      "code": {
+        "source": "try:\n    with open(\"practice.txt\", \"w\", encoding=\"utf-8\") as file:\n        file.write(\"시작\\n\")\n        number = int(\"둘\")\nexcept ValueError:\n    print(\"변환 실패\")\nprint(file.closed)",
+        "kind": "python",
+        "output": "변환 실패\nTrue",
+        "error": null,
+        "files": {
+          "practice.txt": "이전\n"
+        },
+        "expectedFiles": {
+          "practice.txt": "시작\n"
+        }
+      }
+    },
+    "explanation": "w에서 이전 글을 지우고 시작을 쓴 뒤 int에서 실패합니다. with는 파일을 닫는 역할을 하며 이미 한 쓰기를 취소하는 기능은 아닙니다. except ValueError는 변환 실패에 대응합니다.",
+    "code": "try:\n    with open(\"practice.txt\", \"w\", encoding=\"utf-8\") as file:\n        file.write(\"시작\\n\")\n        number = int(\"둘\")\nexcept ValueError:\n    print(\"변환 실패\")\nprint(file.closed)",
+    "codeKind": "python",
+    "codeLabel": "직접 확인하거나 고칠 코드",
+    "related": [
+      "python-l039",
+      "python-l040"
+    ]
+  },
+  {
+    "question": "새 연습 폴더의 .venv를 사용한다고 생각했는데 에디터에서 sys.prefix != sys.base_prefix가 False입니다. 실행 중인 경로를 확인할 Python 코드를 적고, 같은 check_env.py를 venv 인터프리터로 직접 실행할 명령을 자신의 운영체제에 맞게 적으세요.",
+    "skill": "환경 구분: 실제 실행 대상",
+    "solution": {
+      "answer": "sys.executable과 두 prefix를 확인합니다. macOS·Linux는 .venv/bin/python check_env.py, Windows PowerShell은 .\\.venv\\Scripts\\python.exe check_env.py입니다. 표준 venv로 실행하면 비교 결과가 True입니다.",
+      "code": {
+        "source": "import sys\nprint(sys.executable)\nprint(sys.prefix)\nprint(sys.base_prefix)\nprint(sys.prefix != sys.base_prefix)",
+        "kind": "text",
+        "caption": "check_env.py로 저장해 실행할 Python 코드입니다. 자신의 경로와 불 값을 확인합니다."
+      }
+    },
+    "explanation": "환경 폴더 생성만으로 에디터의 실행 대상이 바뀌지는 않습니다. 에디터의 인터프리터 설정과 실제 출력 경로를 함께 확인합니다. 출력 경로의 문자열은 기기마다 다릅니다.",
+    "related": [
+      "python-l041"
+    ]
+  },
+  {
+    "question": "한 프로젝트는 math, 직접 만든 helpers.py, 별도 설치가 필요한 외부 패키지를 사용합니다. 이 셋이 어떻게 준비되는지 설명하고, .venv로 실행할 프로그램의 pip 버전·위치를 조회할 터미널 명령을 적으세요. import만으로 외부 패키지가 설치되는지도 답하세요. 실제 외부 설치는 하지 않습니다.",
+    "skill": "환경 구분: 불러오기와 설치",
+    "solution": {
+      "answer": "math는 표준 라이브러리이고 helpers.py는 직접 저장하는 내 모듈입니다. 외부 패키지는 해당 환경에 별도로 준비합니다. macOS·Linux의 조회는 .venv/bin/python -m pip --version이며, import는 설치를 수행하지 않습니다. Windows PowerShell은 .\\.venv\\Scripts\\python.exe -m pip --version입니다.",
+      "code": {
+        "source": ".venv/bin/python -m pip --version",
+        "kind": "console",
+        "caption": "macOS·Linux의 조회 명령입니다. 외부 패키지를 설치하지 않습니다."
+      }
+    },
+    "explanation": "모듈을 불러오는 코드와 패키지를 설치하는 도구의 역할이 다릅니다. 실행할 인터프리터를 명시하면 그 파이썬의 pip를 조회할 수 있습니다. 버전·위치는 실제 환경에서 읽습니다.",
+    "related": [
+      "python-l037",
+      "python-l038",
+      "python-l041"
+    ]
+  }
+]

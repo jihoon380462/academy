@@ -1,0 +1,175 @@
+{
+  "id": "python-l043",
+  "order": 2,
+  "title": "클래스와 인스턴스",
+  "subtitle": "같은 동작을 제공하되 각자의 상태를 가진 값을 직접 정의합니다.",
+  "minutes": 16,
+  "goal": "간단한 클래스를 정의하고 여러 인스턴스의 상태와 메서드 호출을 따로 추적한다.",
+  "intro": "기록 카드가 두 장 있을 때 카드마다 다른 제목을 기억하고, 같은 방식으로 그 제목을 읽고 싶을 수 있습니다. 변수들을 따로 늘어놓는 대신 같은 종류의 상태와 동작을 묶는 클래스를 정의해 봅시다. 이번에는 상태를 설정하는 메서드를 직접 호출하고, 생성할 때 자동으로 준비하는 방법은 다음 레슨으로 이어갑니다.",
+  "sections": [
+    {
+      "title": "class는 새 종류의 객체를 정의합니다.",
+      "body": [
+        "class Card: 아래에 그 종류가 제공할 메서드를 정의할 수 있습니다. class 줄 끝에는 콜론을 쓰고, 클래스 안의 def는 네 칸 들여씁니다. 메서드의 본문은 그 안에서 다시 네 칸을 더 들여씁니다. Card처럼 클래스 이름은 보통 대문자로 시작합니다.",
+        "Card()를 호출하는 표현식으로 Card 타입의 인스턴스를 얻습니다. 클래스가 정의한 종류에 속하는 개별 객체를 인스턴스라고 합니다. 같은 클래스로 만든 두 인스턴스는 같은 메서드를 사용할 수 있지만 각자의 상태를 가질 수 있습니다.",
+        "아래 클래스의 kind 메서드는 문자열을 반환합니다. 클래스를 정의하는 순간에 메서드 본문을 바로 실행하는 것은 아닙니다. card.kind()처럼 인스턴스에서 호출해야 해당 본문이 실행됩니다."
+      ],
+      "code": {
+        "source": "class Card:\n    def kind(self):\n        return \"학습 카드\"\n\nfirst = Card()\nsecond = Card()\nprint(first.kind())\nprint(second.kind())\nprint(type(first) == type(second))",
+        "kind": "python",
+        "output": "학습 카드\n학습 카드\nTrue",
+        "error": null
+      }
+    },
+    {
+      "title": "self는 이번 호출의 인스턴스를 가리킵니다.",
+      "body": [
+        "인스턴스 메서드의 첫 매개변수는 관례적으로 self라고 씁니다. card.set_title(\"복습\")를 호출하면 card가 self에, \"복습\"이 title에 전달됩니다. 호출하는 쪽에서 self 자리에 card를 한 번 더 적지 않습니다.",
+        "self.title = title은 그 인스턴스의 title 속성에 값을 저장합니다. 속성은 점 뒤 이름으로 읽는, 객체에 연결된 값입니다. 매개변수 title은 이번 호출 안의 이름이고 self.title은 호출이 끝난 뒤에도 인스턴스에 남겨 둘 상태입니다.",
+        "self는 특별한 철자를 써야만 작동하는 예약어가 아니라 첫 매개변수에 쓰는 널리 정한 이름입니다. 여기서는 다른 이름으로 바꾸는 연습보다 self가 어떤 인스턴스를 받는지 일관되게 읽습니다."
+      ],
+      "code": {
+        "source": "class Card:\n    def set_title(self, title):\n        self.title = title\n\ncard = Card()\ncard.set_title(\"복습\")\nprint(card.title)",
+        "kind": "python",
+        "output": "복습",
+        "error": null
+      }
+    },
+    {
+      "title": "인스턴스마다 저장한 상태를 따로 읽습니다.",
+      "body": [
+        "first = Card()와 second = Card()는 서로 다른 인스턴스를 만듭니다. first.set_title(\"읽기\")와 second.set_title(\"실행\")은 각각의 self.title을 설정합니다. 메서드 정의는 같아도 이번 호출의 self가 다르므로 다른 인스턴스에 상태를 저장합니다.",
+        "같은 인스턴스의 제목을 나중에 다시 설정하면 그 인스턴스가 저장한 상태가 달라집니다. 이것은 클래스 정의 자체를 다시 쓰거나 모든 인스턴스의 제목을 바꾼 것이 아닙니다.",
+        "메서드는 상태를 읽어 반환할 수도 있습니다. 아래 get_title은 self.title을 반환하고, 바깥 print가 반환값을 보여 줍니다. 상태를 돌려주는 동작과 화면 출력의 역할을 구분합니다."
+      ],
+      "code": {
+        "source": "class Card:\n    def set_title(self, title):\n        self.title = title\n\n    def get_title(self):\n        return self.title\n\nfirst = Card()\nsecond = Card()\nfirst.set_title(\"읽기\")\nsecond.set_title(\"실행\")\nfirst.set_title(\"복습\")\nprint(first.get_title())\nprint(second.get_title())",
+        "kind": "python",
+        "output": "복습\n실행",
+        "error": null
+      }
+    },
+    {
+      "title": "상태를 읽기 전에 준비하는 순서가 필요합니다.",
+      "body": [
+        "지금의 Card는 생성 직후 title을 만들지 않습니다. set_title을 호출하기 전에 get_title을 호출하면 self.title이 없어서 AttributeError가 납니다. 클래스가 정의되어 있다는 사실만으로 모든 속성이 자동으로 채워지는 것은 아닙니다.",
+        "이 레슨에서는 set_title을 먼저 호출한다는 약속으로 예제를 실행합니다. 다음 레슨에서는 __init__을 사용해 생성하는 호출에서 필요한 상태를 준비합니다. 초기화가 왜 필요한지, 순서를 빠뜨렸을 때 어떤 문제가 나는지를 먼저 확인하세요.",
+        "또 alias = first처럼 같은 인스턴스에 이름만 하나 더 붙이면 상태를 공유합니다. 새 이름을 만든 것과 Card()로 새 인스턴스를 만든 것을 구분해야 합니다. 리스트의 별칭에서 배운 원리가 내 클래스에도 적용됩니다."
+      ],
+      "code": {
+        "source": "class Card:\n    def set_title(self, title):\n        self.title = title\n\n    def get_title(self):\n        return self.title\n\ncard = Card()\ncard.set_title(\"처음\")\nalias = card\nalias.set_title(\"변경\")\nprint(card.get_title())",
+        "kind": "python",
+        "output": "변경",
+        "error": null
+      }
+    }
+  ],
+  "worked": {
+    "question": "제목을 가진 카드 두 장을 만들고 첫 카드의 제목만 고치려면 무엇을 두 번 만들고 어떤 상태를 바꾸어야 할까요?",
+    "code": {
+      "source": "class Card:\n    def set_title(self, title):\n        self.title = title\n\n    def get_title(self):\n        return self.title\n\nfirst = Card()\nsecond = Card()\nfirst.set_title(\"변수\")\nsecond.set_title(\"반복\")\nfirst.set_title(\"함수\")\nprint(first.get_title())\nprint(second.get_title())",
+      "kind": "python",
+      "output": "함수\n반복",
+      "error": null
+    },
+    "steps": [
+      "Card()를 두 번 호출해 두 개의 인스턴스를 만듭니다. first와 second에 같은 인스턴스를 대입하는 것과 다릅니다.",
+      "각 set_title 호출은 호출 대상이 self가 되어 자신의 title을 저장합니다. 처음에는 변수와 반복입니다.",
+      "first에서만 다시 설정하면 첫 카드의 상태만 함수로 바뀝니다. 두 번째 카드를 호출할 때 self는 second여서 여전히 반복을 읽습니다."
+    ],
+    "answer": "클래스는 같아도 인스턴스를 따로 만들면 각 인스턴스에 상태를 따로 저장할 수 있습니다. 호출 대상과 self를 함께 추적합니다."
+  },
+  "misconception": {
+    "question": "같은 클래스로 만든 두 객체는 상태도 항상 같은가요?",
+    "answer": "같은 클래스는 사용할 메서드와 종류를 공유하지만, 인스턴스에 따로 저장한 속성까지 같은 값이어야 하는 것은 아닙니다. 반대로 second = first라면 새 인스턴스를 만들지 않았으므로 두 이름이 같은 상태를 읽습니다. 클래스가 같은 것과 인스턴스가 같은 것을 구분해야 합니다."
+  },
+  "keypoints": [
+    "class는 객체의 종류를 정의하고, ClassName()은 그 클래스의 인스턴스를 얻는 호출입니다.",
+    "인스턴스 메서드의 self는 호출한 대상을 받습니다. self.title은 인스턴스의 상태이고 title은 이번 호출의 매개변수입니다.",
+    "새 인스턴스 만들기와 같은 인스턴스에 별칭 붙이기는 다릅니다. 필요한 속성은 읽기 전에 준비되어 있어야 합니다."
+  ],
+  "examples": [
+    {
+      "question": "아래 클래스로 Label 인스턴스를 두 개 만들고 각각 show를 호출해 결과를 출력하세요. def 본문이 실행되는 시점을 설명하세요.",
+      "skill": "정의와 호출",
+      "solution": {
+        "answer": "두 호출에서 안내가 한 줄씩 출력됩니다. class를 정의한 시점이 아니라 show를 호출할 때 return이 실행됩니다.",
+        "code": {
+          "source": "class Label:\n    def show(self):\n        return \"안내\"\n\nfirst = Label()\nsecond = Label()\nprint(first.show())\nprint(second.show())",
+          "kind": "python",
+          "output": "안내\n안내",
+          "error": null
+        }
+      },
+      "explanation": "클래스 안의 메서드 정의와 인스턴스에서의 호출은 별개입니다. 같은 메서드를 각 인스턴스에서 사용할 수 있습니다.",
+      "code": "class Label:\n    def show(self):\n        return \"안내\"",
+      "codeKind": "python",
+      "codeLabel": "직접 확인하거나 고칠 코드"
+    },
+    {
+      "question": "아래 메서드는 인자로 받은 이름을 호출 안의 name에만 저장합니다. 객체에 남도록 self.name을 설정하고, get_name이 그 값을 반환하도록 고치세요.",
+      "skill": "지역 이름과 인스턴스 속성",
+      "solution": {
+        "answer": "set_name의 대입을 self.name = name으로 고치면 민서가 출력됩니다. 원본은 get_name에서 AttributeError입니다.",
+        "code": {
+          "source": "class NameTag:\n    def set_name(self, name):\n        self.name = name\n\n    def get_name(self):\n        return self.name\n\ntag = NameTag()\ntag.set_name(\"민서\")\nprint(tag.get_name())",
+          "kind": "python",
+          "output": "민서",
+          "error": null
+        }
+      },
+      "explanation": "name이라는 지역 매개변수만 사용하면 인스턴스의 name 속성이 생기지 않습니다. 상태를 남길 목적이면 self.name에 대입합니다.",
+      "code": "class NameTag:\n    def set_name(self, name):\n        name = name\n\n    def get_name(self):\n        return self.name\n\ntag = NameTag()\ntag.set_name(\"민서\")\nprint(tag.get_name())",
+      "codeKind": "python",
+      "codeLabel": "직접 확인하거나 고칠 코드"
+    },
+    {
+      "question": "아래 코드를 실행해 오류 종류를 확인하세요. show 전에 set_name(\"연습\")를 호출하여 연습을 출력하도록 고치고, 원본이 실패한 이유를 적으세요.",
+      "skill": "속성 준비 순서",
+      "solution": {
+        "answer": "원본은 name 속성이 없어 AttributeError입니다. 먼저 설정하면 연습이 출력됩니다.",
+        "code": {
+          "source": "class Label:\n    def set_name(self, name):\n        self.name = name\n\n    def show(self):\n        return self.name\n\nlabel = Label()\nlabel.set_name(\"연습\")\nprint(label.show())",
+          "kind": "python",
+          "output": "연습",
+          "error": null
+        }
+      },
+      "explanation": "class에 메서드가 있다는 사실과 인스턴스에 name 값이 준비됐다는 사실은 다릅니다. 이번 클래스는 별도의 설정 호출을 먼저 해야 합니다.",
+      "code": "class Label:\n    def set_name(self, name):\n        self.name = name\n\n    def show(self):\n        return self.name\n\nlabel = Label()\nprint(label.show())",
+      "codeKind": "python",
+      "codeLabel": "직접 확인하거나 고칠 코드"
+    },
+    {
+      "question": "Title 인스턴스 두 개에 A와 B를 각각 저장하고, 첫 객체에만 C를 다시 저장하세요. 각 객체의 title을 출력하고 self가 어느 객체인지 설명하세요.",
+      "skill": "인스턴스별 상태",
+      "solution": {
+        "answer": "출력은 C와 B입니다. 같은 메서드를 호출하지만 각 호출의 대상 인스턴스가 self로 전달됩니다.",
+        "code": {
+          "source": "class Title:\n    def set_title(self, title):\n        self.title = title\n\na = Title()\nb = Title()\na.set_title(\"A\")\nb.set_title(\"B\")\na.set_title(\"C\")\nprint(a.title)\nprint(b.title)",
+          "kind": "python",
+          "output": "C\nB",
+          "error": null
+        }
+      },
+      "explanation": "두 번의 Title()로 상태를 담을 객체를 따로 만듭니다. 첫 객체의 대입은 두 번째 객체의 속성을 바꾸지 않습니다."
+    },
+    {
+      "question": "아래 두 출력 값을 예상하고 실행하세요. second가 first와 독립된 상태를 가지려면 대입 한 줄을 어떻게 바꿔야 할지도 적으세요.",
+      "skill": "별칭과 새 인스턴스",
+      "solution": {
+        "answer": "원본은 둘 다 새 값을 출력합니다. second = Title()로 새로 만들고 각자 set_title을 호출하면 별도 상태를 가질 수 있습니다.",
+        "code": {
+          "source": "class Title:\n    def set_title(self, title):\n        self.title = title\n\nfirst = Title()\nfirst.set_title(\"처음\")\nsecond = first\nsecond.set_title(\"새 값\")\nprint(first.title)\nprint(second.title)",
+          "kind": "python",
+          "output": "새 값\n새 값",
+          "error": null
+        }
+      },
+      "explanation": "second = first는 같은 객체를 부르는 이름을 늘릴 뿐입니다. 객체를 새로 만드는 Title() 호출과 구분합니다.",
+      "code": "class Title:\n    def set_title(self, title):\n        self.title = title\n\nfirst = Title()\nfirst.set_title(\"처음\")\nsecond = first\nsecond.set_title(\"새 값\")\nprint(first.title)\nprint(second.title)",
+      "codeKind": "python",
+      "codeLabel": "직접 확인하거나 고칠 코드"
+    }
+  ]
+}

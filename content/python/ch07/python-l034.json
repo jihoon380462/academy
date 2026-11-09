@@ -1,0 +1,177 @@
+{
+  "id": "python-l034",
+  "order": 3,
+  "title": "지역 이름과 바깥 이름",
+  "subtitle": "이름이 속한 범위와 그 이름이 가리키는 값을 나누어 추적합니다.",
+  "minutes": 15,
+  "goal": "함수의 지역 이름과 바깥 이름을 구분하고, 이름 재대입과 공유한 리스트 변경의 영향을 설명한다.",
+  "intro": "함수 안에서 total이라는 이름을 써도 바깥의 total과 항상 같은 값일까요? 여러 함수가 같은 이름을 필요로 할 때 서로의 계산을 무조건 바꾸면 프로그램을 읽기 어려워집니다. Python은 함수 호출마다 지역 이름을 구분합니다. 다만 같은 리스트를 함께 가리킬 수 있으므로 이름의 범위와 값의 공유를 함께 살펴봐야 합니다.",
+  "sections": [
+    {
+      "title": "매개변수와 함수 안에서 대입한 이름은 지역 이름입니다.",
+      "body": [
+        "함수의 매개변수와 본문에서 보통의 대입으로 만든 이름은 그 함수의 지역 이름입니다. 여기서 범위란 코드에서 그 이름을 찾아 사용할 수 있는 영역을 뜻합니다. 같은 철자라도 다른 함수 호출이나 함수 바깥의 이름과 구분됩니다.",
+        "아래 calculate의 total은 함수 안에서 amount * 2에 연결됩니다. 파일의 total = 100과는 다른 이름이므로 함수 안에서 6을 계산해도 바깥 total은 100입니다. 함수가 반환한 6은 result라는 이름으로 따로 받을 수 있습니다.",
+        "함수 호출마다 매개변수와 지역 이름의 연결을 새로 만듭니다. 앞 호출에서 쓴 지역 이름이 다음 호출의 시작값으로 자동 유지되는 것은 아닙니다. 또 함수 안에서만 만든 이름을 바깥에서 그대로 읽을 수는 없습니다. 필요한 결과는 return으로 전달하세요."
+      ],
+      "code": {
+        "source": "total = 100\n\ndef calculate(amount):\n    total = amount * 2\n    return total\n\nresult = calculate(3)\nprint(result)\nprint(total)",
+        "kind": "python",
+        "output": "6\n100",
+        "error": null,
+        "caption": "함수 안의 total과 함수 바깥의 total은 철자가 같아도 서로 다른 연결입니다."
+      }
+    },
+    {
+      "title": "바깥 이름을 읽는 것과 안에서 재대입하는 것은 다릅니다.",
+      "body": [
+        "함수 안에서 지역 이름으로 정하지 않은 이름은 바깥에서 찾을 수 있습니다. 아래 show_label은 label에 대입하지 않고 읽기만 하므로 함수 바깥의 label을 사용합니다. 파일 수준의 이런 이름을 전역 이름이라고도 합니다.",
+        "함수를 정의했을 때의 바깥 값을 자동으로 복사해 보관하는 것은 아닙니다. 바깥 label을 바꾼 뒤 다시 호출하면 그때의 값을 읽습니다. 그래서 바깥 상태에 많이 기대는 함수는 호출 위치에 따라 결과가 달라질 수 있습니다.",
+        "반대로 함수 안에서 label = \"안쪽\"처럼 대입하면 이 레슨의 보통 함수에서는 지역 label을 정하는 것입니다. 바깥 label을 바꾸는 대입이 아닙니다. 필요한 입력을 매개변수로 받고 결과를 반환하면 어떤 값이 들어가고 나오는지 호출만으로 확인하기 쉬워집니다."
+      ],
+      "code": {
+        "source": "label = \"처음\"\n\ndef show_label():\n    print(label)\n\nshow_label()\nlabel = \"변경\"\nshow_label()",
+        "kind": "python",
+        "output": "처음\n변경",
+        "error": null,
+        "caption": "이 함수는 label을 지역 이름으로 대입하지 않아 호출 시점의 바깥 값을 읽습니다."
+      }
+    },
+    {
+      "title": "지역 이름으로 정한 이름은 값을 받기 전에 읽을 수 없습니다.",
+      "body": [
+        "함수 본문에서 이름에 대입하면 Python은 그 이름을 함수 안의 지역 이름으로 판단합니다. 이 판단은 대입문보다 앞에 있는 줄에도 적용됩니다. 아래 increment의 count = count + 1은 count를 지역 이름으로 정하지만, 오른쪽 count를 읽을 때 아직 그 지역 이름에 값이 없습니다.",
+        "그래서 바깥 count가 10이어도 이 함수는 UnboundLocalError를 일으킵니다. 바깥 값을 읽은 다음 지역 값을 만드는 순서로 자동 처리하지 않습니다. 오류 이름은 아직 값이 연결되지 않은 지역 이름을 사용했다는 단서입니다.",
+        "이 경우에는 count를 매개변수로 받아 현재 값을 분명히 전달하고, 증가한 값을 return하는 방식으로 고칠 수 있습니다. 바깥 이름을 직접 바꾸는 별도 선언도 있지만, 이번 기초 작업에서는 입력과 결과를 드러내어 범위가 섞이지 않도록 설계합니다."
+      ],
+      "code": {
+        "source": "count = 10\n\ndef increment():\n    count = count + 1\n    return count\n\nprint(increment())",
+        "kind": "python",
+        "output": "",
+        "error": "UnboundLocalError",
+        "caption": "오른쪽 count를 읽는 시점에 이 호출의 지역 count에는 값이 없어 멈춥니다."
+      }
+    },
+    {
+      "title": "지역 이름으로도 공유한 리스트 자체를 바꿀 수 있습니다.",
+      "body": [
+        "매개변수는 지역 이름이지만 인자로 받은 리스트를 자동으로 복사하지는 않습니다. 챕터 6의 별칭처럼 바깥 이름과 매개변수가 같은 리스트를 가리킬 수 있습니다. 매개변수에서 append로 그 리스트를 바꾸면 바깥에서도 변경이 보입니다.",
+        "아래 add_done은 items가 가리키는 리스트에 완료를 추가합니다. 반면 reset_name의 items = []는 지역 이름 items만 새 빈 리스트로 다시 연결합니다. 처음에 전달한 리스트를 비우는 명령이 아니므로 바깥 tasks의 내용은 그대로입니다.",
+        "원본을 변경하는 함수인지 새 결과를 반환하는 함수인지 미리 정하세요. 원본을 유지하고 바깥 항목 구성만 바꾸려면 items.copy()로 복사해 작업하고 새 리스트를 반환할 수 있습니다. 이 역시 얕은 복사이므로 안쪽의 변경 가능한 값까지 모두 독립되는 것은 아니라는 챕터 6의 경계는 유지됩니다."
+      ],
+      "code": {
+        "source": "def add_done(items):\n    items.append(\"완료\")\n\ndef reset_name(items):\n    items = []\n\ntasks = [\"읽기\"]\nadd_done(tasks)\nprint(tasks)\nreset_name(tasks)\nprint(tasks)",
+        "kind": "python",
+        "output": "['읽기', '완료']\n['읽기', '완료']",
+        "error": null,
+        "caption": "리스트의 내용을 바꾸는 호출과 지역 이름을 다른 리스트에 연결하는 대입을 구분합니다."
+      }
+    }
+  ],
+  "worked": {
+    "question": "바깥의 count가 10입니다. 이를 함수로 전달해 1 증가한 값을 돌려받고, 바깥 count도 그 결과로 갱신하려면 대입을 어디에서 해야 할까요?",
+    "code": {
+      "source": "def increment(count):\n    next_count = count + 1\n    return next_count\n\ncount = 10\nnew_count = increment(count)\nprint(count)\nprint(new_count)\ncount = new_count\nprint(count)",
+      "kind": "python",
+      "output": "10\n11\n11",
+      "error": null,
+      "caption": "함수는 받은 값으로 새 값을 계산하고, 바깥 이름을 갱신할지는 호출한 쪽이 결정합니다."
+    },
+    "steps": [
+      "호출한 쪽의 count가 가리키는 정수 10을 인자로 전달합니다. 함수의 지역 매개변수 count도 10을 받습니다.",
+      "함수 안에서는 10 + 1을 계산해 지역 next_count에 연결하고 11을 반환합니다. 바깥 count의 연결은 여기서 바꾸지 않습니다.",
+      "new_count는 반환받은 11에 연결됩니다. 첫 두 출력이 각각 10과 11인 이유입니다.",
+      "바깥에서 count = new_count를 실행할 때 비로소 바깥 count가 11에 연결됩니다. 함수 입력·출력과 호출한 쪽의 상태 변경이 분리되어 있습니다."
+    ],
+    "answer": "지역 계산은 매개변수와 return으로 처리하고, 바깥 이름에 대한 재대입은 호출한 쪽에서 합니다. 함수가 반환했다는 이유만으로 원래 인자 변수까지 바뀌지는 않습니다."
+  },
+  "misconception": {
+    "question": "매개변수가 지역 이름이므로 함수 안에서 리스트를 바꿔도 바깥은 항상 그대로인가요?",
+    "answer": "이름의 범위와 값의 공유는 다릅니다. 매개변수는 지역 이름이어도 바깥과 같은 리스트를 가리킬 수 있습니다. items.append(...)처럼 공유한 리스트 자체를 변경하면 바깥에서도 보입니다. items = []처럼 매개변수 이름만 새 리스트에 재연결하는 것은 바깥 이름을 바꾸지 않습니다."
+  },
+  "keypoints": [
+    "매개변수와 함수 안의 보통 대입은 지역 이름을 만듭니다. 같은 철자의 바깥 이름과 구분하며, 결과는 return으로 전달합니다.",
+    "바깥 이름 읽기와 지역 대입은 다릅니다. 함수 안에서 대입하는 지역 이름을 값 연결 전에 읽으면 UnboundLocalError가 날 수 있습니다.",
+    "지역 이름도 인자로 받은 리스트를 공유할 수 있습니다. 이름 재대입과 리스트 자체 변경을 구분하고, 입력·결과·원본 변경 여부를 명확히 합니다."
+  ],
+  "examples": [
+    {
+      "question": "아래 코드의 두 출력 값을 예상한 뒤 실행하세요. 함수 안의 total = 7이 바깥 total을 왜 바꾸지 않는지 설명하세요.",
+      "skill": "지역 이름과 바깥 이름 구분",
+      "solution": {
+        "answer": "7과 50이 차례로 출력됩니다. 함수 안 total은 지역 이름이고 바깥 total과 다릅니다.",
+        "code": {
+          "source": "total = 50\n\ndef show_total():\n    total = 7\n    print(total)\n\nshow_total()\nprint(total)",
+          "kind": "python",
+          "output": "7\n50",
+          "error": null
+        }
+      },
+      "explanation": "함수 안의 대입은 그 호출의 지역 이름을 정합니다. 밖의 같은 철자 이름을 자동으로 찾아 값을 바꾸는 동작이 아닙니다.",
+      "code": "total = 50\n\ndef show_total():\n    total = 7\n    print(total)\n\nshow_total()\nprint(total)",
+      "codeKind": "python"
+    },
+    {
+      "question": "아래 파일은 함수 안에서 계산한 doubled를 바깥에서 바로 읽으려 합니다. 오류를 확인한 뒤, return으로 값을 전달받아 12를 출력하도록 고치세요.",
+      "skill": "지역 결과를 반환으로 전달",
+      "solution": {
+        "answer": "doubled는 바깥에 정의되지 않아 NameError가 납니다. 함수에서 doubled를 반환하고 result에 받으면 12를 출력할 수 있습니다.",
+        "code": {
+          "source": "def calculate(number):\n    doubled = number * 2\n    return doubled\n\nresult = calculate(6)\nprint(result)",
+          "kind": "python",
+          "output": "12",
+          "error": null
+        }
+      },
+      "explanation": "함수 안에서만 만든 이름을 바깥에서 그대로 찾을 수는 없습니다. 필요한 값을 반환하면 바깥에서 선택한 이름으로 받아 계속 사용할 수 있습니다.",
+      "code": "def calculate(number):\n    doubled = number * 2\n\ncalculate(6)\nprint(doubled)",
+      "codeKind": "python"
+    },
+    {
+      "question": "아래 파일의 오류 종류를 확인하세요. count를 매개변수로 받고 증가한 값을 반환하도록 함수를 고친 뒤, 바깥 count는 10으로 유지하면서 반환값 11을 출력하세요.",
+      "skill": "연결 전 지역 이름 오류 수정",
+      "solution": {
+        "answer": "원래 코드는 UnboundLocalError가 납니다. increment(count)로 값을 전달하고 반환값을 출력하면 11이 나오며 바깥 count는 10입니다.",
+        "code": {
+          "source": "count = 10\n\ndef increment(count):\n    return count + 1\n\nprint(increment(count))\nprint(count)",
+          "kind": "python",
+          "output": "11\n10",
+          "error": null
+        }
+      },
+      "explanation": "원래 함수 안의 대입 때문에 count는 지역 이름으로 정해지지만 오른쪽에서 읽을 값이 없었습니다. 매개변수로 받으면 호출 때 값이 연결되고, return은 바깥 이름을 재대입하지 않습니다.",
+      "code": "count = 10\n\ndef increment():\n    count = count + 1\n    return count\n\nprint(increment())",
+      "codeKind": "python"
+    },
+    {
+      "question": "아래 코드의 두 출력을 예상한 뒤 실행하세요. replace 함수의 지역 items는 새 목록을 받는데 왜 바깥 values에는 앞에서 추가한 3이 남는지 설명하세요.",
+      "skill": "공유한 리스트 변경과 이름 재대입",
+      "solution": {
+        "answer": "두 출력은 모두 [1, 2, 3]입니다. add는 원래 리스트를 바꾸고 replace는 지역 이름만 다른 리스트에 연결합니다.",
+        "code": {
+          "source": "def add(items):\n    items.append(3)\n\ndef replace(items):\n    items = [9]\n\nvalues = [1, 2]\nadd(values)\nprint(values)\nreplace(values)\nprint(values)",
+          "kind": "python",
+          "output": "[1, 2, 3]\n[1, 2, 3]",
+          "error": null
+        }
+      },
+      "explanation": "인자 전달은 리스트 전체를 자동으로 복사하지 않습니다. append는 공유한 원본을 변경하지만, items에 새 리스트를 대입해도 바깥 values의 연결은 유지됩니다.",
+      "code": "def add(items):\n    items.append(3)\n\ndef replace(items):\n    items = [9]\n\nvalues = [1, 2]\nadd(values)\nprint(values)\nreplace(values)\nprint(values)",
+      "codeKind": "python"
+    },
+    {
+      "question": "정수 목록 items를 받아 원본은 유지하고 마지막에 0이 붙은 새 리스트를 반환하는 with_zero 함수를 작성하세요. [4, 8]을 전달해 원본과 반환값을 모두 출력하고, 빈 목록도 별도로 호출해 확인하세요.",
+      "skill": "원본 변경 없이 새 결과 반환",
+      "solution": {
+        "answer": "items.copy()로 새 바깥 리스트를 만들고 거기에 0을 추가해 반환합니다. 원본은 [4, 8], 반환값은 [4, 8, 0]이며 빈 목록의 결과는 [0]입니다.",
+        "code": {
+          "source": "def with_zero(items):\n    copied = items.copy()\n    copied.append(0)\n    return copied\n\noriginal = [4, 8]\nresult = with_zero(original)\nprint(original)\nprint(result)\nprint(with_zero([]))",
+          "kind": "python",
+          "output": "[4, 8]\n[4, 8, 0]\n[0]",
+          "error": null
+        }
+      },
+      "explanation": "복사본의 바깥 리스트에 append하므로 원래 바깥 리스트의 항목 수는 유지됩니다. 이번 입력은 정수 목록이며, 중첩 리스트의 안쪽 값을 변경한다면 얕은 복사만으로 독립성이 보장되지는 않습니다."
+    }
+  ]
+}

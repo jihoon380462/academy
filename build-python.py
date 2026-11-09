@@ -5,6 +5,7 @@ The website only displays code and never runs learner input.
 """
 import argparse
 import json
+import re
 import subprocess
 import sys
 import tempfile
@@ -36,6 +37,18 @@ SPECS = [
          description='목적에 맞게 컬렉션을 고르고, 조회·변경·순회와 별칭·얕은 복사의 차이를 확인합니다.',
          prerequisite='선행 학습: 챕터 3 · 문자열을 다루는 기본 도구, 챕터 5 · 반복으로 같은 규칙 적용하기',
          titles=['리스트의 생성·조회·변경', '튜플과 언패킹', '딕셔너리의 키와 값', '집합과 중복 제거', '컬렉션 순회와 간단한 컴프리헨션', '컬렉션의 별칭과 얕은 복사']),
+    dict(number=7, first=32, title='함수로 생각을 나누기',
+         description='입력과 반환값을 정해 작은 함수로 나누고, 호출·이름의 범위·기본값의 동작을 추적합니다.',
+         prerequisite='선행 학습: 챕터 5 · 반복으로 같은 규칙 적용하기, 챕터 6 · 여러 값을 담는 방법',
+         titles=['함수 정의와 호출', '매개변수·인자·반환값', '지역 이름과 바깥 이름', '기본값·키워드 인자·가변 객체', '작은 함수의 조합과 설명']),
+    dict(number=8, first=37, title='모듈·오류·간단한 파일 처리',
+         description='모듈과 실행 진입점을 구분하고, 필요한 오류 처리와 텍스트 파일·실행 환경의 기초를 익힙니다.',
+         prerequisite='선행 학습: 챕터 7 · 함수로 생각을 나누기',
+         titles=['import와 표준 라이브러리', '내 모듈과 실행 진입점', 'traceback과 try·except', '텍스트 파일과 with', '가상환경과 패키지의 역할']),
+    dict(number=9, first=42, title='객체 입문과 기초 연결',
+         description='객체의 상태와 동작을 읽고, 함수와 클래스를 골라 기초 스크립트의 입력부터 결과까지 연결합니다.',
+         prerequisite='선행 학습: 챕터 7 · 함수로 생각을 나누기, 챕터 8 · 모듈·오류·간단한 파일 처리',
+         titles=['객체·타입·메서드', '클래스와 인스턴스', '초기화와 인스턴스 상태', '함수로 둘지 클래스로 묶을지', '기초 스크립트의 입력부터 결과까지']),
 ]
 parser = argparse.ArgumentParser()
 parser.add_argument('--check-code', action='store_true')
@@ -43,6 +56,10 @@ args = parser.parse_args()
 blocks = []
 courses = []
 all_ids = set()
+
+
+def validate_filename(name, owner):
+    assert isinstance(name, str) and re.fullmatch(r'[A-Za-z0-9_][A-Za-z0-9_.-]*', name), (owner, 'flat filename', name)
 
 
 def validate_block(block, owner):
@@ -53,9 +70,45 @@ def validate_block(block, owner):
     if 'output' in block:
         assert isinstance(block['output'], str), (owner, 'output')
     assert block.get('error') is None or isinstance(block['error'], str), (owner, 'error')
+    if 'filename' in block:
+        assert block['kind'] == 'python', (owner, 'filename requires Python')
+        validate_filename(block['filename'], owner)
+        assert block['filename'].endswith('.py'), (owner, 'Python filename')
+    for field in ['files', 'expectedFiles']:
+        if field in block:
+            assert block['kind'] == 'python' and isinstance(block[field], dict), (owner, field)
+            for name, content in block[field].items():
+                validate_filename(name, owner)
+                assert name != block.get('filename', 'lesson.py'), (owner, 'source filename collision')
+                assert isinstance(content, str), (owner, field, name, 'text content')
     if block['kind'] == 'python':
         assert 'output' in block, (owner, 'missing expected output')
         blocks.append((owner, block))
+
+
+def execute_block(block, owner, directory):
+    """Run one trusted author example in its own directory with optional fixtures."""
+    for name, content in block.get('files', {}).items():
+        (directory / name).write_text(content, encoding='utf-8', newline='')
+    file = directory / block.get('filename', 'lesson.py')
+    file.write_text(block['source'] + '\n', encoding='utf-8', newline='')
+    command = [sys.executable, '-I', str(file)]
+    if any(name.endswith('.py') for name in block.get('files', {})):
+        # -I excludes cwd. Add only this example's author-controlled module directory.
+        launcher = 'import runpy, sys; sys.path.insert(0, sys.argv[1]); runpy.run_path(sys.argv[2], run_name="__main__")'
+        command = [sys.executable, '-I', '-c', launcher, str(directory), str(file)]
+    run = subprocess.run(command, input=block.get('input', ''), capture_output=True,
+                         encoding='utf-8', timeout=5, cwd=directory)
+    assert run.stdout.rstrip('\n') == block['output'].rstrip('\n'), (owner, 'stdout', run.stdout, block['output'])
+    if block.get('error'):
+        assert run.returncode != 0 and block['error'] + ':' in run.stderr, (owner, 'expected error', run.stderr)
+    else:
+        assert run.returncode == 0, (owner, 'unexpected error', run.stderr)
+    for name, expected in block.get('expectedFiles', {}).items():
+        path = directory / name
+        assert path.is_file(), (owner, 'missing result file', name)
+        with path.open(encoding='utf-8', newline='') as result:
+            assert result.read() == expected, (owner, 'file content', name)
 
 
 for spec in SPECS:
@@ -106,16 +159,10 @@ for spec in SPECS:
 
 if args.check_code:
     with tempfile.TemporaryDirectory(prefix='academy-python-') as tmp:
-        for owner, block in blocks:
-            file = Path(tmp) / 'lesson.py'
-            file.write_text(block['source'] + '\n')
-            run = subprocess.run([sys.executable, '-I', str(file)], input=block.get('input', ''),
-                                 capture_output=True, text=True, timeout=5, cwd=tmp)
-            assert run.stdout.rstrip('\n') == block['output'].rstrip('\n'), (owner, 'stdout', run.stdout, block['output'])
-            if block.get('error'):
-                assert run.returncode != 0 and block['error'] + ':' in run.stderr, (owner, 'expected error', run.stderr)
-            else:
-                assert run.returncode == 0, (owner, 'unexpected error', run.stderr)
+        for index, (owner, block) in enumerate(blocks):
+            directory = Path(tmp) / str(index)
+            directory.mkdir()
+            execute_block(block, owner, directory)
     print(f'Executed {len(blocks)} trusted lesson and solution snippets with Python {sys.version.split()[0]}.')
 
 bundle = 'window.PYTHON_COURSES = ' + json.dumps(courses, ensure_ascii=False, separators=(',', ':')) + ';\n'

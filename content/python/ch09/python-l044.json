@@ -1,0 +1,175 @@
+{
+  "id": "python-l044",
+  "order": 3,
+  "title": "초기화와 인스턴스 상태",
+  "subtitle": "객체를 만들 때 필요한 상태를 준비하고, 어떤 값이 인스턴스마다 따로 있는지 확인합니다.",
+  "minutes": 17,
+  "goal": "__init__ 호출과 self를 추적하고 인스턴스 속성과 공유된 클래스 속성의 영향을 구분한다.",
+  "intro": "앞 레슨의 카드에서는 제목 설정을 잊으면 읽는 메서드가 실패했습니다. 객체를 쓸 준비가 된 상태로 시작하려면 생성하는 호출과 초기 상태 준비를 연결할 수 있어야 합니다. __init__을 사용하고, 변경 가능한 목록을 각 인스턴스마다 따로 준비하는 이유까지 살펴봅니다.",
+  "sections": [
+    {
+      "title": "__init__은 생성하는 호출 중에 초기 상태를 준비합니다.",
+      "body": [
+        "클래스 안에 def __init__(self, title):을 정의하면 Card(\"복습\")처럼 호출할 때 새 인스턴스에 대한 초기화가 자동으로 실행됩니다. __init__ 앞뒤에는 밑줄이 두 개씩 있습니다. 이름을 임의로 init으로 줄이면 같은 자동 호출 규칙이 적용되지 않습니다.",
+        "여기서 __init__은 이미 준비된 새 인스턴스의 상태를 설정하는 역할입니다. self.title = title로 필요한 값을 저장하면 나중에 title을 읽는 메서드는 별도의 설정 호출을 기다리지 않아도 됩니다.",
+        "Card(\"복습\")에서 인스턴스는 self로, 문자열 복습은 title로 전달됩니다. 호출하는 코드에서는 self 인자를 직접 한 번 더 전달하지 않습니다. 초기화 메서드 안의 print는 출력할 수 있지만 초기화의 필수 기능은 아닙니다."
+      ],
+      "code": {
+        "source": "class Card:\n    def __init__(self, title):\n        self.title = title\n\n    def show(self):\n        return self.title\n\ncard = Card(\"복습\")\nprint(card.show())",
+        "kind": "python",
+        "output": "복습",
+        "error": null
+      }
+    },
+    {
+      "title": "self는 이번 객체이며 상태 갱신은 그 객체에 남습니다.",
+      "body": [
+        "self.count는 이번 메서드가 받은 인스턴스의 count 속성입니다. count라는 지역 이름만 갱신하는 것과 구분하세요. 메서드 호출이 끝나도 인스턴스가 보관한 count는 다음 호출에서 읽을 수 있습니다.",
+        "같은 클래스로 만든 두 인스턴스가 각각 self.count = 0으로 시작하면 그 숫자 상태는 따로 추적됩니다. first.add(2)와 first.add(3)은 첫 객체에 누적되지만 두 번째 객체의 count를 바꾸지 않습니다.",
+        "counter.count = 10처럼 바깥에서도 속성을 읽고 대입할 수 있습니다. 밑줄 없는 속성이 자동으로 보호되는 구조가 아닙니다. 이번에는 메서드가 어떤 상태를 바꾸는지 분명하게 설명하며 사용 순서와 입력 전제를 정합니다."
+      ],
+      "code": {
+        "source": "class Counter:\n    def __init__(self):\n        self.count = 0\n\n    def add(self, amount):\n        self.count = self.count + amount\n\nfirst = Counter()\nsecond = Counter()\nfirst.add(2)\nfirst.add(3)\nprint(first.count)\nprint(second.count)",
+        "kind": "python",
+        "output": "5\n0",
+        "error": null
+      }
+    },
+    {
+      "title": "변경 가능한 목록은 각 인스턴스 안에서 준비합니다.",
+      "body": [
+        "클래스 본문에 items = []를 두면 그 리스트는 클래스에 연결된 값입니다. 인스턴스에서 같은 이름의 속성을 따로 만들지 않은 상태로 self.items.append(...)를 호출하면 같은 클래스 리스트를 찾아 변경하므로 여러 인스턴스에서 그 변경이 보일 수 있습니다.",
+        "각자의 목록이 필요하다면 __init__ 안에서 self.items = []로 새 리스트를 준비합니다. 초기화가 인스턴스마다 실행될 때마다 새 리스트가 만들어집니다. 클래스에 같은 메서드 정의가 있다는 이유로 인스턴스의 목록도 공유해야 하는 것은 아닙니다.",
+        "이름과 공유를 읽는 원리는 리스트 별칭과 같습니다. 상태가 클래스 쪽에 한 번 준비된 것인지, 각 인스턴스 안에 따로 준비된 것인지 확인하세요. 직접 전달받은 리스트를 저장한 경우에도 그 리스트를 외부와 공유할 수 있으므로, __init__이라는 이름만으로 모든 값이 복사되는 것은 아닙니다."
+      ],
+      "code": {
+        "source": "class Bag:\n    def __init__(self):\n        self.items = []\n\n    def add(self, item):\n        self.items.append(item)\n\nfirst = Bag()\nsecond = Bag()\nfirst.add(\"연필\")\nprint(first.items)\nprint(second.items)",
+        "kind": "python",
+        "output": "['연필']\n[]",
+        "error": null
+      }
+    },
+    {
+      "title": "초기화는 인스턴스를 반환하는 함수처럼 쓰지 않습니다.",
+      "body": [
+        "__init__의 반환값은 None이어야 합니다. 보통 return을 적지 않으면 함수에서 배운 것처럼 None을 반환하므로 그대로 두면 됩니다. return self나 return 1처럼 None이 아닌 값을 반환하면 생성하는 호출에서 TypeError가 납니다.",
+        "Card(\"복습\")라는 표현식이 인스턴스를 돌려주는 것과 __init__의 반환값은 구분해야 합니다. 인스턴스를 얻는 호출은 클래스 이름으로 쓰고, __init__은 그 과정에서 상태를 준비하는 역할입니다. __init__을 직접 불러 인스턴스를 얻으려고 하지 않습니다.",
+        "초기 상태를 준비했다고 모든 입력이 유효한 것은 아닙니다. 이번 예제는 title은 문자열, amount는 정수라는 전제를 둡니다. 입력을 숫자로 읽는 단계와 허용 범위를 판단하는 단계는 프로그램 바깥 흐름이나 별도 함수로 분리할 수 있습니다."
+      ],
+      "code": {
+        "source": "class Label:\n    def __init__(self, text):\n        self.text = text\n        return 1\n\nlabel = Label(\"기초\")",
+        "kind": "python",
+        "output": "",
+        "error": "TypeError"
+      }
+    }
+  ],
+  "worked": {
+    "question": "같은 클래스의 두 목록 중 첫 목록에만 항목을 넣으려 합니다. __init__에서 목록을 만들 때 어떤 값이 각 인스턴스에 따로 준비되나요?",
+    "code": {
+      "source": "class StudyPlan:\n    def __init__(self, name):\n        self.name = name\n        self.tasks = []\n\n    def add(self, task):\n        self.tasks.append(task)\n\nfirst = StudyPlan(\"오전\")\nsecond = StudyPlan(\"저녁\")\nfirst.add(\"읽기\")\nfirst.add(\"실행\")\nprint(first.name, first.tasks)\nprint(second.name, second.tasks)",
+      "kind": "python",
+      "output": "오전 ['읽기', '실행']\n저녁 []",
+      "error": null
+    },
+    "steps": [
+      "StudyPlan을 호출할 때마다 __init__이 서로 다른 self를 받고 이름을 저장합니다. self.tasks = []도 호출마다 새 리스트를 준비합니다.",
+      "first에서 add를 두 번 호출하면 첫 인스턴스의 tasks 리스트에 항목이 추가됩니다. 메서드는 작업 대상 self의 상태만 읽습니다.",
+      "second의 tasks는 다른 리스트라 비어 있습니다. 둘이 같은 클래스라는 사실과 상태 목록을 공유하는지는 별개의 문제입니다."
+    ],
+    "answer": "인스턴스마다 실행되는 __init__ 안에서 상태를 준비하면 각각의 이름과 목록을 따로 가질 수 있습니다. 변경 가능한 값을 어디에 만들었는지 추적합니다."
+  },
+  "misconception": {
+    "question": "__init__ 안에서 self에 저장하면 전달받은 리스트도 자동으로 복사되나요?",
+    "answer": "그렇지 않습니다. self.items = items는 전달받은 같은 리스트를 저장하므로 외부와 공유할 수 있습니다. self.items = []는 그 줄을 실행할 때 새 리스트를 만드는 경우입니다. 독립된 바깥 목록이 목적이면 copy 같은 연산이 필요한지 판단하고, 얕은 복사의 내부 공유 경계도 함께 기억해야 합니다."
+  },
+  "keypoints": [
+    "__init__은 클래스 호출 중 새 인스턴스의 상태를 준비합니다. 첫 매개변수 self는 이번 인스턴스를 받습니다.",
+    "인스턴스마다 필요한 변경 가능한 목록은 __init__에서 self.items = []처럼 준비합니다. 클래스에 둔 목록과 구별합니다.",
+    "__init__은 None을 반환해야 하며 인스턴스를 반환하는 함수처럼 쓰지 않습니다. 대입만으로 입력값이 복사되거나 검증되지는 않습니다."
+  ],
+  "examples": [
+    {
+      "question": "이름을 받는 생성 호출로 Person 인스턴스를 만들고 즉시 이름을 읽을 수 있도록 __init__을 작성하세요. 이름은 민서로 정하고 따로 설정 메서드를 부르지 마세요.",
+      "skill": "생성 시 상태 준비",
+      "solution": {
+        "answer": "__init__(self, name)에서 self.name = name으로 저장하면 Person(\"민서\") 직후 name을 읽을 수 있습니다.",
+        "code": {
+          "source": "class Person:\n    def __init__(self, name):\n        self.name = name\n\nperson = Person(\"민서\")\nprint(person.name)",
+          "kind": "python",
+          "output": "민서",
+          "error": null
+        }
+      },
+      "explanation": "생성하는 호출 안에서 필요한 속성을 준비하면 사용하는 쪽이 설정 순서를 따로 기억할 필요가 줄어듭니다."
+    },
+    {
+      "question": "아래 두 객체의 count와 출력 결과를 예상하고 실행하세요. 두 객체가 같은 메서드를 사용해도 누적 결과가 다른 이유를 설명하세요.",
+      "skill": "인스턴스 상태 추적",
+      "solution": {
+        "answer": "first는 5, second는 1입니다. 각각의 self.count에 따로 누적했습니다.",
+        "code": {
+          "source": "class Counter:\n    def __init__(self):\n        self.count = 0\n\n    def add(self, amount):\n        self.count = self.count + amount\n\nfirst = Counter()\nsecond = Counter()\nfirst.add(2)\nsecond.add(1)\nfirst.add(3)\nprint(first.count)\nprint(second.count)",
+          "kind": "python",
+          "output": "5\n1",
+          "error": null
+        }
+      },
+      "explanation": "__init__은 각 인스턴스를 0으로 준비합니다. add 호출의 self가 어느 객체인지에 따라 변경할 count가 결정됩니다.",
+      "code": "class Counter:\n    def __init__(self):\n        self.count = 0\n\n    def add(self, amount):\n        self.count = self.count + amount\n\nfirst = Counter()\nsecond = Counter()\nfirst.add(2)\nsecond.add(1)\nfirst.add(3)\nprint(first.count)\nprint(second.count)",
+      "codeKind": "python",
+      "codeLabel": "직접 확인하거나 고칠 코드"
+    },
+    {
+      "question": "아래 클래스는 첫 객체에 추가한 값이 두 번째 객체에서도 보입니다. 원래 결과를 확인한 뒤, __init__에서 각자의 목록을 준비하도록 고쳐 첫째는 ['읽기'], 둘째는 []가 나오게 하세요.",
+      "skill": "클래스 목록의 공유 함정",
+      "solution": {
+        "answer": "클래스 본문의 items = []를 없애고 __init__의 self.items = []로 옮기면 됩니다. 원본은 양쪽 모두 ['읽기']입니다.",
+        "code": {
+          "source": "class Bag:\n    def __init__(self):\n        self.items = []\n\n    def add(self, item):\n        self.items.append(item)\n\nfirst = Bag()\nsecond = Bag()\nfirst.add(\"읽기\")\nprint(first.items)\nprint(second.items)",
+          "kind": "python",
+          "output": "['읽기']\n[]",
+          "error": null
+        }
+      },
+      "explanation": "원본의 self.items는 두 객체 모두 클래스 쪽의 같은 리스트를 찾습니다. 각 초기화 호출에서 새 리스트를 만들면 상태를 분리할 수 있습니다.",
+      "code": "class Bag:\n    items = []\n\n    def add(self, item):\n        self.items.append(item)\n\nfirst = Bag()\nsecond = Bag()\nfirst.add(\"읽기\")\nprint(first.items)\nprint(second.items)",
+      "codeKind": "python",
+      "codeLabel": "직접 확인하거나 고칠 코드"
+    },
+    {
+      "question": "아래 파일의 오류 종류를 확인하세요. 초기화에 상태 준비만 남기고 7을 정상적으로 출력하도록 고치세요. 클래스 호출의 결과와 __init__의 반환값을 구분해 설명하세요.",
+      "skill": "초기화 반환값",
+      "solution": {
+        "answer": "원본은 TypeError입니다. return self를 제거하면 생성 호출이 인스턴스를 돌려주고 number.value는 7입니다.",
+        "code": {
+          "source": "class Number:\n    def __init__(self, value):\n        self.value = value\n\nnumber = Number(7)\nprint(number.value)",
+          "kind": "python",
+          "output": "7",
+          "error": null
+        }
+      },
+      "explanation": "__init__은 인스턴스의 상태를 준비하고 None을 반환해야 합니다. 클래스 이름으로 호출해 인스턴스를 얻는 과정과 __init__의 return을 같은 것으로 취급하지 않습니다.",
+      "code": "class Number:\n    def __init__(self, value):\n        self.value = value\n        return self\n\nnumber = Number(7)\nprint(number.value)",
+      "codeKind": "python",
+      "codeLabel": "직접 확인하거나 고칠 코드"
+    },
+    {
+      "question": "아래 코드에서 바깥 items와 bag.items의 출력을 예상하세요. 독립된 바깥 리스트를 저장하려면 __init__의 대입 한 곳을 어떻게 바꿀지도 적고 비교하세요. 이번 목록의 항목은 문자열뿐입니다.",
+      "skill": "입력 객체 공유와 복사",
+      "solution": {
+        "answer": "원본은 두 출력 모두 ['기초', '복습']입니다. self.items = items.copy()로 바꾸면 바깥은 ['기초'], bag.items만 ['기초', '복습']가 됩니다.",
+        "code": {
+          "source": "class Bag:\n    def __init__(self, items):\n        self.items = items.copy()\n\nitems = [\"기초\"]\nbag = Bag(items)\nbag.items.append(\"복습\")\nprint(items)\nprint(bag.items)",
+          "kind": "python",
+          "output": "['기초']\n['기초', '복습']",
+          "error": null
+        }
+      },
+      "explanation": "__init__도 함수이므로 인자로 전달된 리스트를 그대로 대입하면 공유합니다. 문자열 항목만 있는 이번 전제에서는 바깥 리스트를 복사해 목록 추가를 분리할 수 있습니다.",
+      "code": "class Bag:\n    def __init__(self, items):\n        self.items = items\n\nitems = [\"기초\"]\nbag = Bag(items)\nbag.items.append(\"복습\")\nprint(items)\nprint(bag.items)",
+      "codeKind": "python",
+      "codeLabel": "직접 확인하거나 고칠 코드"
+    }
+  ]
+}

@@ -1,0 +1,175 @@
+{
+  "id": "python-l042",
+  "order": 1,
+  "title": "객체·타입·메서드",
+  "subtitle": "이미 사용한 값을 타입과 동작을 가진 객체로 다시 읽어 봅니다.",
+  "minutes": 13,
+  "goal": "문자열·리스트 등 이미 사용한 값을 객체로 읽고 타입·메서드·변경과 반환값을 구분한다.",
+  "intro": "지금까지 숫자를 계산하고 문자열의 도구를 호출하며 리스트를 바꾸었습니다. 객체라는 말은 갑자기 다른 종류의 문법을 뜻하는 것이 아닙니다. 이미 다뤄 온 값이 어떤 타입이고 어떤 동작을 제공하는지 연결해 보면, 다음 레슨에서 직접 클래스를 정의하는 이유도 이해할 수 있습니다.",
+  "sections": [
+    {
+      "title": "숫자와 문자열과 리스트도 객체입니다.",
+      "body": [
+        "Python에서 우리가 사용해 온 숫자·문자열·리스트는 모두 객체입니다. 객체는 타입을 가지며 값이나 상태를 담고, 타입에 따라 할 수 있는 연산과 동작이 정해집니다. 객체라는 관점은 값과 그 값에 가능한 일을 함께 읽게 합니다.",
+        "type(value)는 객체의 타입을 알려 줍니다. 3의 타입은 int, \"3\"은 str, [3]은 list입니다. 화면에 비슷한 숫자가 보인다는 이유만으로 같은 연산을 할 수 있는 것은 아니며, 이 차이는 앞에서 이미 숫자 변환과 리스트 조회에서 확인했습니다.",
+        "객체라는 말이 반드시 변경 가능한 값이라는 뜻은 아닙니다. 정수나 문자열도 객체이지만 그 값 내부를 직접 수정하지 않습니다. 리스트는 항목을 바꿀 수 있는 객체입니다."
+      ],
+      "code": {
+        "source": "values = [3]\ntext = \"3\"\nnumber = 3\nprint(type(values))\nprint(type(text))\nprint(type(number))",
+        "kind": "python",
+        "output": "<class 'list'>\n<class 'str'>\n<class 'int'>",
+        "error": null
+      }
+    },
+    {
+      "title": "점 뒤의 메서드는 그 객체에 작업을 요청합니다.",
+      "body": [
+        "text.upper()에서 text는 작업 대상 객체이고 upper는 그 문자열 타입이 제공하는 메서드입니다. 메서드는 객체와 연결해 호출하는 동작입니다. 괄호를 붙여 호출하며, 괄호 안에는 작업에 필요한 인자를 전달할 수 있습니다.",
+        "items.append(\"복습\")는 items라는 리스트에 복습을 추가하는 메서드 호출입니다. 같은 점 표기라도 어떤 작업을 할 수 있는지는 객체의 타입에 따라 다릅니다. 문자열에는 append가 없으므로 text.append(...)는 AttributeError가 납니다.",
+        "len(items)처럼 함수에 객체를 전달하는 형태도 있습니다. 길이를 구하는 기능이 있다고 언제나 items.len()이라는 메서드가 있는 것은 아닙니다. 이미 사용한 도구의 호출 형태와 결과를 정확히 읽는 데 집중합니다."
+      ],
+      "code": {
+        "source": "text = \"python\"\nitems = [\"기초\"]\nprint(text.upper())\nitems.append(\"복습\")\nprint(items)\nprint(len(items))",
+        "kind": "python",
+        "output": "PYTHON\n['기초', '복습']\n2",
+        "error": null
+      }
+    },
+    {
+      "title": "원래 객체를 바꾸는지 반환값을 만드는지 확인합니다.",
+      "body": [
+        "문자열의 upper는 바뀐 내용의 문자열을 반환하고 원래 문자열은 유지합니다. text.upper()만 호출했다고 text가 대문자 결과를 가리키지는 않습니다. 결과를 쓰려면 다른 이름에 연결하거나 text에 다시 대입합니다.",
+        "리스트의 append는 원래 리스트를 변경하고 None을 반환합니다. 둘 다 메서드라고 해서 반환값이나 변경 방식까지 같지는 않습니다. 원본의 상태 변화와 호출식의 반환값을 따로 관찰하세요.",
+        "print 역시 전달한 값을 보여 주는 역할입니다. 화면에 출력된 글자와 메서드가 반환한 값을 같은 것으로 취급하지 않습니다. 한 코드를 설명할 때 작업 대상·변경 여부·반환값·출력을 차례로 나누면 흐름이 분명해집니다."
+      ],
+      "code": {
+        "source": "text = \"go\"\nupper_text = text.upper()\nitems = [\"go\"]\nresult = items.append(\"stop\")\nprint(text)\nprint(upper_text)\nprint(items)\nprint(result)",
+        "kind": "python",
+        "output": "go\nGO\n['go', 'stop']\nNone",
+        "error": null
+      }
+    },
+    {
+      "title": "이름은 객체를 가리키며 같은 객체를 공유할 수 있습니다.",
+      "body": [
+        "second = first는 first가 가리키는 객체를 second라는 이름으로도 가리키게 합니다. 리스트를 이렇게 공유하면 한쪽 이름으로 항목을 변경한 결과가 다른 이름에서도 보입니다. 이것은 앞 챕터에서 배운 별칭과 같은 원리입니다.",
+        "반면 second = [새 값]이라는 재대입은 second의 연결을 다른 객체로 바꿉니다. first가 가리키던 리스트 내부를 수정하는 것은 아닙니다. 객체의 변경과 이름의 연결 변경을 구분하는 습관은 직접 정의한 인스턴스에서도 그대로 필요합니다.",
+        "타입이 같다는 사실은 같은 객체라는 뜻이 아닙니다. 서로 다른 두 리스트도 둘 다 list 타입입니다. 이번 레슨에서는 출력 결과에 영향을 주는 공유와 변경을 추적하며, 객체의 메모리 주소를 외울 필요는 없습니다."
+      ],
+      "code": {
+        "source": "first = [1]\nsecond = first\nsecond.append(2)\nprint(first)\nsecond = [9]\nprint(first)\nprint(second)\nprint(type(first) == type(second))",
+        "kind": "python",
+        "output": "[1, 2]\n[1, 2]\n[9]\nTrue",
+        "error": null
+      }
+    }
+  ],
+  "worked": {
+    "question": "문자열과 리스트를 다른 이름으로도 가리킨 뒤, 문자열은 upper를 호출하고 리스트는 append를 호출했습니다. 원본 이름으로 읽는 결과가 왜 다를까요?",
+    "code": {
+      "source": "word = \"learn\"\nword_alias = word\nresult = word_alias.upper()\ntopics = [\"읽기\"]\ntopic_alias = topics\ntopic_alias.append(\"실행\")\nprint(word)\nprint(result)\nprint(topics)",
+      "kind": "python",
+      "output": "learn\nLEARN\n['읽기', '실행']",
+      "error": null
+    },
+    "steps": [
+      "word_alias는 원래 문자열을 함께 가리킵니다. upper는 원본을 바꾸지 않고 대문자 문자열을 반환하므로 result만 그 결과에 연결됩니다.",
+      "topic_alias와 topics는 같은 리스트를 가리킵니다. append는 그 리스트를 바꾸므로 topics로 읽어도 실행 항목이 보입니다.",
+      "차이를 결정한 것은 별칭이라는 사실만이 아니라 작업이 객체 내부를 변경하는지입니다. 타입과 메서드의 계약을 함께 읽습니다."
+    ],
+    "answer": "문자열 메서드의 반환과 리스트 메서드의 변경은 다릅니다. 같은 객체를 가리키는 이름을 추적하고 각 동작의 결과를 구분합니다."
+  },
+  "misconception": {
+    "question": "객체를 배우면 지금까지 쓴 숫자나 문자열도 클래스로 다시 만들어야 하나요?",
+    "answer": "그럴 필요가 없습니다. 숫자·문자열·리스트는 이미 타입과 동작을 가진 객체입니다. 기존 값을 객체 관점으로 읽은 뒤, 내 문제에 맞는 상태와 동작을 묶을 필요가 있을 때 직접 클래스를 정의할 수 있습니다. 모든 계산을 클래스로 바꾸는 것이 목표는 아닙니다."
+  },
+  "keypoints": [
+    "이미 사용한 숫자·문자열·리스트도 객체이며, type은 객체의 타입을 알려 줍니다.",
+    "메서드 호출은 객체의 타입에 따라 가능한 작업을 요청합니다. 변경과 반환값은 메서드마다 확인합니다.",
+    "이름의 재대입과 객체 내부의 변경은 다릅니다. 타입이 같아도 같은 객체인 것은 아닙니다."
+  ],
+  "examples": [
+    {
+      "question": "정수 5, 문자열 \"5\", 리스트 [5]의 타입을 각각 출력하세요. 각각에 +를 적용할 때 숫자 계산·문자열 연결·리스트 연결로 달라지는 이유를 적으세요.",
+      "skill": "객체와 타입",
+      "solution": {
+        "answer": "타입은 int, str, list입니다. 같은 모양의 5라도 타입에 따라 +의 의미와 함께 사용할 값의 종류가 다릅니다.",
+        "code": {
+          "source": "print(type(5))\nprint(type(\"5\"))\nprint(type([5]))\nprint(5 + 1)\nprint(\"5\" + \"1\")\nprint([5] + [1])",
+          "kind": "python",
+          "output": "<class 'int'>\n<class 'str'>\n<class 'list'>\n6\n51\n[5, 1]",
+          "error": null
+        }
+      },
+      "explanation": "객체의 타입은 가능한 동작을 결정합니다. 출력 모양만 보고 값을 같은 종류로 취급하지 않습니다."
+    },
+    {
+      "question": "아래 코드는 문자열에 리스트 메서드를 호출합니다. 오류 종류를 확인한 뒤, 문자열 뒤에 !를 연결한 새 결과를 출력하도록 고치세요.",
+      "skill": "타입에 없는 메서드",
+      "solution": {
+        "answer": "원본은 AttributeError입니다. text + \"!\"의 결과를 출력하면 안녕!입니다.",
+        "code": {
+          "source": "text = \"안녕\"\nresult = text + \"!\"\nprint(result)",
+          "kind": "python",
+          "output": "안녕!",
+          "error": null
+        }
+      },
+      "explanation": "append는 리스트에 있는 메서드입니다. 문자열을 연결하는 목적에는 문자열끼리 +를 사용하고 반환한 문자열을 출력할 수 있습니다.",
+      "code": "text = \"안녕\"\ntext.append(\"!\")",
+      "codeKind": "python",
+      "codeLabel": "직접 확인하거나 고칠 코드"
+    },
+    {
+      "question": "아래 코드가 소문자를 출력하는 이유를 설명하고, 원래 text를 유지하면서 대문자 결과도 출력하도록 코드를 추가하세요.",
+      "skill": "원본과 반환값",
+      "solution": {
+        "answer": "원본 출력은 keep입니다. result = text.upper()를 사용하면 원본 keep과 결과 KEEP를 각각 확인할 수 있습니다.",
+        "code": {
+          "source": "text = \"keep\"\nresult = text.upper()\nprint(text)\nprint(result)",
+          "kind": "python",
+          "output": "keep\nKEEP",
+          "error": null
+        }
+      },
+      "explanation": "upper 호출은 문자열 내부를 고치지 않습니다. 반환된 값을 별도로 사용해야 바뀐 내용을 볼 수 있습니다.",
+      "code": "text = \"keep\"\ntext.upper()\nprint(text)",
+      "codeKind": "python",
+      "codeLabel": "직접 확인하거나 고칠 코드"
+    },
+    {
+      "question": "아래 두 출력 값을 예상하고 실행하세요. 메서드 호출이 None을 반환한다는 것과 리스트가 바뀌었다는 것이 함께 성립하는 이유를 설명하세요.",
+      "skill": "변경과 반환의 분리",
+      "solution": {
+        "answer": "첫 출력은 [2, 4]이고 다음은 None입니다. append는 리스트를 바꾸면서 그 리스트를 반환하지는 않습니다.",
+        "code": {
+          "source": "values = [2]\nanswer = values.append(4)\nprint(values)\nprint(answer)",
+          "kind": "python",
+          "output": "[2, 4]\nNone",
+          "error": null
+        }
+      },
+      "explanation": "원본 객체의 변경과 호출식의 반환값은 별개의 관찰 대상입니다. 반환값이 None이라고 작업을 하지 않았다는 뜻은 아닙니다.",
+      "code": "values = [2]\nanswer = values.append(4)\nprint(values)\nprint(answer)",
+      "codeKind": "python",
+      "codeLabel": "직접 확인하거나 고칠 코드"
+    },
+    {
+      "question": "아래 코드의 세 출력 값을 예상하고 실행하세요. original과 alias의 타입이 같다는 사실만으로 마지막에도 같은 리스트를 가리킨다고 할 수 있는지 설명하세요.",
+      "skill": "타입과 공유 구분",
+      "solution": {
+        "answer": "출력은 [1, 2], [7], True입니다. 재대입 뒤 alias는 다른 리스트를 가리키지만 타입은 둘 다 list입니다.",
+        "code": {
+          "source": "original = [1]\nalias = original\nalias.append(2)\nalias = [7]\nprint(original)\nprint(alias)\nprint(type(original) == type(alias))",
+          "kind": "python",
+          "output": "[1, 2]\n[7]\nTrue",
+          "error": null
+        }
+      },
+      "explanation": "append를 했을 때는 공유한 리스트가 바뀝니다. 이후 재대입은 alias의 연결만 바꾸므로 같은 타입이라는 확인은 같은 객체라는 확인이 아닙니다.",
+      "code": "original = [1]\nalias = original\nalias.append(2)\nalias = [7]\nprint(original)\nprint(alias)\nprint(type(original) == type(alias))",
+      "codeKind": "python",
+      "codeLabel": "직접 확인하거나 고칠 코드"
+    }
+  ]
+}
