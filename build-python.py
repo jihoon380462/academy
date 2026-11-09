@@ -1,6 +1,6 @@
 """Validate Python chapter 1 content and emit its static browser bundle.
 
-Optional --check-code executes the trusted lesson snippets in temporary files.
+Optional --check-code executes the trusted lesson and solution snippets in temporary files.
 It never executes console blocks or learner input in the website.
 """
 import argparse,json,subprocess,sys,tempfile
@@ -38,11 +38,11 @@ assert len(review)==10
 for owner,questions in [(l['id'],l['examples']) for l in lessons]+[('review',review)]:
  for i,q in enumerate(questions,1):
   assert q['question'] and q['skill'] and q['explanation'],(owner,i)
-  assert len(q['options'])==4 and len(set(q['options']))==4,(owner,i,'choices')
-  assert all(isinstance(o,str) and o for o in q['options'])
-  assert type(q['answer']) is int and 0<=q['answer']<4,(owner,i,'answer')
-  assert q.get('optionFormat','text') in ['text','code']
+  assert not any(key in q for key in ['options','optionFormat','answer']),(owner,i,'Use written exercises, not multiple-choice fields')
+  assert isinstance(q['solution']['answer'],str) and q['solution']['answer'].strip(),(owner,i,'solution')
+  if q.get('code'):assert isinstance(q['code'],str),(owner,i,'prompt code')
   assert q.get('codeKind','python') in ['python','console','text']
+  if q['solution'].get('code'):validate_block(q['solution']['code'],f'{owner}/question{i}/solution')
   if owner=='review':assert q['related'] and set(q['related'])<=ids,(owner,i,'related')
 assert set().union(*(set(q['related']) for q in review))==ids,'Review must cover all lessons'
 if args.check_code:
@@ -54,7 +54,7 @@ if args.check_code:
    if block.get('error'):
     assert run.returncode!=0 and block['error']+':' in run.stderr,(owner,'expected error',run.stderr)
    else:assert run.returncode==0,(owner,'unexpected error',run.stderr)
- print(f'Executed {len(blocks)} trusted lesson snippets with Python {sys.version.split()[0]}.')
+ print(f'Executed {len(blocks)} trusted lesson and solution snippets with Python {sys.version.split()[0]}.')
 course={'id':'python-ch01','title':'프로그램을 읽고 실행하기','description':'입력과 처리, 코드와 출력, 실행과 오류의 차이를 작은 프로그램으로 이해합니다.','runtime':'Python 3','testedVersion':sys.version.split()[0] if args.check_code else None,'lessons':lessons,'review':review}
 (ROOT/'python-content.js').write_text('window.PYTHON_CH01 = '+json.dumps(course,ensure_ascii=False,separators=(',',':'))+';\n')
 print('Validated 5 Python lessons, 25 examples, 10 review questions; wrote python-content.js.')

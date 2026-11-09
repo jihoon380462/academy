@@ -91,72 +91,82 @@
   ],
   "examples": [
     {
-      "question": "print(\"안녕\")에서 바깥의 큰따옴표는 어떤 역할인가요?",
-      "options": [
-        "출력할 글자를 굵게 표시합니다.",
-        "문자열이 시작하고 끝나는 경계를 표시합니다.",
-        "안녕이라는 명령을 실행합니다.",
-        "화면에 반드시 큰따옴표까지 출력하도록 합니다."
-      ],
-      "optionFormat": "text",
-      "answer": 1,
-      "explanation": "바깥 따옴표는 안녕이 문자 값이라는 것을 알려 주는 경계입니다. 이 경계 표시는 문자 값에 포함되지 않으므로 이 코드의 출력에는 나타나지 않습니다.",
-      "skill": "문자열의 경계"
+      "question": "아래 코드의 출력을 먼저 예상하고 직접 실행하세요. 이어서 바깥의 큰따옴표를 모두 작은따옴표로 바꾸어 다시 실행해 보세요. 출력이 달라지는지와 그 이유를 적으세요.",
+      "skill": "문자열의 경계",
+      "solution": {
+        "answer": "두 코드 모두 안녕을 출력합니다. 시작과 끝의 따옴표 종류를 맞추면 큰따옴표와 작은따옴표로 같은 문자열을 나타낼 수 있습니다.",
+        "code": {
+          "source": "print('안녕')",
+          "kind": "python",
+          "output": "안녕",
+          "error": null,
+          "caption": "작은따옴표로 바꾼 예시입니다."
+        }
+      },
+      "explanation": "문자열을 감싸는 바깥 따옴표는 내용의 경계입니다. 그 경계 표시는 문자 값에 포함되지 않아 출력되지 않습니다.",
+      "code": "print(\"안녕\")",
+      "codeKind": "python"
     },
     {
-      "question": "다음 코드를 실행하면 화면에 어떤 한 줄이 나타날까요?",
-      "code": "print(\"Python\")",
-      "options": [
-        "print(\"Python\")",
-        "\"Python\"",
-        "Python",
-        "아무것도 나타나지 않습니다."
-      ],
-      "optionFormat": "text",
-      "answer": 2,
-      "explanation": "print에는 Python이라는 문자열 값이 전달됩니다. print라는 기능 이름과 괄호, 경계 따옴표는 출력 내용이 아니므로 Python만 보입니다.",
-      "skill": "출력 예측"
+      "question": "Python 다음 줄에 공부 시작을 출력하는 코드를 작성하세요. print를 두 번 사용하고, 코드의 이름이나 바깥 따옴표가 결과에 나타나지 않는지도 확인해 보세요.",
+      "skill": "문자열 출력 작성",
+      "solution": {
+        "answer": "Python과 공부 시작이 두 줄로 나타나면 됩니다. 큰따옴표 또는 작은따옴표를 짝에 맞게 사용할 수 있습니다.",
+        "code": {
+          "source": "print(\"Python\")\nprint(\"공부 시작\")",
+          "kind": "python",
+          "output": "Python\n공부 시작",
+          "error": null
+        }
+      },
+      "explanation": "각 print는 괄호 안의 문자열 값을 출력하고 기본적으로 줄을 바꿉니다. 기능 이름과 괄호는 출력할 내용이 아닙니다."
     },
     {
-      "question": "두 줄을 순서대로 실행한 출력은 무엇인가요?",
+      "question": "아래 두 줄의 출력을 줄바꿈까지 먼저 적어 보세요. 코드를 직접 입력해 실행한 뒤, 같은 6 + 1이 왜 서로 다른 결과를 만드는지 설명하세요.",
+      "skill": "문자와 계산의 구분",
+      "solution": {
+        "answer": "첫 줄에는 6 + 1, 둘째 줄에는 7이 나타납니다.",
+        "code": {
+          "source": "print(\"6 + 1\")\nprint(6 + 1)",
+          "kind": "python",
+          "output": "6 + 1\n7",
+          "error": null
+        }
+      },
+      "explanation": "첫 줄의 따옴표 안은 문자 내용이므로 계산하지 않습니다. 둘째 줄에는 숫자와 덧셈이 적혀 있으므로 계산한 값 7을 출력합니다.",
       "code": "print(\"6 + 1\")\nprint(6 + 1)",
-      "options": [
-        "6 + 1\n7",
-        "7\n7",
-        "6 + 1\n6 + 1",
-        "7\n6 + 1"
-      ],
-      "optionFormat": "code",
-      "answer": 0,
-      "explanation": "첫 줄은 따옴표 안의 글자 6 + 1을 그대로 출력합니다. 둘째 줄은 수의 덧셈을 계산한 7을 출력합니다. print를 사용할 때마다 기본 줄바꿈이 생깁니다.",
-      "skill": "문자와 계산의 구분"
+      "codeKind": "python"
     },
     {
-      "question": "아래 코드의 따옴표를 고쳐 안녕을 출력하려고 합니다. 올바른 코드는 무엇인가요?",
+      "question": "아래 코드는 시작과 끝의 따옴표가 다릅니다. 따옴표를 고쳐 안녕을 출력하는 코드로 만들고 실행해 보세요. 어느 부분을 고쳤는지도 적으세요.",
+      "skill": "문자열 구문 수정",
+      "solution": {
+        "answer": "끝의 작은따옴표를 큰따옴표로 바꾸면 됩니다. 반대로 시작을 작은따옴표로 맞추는 방법도 가능합니다.",
+        "code": {
+          "source": "print(\"안녕\")",
+          "kind": "python",
+          "output": "안녕",
+          "error": null,
+          "caption": "두 따옴표를 큰따옴표로 맞춘 예시입니다."
+        }
+      },
+      "explanation": "문자열의 시작과 끝을 같은 종류의 따옴표로 표시해야 합니다. print의 괄호도 한 쌍으로 닫혀 있어야 합니다.",
       "code": "print(\"안녕')",
-      "options": [
-        "print(\"안녕\"",
-        "print(안녕)",
-        "print('안녕\")",
-        "print(\"안녕\")"
-      ],
-      "optionFormat": "code",
-      "answer": 3,
-      "explanation": "문자열은 시작과 끝을 같은 큰따옴표로 맞추고, print의 괄호도 닫아야 합니다. 따옴표 없이 안녕을 쓰면 직접 적은 문자 값이 아니라 이름으로 해석되므로 같은 의미가 아닙니다.",
-      "skill": "문자열 구문 수정"
+      "codeKind": "python"
     },
     {
-      "question": "화면에 He's ready.를 한 줄로 출력하려고 합니다. 어느 코드가 맞을까요?",
-      "options": [
-        "print('He's ready.')",
-        "print(\"He's ready.\")",
-        "print(\"Hes ready.\")",
-        "print(\"He is ready.\")"
-      ],
-      "optionFormat": "code",
-      "answer": 1,
-      "explanation": "바깥을 큰따옴표로 감싸면 안쪽 작은따옴표는 문자열의 내용으로 남습니다. 첫 번째 코드는 He 뒤의 작은따옴표가 문자열을 너무 일찍 닫고, 나머지 두 코드는 요구한 문장과 내용이 다릅니다.",
-      "skill": "따옴표가 있는 문장 적용"
+      "question": "화면에 He's ready.를 한 줄로 출력하는 코드를 작성하세요. 문장 안의 작은따옴표와 마침표도 그대로 보여야 합니다. 바깥을 어떤 따옴표로 감싸면 되는지 생각해 보세요.",
+      "skill": "따옴표가 있는 문장 적용",
+      "solution": {
+        "answer": "바깥을 큰따옴표로 감싸면 문장 속 작은따옴표를 내용으로 넣을 수 있습니다. 아래는 가능한 코드의 한 가지입니다.",
+        "code": {
+          "source": "print(\"He's ready.\")",
+          "kind": "python",
+          "output": "He's ready.",
+          "error": null
+        }
+      },
+      "explanation": "바깥 큰따옴표는 문자열의 경계를 나타내고, 안쪽 작은따옴표는 문자 값에 남습니다. 바깥 따옴표까지 출력할 필요는 없습니다."
     }
   ]
 }
