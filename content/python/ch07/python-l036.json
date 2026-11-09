@@ -1,0 +1,171 @@
+{
+  "id": "python-l036",
+  "order": 5,
+  "title": "작은 함수의 조합과 설명",
+  "subtitle": "받는 값과 돌려주는 값을 분명히 정하고, 계산과 입출력을 연결합니다.",
+  "minutes": 13,
+  "goal": "함수의 입력·반환·변경 여부를 설명하고, 작은 계산 함수들을 반환값으로 연결하며 입력과 출력은 필요한 경계에서 수행한다.",
+  "intro": "코드에 def를 붙였다고 역할이 저절로 나뉘지는 않습니다. 무엇을 받아 어떤 결과를 돌려주는지 분명해야 다른 함수가 그 결과를 이어 쓸 수 있습니다. 계산과 화면 표시가 뒤섞인 짧은 프로그램을 작은 책임으로 나누며, 각 부분을 따로 확인하고 다시 연결해 봅시다.",
+  "sections": [
+    {
+      "title": "함수의 약속은 입력, 반환값, 바꾸는 대상을 설명합니다.",
+      "body": [
+        "함수의 계약은 호출하는 쪽과 함수가 서로 기대하는 약속입니다. 예를 들어 order_total은 음수가 아닌 정수 가격과 개수를 받아 정수 총액을 돌려주고, 화면 출력이나 외부 값 변경은 하지 않는다고 설명할 수 있습니다. 이름만으로 드러나지 않는 단위나 허용 범위도 적습니다.",
+        "함수 본문의 첫 줄에 둔 문자열은 docstring이라고 부르는 설명문으로 쓸 수 있습니다. 아래 삼중 따옴표 안의 문장은 함수의 약속을 기록한 것입니다. 주석처럼 읽는 사람을 돕는 설명이며, 그 문장만으로 잘못된 인자를 자동 검사하지는 않습니다.",
+        "지금 함수는 호출자가 약속을 지킨다고 가정합니다. 음수나 문자열을 어떻게 처리할지까지 필요하다면 그 정책과 검사를 별도로 정해야 합니다. 설명에 적었다는 이유만으로 입력 검증 기능이 생긴 것은 아닙니다."
+      ],
+      "code": {
+        "source": "def order_total(price, count):\n    \"\"\"음수가 아닌 정수 가격과 개수를 받아 정수 총액을 반환한다.\"\"\"\n    return price * count\n\nprint(order_total(700, 3))\nprint(order_total(700, 0))",
+        "kind": "python",
+        "output": "2100\n0",
+        "error": null
+      }
+    },
+    {
+      "title": "한 함수의 반환값을 다음 함수의 인자로 연결합니다.",
+      "body": [
+        "계산 함수와 표시 함수는 다른 일을 할 수 있습니다. celsius_to_fahrenheit는 섭씨 숫자를 화씨 숫자로 바꾸고, temperature_label은 화씨 숫자를 받아 표시 문자열을 만듭니다. 첫 함수의 반환값이 두 번째 함수의 입력 종류와 단위에 맞아야 합니다.",
+        "중간 결과를 변수에 담으면 흐름을 읽기 쉽습니다. 아래에서는 fahrenheit가 숫자이고 message가 문자열입니다. 같은 처리를 temperature_label(celsius_to_fahrenheit(20))처럼 중첩해 호출할 수도 있지만, 안쪽 반환값부터 구한다는 점을 이해한 뒤 사용합니다.",
+        "표시 형식을 바꾸어도 변환 계산을 다시 작성할 필요가 없도록 책임을 나눴습니다. 너무 작은 식을 무조건 함수로 나누기보다 역할에 이름을 붙이고 따로 확인할 필요가 있는지 생각합니다."
+      ],
+      "code": {
+        "source": "def celsius_to_fahrenheit(celsius):\n    return celsius * 9 / 5 + 32\n\ndef temperature_label(fahrenheit):\n    return f\"화씨 {fahrenheit:.1f}도\"\n\nfahrenheit = celsius_to_fahrenheit(20)\nmessage = temperature_label(fahrenheit)\nprint(message)",
+        "kind": "python",
+        "output": "화씨 68.0도",
+        "error": null
+      }
+    },
+    {
+      "title": "계산 결과를 반환하면 입력과 출력 방식이 달라도 재사용할 수 있습니다.",
+      "body": [
+        "계산 함수 안에서 input을 부르면 호출할 때마다 사용자가 입력해야 합니다. 함수 안에서 print만 하면 다른 계산에 쓸 반환값이 없습니다. 입력을 받고, 계산 함수를 호출하고, 결과를 보여 주는 단계를 호출부에서 연결하면 같은 계산을 미리 정한 값으로도 확인할 수 있습니다.",
+        "아래 rectangle_area는 받은 가로와 세로만으로 넓이를 계산합니다. input은 함수 밖에서 실행하고, 넓이를 반환받은 뒤 print합니다. 같은 함수에 3과 4를 직접 전달하는 검사도 가능하며 키보드 입력을 다시 받을 필요가 없습니다.",
+        "함수 안에 print나 input을 절대로 쓰지 말라는 규칙은 아닙니다. 어떤 함수가 계산을 맡고 어떤 함수나 호출부가 사용자와의 입출력을 맡는지 의도적으로 구분하라는 뜻입니다. 파일 읽기 같은 외부 작업은 다음 챕터에서 다룹니다."
+      ],
+      "code": {
+        "source": "def rectangle_area(width, height):\n    return width * height\n\nwidth = float(input())\nheight = float(input())\narea = rectangle_area(width, height)\nprint(area)",
+        "kind": "python",
+        "output": "7.0",
+        "error": null,
+        "input": "3.5\n2\n"
+      }
+    },
+    {
+      "title": "각 함수의 경계와 연결 결과를 따로 확인합니다.",
+      "body": [
+        "함수 하나를 확인할 때는 평범한 입력뿐 아니라 약속의 경계도 고릅니다. 양수만 합치는 positive_total이라면 양수가 있는 목록, 양수가 없는 목록, 빈 목록을 각각 확인할 수 있습니다. 원본을 바꾸지 않는다는 약속도 호출 전후의 목록으로 대조합니다.",
+        "조합할 때는 각 함수가 맞아도 연결이 틀릴 수 있습니다. 숫자를 받는 함수에 표시 문자열을 넘기거나, 분 단위 결과를 초로 오해하는 경우입니다. 중간 결과의 종류와 뜻을 짚으면 어디에서 잘못 연결했는지 좁힐 수 있습니다.",
+        "아래 검사는 기대 결과를 직접 비교하기 위한 작은 호출입니다. 모든 입력을 증명하거나 자동 테스트 체계를 만든 것은 아닙니다. 예외 처리나 테스트 도구를 먼저 추가하기보다, 입력·반환·변경 약속을 이해하고 대표 경우를 확인하는 데 집중합니다."
+      ],
+      "code": {
+        "source": "def positive_total(values):\n    \"\"\"숫자 목록의 양수 합계를 반환하며 원본을 바꾸지 않는다.\"\"\"\n    total = 0\n    for value in values:\n        if value > 0:\n            total += value\n    return total\n\nsource = [3, -1, 2]\nprint(positive_total(source))\nprint(positive_total([0, -2]))\nprint(positive_total([]))\nprint(source)",
+        "kind": "python",
+        "output": "5\n0\n0\n[3, -1, 2]",
+        "error": null
+      }
+    }
+  ],
+  "worked": {
+    "question": "가격과 개수로 계산한 금액에 고정 포장비를 더하고 안내 문장을 만들려고 합니다. 계산값을 문자로 너무 일찍 바꾸지 않으려면 어떤 순서로 연결할까요?",
+    "code": {
+      "source": "def subtotal(price, count):\n    return price * count\n\ndef with_fee(amount, fee):\n    return amount + fee\n\ndef payment_label(amount):\n    return f\"결제 금액: {amount}원\"\n\namount = subtotal(1200, 2)\ntotal = with_fee(amount, 300)\nmessage = payment_label(total)\nprint(message)",
+      "kind": "python",
+      "output": "결제 금액: 2700원",
+      "error": null
+    },
+    "steps": [
+      "subtotal은 가격과 개수를 받아 숫자 2400을 돌려줍니다. 반환값을 amount에 연결하므로 다음 계산에 사용할 수 있습니다.",
+      "with_fee는 숫자 amount와 포장비 300을 받아 숫자 2700을 돌려줍니다. 표시 문자열에 숫자를 더하는 대신 계산 단계에서는 숫자 형태를 유지합니다.",
+      "모든 계산이 끝난 뒤 payment_label이 안내 문자열을 만들고, 호출부의 print가 화면에 보여 줍니다. 표시 문구를 바꿔도 두 계산 함수의 계약은 그대로입니다."
+    ],
+    "answer": "가격·개수 → 숫자 소계 → 숫자 결제액 → 안내 문자열 → 화면 출력으로 연결합니다. 중간값의 뜻과 종류가 다음 함수의 입력 약속과 맞아야 합니다."
+  },
+  "misconception": {
+    "question": "함수로 나누기만 하면 각 함수가 필요한 값을 알아서 찾아서 연결하나요?",
+    "answer": "아닙니다. 필요한 값을 매개변수로 전달하고 다음에 쓸 결과를 return으로 돌려주어야 합니다. 함수 안의 지역 이름을 다른 함수가 알아서 읽는 것은 아닙니다. 호출부에서 반환값의 종류·단위·뜻을 확인해 다음 함수에 전달하고, 어디서 화면 출력이나 입력을 할지도 정해야 합니다."
+  },
+  "keypoints": [
+    "함수의 입력 종류·범위·단위, 반환값, 원본 변경 여부를 설명합니다. 설명문 자체가 자동 입력 검사는 아닙니다.",
+    "반환값을 다음 함수의 인자로 전달할 때 종류와 의미를 맞춥니다. 필요하면 중간 변수로 각 단계를 드러냅니다.",
+    "계산과 input·print를 구분하면 같은 계산을 여러 입력 방식에서 재사용하고 대표값·경계값으로 따로 확인할 수 있습니다."
+  ],
+  "examples": [
+    {
+      "question": "음수가 아닌 정수 분을 받아 정수 초를 반환하는 to_seconds(minutes) 함수를 작성하세요. 함수 첫 설명문에 입력·단위·반환을 적고 2분과 0분으로 확인하세요. 함수 안에서는 입력받거나 출력하지 않습니다.",
+      "skill": "입력과 반환 계약 작성",
+      "solution": {
+        "answer": "분에 60을 곱해 반환합니다. 2는 120, 0은 0입니다. 함수 설명에는 음수가 아닌 정수 분을 받아 정수 초를 반환한다고 적을 수 있습니다.",
+        "code": {
+          "source": "def to_seconds(minutes):\n    \"\"\"음수가 아닌 정수 분을 받아 정수 초를 반환한다.\"\"\"\n    return minutes * 60\n\nprint(to_seconds(2))\nprint(to_seconds(0))",
+          "kind": "python",
+          "output": "120\n0",
+          "error": null
+        }
+      },
+      "explanation": "입력과 출력의 숫자 종류가 같아도 단위가 달라집니다. 계약에 단위를 적고 호출부에서 print하면 계산과 표시를 구별할 수 있습니다."
+    },
+    {
+      "question": "다음 두 함수를 사용해 4명이 각자 3개씩 받는 물품 수를 구하고 필요 수량: 12개라는 문장을 출력하세요. 계산 반환값을 중간 변수에 담아 표시 함수에 전달하세요.",
+      "skill": "두 함수의 반환값 연결",
+      "solution": {
+        "answer": "item_count(4, 3)의 반환값 12를 count_label에 전달하면 필요 수량: 12개라는 문자열을 얻습니다.",
+        "code": {
+          "source": "def item_count(people, per_person):\n    return people * per_person\n\ndef count_label(count):\n    return f\"필요 수량: {count}개\"\n\ncount = item_count(4, 3)\nmessage = count_label(count)\nprint(message)",
+          "kind": "python",
+          "output": "필요 수량: 12개",
+          "error": null
+        }
+      },
+      "explanation": "첫 함수는 숫자를 반환하고 두 번째 함수는 숫자를 받아 문자열을 반환합니다. 출력은 마지막 문자열에 대해 한 번 수행합니다.",
+      "code": "def item_count(people, per_person):\n    return people * per_person\n\ndef count_label(count):\n    return f\"필요 수량: {count}개\"",
+      "codeKind": "python",
+      "codeLabel": "읽거나 수정할 코드"
+    },
+    {
+      "question": "아래 함수는 넓이를 화면에 보여 주지만 result에 계산값을 돌려주지 않습니다. 원본을 실행해 두 줄을 확인하고, 계산 함수는 넓이를 반환하고 호출부에서 한 번만 출력하도록 고치세요.",
+      "skill": "계산 함수의 print와 return 분리",
+      "solution": {
+        "answer": "원본은 12 다음에 None을 출력합니다. 함수 안의 print를 return으로 고치면 result가 12여서 마지막 print 한 번만 12를 보여 줍니다.",
+        "code": {
+          "source": "def area(width, height):\n    return width * height\n\nresult = area(3, 4)\nprint(result)",
+          "kind": "python",
+          "output": "12",
+          "error": null
+        }
+      },
+      "explanation": "print는 보여 주는 동작이고 결과 전달을 대신하지 않습니다. 계산값을 return해야 다른 계산이나 표시 방식에서도 다시 쓸 수 있습니다.",
+      "code": "def area(width, height):\n    print(width * height)\n\nresult = area(3, 4)\nprint(result)",
+      "codeKind": "python",
+      "codeLabel": "읽거나 수정할 코드"
+    },
+    {
+      "question": "숫자 목록에서 0 이상인 값만 담은 새 리스트를 반환하는 nonnegative(values) 함수를 작성하세요. [0, -2, 5]와 []로 확인하고, 처음 원본이 바뀌지 않았는지도 출력하세요. 함수 안에서는 결과를 출력하지 않습니다.",
+      "skill": "빈 입력과 원본 보존 확인",
+      "solution": {
+        "answer": "첫 반환값은 [0, 5], 빈 목록의 반환값은 []이며 원본 [0, -2, 5]는 그대로입니다.",
+        "code": {
+          "source": "def nonnegative(values):\n    \"\"\"숫자 목록에서 0 이상인 값의 새 리스트를 반환한다.\"\"\"\n    result = []\n    for value in values:\n        if value >= 0:\n            result.append(value)\n    return result\n\nsource = [0, -2, 5]\nprint(nonnegative(source))\nprint(nonnegative([]))\nprint(source)",
+          "kind": "python",
+          "output": "[0, 5]\n[]\n[0, -2, 5]",
+          "error": null
+        }
+      },
+      "explanation": "새 리스트를 함수 안에서 만들고 조건에 맞는 값만 추가하면 원본을 건드리지 않고 결과를 반환할 수 있습니다. 0을 포함한다는 경계와 빈 경우도 계약에 맞게 확인합니다."
+    },
+    {
+      "question": "단위 가격과 수량을 두 줄로 입력받는 코드를 작성하세요. 모두 음수가 아닌 정수로 변환할 수 있다고 가정합니다. 계산은 input이나 print가 없는 total_price(price, count) 함수가 맡고, 호출부가 입력과 총액 출력을 맡게 하세요. 900과 2로 확인하세요.",
+      "skill": "입출력 경계에서 함수 재사용",
+      "solution": {
+        "answer": "호출부에서 두 입력을 int로 바꾼 뒤 계산 함수에 전달하면 총액 1800을 얻습니다. 함수 밖의 print가 이를 보여 줍니다.",
+        "code": {
+          "source": "def total_price(price, count):\n    return price * count\n\nprice = int(input())\ncount = int(input())\nresult = total_price(price, count)\nprint(result)",
+          "kind": "python",
+          "output": "1800",
+          "error": null,
+          "input": "900\n2\n"
+        }
+      },
+      "explanation": "계산 함수에 키보드 입력이 없으므로 같은 함수를 total_price(900, 0)처럼 직접 호출해 경계값도 확인할 수 있습니다. 입력이 유효하다는 가정과 계산 책임을 구분합니다."
+    }
+  ]
+}

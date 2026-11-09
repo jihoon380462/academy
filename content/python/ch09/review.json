@@ -1,0 +1,206 @@
+[
+  {
+    "question": "아래 코드의 세 출력 값을 예상하고 실행하세요. upper의 반환값과 append의 반환값이 다르고, 두 값 모두 객체라는 설명이 서로 모순되지 않는 이유를 적으세요.",
+    "skill": "객체 개념: 타입과 동작",
+    "solution": {
+      "answer": "출력은 RAW, ['읽기', '실행'], None입니다. 문자열과 리스트의 메서드는 각 타입에서 정한 다른 계약을 따릅니다.",
+      "code": {
+        "source": "text = \"raw\"\nitems = [\"읽기\"]\nupper_text = text.upper()\nanswer = items.append(\"실행\")\nprint(upper_text)\nprint(items)\nprint(answer)",
+        "kind": "python",
+        "output": "RAW\n['읽기', '실행']\nNone",
+        "error": null
+      }
+    },
+    "explanation": "객체라는 말은 동작이 모두 같다는 뜻이 아닙니다. upper는 새 문자열을 반환하고 append는 원래 리스트를 바꾸며 None을 반환합니다.",
+    "code": "text = \"raw\"\nitems = [\"읽기\"]\nupper_text = text.upper()\nanswer = items.append(\"실행\")\nprint(upper_text)\nprint(items)\nprint(answer)",
+    "codeKind": "python",
+    "codeLabel": "직접 확인하거나 고칠 코드",
+    "related": [
+      "python-l042"
+    ]
+  },
+  {
+    "question": "아래 코드에서 클래스 이름, 인스턴스 두 개를 가리키는 이름, 메서드 이름을 각각 적으세요. 이어 두 호출을 출력하고 같은 클래스라는 사실이 무엇을 공유하게 하는지 설명하세요.",
+    "skill": "객체 개념: 클래스와 인스턴스",
+    "solution": {
+      "answer": "클래스는 Sign, 인스턴스 이름은 front와 back, 메서드는 message입니다. 두 출력은 모두 열림이며 두 인스턴스가 같은 메서드 정의를 사용할 수 있습니다.",
+      "code": {
+        "source": "class Sign:\n    def message(self):\n        return \"열림\"\n\nfront = Sign()\nback = Sign()\nprint(front.message())\nprint(back.message())",
+        "kind": "python",
+        "output": "열림\n열림",
+        "error": null
+      }
+    },
+    "explanation": "Sign()을 두 번 호출하면 두 인스턴스를 얻습니다. 같은 클래스라는 것은 사용할 동작과 종류를 공유한다는 뜻이며 두 이름이 반드시 같은 객체를 가리킨다는 뜻이 아닙니다.",
+    "code": "class Sign:\n    def message(self):\n        return \"열림\"\n\nfront = Sign()\nback = Sign()\nprint(front.message())\nprint(back.message())",
+    "codeKind": "python",
+    "codeLabel": "직접 확인하거나 고칠 코드",
+    "related": [
+      "python-l043"
+    ]
+  },
+  {
+    "question": "아래 코드의 출력 순서를 예상하고 실행하세요. 준비 안내가 클래스 정의 시점에 나오는지 생성하는 호출 중에 나오는지, show가 직접 출력하는지 값을 반환하는지 구분해 설명하세요.",
+    "skill": "객체 개념: 초기화와 호출 시점",
+    "solution": {
+      "answer": "시작, 준비: 복습, 읽기: 복습 순서입니다. 생성 호출 중 __init__이 상태를 준비하고, 이후 show가 돌려준 문자열을 바깥 print가 보여 줍니다.",
+      "code": {
+        "source": "class Tag:\n    def __init__(self, name):\n        print(\"준비:\", name)\n        self.name = name\n\n    def show(self):\n        return self.name\n\nprint(\"시작\")\ntag = Tag(\"복습\")\nprint(\"읽기:\", tag.show())",
+        "kind": "python",
+        "output": "시작\n준비: 복습\n읽기: 복습",
+        "error": null
+      }
+    },
+    "explanation": "class 정의는 메서드 본문을 바로 실행하지 않습니다. Tag(\"복습\")를 실행할 때 __init__이 호출되고, tag.show() 호출에서는 저장한 name을 반환합니다. 초기화 중 출력은 상태 준비와 별개의 동작입니다.",
+    "code": "class Tag:\n    def __init__(self, name):\n        print(\"준비:\", name)\n        self.name = name\n\n    def show(self):\n        return self.name\n\nprint(\"시작\")\ntag = Tag(\"복습\")\nprint(\"읽기:\", tag.show())",
+    "codeKind": "python",
+    "codeLabel": "실행 순서를 확인할 코드",
+    "related": [
+      "python-l043",
+      "python-l044"
+    ]
+  },
+  {
+    "question": "아래 코드에서 a, b, alias가 읽는 최종 total을 예상하고 실행하세요. 초기값이 같았던 두 인스턴스와 별칭 alias의 차이를 상태 변화 순서로 설명하세요.",
+    "skill": "상태 추적: 별도 객체와 별칭",
+    "solution": {
+      "answer": "출력은 7, 4, 7입니다. alias는 a와 같은 객체이며 b만 별도 상태입니다.",
+      "code": {
+        "source": "class Total:\n    def __init__(self):\n        self.total = 0\n\n    def add(self, value):\n        self.total = self.total + value\n\na = Total()\nb = Total()\nalias = a\na.add(2)\nb.add(4)\nalias.add(5)\nprint(a.total)\nprint(b.total)\nprint(alias.total)",
+        "kind": "python",
+        "output": "7\n4\n7",
+        "error": null
+      }
+    },
+    "explanation": "a에 2를 더한 뒤 alias에 5를 더하는 것은 같은 total에 두 번 누적하는 일입니다. b는 별도로 초기화되어 자기 값에 4만 누적합니다.",
+    "code": "class Total:\n    def __init__(self):\n        self.total = 0\n\n    def add(self, value):\n        self.total = self.total + value\n\na = Total()\nb = Total()\nalias = a\na.add(2)\nb.add(4)\nalias.add(5)\nprint(a.total)\nprint(b.total)\nprint(alias.total)",
+    "codeKind": "python",
+    "codeLabel": "직접 확인하거나 고칠 코드",
+    "related": [
+      "python-l043",
+      "python-l044"
+    ]
+  },
+  {
+    "question": "아래 코드는 Box 인스턴스를 따로 만들지만 같은 목록을 전달합니다. 세 출력 목록을 예상하고 실행한 뒤, 첫 인스턴스의 values 재대입이 source와 두 번째 인스턴스의 목록까지 바꾸는지 설명하세요.",
+    "skill": "상태 추적: 인스턴스와 입력 목록 공유",
+    "solution": {
+      "answer": "출력은 [1, 2], [9], [1, 2]입니다. 인스턴스는 둘이지만 처음에는 같은 리스트를 저장하며, 나중의 재대입은 first.values만 다른 목록에 연결합니다.",
+      "code": {
+        "source": "class Box:\n    def __init__(self, values):\n        self.values = values\n\nsource = [1]\nfirst = Box(source)\nsecond = Box(source)\nsecond.values.append(2)\nfirst.values = [9]\nprint(source)\nprint(first.values)\nprint(second.values)",
+        "kind": "python",
+        "output": "[1, 2]\n[9]\n[1, 2]",
+        "error": null
+      }
+    },
+    "explanation": "__init__에서 인자를 그대로 대입하면 목록이 복사되지 않습니다. append는 공유한 목록을 변경하고, first.values = [9]는 첫 인스턴스의 속성 연결만 바꿉니다. 인스턴스가 다른 것과 내부 값이 공유되지 않는 것은 별개입니다.",
+    "code": "class Box:\n    def __init__(self, values):\n        self.values = values\n\nsource = [1]\nfirst = Box(source)\nsecond = Box(source)\nsecond.values.append(2)\nfirst.values = [9]\nprint(source)\nprint(first.values)\nprint(second.values)",
+    "codeKind": "python",
+    "codeLabel": "상태를 추적할 코드",
+    "related": [
+      "python-l042",
+      "python-l044"
+    ]
+  },
+  {
+    "question": "거리와 시간을 받아 속력을 반환하는 함수를 작성하세요. 시간은 양수인 숫자라고 정하고 (12, 3)과 (5, 2)를 확인하세요. 이 계산에서 이전 호출을 기억하는 객체 상태가 필요한지도 설명하세요.",
+    "skill": "작은 구성: 계산 함수",
+    "solution": {
+      "answer": "결과는 4.0과 2.5입니다. 이번 호출의 거리와 시간으로 계산하므로 이전 호출의 상태는 필요하지 않습니다.",
+      "code": {
+        "source": "def speed(distance, hours):\n    return distance / hours\n\nprint(speed(12, 3))\nprint(speed(5, 2))",
+        "kind": "python",
+        "output": "4.0\n2.5",
+        "error": null
+      }
+    },
+    "explanation": "한 번의 입력-결과 관계가 분명한 계산은 함수로 표현할 수 있습니다. 여러 호출을 한다는 사실만으로 클래스를 만들어야 하는 것은 아닙니다.",
+    "related": [
+      "python-l045"
+    ]
+  },
+  {
+    "question": "남은 수량을 보관하는 Stock 클래스를 작성하세요. amount는 정수라고 가정합니다. 초기 수량은 2이며 take(amount)는 양의 정수 수량이 남은 수량 이하이면 차감하고 True, 아니면 차감 없이 False를 반환합니다. take(3), take(1)의 반환값과 마지막 남은 수량을 확인하세요.",
+    "skill": "작은 구성: 상태와 동작",
+    "solution": {
+      "answer": "반환값은 False, True이며 남은 수량은 1입니다. 실패한 요청은 상태를 바꾸지 않습니다.",
+      "code": {
+        "source": "class Stock:\n    def __init__(self, count):\n        self.count = count\n\n    def take(self, amount):\n        if amount <= 0 or amount > self.count:\n            return False\n        self.count = self.count - amount\n        return True\n\nstock = Stock(2)\nprint(stock.take(3))\nprint(stock.take(1))\nprint(stock.count)",
+        "kind": "python",
+        "output": "False\nTrue\n1",
+        "error": null
+      }
+    },
+    "explanation": "호출 사이에 남은 수량을 기억하고 차감 규칙을 적용하는 것이 클래스에 상태와 동작을 묶는 이유입니다. 판단 결과는 return하고 화면 출력은 바깥에서 합니다.",
+    "related": [
+      "python-l044",
+      "python-l045"
+    ]
+  },
+  {
+    "question": "아래 apply는 결과를 화면에만 보여 줍니다. 반환값을 다른 계산에도 쓸 수 있게 메서드를 고치고, 외부에서 apply(4)의 반환값에 1을 더해 13을 출력하세요. 초기 배수는 3입니다.",
+    "skill": "작은 구성: 계산과 표시 분리",
+    "solution": {
+      "answer": "print(value * self.factor)를 return value * self.factor로 바꾸고 바깥에서 result + 1을 출력하면 13입니다. 원본은 12 다음 None을 출력합니다.",
+      "code": {
+        "source": "class Multiplier:\n    def __init__(self, factor):\n        self.factor = factor\n\n    def apply(self, value):\n        return value * self.factor\n\nmultiplier = Multiplier(3)\nresult = multiplier.apply(4)\nprint(result + 1)",
+        "kind": "python",
+        "output": "13",
+        "error": null
+      }
+    },
+    "explanation": "객체가 배수라는 설정을 기억하더라도 계산 결과를 꼭 내부에서 출력할 필요는 없습니다. 반환하면 호출자가 출력하거나 다른 계산에 사용할 수 있습니다.",
+    "code": "class Multiplier:\n    def __init__(self, factor):\n        self.factor = factor\n\n    def apply(self, value):\n        print(value * self.factor)\n\nmultiplier = Multiplier(3)\nresult = multiplier.apply(4)\nprint(result)",
+    "codeKind": "python",
+    "codeLabel": "직접 확인하거나 고칠 코드",
+    "related": [
+      "python-l043",
+      "python-l045"
+    ]
+  },
+  {
+    "question": "아래 전체 프로그램의 입력이 \" 민서, ,지우, 민서 \"일 때 출력과 딕셔너리에 저장되는 값을 예상하고 실행하세요. 빈 조각이 제외되는 이유와 같은 이름이 누적되는 이유를 설명하고, 입력이 \", ,\"뿐인 경우도 확인하세요.",
+    "skill": "통합 결과: 입력과 목록 처리",
+    "solution": {
+      "answer": "예시 입력에서는 민서 2, 지우 1이 출력됩니다. 빈 조각만 있으면 이름 없음입니다.",
+      "code": {
+        "source": "def count_names(text):\n    counts = {}\n    for part in text.split(\",\"):\n        name = part.strip()\n        if not name:\n            continue\n        counts[name] = counts.get(name, 0) + 1\n    return counts\n\ncounts = count_names(input())\nif not counts:\n    print(\"이름 없음\")\nfor name, count in counts.items():\n    print(name, count)",
+        "kind": "python",
+        "output": "민서 2\n지우 1",
+        "error": null,
+        "input": " 민서, ,지우, 민서 \n"
+      }
+    },
+    "explanation": "split으로 조각을 얻고 strip의 반환값으로 양끝 공백을 정리합니다. 빈 이름은 continue로 건너뛰고 get의 기본값 0부터 횟수를 누적합니다. 딕셔너리 순회는 처음 키가 들어온 순서를 유지합니다.",
+    "code": "def count_names(text):\n    counts = {}\n    for part in text.split(\",\"):\n        name = part.strip()\n        if not name:\n            continue\n        counts[name] = counts.get(name, 0) + 1\n    return counts\n\ncounts = count_names(input())\nif not counts:\n    print(\"이름 없음\")\nfor name, count in counts.items():\n    print(name, count)",
+    "codeKind": "python",
+    "codeLabel": "직접 확인하거나 고칠 코드",
+    "related": [
+      "python-l042",
+      "python-l045",
+      "python-l046"
+    ]
+  },
+  {
+    "question": "아래 전체 프로그램은 잔여 5에서 입력한 사용량을 순서대로 처리합니다. 입력 2 4 1의 출력과 최종 상태를 먼저 적고 실행하세요. 이어 입력 순서를 4 2 1로 바꾸었을 때 결과가 달라지는 이유도 확인하세요. 사용량은 정수로 변환 가능한 표기를 기본으로 하며 음수는 거절합니다.",
+    "skill": "통합 결과: 입력 순서와 상태",
+    "solution": {
+      "answer": "처음은 사용: 2, 거절: 4, 사용: 1, 잔여: 2입니다. 순서를 바꾸면 사용: 4, 거절: 2, 사용: 1, 잔여: 0입니다.",
+      "code": {
+        "source": "class Credit:\n    def __init__(self, amount):\n        self.remaining = amount\n\n    def use(self, cost):\n        if cost < 0 or cost > self.remaining:\n            return False\n        self.remaining = self.remaining - cost\n        return True\n\ndef main():\n    credit = Credit(5)\n    for part in input().split():\n        try:\n            cost = int(part)\n        except ValueError:\n            print(\"숫자 아님:\", part)\n            continue\n        if credit.use(cost):\n            print(\"사용:\", cost)\n        else:\n            print(\"거절:\", cost)\n    print(\"잔여:\", credit.remaining)\n\nif __name__ == \"__main__\":\n    main()",
+        "kind": "python",
+        "output": "사용: 2\n거절: 4\n사용: 1\n잔여: 2",
+        "error": null,
+        "input": "2 4 1\n"
+      }
+    },
+    "explanation": "각 use는 그 시점의 remaining과 비교합니다. 성공한 사용만 상태를 차감하고 거절은 그대로 두므로 같은 수들을 입력해도 처리 순서에 따라 성공하는 요청이 달라질 수 있습니다. 변환 실패는 해당 조각만 안내합니다.",
+    "code": "class Credit:\n    def __init__(self, amount):\n        self.remaining = amount\n\n    def use(self, cost):\n        if cost < 0 or cost > self.remaining:\n            return False\n        self.remaining = self.remaining - cost\n        return True\n\ndef main():\n    credit = Credit(5)\n    for part in input().split():\n        try:\n            cost = int(part)\n        except ValueError:\n            print(\"숫자 아님:\", part)\n            continue\n        if credit.use(cost):\n            print(\"사용:\", cost)\n        else:\n            print(\"거절:\", cost)\n    print(\"잔여:\", credit.remaining)\n\nif __name__ == \"__main__\":\n    main()",
+    "codeKind": "python",
+    "codeLabel": "직접 확인하거나 고칠 코드",
+    "related": [
+      "python-l044",
+      "python-l046"
+    ]
+  }
+]

@@ -1,0 +1,180 @@
+{
+  "id": "python-l035",
+  "order": 4,
+  "title": "기본값·키워드 인자·가변 객체",
+  "subtitle": "생략한 인자의 값과 호출 사이에 공유되는 대상을 구별합니다.",
+  "minutes": 14,
+  "goal": "기본값과 키워드 인자로 호출 의도를 나타내고, 변경 가능한 기본값의 공유를 피하며 전달한 리스트의 변경과 지역 이름의 재대입을 구분한다.",
+  "intro": "어떤 함수는 대부분 같은 옵션으로 호출합니다. 매번 그 값을 적는 대신 기본값을 둘 수 있고, 인자의 뜻이 헷갈릴 때는 이름을 붙여 전달할 수 있습니다. 다만 기본값이 만들어지는 시점과 리스트의 공유를 모르면 이전 호출의 기록이 다음 호출에 섞입니다. 호출할 때의 이름 연결을 따라가며 그 차이를 확인해 봅시다.",
+  "sections": [
+    {
+      "title": "기본값은 생략한 인자를 채우고, 키워드는 뜻을 드러냅니다.",
+      "body": [
+        "def total(price, count=1):에서 count=1은 count 인자를 생략했을 때 쓸 기본값입니다. total(800)은 price에 800, count에 1을 연결합니다. total(800, 3)처럼 두 번째 값을 주면 그 호출에서는 기본값 대신 3을 사용합니다.",
+        "total(price=800, count=3)처럼 매개변수 이름을 적어 전달하는 것을 키워드 인자라고 합니다. 키워드로 지정하면 total(count=3, price=800)처럼 순서를 바꾸어도 어느 이름에 전달할지 분명합니다. 이름은 함수 정의의 매개변수 이름과 맞아야 합니다.",
+        "위치 인자와 키워드 인자를 함께 쓰는 이 기본 형태에서는 위치 인자를 먼저 적습니다. total(800, count=3)은 가능하지만 total(price=800, 3)은 문법 오류입니다. total(800, price=900)은 price에 값을 두 번 주므로 TypeError입니다. 정의에서도 기본값 없는 필수 매개변수를 기본값 있는 매개변수보다 앞에 둡니다."
+      ],
+      "code": {
+        "source": "def total(price, count=1):\n    return price * count\n\nprint(total(800))\nprint(total(800, count=3))\nprint(total(count=2, price=500))",
+        "kind": "python",
+        "output": "800\n2400\n1000",
+        "error": null
+      }
+    },
+    {
+      "title": "기본값을 계산하는 시점은 호출할 때가 아니라 정의할 때입니다.",
+      "body": [
+        "기본값 식은 def 문이 실행되어 함수를 정의할 때 한 번 계산됩니다. 함수를 호출할 때마다 그 식을 다시 읽는 것이 아닙니다. 아래에서는 step이 2일 때 amount의 기본값이 정해집니다.",
+        "나중에 바깥 이름 step을 5로 다시 대입해도 이미 정한 기본값은 바뀌지 않습니다. add_step(10)은 계속 2를 더합니다. 현재 step 값을 쓰고 싶다면 add_step(10, amount=step)처럼 이번 호출의 인자로 명시합니다.",
+        "숫자나 문자열처럼 값을 직접 바꾸지 않는 대상은 이 차이가 비교적 단순합니다. 리스트처럼 같은 대상의 내용을 바꿀 수 있는 값은 한 번 만든 기본값이 여러 호출에 공유된다는 점까지 생각해야 합니다."
+      ],
+      "code": {
+        "source": "step = 2\ndef add_step(value, amount=step):\n    return value + amount\n\nstep = 5\nprint(add_step(10))\nprint(add_step(10, amount=step))",
+        "kind": "python",
+        "output": "12\n15",
+        "error": null
+      }
+    },
+    {
+      "title": "리스트 기본값 하나가 여러 호출의 기록을 함께 담을 수 있습니다.",
+      "body": [
+        "리스트는 append로 내용이 바뀌는 가변 객체입니다. def add_item(item, items=[]):에서 []도 정의할 때 한 번 만들어집니다. items 인자를 생략한 여러 호출은 같은 기본 리스트에 연결됩니다.",
+        "첫 호출이 연필을 추가하고 두 번째 호출이 공책을 추가하면, 두 번째 결과에는 이전 연필도 남습니다. 호출마다 새 장바구니를 원했다면 뜻과 다른 동작입니다. 기본값 문법이 매번 빈 리스트를 제공하는 것은 아닙니다.",
+        "반환한 리스트 역시 그 대상의 참조입니다. 이전 반환값을 다른 이름에 보관해 두어도 이후 같은 리스트를 바꾸면 그 이름으로 보이는 내용도 바뀝니다. 앞 챕터의 별칭과 같은 원리입니다."
+      ],
+      "code": {
+        "source": "def add_item(item, items=[]):\n    items.append(item)\n    return items\n\nprint(add_item(\"연필\"))\nprint(add_item(\"공책\"))",
+        "kind": "python",
+        "output": "['연필']\n['연필', '공책']",
+        "error": null,
+        "caption": "공유를 관찰하기 위한 예시입니다. 호출마다 새 목록이 필요하면 다음 절의 방식을 사용합니다."
+      }
+    },
+    {
+      "title": "None을 생략 표시로 쓰고 필요할 때 새 리스트를 만듭니다.",
+      "body": [
+        "def add_item(item, items=None):으로 정의하고 함수 안에서 items is None을 검사하면, 인자를 생략한 호출마다 items = []를 실행해 새 리스트를 만들 수 있습니다. 기본값 None은 생략 상태를 나타내고 새 리스트는 호출 중에 만들어지는 것입니다.",
+        "if not items:로 바꾸면 전달받은 빈 리스트도 거짓으로 판정하여 새 리스트로 바꿔 버립니다. 인자를 생략한 경우와 사용자가 빈 리스트를 지정한 경우를 구별하려는 목적에는 is None이 맞습니다.",
+        "리스트를 직접 인자로 주면 이 함수의 items와 호출한 쪽 이름이 같은 리스트를 가리킵니다. append는 그 리스트 자체를 바꾸므로 호출한 쪽에도 변화가 보입니다. 반대로 items = [] 같은 대입은 함수 안의 지역 이름만 새 리스트로 연결하며 호출한 쪽 이름을 재대입하지 않습니다.",
+        "이 방식은 명시한 리스트를 바꾼다는 약속입니다. 원본을 보존해야 한다면 복사한 리스트를 바꾸어 반환하는 별도 약속을 정해야 합니다. None 기본값만으로 전달한 모든 리스트가 자동 복사되는 것은 아닙니다."
+      ],
+      "code": {
+        "source": "def add_item(item, items=None):\n    if items is None:\n        items = []\n    items.append(item)\n    return items\n\nprint(add_item(\"연필\"))\nprint(add_item(\"공책\"))\nbasket = []\nadd_item(\"지우개\", basket)\nprint(basket)",
+        "kind": "python",
+        "output": "['연필']\n['공책']\n['지우개']",
+        "error": null
+      }
+    }
+  ],
+  "worked": {
+    "question": "함수 안에서 받은 리스트에 append하는 것과 매개변수 이름을 새 리스트로 연결하는 것은 호출한 쪽에 어떻게 다르게 보일까요?",
+    "code": {
+      "source": "def append_note(notes):\n    notes.append(\"확인\")\n\ndef fresh_notes(notes):\n    notes = [\"새 기록\"]\n    return notes\n\noriginal = [\"시작\"]\nappend_note(original)\nresult = fresh_notes(original)\nprint(original)\nprint(result)",
+      "kind": "python",
+      "output": "['시작', '확인']\n['새 기록']",
+      "error": null
+    },
+    "steps": [
+      "append_note를 부르면 notes와 original이 같은 리스트를 가리킵니다. append가 내용을 바꾸므로 original에도 확인이 추가됩니다.",
+      "fresh_notes의 notes = [\"새 기록\"]은 지역 이름을 다른 리스트에 연결합니다. original이 가리키던 리스트의 내용이나 이름 연결은 바뀌지 않습니다.",
+      "새 리스트를 return으로 돌려받아 result에 연결합니다. 출력하면 original에는 시작·확인, result에는 새 기록이 남아 두 동작을 구별할 수 있습니다."
+    ],
+    "answer": "대상의 내용을 바꾸면 공유한 쪽에도 보이지만, 지역 이름만 다시 연결하면 호출한 쪽 이름은 그대로입니다. 새 값을 쓸지 여부는 반환값을 받은 호출부에서 정합니다."
+  },
+  "misconception": {
+    "question": "기본값을 None으로 바꾸면 함수가 받은 리스트도 항상 원본과 별개가 되나요?",
+    "answer": "아닙니다. None일 때만 새 리스트를 만듭니다. 이미 있는 리스트를 인자로 전달하면 그 리스트를 그대로 받으므로 append 같은 변경은 원본에도 보입니다. 호출마다 새 기본 목록을 만드는 일, 전달한 원본을 복사하는 일, 지역 이름을 재대입하는 일은 각각 구분해야 합니다."
+  },
+  "keypoints": [
+    "기본값은 생략한 인자에 사용하며, 키워드 인자는 매개변수 이름으로 값을 연결합니다. 같은 매개변수에 값을 중복 전달하지 않습니다.",
+    "기본값은 def가 실행될 때 한 번 계산됩니다. 리스트 기본값을 바꾸면 다음 생략 호출에도 그 내용이 남을 수 있습니다.",
+    "None을 생략 표시로 쓰면 호출 중 새 리스트를 만들 수 있습니다. 명시적으로 전달한 리스트의 변경과 지역 이름의 재대입은 다릅니다."
+  ],
+  "examples": [
+    {
+      "question": "아래 함수에 base=10, extra=3을 전달하려 합니다. 원래 호출의 오류 종류를 확인한 뒤, extra를 키워드 인자로 지정해 13을 출력하도록 고치세요. extra를 생략한 결과도 출력하세요.",
+      "skill": "위치와 키워드 인자의 중복",
+      "solution": {
+        "answer": "원본은 base에 10과 3을 중복 전달하여 TypeError입니다. combine(10, extra=3)은 13이고 combine(10)은 기본값 0을 써서 10입니다.",
+        "code": {
+          "source": "def combine(base, extra=0):\n    return base + extra\n\nprint(combine(10, extra=3))\nprint(combine(10))",
+          "kind": "python",
+          "output": "13\n10",
+          "error": null
+        }
+      },
+      "explanation": "위치 인자 10이 이미 첫 매개변수 base를 채웠으므로 base=3을 또 쓰면 안 됩니다. 이름을 붙일 때 함수 정의의 매개변수와 의도한 역할을 맞춥니다.",
+      "code": "def combine(base, extra=0):\n    return base + extra\n\nprint(combine(10, base=3))",
+      "codeKind": "python",
+      "codeLabel": "읽거나 수정할 코드"
+    },
+    {
+      "question": "아래 코드의 두 출력값을 예상하고 실행하세요. 바깥 default_count를 5로 바꾸었는데 인자를 생략한 호출에는 왜 2가 쓰이는지 설명하세요.",
+      "skill": "기본값이 정해지는 시점",
+      "solution": {
+        "answer": "첫 결과는 200, 둘째는 500입니다. count의 기본값은 함수 정의 당시의 2이며, 두 번째 호출은 현재 default_count의 값 5를 명시합니다.",
+        "code": {
+          "source": "default_count = 2\ndef cost(price, count=default_count):\n    return price * count\n\ndefault_count = 5\nprint(cost(100))\nprint(cost(100, count=default_count))",
+          "kind": "python",
+          "output": "200\n500",
+          "error": null
+        }
+      },
+      "explanation": "기본값 식을 호출마다 재평가하지 않습니다. 바깥 이름의 재대입은 이미 정해진 정수 기본값을 변경하지 않습니다.",
+      "code": "default_count = 2\ndef cost(price, count=default_count):\n    return price * count\n\ndefault_count = 5\nprint(cost(100))\nprint(cost(100, count=default_count))",
+      "codeKind": "python",
+      "codeLabel": "읽거나 수정할 코드"
+    },
+    {
+      "question": "아래 코드는 호출마다 새 명단을 만들려 하지만 두 번째 결과에 첫 이름이 남습니다. 실제 출력을 확인하고, None 기본값으로 고쳐 각각 ['민서'], ['하린']만 출력되게 하세요.",
+      "skill": "가변 기본값의 공유 수정",
+      "solution": {
+        "answer": "원본의 두 번째 결과는 ['민서', '하린']입니다. 기본값을 None으로 두고 함수 안에서 생략 여부를 검사해 새 리스트를 만들면 호출이 분리됩니다.",
+        "code": {
+          "source": "def register(name, names=None):\n    if names is None:\n        names = []\n    names.append(name)\n    return names\n\nprint(register(\"민서\"))\nprint(register(\"하린\"))",
+          "kind": "python",
+          "output": "['민서']\n['하린']",
+          "error": null
+        }
+      },
+      "explanation": "[]가 함수 정의 때 한 번 만들어져 공유된 것이 원인입니다. 새 리스트를 만드는 줄을 호출할 때 실행하도록 옮겨야 합니다.",
+      "code": "def register(name, names=[]):\n    names.append(name)\n    return names\n\nprint(register(\"민서\"))\nprint(register(\"하린\"))",
+      "codeKind": "python",
+      "codeLabel": "읽거나 수정할 코드"
+    },
+    {
+      "question": "아래 코드가 출력하는 두 리스트를 예상하고 실행하세요. replace_first의 매개변수가 지역 이름인데도 source가 바뀌고, use_new_list의 대입은 source를 바꾸지 않는 이유를 설명하세요.",
+      "skill": "내용 변경과 이름 재연결",
+      "solution": {
+        "answer": "source는 [9, 2], result는 [7, 8]입니다. 첫 함수는 공유 리스트의 항목을 바꾸고 둘째는 지역 이름만 새 리스트에 연결합니다.",
+        "code": {
+          "source": "def replace_first(values):\n    values[0] = 9\n\ndef use_new_list(values):\n    values = [7, 8]\n    return values\n\nsource = [1, 2]\nreplace_first(source)\nresult = use_new_list(source)\nprint(source)\nprint(result)",
+          "kind": "python",
+          "output": "[9, 2]\n[7, 8]",
+          "error": null
+        }
+      },
+      "explanation": "지역 이름이라고 해서 가리키는 대상까지 복사되는 것은 아닙니다. values[0] = 9는 기존 리스트의 내용 변경이고, values = [7, 8]은 다른 리스트로 이름 연결을 바꾸는 동작입니다.",
+      "code": "def replace_first(values):\n    values[0] = 9\n\ndef use_new_list(values):\n    values = [7, 8]\n    return values\n\nsource = [1, 2]\nreplace_first(source)\nresult = use_new_list(source)\nprint(source)\nprint(result)",
+      "codeKind": "python",
+      "codeLabel": "읽거나 수정할 코드"
+    },
+    {
+      "question": "아래 함수는 생략한 경우에만 새 리스트를 만들고, 명시한 리스트에는 값을 추가해야 합니다. 하지만 빈 source를 전달하면 source는 그대로입니다. 원본 출력을 확인하고 None과 빈 리스트를 구분하도록 조건 한 곳을 고치세요. 인자를 생략한 호출도 따로 확인하세요.",
+      "skill": "생략한 인자와 명시한 빈 리스트 구별",
+      "code": "def add_label(label, labels=None):\n    if not labels:\n        labels = []\n    labels.append(label)\n    return labels\n\nsource = []\nresult = add_label(\"확인\", source)\nprint(source)\nprint(result)",
+      "codeKind": "python",
+      "codeLabel": "빈 리스트도 새 리스트로 바꾸는 코드",
+      "solution": {
+        "answer": "원본은 []와 ['확인']을 출력합니다. if labels is None:으로 고치면 명시한 source를 그대로 사용하여 두 출력 모두 ['확인']입니다. 생략한 호출은 별도의 새 리스트를 만듭니다.",
+        "code": {
+          "source": "def add_label(label, labels=None):\n    if labels is None:\n        labels = []\n    labels.append(label)\n    return labels\n\nsource = []\nresult = add_label(\"확인\", source)\nprint(source)\nprint(result)\nprint(add_label(\"새 기록\"))",
+          "kind": "python",
+          "output": "['확인']\n['확인']\n['새 기록']",
+          "error": null
+        }
+      },
+      "explanation": "None과 빈 리스트는 모두 거짓으로 판정되지만 이 함수의 약속에서는 의미가 다릅니다. not labels는 사용자가 명시한 빈 리스트까지 바꾸므로, 생략 표시인 None만 구별해야 전달한 대상의 연결을 보존합니다."
+    }
+  ]
+}

@@ -1,0 +1,172 @@
+{
+  "id": "python-l037",
+  "order": 1,
+  "title": "import와 표준 라이브러리",
+  "subtitle": "이미 준비된 기능을 불러오고, 그 기능의 이름이 어디에 속하는지 구분합니다.",
+  "minutes": 13,
+  "goal": "import·from·as의 이름 연결을 설명하고 표준 라이브러리 함수를 필요한 입력과 함께 사용한다.",
+  "intro": "제곱근이나 평균처럼 자주 쓰는 계산을 매번 직접 작성할 필요는 없습니다. Python에는 여러 목적의 도구가 표준 라이브러리로 준비되어 있습니다. 앞 챕터에서 함수의 입력과 반환값을 배웠으니, 이제 다른 곳에 정의된 함수를 불러와 내 코드와 연결해 봅시다.",
+  "sections": [
+    {
+      "title": "모듈을 불러온 뒤 그 안의 이름으로 접근합니다.",
+      "body": [
+        "모듈은 관련된 이름과 기능을 묶어 둔 단위입니다. import math는 math 모듈을 불러오고 현재 코드에서 math라는 이름으로 접근할 수 있게 합니다. math.sqrt(25)는 그 모듈의 sqrt 함수를 호출하는 식입니다. sqrt는 제곱하면 입력한 수가 되는 0 이상의 값을 구합니다. 이 레슨에서는 음수가 아닌 수를 입력하며, sqrt(25)는 float 결과 5.0을 반환합니다.",
+        "점 앞의 math는 함수가 어디에 속하는지 보여 줍니다. len처럼 바로 쓸 수 있는 내장 함수와 달리, math의 기능은 해당 모듈을 불러와 이름을 연결한 뒤 사용합니다. import 자체가 특정 계산 결과를 출력하는 것은 아닙니다.",
+        "이 예제의 코드는 계산 연습용 파일 calc_demo.py 등에 저장하세요. 파일을 math.py처럼 불러올 표준 모듈과 같은 이름으로 만들면 내 파일이 먼저 발견되어 원하는 도구를 찾지 못할 수 있습니다."
+      ],
+      "code": {
+        "source": "import math\n\nroot = math.sqrt(25)\nprint(root)\nprint(type(root))",
+        "kind": "python",
+        "output": "5.0\n<class 'float'>",
+        "error": null,
+        "caption": "math에서 가져온 sqrt의 반환값을 이름에 연결한 뒤 출력합니다.",
+        "filename": "calc_demo.py"
+      }
+    },
+    {
+      "title": "표준 라이브러리도 입력과 결과의 약속을 확인합니다.",
+      "body": [
+        "표준 라이브러리는 Python과 함께 제공되는 모듈들의 모음입니다. 이 레슨의 math와 statistics는 별도 패키지 설치 없이 사용할 수 있습니다. import는 기능을 불러오는 문장이며, 인터넷에서 패키지를 설치하는 명령과는 다릅니다.",
+        "statistics.mean(values)는 비어 있지 않은 숫자 묶음의 산술평균을 반환합니다. statistics.median(values)는 크기순 가운데 값인 중앙값을 구하며, 항목 수가 짝수이면 가운데 두 값의 평균을 반환합니다. 같은 자료에서도 평균과 중앙값이 다를 수 있으므로 어떤 질문에 답할지 먼저 정합니다.",
+        "함수마다 허용하는 입력과 반환값이 다릅니다. 예를 들어 이 레슨의 math.sqrt는 음수가 아닌 수를 사용하며, 평균은 적어도 하나의 숫자가 있어야 합니다. 함수 이름을 찾은 뒤 공식 설명의 입력 조건을 확인하는 습관을 들이세요. 잘못된 입력에서 생기는 오류를 다루는 방법은 뒤 레슨에서 배웁니다."
+      ],
+      "code": {
+        "source": "import statistics\n\nscores = [4, 6, 8, 18]\nprint(statistics.mean(scores))\nprint(statistics.median(scores))\nprint(scores)",
+        "kind": "python",
+        "output": "9\n7.0\n[4, 6, 8, 18]",
+        "error": null,
+        "caption": "평균과 중앙값은 다른 질문에 답하며, 이번 함수 호출은 원래 scores를 변경하지 않습니다."
+      }
+    },
+    {
+      "title": "from은 선택한 이름을 현재 코드에 직접 연결합니다.",
+      "body": [
+        "from math import sqrt는 math 모듈에서 sqrt라는 이름을 가져와 현재 코드에서 바로 sqrt(...)로 호출할 수 있게 합니다. import math와 같은 기능을 사용할 수 있지만 현재 코드에 생기는 이름이 다릅니다.",
+        "import math만 썼는데 sqrt(36)이라고 호출하면 sqrt라는 이름을 직접 연결하지 않았으므로 NameError가 날 수 있습니다. 반대로 from math import sqrt만 쓴 코드에서 math.sqrt(36)을 쓰면 math라는 이름이 연결되어 있지 않습니다. 어떤 이름을 불러왔는지와 호출 모양을 맞춰야 합니다.",
+        "from으로 가져온 이름을 다른 변수에 다시 대입하면 그 함수 이름을 가릴 수 있습니다. 처음에는 import math처럼 출처를 점으로 표시하면 내 함수와 외부 함수의 구분이 쉽습니다. 어떤 방식을 쓰든 필요한 이름만 분명하게 연결하고, 출처가 드러나지 않는 대량 가져오기는 피합니다."
+      ],
+      "code": {
+        "source": "from math import sqrt\n\nprint(sqrt(36))\nprint(sqrt(49))",
+        "kind": "python",
+        "output": "6.0\n7.0",
+        "error": null,
+        "caption": "현재 코드에 연결된 이름이 sqrt이므로 모듈 이름을 앞에 붙이지 않습니다."
+      }
+    },
+    {
+      "title": "as는 현재 코드에서 쓸 이름을 정합니다.",
+      "body": [
+        "import statistics as stats는 불러온 모듈을 현재 코드에서 stats라는 이름으로 사용하게 합니다. 이때 stats.mean(...)으로 호출합니다. 원래 라이브러리의 이름을 바꾸거나 별도 복사본을 만드는 작업이 아닙니다.",
+        "from math import ceil as round_up처럼 선택한 함수에 별칭을 붙일 수도 있습니다. ceil은 입력보다 크거나 같은 정수 중 가장 작은 정수를 반환합니다. 예를 들어 2.1은 3, -2.1은 -2가 됩니다. 단순히 소수 부분을 버리는 int와 다르므로 원하는 계산인지 확인해야 합니다.",
+        "별칭은 충돌을 피하거나 문맥을 읽기 쉽게 할 때 사용합니다. 같은 코드에서 이름을 지나치게 바꾸면 출처를 찾기 어려워질 수 있으므로 목적이 있는 경우에 짧고 일관되게 정합니다. 이 레슨의 출력은 고정된 숫자로 확인하며 시간·무작위 결과를 전제로 하지 않습니다."
+      ],
+      "code": {
+        "source": "import statistics as stats\nfrom math import ceil as round_up\n\nprint(stats.mean([2, 4, 9]))\nprint(round_up(2.1))\nprint(round_up(-2.1))",
+        "kind": "python",
+        "output": "5\n3\n-2",
+        "error": null,
+        "caption": "가져오는 대상과 현재 파일에서 사용할 이름을 구분해 읽습니다."
+      }
+    }
+  ],
+  "worked": {
+    "question": "작업 17개를 한 번에 5개씩 처리합니다. 남은 작업도 한 번으로 세려면 몇 번이 필요한지 math.ceil로 계산해 보세요.",
+    "code": {
+      "source": "import math\n\ntasks = 17\ncapacity = 5\nexact = tasks / capacity\nbatches = math.ceil(exact)\nprint(exact)\nprint(batches)",
+      "kind": "python",
+      "output": "3.4\n4",
+      "error": null,
+      "caption": "정확한 나눗셈과 필요한 정수 횟수를 분리합니다."
+    },
+    "steps": [
+      "17을 5로 나누면 3.4입니다. 처리 횟수를 3으로 정하면 마지막 2개가 남습니다.",
+      "math를 불러온 뒤 math.ceil(3.4)로 3.4 이상인 가장 작은 정수 4를 구합니다.",
+      "batches는 정수 횟수이며 출력은 4입니다. 이번 계산은 작업 수가 0 이상이고 한 번의 처리 용량은 양수라는 전제를 둡니다."
+    ],
+    "answer": "ceil의 입력·반환 약속이 남은 작업도 한 번으로 센다는 요구와 맞으므로 필요한 횟수는 4입니다."
+  },
+  "misconception": {
+    "question": "import math를 쓰면 sqrt라는 이름도 바로 쓸 수 있나요?",
+    "answer": "import math는 현재 코드에 math라는 모듈 이름을 연결합니다. 그 안의 함수는 math.sqrt처럼 접근합니다. sqrt를 바로 호출하려면 from math import sqrt처럼 그 이름을 따로 연결해야 합니다. 가져오기 방식에 따라 현재 코드에서 사용할 이름이 달라집니다."
+  },
+  "keypoints": [
+    "import module은 모듈 이름을 연결하며 module.function(...)으로 그 기능에 접근합니다. 함수의 반환값은 필요한 곳에 사용하거나 출력합니다.",
+    "표준 라이브러리는 Python과 함께 제공됩니다. import와 설치는 다른 작업이며, 함수마다 허용하는 입력과 결과를 확인합니다.",
+    "from은 선택한 이름을 직접 연결하고 as는 사용할 별칭을 정합니다. 내 이름과 모듈 안의 이름, 파일 이름이 서로 가리지 않게 확인합니다."
+  ],
+  "examples": [
+    {
+      "question": "math를 import하고 81의 제곱근을 구해 value에 저장한 뒤, 값과 타입을 출력하세요. import 자체와 함수 호출 중 어느 단계에서 계산하는지도 설명하세요.",
+      "skill": "모듈 이름으로 함수 호출",
+      "solution": {
+        "answer": "값은 9.0, 타입은 float입니다. 계산은 math.sqrt(81)을 호출할 때 수행합니다.",
+        "code": {
+          "source": "import math\n\nvalue = math.sqrt(81)\nprint(value)\nprint(type(value))",
+          "kind": "python",
+          "output": "9.0\n<class 'float'>",
+          "error": null
+        }
+      },
+      "explanation": "import는 모듈 이름을 사용할 수 있게 하고 sqrt 호출이 값을 계산합니다. 반환값을 print에 전달해야 화면에 나옵니다."
+    },
+    {
+      "question": "아래 코드의 오류 종류를 확인하고 import 문은 유지한 채 호출 부분을 고쳐 7.0을 출력하세요.",
+      "skill": "불러온 이름과 호출 이름 맞추기",
+      "solution": {
+        "answer": "sqrt 이름을 직접 연결하지 않아 NameError가 납니다. math.sqrt(49)로 호출합니다.",
+        "code": {
+          "source": "import math\n\nprint(math.sqrt(49))",
+          "kind": "python",
+          "output": "7.0",
+          "error": null
+        }
+      },
+      "explanation": "현재 코드에 연결된 이름은 math입니다. 그 안의 sqrt를 점으로 찾아야 합니다.",
+      "code": "import math\n\nprint(sqrt(49))",
+      "codeKind": "python",
+      "codeLabel": "직접 확인하거나 고칠 코드"
+    },
+    {
+      "question": "from math import ceil을 사용해 3.2와 -3.2의 ceil 결과를 차례로 출력하세요. 왜 두 결과가 각각 4와 -3인지 부호와 연결해 설명하세요.",
+      "skill": "선택한 이름과 함수의 입력 약속",
+      "solution": {
+        "answer": "결과는 4와 -3입니다. 각각 입력보다 크거나 같은 정수 중 가장 작은 값입니다.",
+        "code": {
+          "source": "from math import ceil\n\nprint(ceil(3.2))\nprint(ceil(-3.2))",
+          "kind": "python",
+          "output": "4\n-3",
+          "error": null
+        }
+      },
+      "explanation": "ceil은 양수와 음수 모두 수직선의 큰 쪽 정수를 택합니다. 소수 부분을 무조건 없애는 계산과 구분해야 합니다."
+    },
+    {
+      "question": "statistics를 stats라는 별칭으로 가져와 [1, 2, 3, 10]의 평균과 중앙값을 출력하세요. 두 결과가 다른 이유를 적으세요.",
+      "skill": "별칭과 서로 다른 통계량",
+      "solution": {
+        "answer": "평균은 4, 중앙값은 2.5입니다. 평균은 네 수의 합을 4로 나누고 중앙값은 가운데 2와 3의 평균입니다.",
+        "code": {
+          "source": "import statistics as stats\n\nvalues = [1, 2, 3, 10]\nprint(stats.mean(values))\nprint(stats.median(values))",
+          "kind": "python",
+          "output": "4\n2.5",
+          "error": null
+        }
+      },
+      "explanation": "별칭은 현재 코드에서 모듈을 가리키는 이름입니다. 어떤 통계량을 원하는지에 따라 호출할 함수를 골라야 합니다."
+    },
+    {
+      "question": "상자 하나에 6개씩 담을 때 물건 19개에 필요한 상자 수를 구하세요. 작업 수가 0개인 경우에도 같은 계산식으로 확인하고, 두 결과를 출력하세요.",
+      "skill": "표준 함수를 요구 변경에 적용",
+      "solution": {
+        "answer": "19개에는 상자 4개, 0개에는 상자 0개가 필요합니다.",
+        "code": {
+          "source": "import math\n\ncapacity = 6\nprint(math.ceil(19 / capacity))\nprint(math.ceil(0 / capacity))",
+          "kind": "python",
+          "output": "4\n0",
+          "error": null
+        }
+      },
+      "explanation": "용량은 양수라는 전제에서 나눈 값을 올림합니다. 나머지 물건이 있으면 추가 상자가 필요하고, 물건이 없으면 0이 됩니다."
+    }
+  ]
+}
