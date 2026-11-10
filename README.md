@@ -42,7 +42,7 @@
 | 21 | GitHub | 준비 중 |
 | 22 | vim | 준비 중 |
 
-현재 소스에는 수학·파이썬·알고리즘·자료구조의 **3개 분야 · 총 130개 레슨**이 구현되어 있습니다. 수학 30레슨·파이썬 46레슨·알고리즘 54레슨이며, 나머지 19개 분야는 준비 중입니다. 알고리즘 챕터 1은 PR #10, 챕터 2·3은 [PR #11](https://github.com/jihoon380462/academy/pull/11)로 main에 병합했고, 병합 SHA `4c85004`의 [Pages 배포](https://github.com/jihoon380462/academy/actions/runs/42775841237)가 성공했고 공개 브라우저에서 새 챕터와 기록 이동을 확인했습니다. 실제 확인 범위와 소스는 검증 기록으로 구분합니다. 챕터 4·5도 [PR #15](https://github.com/jihoon380462/academy/pull/15)로 main에 병합했고 SHA `91e4e82`의 [Pages 배포](https://github.com/jihoon380462/academy/actions/runs/42835323465)와 공개 브라우저 확인을 완료했습니다. 새 챕터 6~9의 23레슨은 이번 작업 범위이며 병합·배포·공개 확인은 별도로 기록합니다. 파이썬 기초와 파이썬 실전, 터미널·Git과 GitHub 등은 각각 별도의 분야로 구분합니다. 실제 배포·화면 검증 기록은 [verification.md](verification.md)를 확인합니다.
+현재 소스에는 수학·파이썬·알고리즘·자료구조의 **3개 분야 · 총 130개 레슨**이 구현되어 있습니다. 수학 30레슨·파이썬 46레슨·알고리즘 54레슨이며, 나머지 19개 분야는 준비 중입니다. 알고리즘 챕터 1은 PR #10, 챕터 2·3은 [PR #11](https://github.com/jihoon380462/academy/pull/11)로 main에 병합했고, 병합 SHA `4c85004`의 [Pages 배포](https://github.com/jihoon380462/academy/actions/runs/42775841237)가 성공했고 공개 브라우저에서 새 챕터와 기록 이동을 확인했습니다. 실제 확인 범위와 소스는 검증 기록으로 구분합니다. 챕터 4·5도 [PR #15](https://github.com/jihoon380462/academy/pull/15)로 main에 병합했고 SHA `91e4e82`의 [Pages 배포](https://github.com/jihoon380462/academy/actions/runs/42835323465)와 공개 브라우저 확인을 완료했습니다. 챕터 6~9의 23레슨도 [PR #17](https://github.com/jihoon380462/academy/pull/17)로 main에 병합했고 SHA `3966739`의 [Pages 배포](https://github.com/jihoon380462/academy/actions/runs/42840665951)와 공개 브라우저 확인을 완료했습니다. 파이썬 기초와 파이썬 실전, 터미널·Git과 GitHub 등은 각각 별도의 분야로 구분합니다. 실제 배포·화면 검증 기록은 [verification.md](verification.md)를 확인합니다.
 
 ## 수학 과정 구성
 
@@ -57,7 +57,7 @@
 
 ## 알고리즘·자료구조 과정 구성
 
-[과목 문서](docs/curriculum/algorithms.md)의 9챕터·54레슨 설계 중 **전체 9챕터 · 54레슨·270예제·90복습**을 구현했습니다. 설계된 9개 챕터를 모두 구현했으며 추가 집필은 사용자 요청에 따릅니다. 이번에 추가한 6~9챕터의 실제 공개 상태는 검증 기록을 따릅니다.
+[과목 문서](docs/curriculum/algorithms.md)의 9챕터·54레슨 설계 중 **전체 9챕터 · 54레슨·270예제·90복습**을 구현했습니다. 설계된 9개 챕터를 모두 구현했으며 추가 집필은 사용자 요청에 따릅니다. 6~9챕터까지 main 병합·Pages 배포·공개 PC·모바일 브라우저 확인을 완료했으며 정확한 소스와 확인 범위는 검증 기록을 따릅니다.
 
 - 챕터 1 ‘문제를 절차로 바꾸기’ (`algorithms-l001`~`algorithms-l006`): 계약·제약·작은 사례·반례·불변식·종료와 경계
 - 챕터 2 ‘시간과 공간을 세는 법’ (`algorithms-l007`~`algorithms-l012`): 연산 수·성장률·반복 비용·경우별 비용·추가 공간·분할 상환과 측정
