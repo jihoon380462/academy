@@ -66,49 +66,77 @@
   ],
   "examples": [
     {
-      "skill": "집계 상태의 의미",
-      "question": "개수와 합계를 구할 때 지나간 모든 정수를 보관하지 않아도 되는 이유와 빈 입력의 결과를 적으세요.",
+      "exerciseType": "explain",
+      "skill": "원리 설명 · 소비와 보관 범위",
+      "question": "한 번만 읽는 이터레이터에서 합계와 개수는 작은 상태로 구할 수 있지만 정확한 전체 중복 제거와 모든 출력 목록은 그렇지 않을 수 있습니다. 입력 생산자·처리 상태·출력 보관을 나누고, 같은 이터레이터를 두 번 읽는 문제도 설명하세요.",
       "solution": {
-        "answer": "이미 처리한 부분을 count와 total이 요약하므로 이후 값의 갱신에 과거 개별 값이 필요 없습니다. 빈 입력은 (0, 0)입니다."
+        "answer": "처음 순회가 이터레이터를 소비하면 다음 순회에 같은 값이 다시 오지 않습니다. 합계·개수는 한 순회에서 함께 누적할 수 있지만 고유 값은 이미 본 u개를 기억해야 합니다. 출력도 모두 모으면 길이에 비례한 공간이 듭니다. 입력 생산자의 버퍼와 처리 함수가 더 쓰는 공간을 구분합니다."
       },
-      "explanation": "어떤 정보가 미래의 결과에 필요한지 보고 상태를 줄입니다. 모든 문제에 같은 요약이 충분한 것은 아닙니다."
+      "explanation": "정수 한 개를 상수 크기로 보는 모델과 실제 큰 정수의 비트 길이도 다릅니다. 스트리밍이라는 이름만으로 전체 메모리 O(1)을 주장하지 않습니다."
     },
     {
-      "skill": "한 번 쓰는 입력",
-      "question": "제너레이터를 먼저 list로 만들어 길이를 센 뒤 같은 제너레이터를 다시 돌며 합계를 구했습니다. 왜 두 번째 처리가 비었을 수 있고, 한 번에 어떻게 고칠 수 있나요?",
+      "exerciseType": "implement",
+      "skill": "기본 구현 · 한 번에 개수와 합",
+      "question": "정수 이터레이터 values를 한 번만 순회해 (개수,합계)를 반환하는 summarize_once(values)를 작성하세요. 빈 입력은 (0,0)입니다. 길이를 먼저 세거나 list로 전체를 저장하지 마세요. 입력을 소비하는 것은 허용하지만 다른 외부 자료는 바꾸지 않습니다.",
+      "code": "입력 흐름 → 반환값\n2,-1,5 → (3,6)\n빈 흐름 → (0,0)\n0,0 → (2,0)",
+      "codeKind": "text",
       "solution": {
-        "answer": "첫 소비에서 제너레이터가 끝났기 때문입니다. 한 반복에서 개수와 합계를 함께 갱신하면 두 번 읽지 않아도 됩니다."
-      },
-      "explanation": "목록으로 보관한 사본을 다시 읽을 수도 있지만 그 경우 전체 저장 O(n)을 선택한 것입니다. 메모리 목표에 맞춰 방법을 정합니다."
-    },
-    {
-      "skill": "정확한 중복 제거의 보관량",
-      "question": "길이 n의 흐름에서 고유 값이 u개입니다. 정확한 고유 개수를 집합으로 세는 공간을 O(1)이라고 적어도 되나요?",
-      "solution": {
-        "answer": "안 됩니다. 이미 본 고유 값을 보관하므로 O(u)개의 원소가 필요합니다. 최악에는 u=n입니다."
-      },
-      "explanation": "한 번 읽는 시간과 고정 메모리는 다른 성질입니다. 근사나 최근 구간만을 세는 다른 요구와도 구분합니다."
-    },
-    {
-      "skill": "최근 구간 구현",
-      "question": "W=3으로 2, 1, 4, 3을 읽으며 최근 최대 3개 합을 차례로 출력하세요. 전체 출력을 목록에 모으지 말고 하나씩 출력하세요.",
-      "solution": {
-        "answer": "출력은 2, 3, 7, 8입니다. 처음 세 값 전에는 도착한 값만 합칩니다.",
+        "answer": "각 값이 지나갈 때 필요한 두 집계를 함께 갱신합니다.",
         "code": {
           "kind": "python",
-          "source": "from collections import deque\n\ndef rolling_totals(values, width):\n    if width <= 0:\n        raise ValueError(\"width must be positive\")\n    recent = deque()\n    total = 0\n    for value in values:\n        if len(recent) == width:\n            total = total - recent.popleft()\n        recent.append(value)\n        total = total + value\n        yield total\n\nfor total in rolling_totals(iter((2, 1, 4, 3)), 3):\n    print(total)",
-          "output": "2\n3\n7\n8\n"
+          "source": "def summarize_once(values):\n    count = 0\n    total = 0\n    for value in values:\n        count += 1\n        total += value\n    return count, total\n\nprint(summarize_once(iter((2, -1, 5))))\nprint(summarize_once(iter(())))\nprint(summarize_once(iter((0, 0))))",
+          "output": "(3, 6)\n(0, 0)\n(2, 0)\n"
         }
       },
-      "explanation": "W개가 찬 뒤에만 빠져나갈 맨 앞 원소를 합에서 빼고 새 값을 더합니다."
+      "explanation": "값을 모두 보관하지 않아도 다음 갱신에 과거 개별 값이 필요하지 않습니다. 다 쓴 이터레이터를 다시 전달하면 새로 값이 생기지 않습니다."
     },
     {
-      "skill": "공간 주장 점검",
-      "question": "최근 W개 합을 내는 함수가 모든 합을 answers 목록에 저장해 반환합니다. 처리 상태 O(W)만 적으면 전체 추가 공간을 설명한 것인가요?",
+      "exerciseType": "implement",
+      "skill": "직접 구현 · 도착할 때마다 평균 내보내기",
+      "question": "정수 이터레이터를 받아 값이 하나 도착할 때마다 지금까지의 평균을 Python float 근삿값으로 yield하는 running_averages(values)를 작성하세요. 합계와 나눗셈 결과는 float로 다룰 수 있는 작은 범위입니다. 빈 입력은 아무 값도 내보내지 않습니다. 입력은 한 번 소비하고 전체 값이나 출력 목록을 함수 안에 저장하지 마세요.",
+      "code": "입력 흐름 → 나오는 값 목록\n2,4,-3 → [2.0,3.0,1.0]\n빈 흐름 → []\n0 → [0.0]",
+      "codeKind": "text",
       "solution": {
-        "answer": "아닙니다. n개 합을 반환하기 위해 보관한 출력 목록 O(n)도 따로 포함해야 합니다. 출력 제외 처리 상태는 O(W)라고 조건을 붙일 수 있습니다."
+        "answer": "적어도 한 값을 받은 뒤에만 평균을 내므로 0으로 나누지 않습니다.",
+        "code": {
+          "kind": "python",
+          "source": "def running_averages(values):\n    count = 0\n    total = 0\n    for value in values:\n        count += 1\n        total += value\n        yield total / count\n\nprint(list(running_averages(iter((2, 4, -3)))))\nprint(list(running_averages(iter(()))))\nprint(list(running_averages(iter((0,)))))",
+          "output": "[2.0, 3.0, 1.0]\n[]\n[0.0]\n"
+        }
       },
-      "explanation": "출력을 하나씩 소비하면 누적 출력 목록을 피할 수 있지만, 반환 계약 자체가 전체 목록이면 그 결과 공간은 필요합니다."
+      "explanation": "함수의 처리 상태는 개수·합계뿐입니다. 예시의 list는 확인용으로 출력들을 모으므로 그 확인 단계에는 O(n) 출력 공간이 추가됩니다. 실제 소비자는 하나씩 사용할 수 있습니다."
+    },
+    {
+      "exerciseType": "implement",
+      "skill": "직접 구현 · 최근 W개 합",
+      "question": "정수 이터레이터와 양의 정수 width를 받아 매 값마다 최근 최대 width개 합을 yield하는 rolling_sums(values,width)를 작성하세요. 시작에는 지금까지 온 값만 합치고, 빈 입력은 아무 값도 내보내지 않습니다. width≤0은 소비할 때 ValueError입니다. 덱을 쓰되 입력 전체와 출력 전체를 함수 안에 모으지 마세요.",
+      "code": "입력 흐름 / width → 나오는 값 목록\n2,1,4,3 / 3 → [2,3,7,8]\n-2,5 / 1 → [-2,5]\n빈 흐름 / 2 → []\n1 / 0 → ValueError",
+      "codeKind": "text",
+      "solution": {
+        "answer": "새 원소를 넣기 전 W개가 차 있으면 가장 오래된 값을 합과 덱에서 제거합니다.",
+        "code": {
+          "kind": "python",
+          "source": "from collections import deque\n\ndef rolling_sums(values, width):\n    if width <= 0:\n        raise ValueError('width must be positive')\n    recent = deque()\n    total = 0\n    for value in values:\n        if len(recent) == width:\n            total -= recent.popleft()\n        recent.append(value)\n        total += value\n        yield total\n\nprint(list(rolling_sums(iter((2, 1, 4, 3)), 3)))\nprint(list(rolling_sums(iter((-2, 5)), 1)))\nprint(list(rolling_sums(iter(()), 2)))\ntry:\n    print(list(rolling_sums(iter((1,)), 0)))\nexcept ValueError:\n    print('ValueError')",
+          "output": "[2, 3, 7, 8]\n[-2, 5]\n[]\nValueError\n"
+        }
+      },
+      "explanation": "덱의 처리 보관량은 O(W)이고 각 값은 한 번 들어와 많아야 한 번 나갑니다. 결과 확인용 list의 공간은 별도이며, 제너레이터 본문 검사는 실제로 소비할 때 실행됩니다."
+    },
+    {
+      "exerciseType": "implement",
+      "skill": "변형 구현 · 정확한 고유 개수의 흐름",
+      "question": "정수 이터레이터를 받아 매 값 뒤 지금까지 나온 고유 값 수를 yield하는 distinct_counts(values)를 작성하세요. 같은 값을 다시 받아도 개수를 늘리지 않으며 빈 입력은 아무 값도 내보내지 않습니다. 입력은 한 번 소비하고, 정확한 답에 필요한 seen 집합은 유지하되 전체 출력은 저장하지 마세요.",
+      "code": "입력 흐름 → 나오는 값 목록\n4,4,1,4,2 → [1,1,2,2,3]\n빈 흐름 → []\n0,0 → [1,1]",
+      "codeKind": "text",
+      "solution": {
+        "answer": "한 번의 순회로 정확한 개수를 내지만 이미 본 서로 다른 값은 잊지 않습니다.",
+        "code": {
+          "kind": "python",
+          "source": "def distinct_counts(values):\n    seen = set()\n    for value in values:\n        seen.add(value)\n        yield len(seen)\n\nprint(list(distinct_counts(iter((4, 4, 1, 4, 2)))))\nprint(list(distinct_counts(iter(()))))\nprint(list(distinct_counts(iter((0, 0)))))",
+          "output": "[1, 1, 2, 2, 3]\n[]\n[1, 1]\n"
+        }
+      },
+      "explanation": "고유 값 u개를 보관하는 O(u) 공간이며 상수 메모리라고 보고하면 안 됩니다. 최근 W개만 세는 다른 계약과도 구분합니다. 집합 자체의 순서가 아니라 원소 수만 출력합니다."
     }
   ]
 }

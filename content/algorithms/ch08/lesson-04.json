@@ -71,49 +71,77 @@
   ],
   "examples": [
     {
-      "skill": "상태/전이 · 겹치는 문제",
-      "question": "고정 무제한 동전 [1,3]에서 6→5→2와 6→3→2가 같은 부분 문제인 이유를 적으세요.",
+      "skill": "메모 키의 문맥",
+      "exerciseType": "explain",
+      "question": "무제한 동전 문제의 남은 금액만 전역 메모에 저장한 뒤 동전 종류를 바꾸면 왜 답이 틀릴 수 있나요? 각 위치를 한 번만 쓰는 문제에는 어떤 키가 더 필요한가요?",
       "solution": {
-        "answer": "두 경우 모두 남은 금액이 2이고 앞으로 쓸 수 있는 동전 종류·사용 횟수 조건이 같아 solve(2)의 최소 개수가 같습니다."
+        "answer": "같은 남은 금액도 사용할 동전 종류·남은 위치가 달라 답이 다릅니다. 입력별 새 메모나 동전 문맥이 필요하고 0/1 선택은 (다음 위치,남은 금액)처럼 상태를 구분해야 합니다."
       },
-      "explanation": "이전 선택의 순서는 앞으로의 허용 선택에 영향을 주지 않는다는 조건이 핵심입니다."
+      "explanation": "미래의 정답을 바꾸는 조건을 키에서 빠뜨리면 중복 제거가 아니라 서로 다른 문제의 혼합이 됩니다."
     },
     {
-      "skill": "상태/전이 · 빠진 키",
-      "question": "각 원소를 한 번만 쓸 수 있을 때 남은 금액 4만 키로 쓰면 충분한가요? 남은 원소가 [4]인 상태와 [3]인 상태를 비교하세요.",
+      "skill": "입력별 무제한 메모",
+      "exerciseType": "implement",
+      "question": "memo_min_coins(coins, amount) 함수를 직접 작성하세요. coins는 서로 다른 양의 정수 종류이고 각 종류를 무제한 사용합니다. 작은 0 이상 amount의 정확한 최소 개수 또는 불가능 None을 반환하세요. 각 호출마다 새 메모를 두며 amount=0은 종류가 비어도 0입니다. None도 계산 결과로 저장하고 입력은 불변입니다. 제시한 확인 사례와 경계 조건을 함께 검증하세요.",
+      "code": "확인 입력 → 반환값\nmemo_min_coins([2, 5], 6) → 3\nmemo_min_coins([5], 6) → None\nmemo_min_coins([], 0) → 0",
+      "codeKind": "text",
       "solution": {
-        "answer": "충분하지 않습니다. [4]면 한 개로 가능하지만 [3]이면 불가능합니다. 다음 위치 등 사용할 수 있는 원소를 구별하는 정보를 키에 포함해야 합니다."
-      },
-      "explanation": "같은 금액이어도 남은 선택이 달라지면 다른 부분 문제입니다."
-    },
-    {
-      "skill": "탐색 조건 · None의 저장",
-      "question": "이미 불가능으로 계산해 memo[3]=None을 저장했습니다. memo.get(3)이 None이면 다시 계산하는 코드와 3 in memo를 확인하는 코드의 차이를 설명하세요.",
-      "solution": {
-        "answer": "get의 None만 보면 미계산과 계산된 불가능을 구별하지 못합니다. 포함 여부를 확인하면 None도 이미 계산한 답으로 재사용합니다."
-      },
-      "explanation": "이 차이는 불가능 상태가 여러 경로에서 반복되는 경우의 중복 계산에 영향을 줍니다."
-    },
-    {
-      "skill": "작은 적용 · 입력별 메모",
-      "question": "[2,5]와 [5]에 목표6을 각각 입력별 메모 함수로 풀고, 목표0도 확인하세요.",
-      "solution": {
-        "answer": "[2,5]는 3개, [5]는 None, 목표0은 0입니다. 각 호출의 메모는 독립적입니다.",
+        "answer": "입력·반환 계약과 경계 조건을 만족하는 구현 한 가지입니다.",
         "code": {
           "kind": "python",
-          "source": "def minimum_coins_memo(coins, amount):\n    coins = tuple(coins)\n    memo = {0: 0}\n    def solve(remaining):\n        if remaining in memo:\n            return memo[remaining]\n        best = None\n        for coin in coins:\n            if coin <= remaining:\n                rest = solve(remaining - coin)\n                if rest is not None:\n                    candidate = rest + 1\n                    if best is None or candidate < best:\n                        best = candidate\n        memo[remaining] = best\n        return best\n    return solve(amount)\n\nprint(minimum_coins_memo([2, 5], 6))\nprint(minimum_coins_memo([5], 6))\nprint(minimum_coins_memo([5], 0))",
+          "source": "def memo_min_coins(coins, amount):\n    coins = tuple(coins)\n    memo = {0: 0}\n    def solve(remaining):\n        if remaining in memo:\n            return memo[remaining]\n        best = None\n        for coin in coins:\n            if coin <= remaining:\n                previous = solve(remaining - coin)\n                if previous is not None:\n                    candidate = previous + 1\n                    if best is None or candidate < best:\n                        best = candidate\n        memo[remaining] = best\n        return best\n    return solve(amount)\n\nprint(memo_min_coins([2, 5], 6))\nprint(memo_min_coins([5], 6))\nprint(memo_min_coins([], 0))",
           "output": "3\nNone\n0\n"
         }
       },
-      "explanation": "동전 묶음을 바꾸어도 같은 금액 키가 이전 문제의 답을 가져오지 않도록 호출 안에서 메모를 만듭니다."
+      "explanation": "고정한 coins를 함수 안의 문맥으로 두므로 remaining만 키로 사용할 수 있습니다. 값이 None인 키도 존재 여부로 재사용합니다."
     },
     {
-      "skill": "반례와 비교 · 자원 한계",
-      "question": "메모로 금액별 중복 계산을 없앴으니 매우 큰 목표도 항상 안전하다고 말할 수 있나요? 상태 수·깊이 관점에서 설명하세요.",
+      "skill": "여러 금액이 공유하는 메모",
+      "exerciseType": "implement",
+      "question": "memo_answers(coins, limit) 함수를 직접 작성하세요. 서로 다른 양의 정수 coins를 무제한 사용해 금액 0부터 작은 0 이상 limit까지의 최소 개수 목록을 반환하세요. 불가능 칸은 None, 첫 칸은 0입니다. 한 함수 호출 안에서는 여러 금액이 같은 메모를 공유하되 다음 호출로 메모를 넘기지 않습니다. 빈 종류·중복 계산 상태를 처리하고 coins는 불변입니다. 제시한 확인 사례와 경계 조건을 함께 검증하세요.",
+      "code": "확인 입력 → 반환값\nmemo_answers([2], 4) → [0, None, 1, None, 2]\nmemo_answers([], 2) → [0, None, None]\nmemo_answers([1, 3], 0) → [0]",
+      "codeKind": "text",
       "solution": {
-        "answer": "아닙니다. 저장할 금액 상태 수와 최대 재귀 깊이가 목표에 따라 늘 수 있습니다. Python의 재귀 한도와 메모리, 정수 연산 비용도 확인해야 합니다."
+        "answer": "입력·반환 계약과 경계 조건을 만족하는 구현 한 가지입니다.",
+        "code": {
+          "kind": "python",
+          "source": "def memo_answers(coins, limit):\n    coins = tuple(coins)\n    memo = {0: 0}\n    def solve(remaining):\n        if remaining in memo:\n            return memo[remaining]\n        best = None\n        for coin in coins:\n            if coin <= remaining:\n                previous = solve(remaining - coin)\n                if previous is not None:\n                    candidate = previous + 1\n                    if best is None or candidate < best:\n                        best = candidate\n        memo[remaining] = best\n        return best\n    return [solve(amount) for amount in range(limit + 1)]\n\nprint(memo_answers([2], 4))\nprint(memo_answers([], 2))\nprint(memo_answers([1, 3], 0))",
+          "output": "[0, None, 1, None, 2]\n[0, None, None]\n[0]\n"
+        }
       },
-      "explanation": "중복 계산을 줄이는 것과 전체 작업이 상수 자원에 들어간다는 주장은 다릅니다."
+      "explanation": "같은 입력의 여러 질의는 메모를 공유할 수 있습니다. 다른 종류 입력과 공유하지 않는 범위도 구현의 일부입니다."
+    },
+    {
+      "skill": "한 번만 쓰는 선택의 상태 키",
+      "exerciseType": "implement",
+      "question": "once_min_coins(values, amount) 함수를 직접 작성하세요. values는 양의 정수 목록이고 중복 값도 다른 위치의 동전입니다. 각 위치를 최대 한 번만 사용해 작은 0 이상 amount를 만드는 최소 개수 또는 None을 반환하세요. amount=0은 0, 빈 양수 목표는 None입니다. 메모 키에 다음 위치와 남은 금액을 포함하고 입력은 불변입니다. 제시한 확인 사례와 경계 조건을 함께 검증하세요.",
+      "code": "확인 입력 → 반환값\nonce_min_coins([2], 4) → None\nonce_min_coins([2, 2], 4) → 2\nonce_min_coins([3, 4], 6) → None\nonce_min_coins([], 0) → 0",
+      "codeKind": "text",
+      "solution": {
+        "answer": "입력·반환 계약과 경계 조건을 만족하는 구현 한 가지입니다.",
+        "code": {
+          "kind": "python",
+          "source": "def once_min_coins(values, amount):\n    memo = {}\n    def solve(index, remaining):\n        if remaining == 0:\n            return 0\n        if index == len(values):\n            return None\n        key = (index, remaining)\n        if key in memo:\n            return memo[key]\n        best = solve(index + 1, remaining)\n        if values[index] <= remaining:\n            previous = solve(index + 1, remaining - values[index])\n            if previous is not None:\n                candidate = previous + 1\n                if best is None or candidate < best:\n                    best = candidate\n        memo[key] = best\n        return best\n    return solve(0, amount)\n\nprint(once_min_coins([2], 4))\nprint(once_min_coins([2, 2], 4))\nprint(once_min_coins([3, 4], 6))\nprint(once_min_coins([], 0))",
+          "output": "None\n2\nNone\n0\n"
+        }
+      },
+      "explanation": "양쪽 분기 모두 다음 위치로 가므로 같은 동전을 재사용하지 않습니다. 남은 금액만 키로 쓰면 서로 다른 남은 위치를 섞습니다."
+    },
+    {
+      "skill": "계산한 메모 상태 수",
+      "exerciseType": "implement",
+      "question": "memo_state_report(coins, amount) 함수를 직접 작성하세요. 서로 다른 양의 정수 coins의 무제한 최소 개수를 메모 재귀로 구해 (답 또는 None, 저장된 상태 수)를 반환하세요. 처음 {0:0}을 넣고 실제 solve가 도달한 금액만 None까지 저장합니다. 상태 수에는 0을 포함합니다. 작은 0 이상 amount와 빈 종류를 처리하며 호출마다 새 메모, 입력 불변입니다. 제시한 확인 사례와 경계 조건을 함께 검증하세요.",
+      "code": "확인 입력 → 반환값\nmemo_state_report([2], 3) → (None, 3)\nmemo_state_report([2], 4) → (2, 3)\nmemo_state_report([], 0) → (0, 1)\nmemo_state_report([], 3) → (None, 2)",
+      "codeKind": "text",
+      "solution": {
+        "answer": "입력·반환 계약과 경계 조건을 만족하는 구현 한 가지입니다.",
+        "code": {
+          "kind": "python",
+          "source": "def memo_state_report(coins, amount):\n    memo = {0: 0}\n    def solve(remaining):\n        if remaining in memo:\n            return memo[remaining]\n        best = None\n        for coin in coins:\n            if coin <= remaining:\n                previous = solve(remaining - coin)\n                if previous is not None:\n                    candidate = previous + 1\n                    if best is None or candidate < best:\n                        best = candidate\n        memo[remaining] = best\n        return best\n    answer = solve(amount)\n    return answer, len(memo)\n\nprint(memo_state_report([2], 3))\nprint(memo_state_report([2], 4))\nprint(memo_state_report([], 0))\nprint(memo_state_report([], 3))",
+          "output": "(None, 3)\n(2, 3)\n(0, 1)\n(None, 2)\n"
+        }
+      },
+      "explanation": "답이 불가능한 상태도 한 번 계산한 상태입니다. 모든 금액 표를 미리 만든 것과 실제 도달한 상태만 저장한 결과를 구분합니다."
     }
   ]
 }

@@ -91,6 +91,26 @@ async function expectHash(page, hash) {
         await noOverflow(page, `${width}px ${theme} ${route} closed`);
         const expected = route.includes('/lesson/') ? 5 : route.endsWith('/review') ? 10 : 0;
         assert.equal(await page.locator('.py-problem').count(), expected, route);
+        let examples = [];
+        if (route.includes('/lesson/')) {
+          examples = await page.evaluate(id => window.ALGORITHMS_COURSES.flatMap(course => course.lessons).find(lesson => lesson.id === id).examples, route.split('/').at(-1));
+          assert.equal(examples[0].exerciseType, 'explain', 'example 1 explains the concept');
+          assert.ok(['explain', 'implement'].includes(examples[1].exerciseType), 'example 2 has an explicit supported type');
+          assert.deepEqual(examples.slice(2).map(example => example.exerciseType), ['implement', 'implement', 'implement']);
+          for (const [index, example] of examples.entries()) {
+            const problem = page.locator('.py-problem').nth(index);
+            assert.equal(await problem.getAttribute('data-exercise-type'), example.exerciseType);
+            assert.match(await problem.locator('.py-problem-meta span').first().innerText(), example.exerciseType === 'implement' ? /직접 구현/ : /개념 설명/);
+            assert.equal(await problem.locator('h3').textContent(), example.question, 'the learner sees the authored requirement');
+            if (example.exerciseType === 'implement') {
+              assert.equal(example.solution.code.kind, 'python');
+              assert.equal(typeof example.solution.code.output, 'string');
+              assert.equal(await problem.locator('.py-solution .py-code-source').isVisible(), false, 'implementation solution stays folded until opened');
+            }
+          }
+        } else if (route.endsWith('/review')) {
+          assert.equal(await page.locator('.py-problem[data-exercise-type]').count(), 0, 'review keeps its existing presentation');
+        }
         if (expected) {
           assert.equal(await page.locator('.py-solution[open]').count(), 0, 'answers initially closed');
           assert.equal(await page.locator('#main [data-quiz], #main .quiz-options, #main textarea, #main input').count(), 0);
@@ -98,15 +118,38 @@ async function expectHash(page, hash) {
           await first.locator('summary').click();
           assert.equal(await first.evaluate(el => el.open), true);
           assert.ok((await first.locator('.py-solution-body').innerText()).trim().length > 20);
+          if (examples.length) {
+            const firstImplementation = examples.findIndex(example => example.exerciseType === 'implement');
+            await page.locator('.py-problem').nth(firstImplementation).locator('.py-solution summary').click();
+          }
           // Opening every answer exposes long code and explanation overflow too.
           await page.locator('.py-solution').evaluateAll(items => items.forEach(item => { item.open = true; }));
+          for (const [index, example] of examples.entries()) {
+            if (example.exerciseType !== 'implement') continue;
+            const problem = page.locator('.py-problem').nth(index), source = problem.locator('.py-solution .py-code-source');
+            assert.equal(await source.isVisible(), true);
+            assert.equal(await source.locator('code').textContent(), example.solution.code.source);
+            assert.equal(await source.getAttribute('tabindex'), '0', 'code can receive keyboard focus for scrolling');
+            const scroll = await source.evaluate(element => {
+              const maximum = element.scrollWidth - element.clientWidth;
+              element.scrollLeft = maximum;
+              const moved = element.scrollLeft;
+              element.scrollLeft = 0;
+              return { maximum, moved, overflow: getComputedStyle(element).overflowX };
+            });
+            assert.ok(['auto', 'scroll'].includes(scroll.overflow));
+            if (scroll.maximum > 1) assert.ok(scroll.moved > 0, 'long implementation code scrolls within its own panel');
+            const output = problem.locator('.py-solution .py-code-output');
+            if (example.solution.code.output === '') assert.match(await output.innerText(), /출력 없음/);
+            else assert.equal(await output.locator('pre code').textContent(), example.solution.code.output);
+          }
           await noOverflow(page, `${width}px ${theme} ${route} open`);
         }
         combinations++;
       }
     }
   }
-  groups.push(`${combinations} viewport/theme/page combinations, closed and expanded answers`);
+  groups.push(`${combinations} viewport/theme/page combinations, exercise types and folded/open runnable solutions with code scrolling`);
 
   await page.setViewportSize({ width: 1440, height: 1000 });
   for (const chapter of chapters) {
@@ -267,17 +310,30 @@ async function expectHash(page, hash) {
   }
   groups.push('new algorithm and existing Python PC/mobile preview links');
 
-  const previewDir = process.env.ACADEMY_SCREENSHOT_DIR || '/tmp/academy-algorithms-ch06-ch09/previews';
+  const previewDir = process.env.ACADEMY_SCREENSHOT_DIR || '/tmp/academy-algorithms-practice/previews';
   await fs.mkdir(previewDir, { recursive: true });
   const screenshots = [];
-  for (const chapter of chapters.slice(5)) {
-    for (const [width, device] of [[1440, 'pc'], [390, 'mobile']]) {
-      await page.setViewportSize({ width, height: 1000 });
-      await visit(page, lessonRoute(chapter.ids[4]));
-      const file = 'algorithms-' + chapter.slug + '-' + device + '.jpg';
-      await page.screenshot({ path: path.join(previewDir, file), type: 'jpeg', quality: 85, fullPage: false });
-      screenshots.push(path.join(previewDir, file));
+  for (const shot of [
+    { id: 'algorithms-l001', width: 390, state: 'closed' },
+    { id: 'algorithms-l008', width: 1440, state: 'open' },
+    { id: 'algorithms-l039', width: 390, state: 'closed' },
+    { id: 'algorithms-l052', width: 1440, state: 'open' }
+  ]) {
+    await page.setViewportSize({ width: shot.width, height: 1100 });
+    await visit(page, lessonRoute(shot.id));
+    await page.reload();
+    await page.locator('[data-algo-complete="' + shot.id + '"]').waitFor();
+    await page.evaluate(theme => { localStorage.setItem('academy-theme-v1', theme); window.AcademyTheme.refresh(); }, shot.width < 500 ? 'glass' : 'light');
+    const file = 'algorithms-practice-' + shot.id + '-' + (shot.width < 500 ? 'mobile' : 'pc') + '-' + shot.state + '.png';
+    if (shot.state === 'closed') {
+      await page.locator('#practice').evaluate(element => window.scrollTo({ top: window.scrollY + element.getBoundingClientRect().top - 16, behavior: 'instant' }));
+      await page.screenshot({ path: path.join(previewDir, file) });
+    } else {
+      const implementation = page.locator('.py-problem[data-exercise-type="implement"]').first();
+      await implementation.locator('.py-solution summary').click();
+      await implementation.screenshot({ path: path.join(previewDir, file) });
     }
+    screenshots.push(path.join(previewDir, file));
   }
   assert.deepEqual(errors, []);
   console.log(JSON.stringify({ browser: browser.version(), groups, combinations, pageErrors: errors, screenshots }, null, 2));

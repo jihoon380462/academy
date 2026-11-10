@@ -76,48 +76,76 @@
   "examples": [
     {
       "skill": "경우 구분",
-      "question": "길이 5인 목록을 앞에서부터 검색하고 처음 일치하면 멈춥니다. 목표값이 첫 위치에 있을 때, 마지막 위치에만 있을 때, 없을 때의 값 비교 횟수를 각각 적고 최선과 최악을 고르세요.",
+      "question": "길이 5인 목록을 앞에서부터 검색하고 처음 일치하면 멈춥니다. 목표값이 첫 위치에 있을 때, 마지막 위치에만 있을 때, 없을 때의 값 비교 횟수를 적고 최선과 최악을 고르세요. 최선·최악을 설명할 때 입력 길이를 같게 두는 이유도 설명하세요.",
       "solution": {
-        "answer": "각각 1회·5회·5회입니다. n = 5에서 최선은 1회, 최악은 5회입니다."
+        "answer": "각각 1회·5회·5회입니다. n = 5에서 최선은 1회, 최악은 5회입니다. 입력 크기를 고정해야 크기 때문에 생긴 차이와 목표값 배치·존재 여부 때문에 생긴 차이를 구별할 수 있습니다."
       },
-      "explanation": "마지막 원소가 같아도 그 앞 원소들이 다르다는 것을 확인해야 합니다. 없는 경우에도 모든 원소를 확인합니다. 비교 대상은 모두 같은 길이 5입니다."
+      "explanation": "마지막 원소가 같아도 그 앞 원소들이 다르다는 것을 확인해야 합니다. 없는 경우에도 모든 원소를 확인합니다. 비교 대상은 모두 같은 길이 5입니다.",
+      "exerciseType": "explain"
     },
     {
-      "skill": "중복과 첫 위치",
-      "question": "values = [7, 3, 7, 7]에서 target = 7인 첫 위치 검색은 몇 번 비교하나요? “목록에 7이 세 번 있으므로 3회”라는 설명이 맞는지도 말하세요.",
+      "exerciseType": "implement",
+      "skill": "구현 · 요청별 첫 검색 비용",
+      "question": "search_costs(values, targets)를 직접 구현하세요. 두 입력은 정수 목록입니다. 각 target마다 values 앞에서 첫 일치까지 비교하고, 없으면 끝까지 비교한 횟수를 새 목록으로 반환합니다. values가 비면 각 비용 0, targets가 비면 []입니다. 입력 자료는 변경하지 않습니다. 함수의 결과는 반환하며, 아래 확인 호출의 기대 반환값과 비교하세요.",
+      "code": "확인 호출 → 기대 반환값\nsearch_costs([], [1, 2]) → [0, 0]\nsearch_costs([4, 8, 4], [4, 8, 0]) → [1, 2, 3]\nsearch_costs([4], []) → []",
+      "codeKind": "text",
       "solution": {
-        "answer": "비교는 1회입니다. 맨 앞 7을 발견하면 끝나므로 등장 횟수 세 개는 이 검색의 비교 횟수가 아닙니다."
-      },
-      "explanation": "계약이 첫 위치를 요구합니다. 등장 횟수를 세는 계약이라면 끝까지 확인해야 하므로 같은 자료라도 처리 절차와 비용이 달라집니다."
-    },
-    {
-      "skill": "평균의 가정",
-      "question": "길이 4인 목록에 목표값이 정확히 한 번 있고 첫 위치·둘째·셋째·넷째에 있을 비율이 모두 같습니다. 평균 비교 횟수와, 실제 한 번의 비교 횟수로 그 값이 가능한지 적으세요.",
-      "solution": {
-        "answer": "평균은 (1+2+3+4)/4 = 2.5회입니다. 실제 한 번의 비교 횟수는 1·2·3·4 중 하나이며 2.5회일 수는 없습니다."
-      },
-      "explanation": "평균은 여러 입력 경우를 가정한 비중으로 합친 값입니다. 목표 위치가 고르게 분포한다는 가정이 빠지면 이 평균을 그대로 주장할 수 없습니다."
-    },
-    {
-      "skill": "분포가 바뀌면",
-      "question": "길이 4인 고정 목록 [4, 8, 15, 16]의 첫 위치 검색 요청이 25%는 4, 75%는 없는 값 99입니다. 요청 네 개를 [4, 99, 99, 99]로 나타내어 평균 비교 횟수를 손으로 구하고 코드로 확인하세요.",
-      "solution": {
-        "answer": "비교 횟수는 1·4·4·4로 평균 13/4 = 3.25회입니다.",
+        "answer": "다음은 계약을 만족하는 구현 한 가지입니다. 확인 호출의 결과뿐 아니라 입력 경계와 변수의 의미도 비교하세요.",
         "code": {
           "kind": "python",
-          "source": "def comparisons(values, target):\n    count = 0\n    for value in values:\n        count += 1\n        if value == target:\n            return count\n    return count\n\nvalues = [4, 8, 15, 16]\nrequests = [4, 99, 99, 99]\ntotal = 0\nfor target in requests:\n    total += comparisons(values, target)\nprint(total)\nprint(total / len(requests))",
-          "output": "13\n3.25\n"
+          "source": "def search_costs(values, targets):\n    result = []\n    for target in targets:\n        comparisons = 0\n        for value in values:\n            comparisons += 1\n            if value == target:\n                break\n        result.append(comparisons)\n    return result\n\nprint(search_costs([], [1, 2]))\nprint(search_costs([4, 8, 4], [4, 8, 0]))\nprint(search_costs([4], []))\n",
+          "output": "[0, 0]\n[1, 2, 3]\n[]\n"
         }
       },
-      "explanation": "없는 값을 찾는 요청이 많아지면 끝까지 확인하는 경우의 비중이 커집니다. 최선 1과 최악 4를 단순히 평균한 2.5로는 이 분포를 설명할 수 없습니다."
+      "explanation": "같은 길이의 목록이어도 요청한 값의 첫 위치와 존재 여부에 따라 비용이 달라집니다. 관찰 대상은 값 일치 비교이며 반복 조건 검사 비용은 포함하지 않습니다."
     },
     {
-      "skill": "분석 선택",
-      "question": "검색 서비스의 목표는 “존재하지 않는 값을 요청해도 처리 지연이 너무 커지지 않게 하기”입니다. 앞의 항목을 자주 찾은 측정 결과만으로 충분할까요? 무엇을 추가로 분석해야 하는지 적으세요.",
+      "exerciseType": "implement",
+      "skill": "구현 · 요청 집합의 비용 범위",
+      "question": "observed_cost_range(values, targets)를 직접 구현하세요. 두 입력은 정수 목록입니다. target별 앞에서 첫 일치까지의 비교 수를 구해, 주어진 요청들 중 (최소 비교 수, 최대 비교 수)를 반환합니다. targets가 비면 None입니다. 이는 주어진 요청들에서의 범위이며 모든 가능한 요청의 최선·최악을 자동으로 보장하지 않습니다. 입력 자료는 변경하지 않습니다. 함수의 결과는 반환하며, 아래 확인 호출의 기대 반환값과 비교하세요.",
+      "code": "확인 호출 → 기대 반환값\nobserved_cost_range([3, 5, 7], [3, 7, 0]) → (1, 3)\nobserved_cost_range([], [2]) → (0, 0)\nobserved_cost_range([3], []) → None",
+      "codeKind": "text",
       "solution": {
-        "answer": "충분하지 않습니다. 없는 요청처럼 n개를 모두 확인하는 최악 경우의 비용과 입력 크기에 따른 성장률을 살펴봐야 합니다. 실제 응답 시간의 한계는 해당 환경에서 별도로 측정합니다."
+        "answer": "다음은 계약을 만족하는 구현 한 가지입니다. 확인 호출의 결과뿐 아니라 입력 경계와 변수의 의미도 비교하세요.",
+        "code": {
+          "kind": "python",
+          "source": "def observed_cost_range(values, targets):\n    if len(targets) == 0:\n        return None\n    lowest = None\n    highest = None\n    for target in targets:\n        comparisons = 0\n        for value in values:\n            comparisons += 1\n            if value == target:\n                break\n        if lowest is None or comparisons < lowest:\n            lowest = comparisons\n        if highest is None or comparisons > highest:\n            highest = comparisons\n    return lowest, highest\n\nprint(observed_cost_range([3, 5, 7], [3, 7, 0]))\nprint(observed_cost_range([], [2]))\nprint(observed_cost_range([3], []))\n",
+          "output": "(1, 3)\n(0, 0)\nNone\n"
+        }
       },
-      "explanation": "유리한 요청이 많았다는 관찰은 불리한 요청이 없음을 보장하지 않습니다. 연산 수 분석도 운영 환경의 지연 시간을 초 단위로 자동 보장해 주지는 않습니다."
+      "explanation": "요청이 없는 경우와 비용 0인 요청이 있는 경우를 구별합니다. 이미 계산한 비용만 집계하며 입력 크기가 다른 목록을 섞어 최선·최악이라고 부르지 않습니다."
+    },
+    {
+      "exerciseType": "implement",
+      "skill": "구현 · 분포를 반영한 비용 집계",
+      "question": "weighted_search_cost(values, targets, weights)를 직접 구현하세요. values·targets는 정수 목록이고 weights는 targets와 같은 길이의 0 이상 정수 목록입니다. 각 요청의 첫 일치 검색 비교 수에 해당 가중치를 곱해 합산하고 (가중 비용 합, 가중치 합)을 반환합니다. 전체 가중치가 0이면 None입니다. 이 쌍의 비가 평균 비용이며 약분하지 않습니다. 입력 자료는 변경하지 않습니다. 함수의 결과는 반환하며, 아래 확인 호출의 기대 반환값과 비교하세요.",
+      "code": "확인 호출 → 기대 반환값\nweighted_search_cost([2, 4], [2, 9], [3, 1]) → (5, 4)\nweighted_search_cost([], [2], [2]) → (0, 2)\nweighted_search_cost([2], [2], [0]) → None\nweighted_search_cost([], [], []) → None",
+      "codeKind": "text",
+      "solution": {
+        "answer": "다음은 계약을 만족하는 구현 한 가지입니다. 확인 호출의 결과뿐 아니라 입력 경계와 변수의 의미도 비교하세요.",
+        "code": {
+          "kind": "python",
+          "source": "def weighted_search_cost(values, targets, weights):\n    numerator = 0\n    denominator = 0\n    i = 0\n    while i < len(targets):\n        comparisons = 0\n        for value in values:\n            comparisons += 1\n            if value == targets[i]:\n                break\n        numerator += comparisons * weights[i]\n        denominator += weights[i]\n        i += 1\n    if denominator == 0:\n        return None\n    return numerator, denominator\n\nprint(weighted_search_cost([2, 4], [2, 9], [3, 1]))\nprint(weighted_search_cost([], [2], [2]))\nprint(weighted_search_cost([2], [2], [0]))\nprint(weighted_search_cost([], [], []))\n",
+          "output": "(5, 4)\n(0, 2)\nNone\nNone\n"
+        }
+      },
+      "explanation": "평균을 구하기 전에 어떤 요청이 얼마나 자주 등장하는지 weights로 명시합니다. 없는 값 요청도 실제로 끝까지 비교한 비용을 반영하며, 가중치 합 0에서는 평균을 정의하지 않습니다."
+    },
+    {
+      "exerciseType": "implement",
+      "skill": "구현 · 양끝 검색의 비용 차이",
+      "question": "end_search_costs(values, target)를 직접 구현하세요. values는 정수 목록, target은 정수입니다. 왼쪽부터 첫 일치까지와 오른쪽부터 첫 일치까지의 값 비교 수를 (왼쪽 비용, 오른쪽 비용)으로 반환합니다. 없으면 각 방향에서 길이만큼, 빈 목록이면 (0, 0)입니다. 입력 자료는 변경하지 않습니다. 함수의 결과는 반환하며, 아래 확인 호출의 기대 반환값과 비교하세요.",
+      "code": "확인 호출 → 기대 반환값\nend_search_costs([], 7) → (0, 0)\nend_search_costs([7, 2, 7], 7) → (1, 1)\nend_search_costs([7, 2, 3], 7) → (1, 3)\nend_search_costs([0, 0], 9) → (2, 2)",
+      "codeKind": "text",
+      "solution": {
+        "answer": "다음은 계약을 만족하는 구현 한 가지입니다. 확인 호출의 결과뿐 아니라 입력 경계와 변수의 의미도 비교하세요.",
+        "code": {
+          "kind": "python",
+          "source": "def end_search_costs(values, target):\n    left_cost = 0\n    i = 0\n    while i < len(values):\n        left_cost += 1\n        if values[i] == target:\n            break\n        i += 1\n    right_cost = 0\n    i = len(values) - 1\n    while i >= 0:\n        right_cost += 1\n        if values[i] == target:\n            break\n        i -= 1\n    return left_cost, right_cost\n\nprint(end_search_costs([], 7))\nprint(end_search_costs([7, 2, 7], 7))\nprint(end_search_costs([7, 2, 3], 7))\nprint(end_search_costs([0, 0], 9))\n",
+          "output": "(0, 0)\n(1, 1)\n(1, 3)\n(2, 2)\n"
+        }
+      },
+      "explanation": "같은 원소 수라도 탐색 방향과 목표 배치가 비용을 바꿉니다. 한쪽 방향에서 첫 일치한 뒤에는 그 방향의 추가 비교를 하지 않습니다."
     }
   ]
 }

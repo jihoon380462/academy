@@ -74,49 +74,77 @@
   ],
   "examples": [
     {
-      "skill": "방문 순서 추적",
-      "question": "graph = {\"A\":[\"B\",\"C\"], \"B\":[\"D\"], \"C\":[], \"D\":[]}입니다. 이웃 순서대로 재귀 DFS를 A에서 수행할 때 첫 방문 순서를 적으세요.",
+      "skill": "방문 표시의 이유",
+      "exerciseType": "explain",
+      "question": "방향 순환 A→B→A에서 DFS 방문 표시를 이웃 탐색이 모두 끝난 뒤로 미루면 어떤 문제가 생기나요?",
       "solution": {
-        "answer": "A → B → D → C입니다."
+        "answer": "A가 아직 미방문인 채 B가 다시 A를 호출해 같은 호출을 반복할 수 있습니다. 이웃을 따라가기 전에 방문을 기록해야 합니다."
       },
-      "explanation": "B의 탐색을 끝내기 전에 A의 다음 이웃 C로 넘어가지 않습니다. D에서 돌아온 뒤 B를 마치고 A의 남은 이웃을 확인합니다."
+      "explanation": "방문 집합은 현재 경로가 아니라 이번 전체 탐색에서 공유합니다."
     },
     {
-      "skill": "순환에서 표시 시점",
-      "question": "A → B, B → A인 그래프에서 방문 표시를 모든 재귀 호출이 끝난 뒤에만 하려고 합니다. 왜 문제가 되며 어디에서 표시해야 하나요?",
+      "skill": "첫 방문 순서 DFS",
+      "exerciseType": "implement",
+      "question": "dfs_order(graph, start) 함수를 직접 작성하세요. graph는 모든 문자열 정점을 키로 둔 방향 인접 리스트입니다. 이웃 목록 순서의 재귀 DFS 첫 방문 목록을 반환하세요. 순환·공유 이웃은 한 번만 방문하고 도달 불가 정점은 제외합니다. 빈 graph에서는 start=None을 받아 []를 반환하며 그 외 start는 키입니다. 입력은 바꾸지 않습니다. 제시한 확인 사례와 경계 조건을 함께 검증하세요. 이웃으로 지정한 모든 정점도 graph의 키입니다.",
+      "code": "확인 입력 → 반환값\ndfs_order({'A': ['B', 'C'], 'B': ['D'], 'C': ['D'], 'D': [], 'E': []}, 'A') → ['A', 'B', 'D', 'C']\ndfs_order({'A': ['B'], 'B': ['A']}, 'A') → ['A', 'B']\ndfs_order({}, None) → []",
+      "codeKind": "text",
       "solution": {
-        "answer": "A가 표시되기 전에 B가 다시 A를 호출해 반복될 수 있습니다. 정점에 들어오자마자 방문 표시를 하고, 표시되지 않은 이웃만 호출해야 합니다."
-      },
-      "explanation": "순환을 따라가기 전에 현재 정점이 발견됐다는 사실을 공유해야 합니다. 호출을 마칠 때까지 표시를 미루는 규칙은 이 방문용 DFS에 맞지 않습니다."
-    },
-    {
-      "skill": "공유 이웃 처리",
-      "question": "A:[B,C], B:[D], C:[D], D:[]에서 A부터 재귀 DFS를 합니다. D는 결과에 몇 번 들어가며, C가 D를 볼 때 어떤 결정을 하나요?",
-      "solution": {
-        "answer": "D는 한 번만 들어갑니다. C가 D를 볼 때 이미 방문한 D라는 것을 확인하고 재귀 호출을 건너뜁니다."
-      },
-      "explanation": "방문 집합을 갈래마다 새로 만들면 공유 이웃을 여러 번 처리할 수 있습니다. 이번 시작점 탐색 전체에서 같은 방문 기록을 사용합니다."
-    },
-    {
-      "skill": "고립 정점과 도달 집합",
-      "question": "입력 graph = {\"A\":[\"B\"], \"B\":[], \"C\":[]}에 본문 dfs_order를 적용해 A와 C의 결과를 확인하세요. 전체 그래프를 방문하려면 무엇을 추가해야 하는지도 적으세요.",
-      "solution": {
-        "answer": "A에서는 [\"A\", \"B\"], C에서는 [\"C\"]입니다. 전체 처리는 모든 정점을 순회하며 미방문 정점에서만 새 탐색을 시작하고 방문 기록을 공유해야 합니다.",
+        "answer": "입력·반환 계약과 경계 조건을 만족하는 구현 한 가지입니다.",
         "code": {
           "kind": "python",
-          "source": "def dfs_order(graph, start):\n    seen = set()\n    order = []\n    def visit(vertex):\n        seen.add(vertex)\n        order.append(vertex)\n        for neighbor in graph[vertex]:\n            if neighbor not in seen:\n                visit(neighbor)\n    visit(start)\n    return order\n\ngraph = {\"A\": [\"B\"], \"B\": [], \"C\": []}\nprint(dfs_order(graph, \"A\"))\nprint(dfs_order(graph, \"C\"))",
-          "output": "['A', 'B']\n['C']\n"
+          "source": "def dfs_order(graph, start):\n    if not graph:\n        return []\n    seen = set()\n    order = []\n    def visit(vertex):\n        seen.add(vertex)\n        order.append(vertex)\n        for neighbor in graph[vertex]:\n            if neighbor not in seen:\n                visit(neighbor)\n    visit(start)\n    return order\n\nprint(dfs_order({'A': ['B', 'C'], 'B': ['D'], 'C': ['D'], 'D': [], 'E': []}, 'A'))\nprint(dfs_order({'A': ['B'], 'B': ['A']}, 'A'))\nprint(dfs_order({}, None))",
+          "output": "['A', 'B', 'D', 'C']\n['A', 'B']\n[]\n"
         }
       },
-      "explanation": "도달할 길이 없는 C가 잘못된 정점인 것은 아닙니다. 시작점 기준 도달 집합과 전체 처리를 구분합니다."
+      "explanation": "진입 시 표시해 재귀 순환과 공유 이웃의 중복을 막습니다. 이 예제는 작은 그래프용이며 큰 재귀 깊이를 무제한 지원하지 않습니다."
     },
     {
-      "skill": "재귀 공간과 한계",
-      "question": "정점 V개가 A1 → A2 → … → AV처럼 긴 사슬이고 A1에서 재귀 DFS를 시작합니다. 최대 호출 깊이와, Python에서 입력이 매우 커질 때 고려할 점을 적으세요.",
+      "skill": "도달 여부 직접 판정",
+      "exerciseType": "implement",
+      "question": "can_reach(graph, start, goal) 함수를 직접 작성하세요. 모든 정점이 키인 방향 인접 리스트에서 start에서 goal로 갈 수 있는지 bool을 반환하세요. nonempty graph의 두 정점은 키이고 자기 자신에는 0번 이동으로 도달합니다. 빈 graph와 start=goal=None은 False입니다. 순환·중복 이웃을 허용하며 입력은 불변입니다. 제시한 확인 사례와 경계 조건을 함께 검증하세요. 이웃으로 지정한 모든 정점도 graph의 키입니다.",
+      "code": "확인 입력 → 반환값\ncan_reach({'A': ['B'], 'B': ['A'], 'C': []}, 'A', 'C') → False\ncan_reach({'A': []}, 'A', 'A') → True\ncan_reach({'A': ['B', 'B'], 'B': []}, 'A', 'B') → True\ncan_reach({}, None, None) → False",
+      "codeKind": "text",
       "solution": {
-        "answer": "호출 깊이는 O(V)까지 커집니다. Python 재귀 제한 때문에 아주 긴 사슬에서는 실패할 수 있어 명시적 스택 구현 등을 고려해야 합니다."
+        "answer": "입력·반환 계약과 경계 조건을 만족하는 구현 한 가지입니다.",
+        "code": {
+          "kind": "python",
+          "source": "def can_reach(graph, start, goal):\n    if not graph:\n        return False\n    seen = {start}\n    stack = [start]\n    while stack:\n        vertex = stack.pop()\n        if vertex == goal:\n            return True\n        for neighbor in graph[vertex]:\n            if neighbor not in seen:\n                seen.add(neighbor)\n                stack.append(neighbor)\n    return False\n\nprint(can_reach({'A': ['B'], 'B': ['A'], 'C': []}, 'A', 'C'))\nprint(can_reach({'A': []}, 'A', 'A'))\nprint(can_reach({'A': ['B', 'B'], 'B': []}, 'A', 'B'))\nprint(can_reach({}, None, None))",
+          "output": "False\nTrue\nTrue\nFalse\n"
+        }
       },
-      "explanation": "도달한 정점마다 한 번만 처리해도 돌아올 호출이 동시에 쌓이면 공간은 선형입니다. 알고리즘의 선형 시간과 언어의 호출 깊이 제한은 다른 제약입니다."
+      "explanation": "존재 여부만 반환하므로 스택 처리 순서가 DFS 재귀 방문 목록과 같을 필요는 없습니다. 넣을 때 발견 표시해 중복 적재를 피합니다."
+    },
+    {
+      "skill": "전체 DFS 숲",
+      "exerciseType": "implement",
+      "question": "dfs_forest(graph) 함수를 직접 작성하세요. 모든 정점이 키인 방향 그래프를 키 삽입 순서로 훑고, 미방문 정점에서 이웃 목록 순서의 DFS를 시작하세요. 각 새 시작에서 처음 방문한 정점 목록들을 반환합니다. 방문 집합은 전체에서 공유하고 고립 정점을 포함하며 빈 입력은 []입니다. 이것은 강한 연결 요소 계산이 아니며 입력은 불변입니다. 제시한 확인 사례와 경계 조건을 함께 검증하세요. 이웃으로 지정한 모든 정점도 graph의 키입니다.",
+      "code": "확인 입력 → 반환값\ndfs_forest({'A': ['B'], 'B': [], 'C': []}) → [['A', 'B'], ['C']]\ndfs_forest({'A': [], 'B': ['A']}) → [['A'], ['B']]\ndfs_forest({}) → []",
+      "codeKind": "text",
+      "solution": {
+        "answer": "입력·반환 계약과 경계 조건을 만족하는 구현 한 가지입니다.",
+        "code": {
+          "kind": "python",
+          "source": "def dfs_forest(graph):\n    seen = set()\n    groups = []\n    def visit(vertex, group):\n        seen.add(vertex)\n        group.append(vertex)\n        for neighbor in graph[vertex]:\n            if neighbor not in seen:\n                visit(neighbor, group)\n    for vertex in graph:\n        if vertex not in seen:\n            group = []\n            visit(vertex, group)\n            groups.append(group)\n    return groups\n\nprint(dfs_forest({'A': ['B'], 'B': [], 'C': []}))\nprint(dfs_forest({'A': [], 'B': ['A']}))\nprint(dfs_forest({}))",
+          "output": "[['A', 'B'], ['C']]\n[['A'], ['B']]\n[]\n"
+        }
+      },
+      "explanation": "방향 그래프의 이 묶음은 시작 순서에 의존할 수 있습니다. 이미 방문한 정점에서 전체 탐색을 다시 시작하지 않습니다."
+    },
+    {
+      "skill": "사용 금지 정점 제외 탐색",
+      "exerciseType": "implement",
+      "question": "dfs_allowed(graph, start, blocked) 함수를 직접 작성하세요. graph의 모든 정점은 키이고 blocked는 그 키 중 사용할 수 없는 정점들의 집합입니다. blocked를 통과하지 않는 이웃 순서 DFS 방문 목록을 반환하세요. 시작점이 막혔거나 graph가 비었으면 []이며 빈 graph의 start는 None입니다. 순환·공유 이웃을 한 번만 방문하고 graph와 blocked는 모두 불변입니다. 제시한 확인 사례와 경계 조건을 함께 검증하세요. 이웃으로 지정한 모든 정점도 graph의 키입니다. 빈 그래프 특례를 제외한 start는 graph의 키입니다.",
+      "code": "확인 입력 → 반환값\ndfs_allowed({'A': ['B', 'C'], 'B': ['D'], 'C': [], 'D': []}, 'A', {'B'}) → ['A', 'C']\ndfs_allowed({'A': []}, 'A', {'A'}) → []\ndfs_allowed({}, None, set()) → []",
+      "codeKind": "text",
+      "solution": {
+        "answer": "입력·반환 계약과 경계 조건을 만족하는 구현 한 가지입니다.",
+        "code": {
+          "kind": "python",
+          "source": "def dfs_allowed(graph, start, blocked):\n    if not graph or start in blocked:\n        return []\n    seen = set(blocked)\n    order = []\n    def visit(vertex):\n        seen.add(vertex)\n        order.append(vertex)\n        for neighbor in graph[vertex]:\n            if neighbor not in seen:\n                visit(neighbor)\n    visit(start)\n    return order\n\nprint(dfs_allowed({'A': ['B', 'C'], 'B': ['D'], 'C': [], 'D': []}, 'A', {'B'}))\nprint(dfs_allowed({'A': []}, 'A', {'A'}))\nprint(dfs_allowed({}, None, set()))",
+          "output": "['A', 'C']\n[]\n[]\n"
+        }
+      },
+      "explanation": "막힌 정점을 미리 제외하면 그 정점을 거쳐야만 갈 수 있는 정점도 방문하지 않습니다. 원래 그래프의 간선을 지우는 방법과 구분합니다."
     }
   ]
 }

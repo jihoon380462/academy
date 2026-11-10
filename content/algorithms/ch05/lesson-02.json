@@ -75,49 +75,77 @@
   ],
   "examples": [
     {
-      "skill": "검색 조건 · 정렬 기준",
-      "question": "숫자의 오름차순으로 정렬한 자료를 문자열 사전순으로 비교해 탐색해도 같은 근거를 쓸 수 있나요? 정렬 기준과 접근 비용 조건을 적으세요.",
+      "exerciseType": "explain",
+      "skill": "정렬과 구간 불변식",
+      "question": "이진 탐색에서 같은 비교 기준의 정렬이 왜 필요하며, [lo,hi)에서 lo=mid+1과 hi=mid가 진행을 어떻게 보장하는지 설명하세요. 중복의 첫 위치를 원할 때 같은 값을 만나자마자 반환하면 안 되는 이유도 적으세요.",
       "solution": {
-        "answer": "정렬과 탐색에서 같은 순서를 사용해야 합니다. 숫자 대소 순서로 정렬했다면 그 기준을 유지합니다. O(log n) 시간 설명에는 중간 인덱스 접근과 비교가 상수 비용이라는 배열 모델도 필요합니다."
+        "answer": "정렬 때문에 중간 비교로 한쪽 전체를 배제할 수 있습니다. mid는 lo 이상 hi 미만이라 lo=mid+1 또는 hi=mid는 구간을 줄입니다. 같은 값 앞에 중복이 남을 수 있어 첫 위치까지 왼쪽 경계를 좁혀야 합니다."
       },
-      "explanation": "정렬이라는 말에는 어떤 순서인지가 포함되어야 합니다. 기준이 달라지면 한쪽 전체를 배제할 근거가 없어질 수 있습니다."
+      "explanation": "비교 기준·구간 포함 여부·반환 계약을 함께 유지해야 정확성과 종료가 이어집니다."
     },
     {
-      "skill": "검색 추적 · 원소 하나",
-      "question": "목표 6에 대해 [6]과 [4]에서 lo=0, hi=1로 시작해 경계와 반환값을 구하세요.",
+      "exerciseType": "implement",
+      "skill": "기본 구현 · 정렬 목록의 첫 위치",
+      "question": "binary_first(values, target)를 직접 작성하세요. 비감소 정수 목록에서 첫 일치 인덱스를 반환하고 없으면 -1입니다. [lo,hi) 구간을 줄이는 반복 이진 탐색을 사용하며 빈 입력·중복을 지원합니다. 원본 변경과 bisect 사용은 금지합니다.",
+      "codeKind": "text",
+      "code": "확인 사례\nbinary_first([1,3,3,7],3) → 1\nbinary_first([1,3,7],4) → -1\nbinary_first([],3) → -1",
       "solution": {
-        "answer": "[6]은 mid=0에서 hi=0이 되어 경계 0, 반환 0입니다. [4]는 lo=1이 되어 경계 1, 범위 밖이므로 반환 -1입니다."
-      },
-      "explanation": "길이 1에서도 lo나 hi가 반드시 바뀝니다. 경계가 n이면 원소를 읽지 않습니다."
-    },
-    {
-      "skill": "경계 · 진행하지 않는 갱신",
-      "question": "작을 때 lo=mid로 바꾸는 변형을 [4], 목표 6에 적용하세요. 종료 문제와 올바른 갱신을 설명하세요.",
-      "solution": {
-        "answer": "lo=0, hi=1, mid=0이 계속 반복됩니다. mid도 목표보다 작아 제외할 수 있으므로 lo=mid+1, 즉 1로 옮겨야 합니다."
-      },
-      "explanation": "반열린 구간 길이가 1이면 mid=lo입니다. 제외할 mid까지 버려야 구간이 줄어듭니다."
-    },
-    {
-      "skill": "작은 적용 · 빈 입력과 중복",
-      "question": "첫 위치 이진 탐색을 작성해 [], [2, 2, 2], [1, 4, 7]에 목표 2를 각각 적용하세요. 경계와 실제 일치를 구별하세요.",
-      "solution": {
-        "answer": "결과는 -1, 0, -1입니다. 마지막 입력의 경계는 1이지만 값 4가 2와 달라 실패입니다.",
+        "answer": "입력 계약과 확인 사례를 만족하는 함수의 한 가지 구현입니다.",
         "code": {
           "kind": "python",
-          "source": "def first_sorted_index(values, target):\n    lo, hi = 0, len(values)\n    while lo < hi:\n        mid = lo + (hi - lo) // 2\n        if values[mid] < target:\n            lo = mid + 1\n        else:\n            hi = mid\n    if lo < len(values) and values[lo] == target:\n        return lo\n    return -1\n\nfor values in [[], [2, 2, 2], [1, 4, 7]]:\n    print(first_sorted_index(values, 2))",
-          "output": "-1\n0\n-1\n"
+          "source": "def binary_first(values, target):\n    lo, hi = 0, len(values)\n    while lo < hi:\n        mid = lo + (hi - lo) // 2\n        if values[mid] < target:\n            lo = mid + 1\n        else:\n            hi = mid\n    if lo < len(values) and values[lo] == target:\n        return lo\n    return -1\n\nprint(binary_first([1, 3, 3, 7], 3))\nprint(binary_first([1, 3, 7], 4))\nprint(binary_first([], 3))",
+          "output": "1\n-1\n-1\n"
         }
       },
-      "explanation": "첫 목표 이상 경계를 찾은 뒤 확인하면 중복과 부재를 같은 절차로 다룹니다."
+      "explanation": "첫 목표 이상 경계를 찾은 뒤 실제 일치를 검사합니다. 정수 비교·인덱스 상수 모델에서 로그 반복과 고정 개수 변수로 처리합니다."
     },
     {
-      "skill": "방법 선택 · 전체 비용",
-      "question": "정렬되지 않은 자료를 한 번만 찾거나, 단일 연결 리스트에서 찾을 때 이진 탐색이 항상 더 낫다고 할 수 있나요? 빠진 비용을 적으세요.",
+      "exerciseType": "implement",
+      "skill": "범위 변경 · 지정 구간의 첫 위치",
+      "question": "binary_in_range(values, target, lo, hi)를 직접 작성하세요. 비감소 정수 목록의 원본 구간 [lo,hi) 안에서 첫 일치 인덱스를 반환하고 없으면 -1입니다. 정수 경계가 0≤lo≤hi≤n을 어기면 ValueError입니다. 빈 구간을 허용하고 원본은 보존하며 슬라이스·bisect를 쓰지 않습니다.",
+      "codeKind": "text",
+      "code": "확인 사례\nbinary_in_range([1,3,3,7],3,2,4) → 2\nbinary_in_range([1,3],3,0,1) → -1\nbinary_in_range([1,3],3,1,1) → -1\nbinary_in_range([1],1,0,2) → ValueError",
       "solution": {
-        "answer": "첫 경우는 정렬 비용까지 더해야 합니다. 연결 리스트는 중간 노드 접근을 상수로 가정할 수 없습니다. 이미 정렬된 배열의 모델을 조건 없이 일반화할 수 없습니다."
+        "answer": "입력 계약과 확인 사례를 만족하는 함수의 한 가지 구현입니다.",
+        "code": {
+          "kind": "python",
+          "source": "def binary_in_range(values, target, lo, hi):\n    if lo < 0 or lo > hi or hi > len(values):\n        raise ValueError(\"invalid range\")\n    end = hi\n    while lo < hi:\n        mid = lo + (hi - lo) // 2\n        if values[mid] < target:\n            lo = mid + 1\n        else:\n            hi = mid\n    if lo < end and values[lo] == target:\n        return lo\n    return -1\n\nprint(binary_in_range([1, 3, 3, 7], 3, 2, 4))\nprint(binary_in_range([1, 3], 3, 0, 1))\nprint(binary_in_range([1, 3], 3, 1, 1))\ntry:\n    binary_in_range([1], 1, 0, 2)\nexcept ValueError:\n    print(\"ValueError\")",
+          "output": "2\n-1\n-1\nValueError\n"
+        }
       },
-      "explanation": "순서와 접근 비용을 정하고 전체 작업을 비교합니다. 검색 한 번이라면 정렬 없이 O(n)으로 확인하는 방법도 후보입니다."
+      "explanation": "찾은 경계가 원래 구간의 끝과 같으면 원소를 읽지 않습니다. 별도 end를 남겨 탐색 중 hi가 줄어도 원래 허용 범위를 확인합니다."
+    },
+    {
+      "exerciseType": "implement",
+      "skill": "반환 변경 · 마지막 일치 위치",
+      "question": "binary_last(values, target)를 직접 작성하세요. 비감소 정수 목록에서 목표와 같은 마지막 인덱스를 반환하고 없으면 -1입니다. 빈 입력·중복을 지원하고 반복 이진 탐색으로 구현하세요. 원본 변경·bisect는 금지합니다.",
+      "codeKind": "text",
+      "code": "확인 사례\nbinary_last([1,3,3,7],3) → 2\nbinary_last([3],3) → 0\nbinary_last([],3) → -1\nbinary_last([1,4],3) → -1",
+      "solution": {
+        "answer": "입력 계약과 확인 사례를 만족하는 함수의 한 가지 구현입니다.",
+        "code": {
+          "kind": "python",
+          "source": "def binary_last(values, target):\n    lo, hi = 0, len(values)\n    while lo < hi:\n        mid = lo + (hi - lo) // 2\n        if values[mid] <= target:\n            lo = mid + 1\n        else:\n            hi = mid\n    index = lo - 1\n    return index if index >= 0 and values[index] == target else -1\n\nprint(binary_last([1, 3, 3, 7], 3))\nprint(binary_last([3], 3))\nprint(binary_last([], 3))\nprint(binary_last([1, 4], 3))",
+          "output": "2\n0\n-1\n-1\n"
+        }
+      },
+      "explanation": "같은 값을 왼쪽 확정 구역에 넣어 첫 목표 초과 경계를 구합니다. 그 앞 위치가 유효하고 실제 목표인지 확인해야 합니다."
+    },
+    {
+      "exerciseType": "implement",
+      "skill": "관찰 결과 추가 · 탐색 구간 기록",
+      "question": "binary_trace(values, target)를 직접 작성하세요. binary_first와 같은 첫 위치 계약으로 찾되, 반환값은 (인덱스 또는 -1, 기록 목록)입니다. 매 반복의 갱신 전에 (lo,hi,mid)를 기록하고 mid는 lo+(hi-lo)//2로 정합니다. 비감소 정수 목록을 보존하며 빈 입력의 기록은 []입니다.",
+      "codeKind": "text",
+      "code": "확인 사례\nbinary_trace([1,3,3,7],3) → (1,[(0,4,2),(0,2,1),(0,1,0)])\nbinary_trace([4],6) → (-1,[(0,1,0)])\nbinary_trace([],0) → (-1,[])",
+      "solution": {
+        "answer": "입력 계약과 확인 사례를 만족하는 함수의 한 가지 구현입니다.",
+        "code": {
+          "kind": "python",
+          "source": "def binary_trace(values, target):\n    lo, hi = 0, len(values)\n    trace = []\n    while lo < hi:\n        mid = lo + (hi - lo) // 2\n        trace.append((lo, hi, mid))\n        if values[mid] < target:\n            lo = mid + 1\n        else:\n            hi = mid\n    found = lo if lo < len(values) and values[lo] == target else -1\n    return found, trace\n\nprint(binary_trace([1, 3, 3, 7], 3))\nprint(binary_trace([4], 6))\nprint(binary_trace([], 0))",
+          "output": "(1, [(0, 4, 2), (0, 2, 1), (0, 1, 0)])\n(-1, [(0, 1, 0)])\n(-1, [])\n"
+        }
+      },
+      "explanation": "구간 길이가 매번 줄어드는지 기록으로 확인할 수 있습니다. 관찰용 기록을 반환하므로 이 변형의 결과 공간은 반복 횟수에 비례하며 본문의 기록 없는 구현과 구별합니다."
     }
   ]
 }

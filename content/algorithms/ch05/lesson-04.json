@@ -79,49 +79,77 @@
   ],
   "examples": [
     {
-      "skill": "정렬 원리 · 확정한 구간",
-      "question": "두 정렬에서 반복 시작 전에 이미 보장하는 앞부분의 뜻을 비교하세요. 선택 정렬은 앞부분이 정렬되어 있다는 사실 외에 무엇도 보장하나요?",
+      "exerciseType": "explain",
+      "skill": "두 정렬의 정확성과 안정성",
+      "question": "선택 정렬과 삽입 정렬이 늘려 가는 정렬된 앞부분의 의미를 비교하세요. 교환형 선택 정렬이 불안정한 이유와 삽입 정렬에서 > 대신 >=를 쓰면 생기는 차이도 설명하세요.",
       "solution": {
-        "answer": "선택 정렬의 앞부분은 정렬되어 있고 남은 값들보다 크지 않은 작은 값들입니다. 삽입 정렬의 앞부분은 지금까지 본 원소들끼리 정렬되어 있으며 아직 안 본 더 작은 값이 뒤에 있을 수 있습니다."
+        "answer": "선택 정렬의 앞부분은 전체에서 작은 값들로 확정되고, 삽입 정렬의 앞부분은 지금까지 본 값들끼리 정렬됩니다. 먼 교환은 같은 키 순서를 뒤집을 수 있고, 삽입에서 같은 키까지 밀면 기존 상대 순서가 바뀔 수 있습니다."
       },
-      "explanation": "[2,4|1]은 삽입 정렬의 가능한 중간 상태입니다. 선택 정렬이 두 위치를 확정한 상태라면 뒤에 더 작은 1이 남아 있을 수 없습니다."
+      "explanation": "안정성은 숫자 정렬 여부와 별개로 같은 키 항목의 원래 순서를 보존하는 성질입니다."
     },
     {
-      "skill": "정렬 추적 · 다음 값 삽입",
-      "question": "삽입 정렬이 [2, 5, 7 | 4]에서 4를 처리합니다. 오른쪽으로 움직이는 값과 순서, 완성된 결과를 적으세요.",
+      "exerciseType": "implement",
+      "skill": "기본 구현 · 제자리 선택 정렬",
+      "question": "selection_sort_in_place(values)를 직접 작성하세요. 정수 목록을 오름차순으로 제자리 정렬하고 None을 반환합니다. 빈 입력·중복을 허용합니다. 남은 최솟값을 골라 교환하는 선택 정렬을 사용하고 sorted·sort는 금지합니다.",
+      "codeKind": "text",
+      "code": "확인 사례\n[3,1,2] → 반환 None, 원본 [1,2,3]\n[] → 반환 None, 원본 []\n[2,2,1] → 반환 None, 원본 [1,2,2]",
       "solution": {
-        "answer": "7, 5 순서로 한 칸씩 옮긴 뒤 2 뒤의 빈자리에 4를 넣어 [2,4,5,7]이 됩니다."
-      },
-      "explanation": "오른쪽부터 옮겨야 아직 옮기지 않은 값을 덮어쓰지 않습니다. 2는 4보다 크지 않아 이동을 멈춥니다."
-    },
-    {
-      "skill": "비용 · 최선과 최악",
-      "question": "원소 네 개에 대해 이 선택 정렬의 값 비교 수를 정렬 입력과 역순 입력에서 각각 구하세요. 엄격한 > 삽입 정렬에서 이미 정렬된 서로 다른 네 값의 비교 수와도 구별하세요.",
-      "solution": {
-        "answer": "선택 정렬은 둘 다 3+2+1=6번입니다. 삽입 정렬의 이미 정렬된 네 값은 새 원소마다 한 번씩 3번 비교하고 이동은 없습니다."
-      },
-      "explanation": "선택 정렬은 입력이 정렬되어 있는지와 무관하게 남은 최솟값을 찾습니다. 삽입 정렬은 첫 비교에서 멈출 수 있습니다."
-    },
-    {
-      "skill": "작은 적용 · 같은 키의 순서",
-      "question": "아래 항목의 숫자 키만 비교하는 안정적인 삽입 정렬을 작성하세요. [(2,A),(2,B),(1,C)]에서 같은 키의 A,B 순서가 유지되는지 출력으로 확인하세요.",
-      "solution": {
-        "answer": "결과는 [(1,C),(2,A),(2,B)]이며 키 2의 A가 B보다 앞에 남습니다.",
+        "answer": "입력 계약과 확인 사례를 만족하는 함수의 한 가지 구현입니다.",
         "code": {
           "kind": "python",
-          "source": "values = [(2, \"A\"), (2, \"B\"), (1, \"C\")]\nfor index in range(1, len(values)):\n    item = values[index]\n    position = index - 1\n    while position >= 0 and values[position][0] > item[0]:\n        values[position + 1] = values[position]\n        position -= 1\n    values[position + 1] = item\nprint(values)",
-          "output": "[(1, 'C'), (2, 'A'), (2, 'B')]\n"
+          "source": "def selection_sort_in_place(values):\n    for start in range(len(values) - 1):\n        smallest = start\n        for index in range(start + 1, len(values)):\n            if values[index] < values[smallest]:\n                smallest = index\n        if smallest != start:\n            values[start], values[smallest] = values[smallest], values[start]\n\nfor values in [[3, 1, 2], [], [2, 2, 1]]:\n    result = selection_sort_in_place(values)\n    print(result, values)",
+          "output": "None [1, 2, 3]\nNone []\nNone [1, 2, 2]\n"
         }
       },
-      "explanation": "while에서 >일 때만 옮겨 기존 같은 키를 밀지 않는 것이 안정성의 이유입니다. 전체 튜플을 비교하면 문자까지 기준에 섞이므로 item[0]끼리 비교합니다."
+      "explanation": "원본을 수정하는 계약이므로 별도 전체 복사본을 만들지 않습니다. 고정 개수 인덱스만 써 보조 공간 O(1), 비교 수는 n(n-1)/2입니다."
     },
     {
-      "skill": "정렬 원리 · 안정성과 공간의 조건",
-      "question": "[(2,A),(2,B),(1,C)]에서 선택 정렬이 첫 값과 최솟값을 교환한 결과를 적으세요. 안정성 여부와, 원본을 직접 수정하는 반복 구현의 보조 공간을 설명하세요.",
+      "exerciseType": "implement",
+      "skill": "원본 보존 · 삽입 정렬 복사본",
+      "question": "insertion_sort_copy(values)를 직접 작성하세요. 정수 목록을 보존하면서 오름차순 새 목록을 반환합니다. 빈 입력·중복을 지원하며, 큰 값들을 오른쪽으로 밀어 끼우는 삽입 정렬을 사용하세요. sorted·sort는 금지하고 최초 복사만 허용합니다.",
+      "codeKind": "text",
+      "code": "확인 사례\ninsertion_sort_copy([4,2,3]) → [2,3,4], 입력은 [4,2,3]\ninsertion_sort_copy([]) → []\ninsertion_sort_copy([2,1,2]) → [1,2,2]",
       "solution": {
-        "answer": "첫 교환 뒤 [(1,C),(2,B),(2,A)]여서 같은 키 A,B 순서가 뒤집힙니다. 이 교환형 선택 정렬은 불안정합니다. 고정 개수 인덱스와 임시 항목만 쓰는 원본 수정 반복 구현의 보조 공간은 O(1)입니다."
+        "answer": "입력 계약과 확인 사례를 만족하는 함수의 한 가지 구현입니다.",
+        "code": {
+          "kind": "python",
+          "source": "def insertion_sort_copy(values):\n    result = list(values)\n    for index in range(1, len(result)):\n        item = result[index]\n        position = index - 1\n        while position >= 0 and result[position] > item:\n            result[position + 1] = result[position]\n            position -= 1\n        result[position + 1] = item\n    return result\n\nvalues = [4, 2, 3]\nprint(insertion_sort_copy(values), values)\nprint(insertion_sort_copy([]))\nprint(insertion_sort_copy([2, 1, 2]))",
+          "output": "[2, 3, 4] [4, 2, 3]\n[]\n[1, 2, 2]\n"
+        }
       },
-      "explanation": "안정성은 값이 정렬되었는지와 별개의 성질입니다. 입력의 O(n) 공간을 보조 공간에 다시 넣거나, 전체 복사본을 만드는 다른 구현과 혼동하지 않습니다."
+      "explanation": "큰 값만 이동하므로 같은 값은 기존 순서를 유지합니다. 이 변형은 새 결과 목록의 O(n) 공간을 쓰며 본문의 제자리 구현과 구분합니다."
+    },
+    {
+      "exerciseType": "implement",
+      "skill": "안정성 구현 · 숫자 키만 비교",
+      "question": "stable_insert_records(records)를 직접 작성하세요. 각 항목은 (정수 키, 이름 문자열)이며 키 오름차순 새 목록을 반환합니다. 같은 키의 원래 순서를 지키고 원본은 보존하세요. 삽입 정렬을 직접 쓰며 전체 튜플 비교·sorted·sort는 금지합니다.",
+      "codeKind": "text",
+      "code": "확인 사례\n[(2,\"A\"),(2,\"B\"),(1,\"C\")] → [(1,\"C\"),(2,\"A\"),(2,\"B\")]\n[] → []\n[(1,\"Z\"),(1,\"A\")] → 원래 순서 유지",
+      "solution": {
+        "answer": "입력 계약과 확인 사례를 만족하는 함수의 한 가지 구현입니다.",
+        "code": {
+          "kind": "python",
+          "source": "def stable_insert_records(records):\n    result = list(records)\n    for index in range(1, len(result)):\n        item = result[index]\n        position = index - 1\n        while position >= 0 and result[position][0] > item[0]:\n            result[position + 1] = result[position]\n            position -= 1\n        result[position + 1] = item\n    return result\n\nprint(stable_insert_records([(2, \"A\"), (2, \"B\"), (1, \"C\")]))\nprint(stable_insert_records([]))\nprint(stable_insert_records([(1, \"Z\"), (1, \"A\")]))",
+          "output": "[(1, 'C'), (2, 'A'), (2, 'B')]\n[]\n[(1, 'Z'), (1, 'A')]\n"
+        }
+      },
+      "explanation": "키가 같을 때는 이동하지 않습니다. 이름을 대소 비교 기준에 섞으면 요청하지 않은 동률 순서로 바뀔 수 있습니다."
+    },
+    {
+      "exerciseType": "implement",
+      "skill": "비용 관찰 · 비교 횟수 반환",
+      "question": "selection_comparisons(values)를 직접 작성하세요. 원본을 보존하며 선택 정렬한 새 목록과 값 사이 < 비교 횟수를 (목록, 횟수)로 반환합니다. 반복 조건·대입·교환은 이 횟수에 세지 않습니다. 빈 입력·한 원소도 지원하고 sorted·sort는 금지합니다.",
+      "codeKind": "text",
+      "code": "확인 사례\nselection_comparisons([3,1,2]) → ([1,2,3],3)\nselection_comparisons([1,2,3]) → ([1,2,3],3)\nselection_comparisons([]) → ([],0)\nselection_comparisons([8]) → ([8],0)",
+      "solution": {
+        "answer": "입력 계약과 확인 사례를 만족하는 함수의 한 가지 구현입니다.",
+        "code": {
+          "kind": "python",
+          "source": "def selection_comparisons(values):\n    result = list(values)\n    comparisons = 0\n    for start in range(len(result) - 1):\n        smallest = start\n        for index in range(start + 1, len(result)):\n            comparisons += 1\n            if result[index] < result[smallest]:\n                smallest = index\n        if smallest != start:\n            result[start], result[smallest] = result[smallest], result[start]\n    return result, comparisons\n\nprint(selection_comparisons([3, 1, 2]))\nprint(selection_comparisons([1, 2, 3]))\nprint(selection_comparisons([]))\nprint(selection_comparisons([8]))",
+          "output": "([1, 2, 3], 3)\n([1, 2, 3], 3)\n([], 0)\n([8], 0)\n"
+        }
+      },
+      "explanation": "입력이 이미 정렬되어 있어도 남은 최솟값을 찾는 비교를 모두 수행합니다. 이 카운터는 실제 초 단위 시간이 아니라 정한 기본 연산 수입니다."
     }
   ]
 }

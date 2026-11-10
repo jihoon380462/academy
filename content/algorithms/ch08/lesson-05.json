@@ -75,49 +75,77 @@
   ],
   "examples": [
     {
-      "skill": "상태/전이 · 초기값의 의미",
-      "question": "best[x]가 정확한 금액 x의 최소 동전 수일 때 best[0]과 초기 best[5]를 어떻게 두나요? 모든 칸을 0으로 두면 어떤 잘못된 뜻이 되나요?",
+      "skill": "표의 한 칸과 초기값",
+      "exerciseType": "explain",
+      "question": "best[x]가 정확한 금액 x의 최소 동전 수일 때 모든 칸을 0으로 초기화하면 왜 잘못되나요? 양수 동전과 금액 오름차순은 어떻게 연결되나요?",
       "solution": {
-        "answer": "best[0]=0, 아직 못 만든 best[5]는 무한대입니다. 전부 0이면 금액 5도 동전 없이 만들 수 있다는 잘못된 답이 됩니다."
+        "answer": "0개로 가능한 금액은 0뿐이라 나머지는 불가능으로 시작해야 합니다. 양수 c에 대해 x-c<x이므로 작은 금액부터 채우면 전이에 필요한 이전 답이 준비됩니다."
       },
-      "explanation": "불가능 표시와 개수 0은 다릅니다. 전이의 입력이 되는 칸에 거짓 가능한 답을 넣지 않습니다."
+      "explanation": "상태 의미·초기값·전이·계산 순서를 한 약속으로 맞춥니다."
     },
     {
-      "skill": "상태/전이 · 마지막 선택",
-      "question": "동전 [2,5]에서 best[7]의 후보를 더 작은 칸으로 쓰고, 왜 이 두 종류를 확인하면 가능한 마지막 동전을 모두 다루는지 설명하세요.",
+      "skill": "무제한 최소 동전 표",
+      "exerciseType": "implement",
+      "question": "min_coins_dp(coins, amount) 함수를 직접 작성하세요. 서로 다른 양의 정수 coins를 무제한 사용해 0 이상 amount의 최소 개수 또는 불가능 None을 반환하세요. 금액을 작은 순서로 표에 채우고 0의 답만 0으로 시작합니다. 빈 종류의 양수 목표는 None, amount=0은 0이며 입력은 불변입니다. 제시한 확인 사례와 경계 조건을 함께 검증하세요.",
+      "code": "확인 입력 → 반환값\nmin_coins_dp([2, 5], 7) → 2\nmin_coins_dp([2, 5], 3) → None\nmin_coins_dp([], 0) → 0",
+      "codeKind": "text",
       "solution": {
-        "answer": "best[5]+1과 best[2]+1을 비교해 최소 2입니다. 어떤 조합도 마지막 동전은 2 또는 5이므로 둘 중 한 경우에 속합니다."
-      },
-      "explanation": "가능한 이전 칸의 최소 개수에 하나를 붙입니다. 같은 마지막 동전 안에서는 이전 부분을 최적으로 바꿔도 손해가 없습니다."
-    },
-    {
-      "skill": "탐색 조건 · 사용 제한과 반복 순서",
-      "question": "동전 하나 [2]로 금액 4를 만듭니다. 무제한과 그 동전을 한 번만 쓰는 0/1 문제의 답을 구별하고 0/1 1차원 갱신 순서를 적으세요.",
-      "solution": {
-        "answer": "무제한은 2개이고 0/1은 불가능입니다. 0/1은 동전을 바깥에서 하나씩 처리하고 금액을 큰 쪽에서 작은 쪽으로 갱신합니다."
-      },
-      "explanation": "오름차순은 best[2]를 이번 동전으로 만든 뒤 best[4]에서 다시 사용합니다. 내림차순이면 그 재사용을 막습니다."
-    },
-    {
-      "skill": "작은 적용 · 정확한 금액 표",
-      "question": "무제한 [2,5]의 목표 7·3·0을 표로 구해 출력하세요.",
-      "solution": {
-        "answer": "7은 2개, 3은 None, 0은 0입니다.",
+        "answer": "입력·반환 계약과 경계 조건을 만족하는 구현 한 가지입니다.",
         "code": {
           "kind": "python",
-          "source": "def minimum_coins_dp(coins, amount):\n    infinity = float(\"inf\")\n    best = [infinity] * (amount + 1)\n    best[0] = 0\n    for subtotal in range(1, amount + 1):\n        for coin in coins:\n            if coin <= subtotal and best[subtotal - coin] != infinity:\n                candidate = best[subtotal - coin] + 1\n                if candidate < best[subtotal]:\n                    best[subtotal] = candidate\n    return None if best[amount] == infinity else best[amount]\n\nfor amount in [7, 3, 0]:\n    print(minimum_coins_dp([2, 5], amount))",
+          "source": "def min_coins_dp(coins, amount):\n    infinity = float(\"inf\")\n    best = [infinity] * (amount + 1)\n    best[0] = 0\n    for value in range(1, amount + 1):\n        for coin in coins:\n            if coin <= value and best[value - coin] != infinity:\n                candidate = best[value - coin] + 1\n                if candidate < best[value]:\n                    best[value] = candidate\n    return None if best[amount] == infinity else best[amount]\n\nprint(min_coins_dp([2, 5], 7))\nprint(min_coins_dp([2, 5], 3))\nprint(min_coins_dp([], 0))",
           "output": "2\nNone\n0\n"
         }
       },
-      "explanation": "3 이하의 어떤 금액이 아니라 정확히 3을 만들어야 하므로 불가능입니다."
+      "explanation": "불가능한 이전 칸으로 후보를 만들지 않습니다. 같은 동전 종류를 다른 금액에서 다시 쓸 수 있는 무제한 전이입니다."
     },
     {
-      "skill": "반례와 비교 · 계산 순서",
-      "question": "best[x]가 best[x-c]에 의존하는데 금액을 A부터 내림차순으로 한 번만 채우면, 이번 무제한 설계에서 무엇이 잘못될 수 있나요?",
+      "skill": "각 금액 상태를 반환",
+      "exerciseType": "implement",
+      "question": "coin_table(coins, limit) 함수를 직접 작성하세요. 서로 다른 양의 정수 coins의 무제한 사용으로 0부터 0 이상 limit까지 정확한 금액별 최소 개수 목록을 반환하세요. 불가능은 None, 0은 0입니다. 빈 종류도 처리하고 원본은 불변입니다. 표의 칸은 경우의 수가 아니라 최소 개수입니다. 제시한 확인 사례와 경계 조건을 함께 검증하세요.",
+      "code": "확인 입력 → 반환값\ncoin_table([2, 3], 5) → [0, None, 1, 1, 2, 2]\ncoin_table([], 2) → [0, None, None]\ncoin_table([5], 0) → [0]",
+      "codeKind": "text",
       "solution": {
-        "answer": "필요한 더 작은 금액이 아직 초기 무한대일 수 있어 가능한 조합을 놓칩니다. 예를 들어 [2], A=4에서 best[4]를 먼저 보면 best[2]가 아직 무한대입니다."
+        "answer": "입력·반환 계약과 경계 조건을 만족하는 구현 한 가지입니다.",
+        "code": {
+          "kind": "python",
+          "source": "def coin_table(coins, limit):\n    best = [None] * (limit + 1)\n    best[0] = 0\n    for value in range(1, limit + 1):\n        for coin in coins:\n            if coin <= value and best[value - coin] is not None:\n                candidate = best[value - coin] + 1\n                if best[value] is None or candidate < best[value]:\n                    best[value] = candidate\n    return best\n\nprint(coin_table([2, 3], 5))\nprint(coin_table([], 2))\nprint(coin_table([5], 0))",
+          "output": "[0, None, 1, 1, 2, 2]\n[0, None, None]\n[0]\n"
+        }
       },
-      "explanation": "무제한 금액별 전이는 작은 금액부터 완성해야 합니다. 0/1의 동전별 단계와 다른 반복 구조이므로 조건 없이 순서만 가져오지 않습니다."
+      "explanation": "반환 범위를 모든 금액으로 넓히면 표 의미를 직접 검사할 수 있습니다. 숫자 0과 불가능 None을 섞지 않습니다."
+    },
+    {
+      "skill": "0/1 동전의 반복 순서",
+      "exerciseType": "implement",
+      "question": "once_min_dp(values, amount) 함수를 직접 작성하세요. values는 양의 정수 동전 목록이고 중복 값도 별도 위치입니다. 각 위치를 한 번만 써 0 이상 amount를 만드는 최소 개수 또는 None을 반환하세요. 동전 바깥 반복·금액 내림차순의 1차원 표를 사용합니다. 빈 입력 목표 0은 0, 양수는 None이며 입력은 불변입니다. 제시한 확인 사례와 경계 조건을 함께 검증하세요.",
+      "code": "확인 입력 → 반환값\nonce_min_dp([2], 4) → None\nonce_min_dp([2, 2], 4) → 2\nonce_min_dp([2, 3], 5) → 2\nonce_min_dp([], 0) → 0",
+      "codeKind": "text",
+      "solution": {
+        "answer": "입력·반환 계약과 경계 조건을 만족하는 구현 한 가지입니다.",
+        "code": {
+          "kind": "python",
+          "source": "def once_min_dp(values, amount):\n    infinity = float(\"inf\")\n    best = [infinity] * (amount + 1)\n    best[0] = 0\n    for coin in values:\n        for value in range(amount, coin - 1, -1):\n            if best[value - coin] != infinity:\n                candidate = best[value - coin] + 1\n                if candidate < best[value]:\n                    best[value] = candidate\n    return None if best[amount] == infinity else best[amount]\n\nprint(once_min_dp([2], 4))\nprint(once_min_dp([2, 2], 4))\nprint(once_min_dp([2, 3], 5))\nprint(once_min_dp([], 0))",
+          "output": "None\n2\n2\n0\n"
+        }
+      },
+      "explanation": "내림차순은 이번 동전으로 방금 갱신한 작은 칸을 같은 단계에서 다시 쓰지 않게 합니다. 무제한 사용과 입력 종류가 다릅니다."
+    },
+    {
+      "skill": "만들 수 있는 금액 목록",
+      "exerciseType": "implement",
+      "question": "reachable_amounts(coins, limit) 함수를 직접 작성하세요. 서로 다른 양의 정수 coins를 무제한 사용해 0 이상 limit 이하에서 정확히 만들 수 있는 금액들을 오름차순 목록으로 반환하세요. 빈 선택의 금액 0을 포함하고 빈 종류면 [0]입니다. bool 상태와 작은 금액부터의 전이를 사용하며 입력은 불변입니다. 제시한 확인 사례와 경계 조건을 함께 검증하세요.",
+      "code": "확인 입력 → 반환값\nreachable_amounts([2, 3], 5) → [0, 2, 3, 4, 5]\nreachable_amounts([], 4) → [0]\nreachable_amounts([5], 0) → [0]",
+      "codeKind": "text",
+      "solution": {
+        "answer": "입력·반환 계약과 경계 조건을 만족하는 구현 한 가지입니다.",
+        "code": {
+          "kind": "python",
+          "source": "def reachable_amounts(coins, limit):\n    possible = [False] * (limit + 1)\n    possible[0] = True\n    for value in range(1, limit + 1):\n        for coin in coins:\n            if coin <= value and possible[value - coin]:\n                possible[value] = True\n                break\n    return [value for value in range(limit + 1) if possible[value]]\n\nprint(reachable_amounts([2, 3], 5))\nprint(reachable_amounts([], 4))\nprint(reachable_amounts([5], 0))",
+          "output": "[0, 2, 3, 4, 5]\n[0]\n[0]\n"
+        }
+      },
+      "explanation": "가능 여부를 묻는 상태는 최소 개수 상태와 의미가 다릅니다. 전이는 같은 작은 금액 관계를 쓰지만 저장할 정보와 반환값이 바뀝니다."
     }
   ]
 }

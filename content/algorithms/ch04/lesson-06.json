@@ -85,49 +85,72 @@
       "solution": {
         "answer": "결과는 [\"red\", \"blue\", \"green\"]입니다. 처음 나타난 순서를 남긴 것이며 이름순 정렬과는 다릅니다."
       },
-      "explanation": "seen은 이미 봤는지 판단하고 result는 처음 보는 순간의 순서를 기록합니다. set 반복 순서나 정렬 결과에 기대어 이 계약을 만족시켜서는 안 됩니다."
+      "explanation": "seen은 이미 봤는지 판단하고 result는 처음 보는 순간의 순서를 기록합니다. set 반복 순서나 정렬 결과에 기대어 이 계약을 만족시켜서는 안 됩니다.",
+      "exerciseType": "explain"
     },
     {
-      "skill": "빈도 갱신",
-      "question": "빈 맵 counts에서 문자열 \"A\", \"B\", \"A\"를 순서대로 읽으며 counts[value] = counts.get(value, 0) + 1을 적용합니다. 각 단계의 A·B 횟수와 마지막 횟수 합을 적으세요.",
+      "exerciseType": "implement",
+      "skill": "직접 구현 · 첫 등장 순서 중복 제거",
+      "question": "문자열 목록에서 처음 등장 순서를 유지해 각 값을 한 번씩 반환하는 unique_first(values)를 작성하세요. seen 집합과 새 결과 목록을 사용하고 입력은 보존합니다. 빈 입력은 [], 중복은 첫 등장 하나만 남깁니다. set의 순회 순서나 sorted로 결과 순서를 정하지 않습니다. 함수를 직접 작성하고 아래 사례로 확인하세요.",
+      "code": "unique_first([]) → []\nunique_first([\"A\", \"A\", \"A\"]) → [\"A\"]\nunique_first([\"B\", \"A\", \"B\"]) → [\"B\", \"A\"]",
+      "codeKind": "text",
       "solution": {
-        "answer": "첫 단계 A:1, 둘째 A:1·B:1, 셋째 A:2·B:1입니다. 마지막 횟수 합은 3입니다."
-      },
-      "explanation": "처음 나오는 키는 get의 기본값 0부터 시작하고, 다시 나오는 키는 기존 횟수에 더합니다. 최종 횟수 합은 처리한 입력 길이와 같습니다."
-    },
-    {
-      "skill": "조회 비용과 공간",
-      "question": "모든 값이 다른 길이 n의 입력에서, 매번 결과 목록을 선형 탐색해 중복을 확인하는 방식과 seen 집합으로 확인하는 방식을 비교하세요. 기대 비용의 가정과 추가 공간도 함께 적으세요.",
-      "solution": {
-        "answer": "목록 선형 확인은 0+1+…+(n-1)개 비교로 O(n²)입니다. 해시·비교가 상수이고 분산·부하율 조건이 좋으면 seen 방식은 기대 O(n)입니다. 서로 다른 값이 n개이므로 결과와 확인 자료를 포함한 추가 공간은 O(n)입니다."
-      },
-      "explanation": "빠른 조회에는 메모리 사용과 해시 가정이 따릅니다. 기대 선형을 충돌이 심한 모든 최악 입력의 보장으로 바꾸어 말하지 않습니다."
-    },
-    {
-      "skill": "빈 입력과 같은 값만 있는 입력",
-      "question": "처음 등장 순서를 유지하는 중복 제거 함수를 작성하고 [], [\"A\", \"A\", \"A\"], [\"B\", \"A\", \"B\"]에서 실행하세요. 입력 목록은 바꾸지 않습니다.",
-      "solution": {
-        "answer": "결과는 차례로 [], [\"A\"], [\"B\", \"A\"]입니다. 다음은 가능한 구현 한 가지입니다.",
+        "answer": "아래는 계약을 만족하는 구현 한 가지입니다. 반환값과 입력 변경 여부를 함께 확인하세요.",
         "code": {
           "kind": "python",
           "source": "def unique_first(values):\n    seen = set()\n    result = []\n    for value in values:\n        if value not in seen:\n            seen.add(value)\n            result.append(value)\n    return result\n\nprint(unique_first([]))\nprint(unique_first([\"A\", \"A\", \"A\"]))\nprint(unique_first([\"B\", \"A\", \"B\"]))",
           "output": "[]\n['A']\n['B', 'A']\n"
         }
       },
-      "explanation": "빈 입력은 한 번도 추가하지 않아 빈 결과를 돌려줍니다. 같은 값은 seen에 처음 넣을 때만 result에 들어갑니다. 입력을 수정하는 연산은 사용하지 않습니다."
+      "explanation": "집합은 포함 여부만 확인하고 순서는 입력을 읽으며 결과 목록에 남깁니다. 중복 제거와 이름순 정렬을 구분합니다."
     },
     {
-      "skill": "같은 값의 기준 바꾸기",
-      "question": "이번 계약은 영문 단어의 대소문자를 무시해 세는 것입니다. [\"Cat\", \"cat\", \"DOG\", \"dog\", \"cat\"]를 읽어 lower()로 만든 문자열을 키로 빈도를 구하고 첫 등장한 키 순서로 출력하세요. 원래 문자열 비교와 무엇이 달라졌는지도 적으세요.",
+      "exerciseType": "implement",
+      "skill": "직접 구현 · 빈도 사전 반환",
+      "question": "문자열 목록 values의 등장 횟수 사전을 반환하는 frequencies(values)를 작성하세요. get의 기본값을 0으로 사용해 각 원소를 하나씩 셉니다. 입력은 보존하고 빈 입력은 {}입니다. 중복도 모두 세며 키 순서는 처음 등장 순서입니다. 함수를 직접 작성하고 아래 사례로 확인하세요.",
+      "code": "frequencies([]) → {}\nfrequencies([\"A\", \"A\"]) → {\"A\": 2}\nfrequencies([\"B\", \"A\", \"B\", \"C\"]) → {\"B\": 2, \"A\": 1, \"C\": 1}",
+      "codeKind": "text",
       "solution": {
-        "answer": "소문자 키 cat의 빈도는 3, dog는 2입니다. 원래는 \"Cat\"과 \"cat\"이 다른 문자열이지만 이번 계약에서 소문자로 정규화한 결과를 같은 키로 사용합니다.",
+        "answer": "아래는 계약을 만족하는 구현 한 가지입니다. 반환값과 입력 변경 여부를 함께 확인하세요.",
         "code": {
           "kind": "python",
-          "source": "words = [\"Cat\", \"cat\", \"DOG\", \"dog\", \"cat\"]\ncounts = {}\nfor word in words:\n    key = word.lower()\n    counts[key] = counts.get(key, 0) + 1\nfor key in counts:\n    print(key, counts[key])",
-          "output": "cat 3\ndog 2\n"
+          "source": "def frequencies(values):\n    result = {}\n    for value in values:\n        result[value] = result.get(value, 0) + 1\n    return result\n\nprint(frequencies([]))\nprint(frequencies([\"A\", \"A\"]))\nprint(frequencies([\"B\", \"A\", \"B\", \"C\"]))",
+          "output": "{}\n{'A': 2}\n{'B': 2, 'A': 1, 'C': 1}\n"
         }
       },
-      "explanation": "값의 유사함을 임의로 추정한 것이 아니라 대소문자 무시라는 요청을 명시적인 키 변환으로 표현했습니다. 원래 입력 자체는 바꾸지 않고 변환한 키로 집계할 수 있습니다."
+      "explanation": "같은 키를 갱신해도 삽입 순서는 바뀌지 않습니다. 반환한 횟수의 합은 입력 길이와 일치해야 합니다."
+    },
+    {
+      "exerciseType": "implement",
+      "skill": "직접 구현 · 가장 먼저 재등장한 값",
+      "question": "문자열 목록에서 왼쪽부터 읽다가 처음으로 두 번째 등장이 발생한 값을 반환하는 first_repeated(values)를 작성하세요. 반복이 없거나 비었으면 None입니다. 입력은 보존합니다. 가장 먼저 등장한 값이나 가장 자주 나온 값이 아니라 두 번째 등장 위치가 가장 이른 값을 고릅니다. 함수를 직접 작성하고 아래 사례로 확인하세요.",
+      "code": "first_repeated([]) → None\nfirst_repeated([\"B\", \"A\", \"B\", \"A\"]) → \"B\"\nfirst_repeated([\"A\", \"B\", \"C\", \"B\", \"A\"]) → \"B\"\nfirst_repeated([\"A\", \"A\", \"A\"]) → \"A\"",
+      "codeKind": "text",
+      "solution": {
+        "answer": "아래는 계약을 만족하는 구현 한 가지입니다. 반환값과 입력 변경 여부를 함께 확인하세요.",
+        "code": {
+          "kind": "python",
+          "source": "def first_repeated(values):\n    seen = set()\n    for value in values:\n        if value in seen:\n            return value\n        seen.add(value)\n    return None\n\nprint(first_repeated([]))\nprint(first_repeated([\"B\", \"A\", \"B\", \"A\"]))\nprint(first_repeated([\"A\", \"B\", \"C\", \"B\", \"A\"]))\nprint(first_repeated([\"A\", \"A\", \"A\"]))",
+          "output": "None\nB\nB\nA\n"
+        }
+      },
+      "explanation": "집합으로 이전 등장 여부를 확인하고 첫 재등장에서 멈춥니다. 모든 빈도를 센 뒤 최댓값을 고르는 계약과 다릅니다."
+    },
+    {
+      "exerciseType": "implement",
+      "skill": "직접 구현 · 정규화한 빈도표",
+      "question": "영문 ASCII 단어 목록 words의 대소문자를 무시한 빈도표를 반환하는 folded_frequencies(words)를 작성하세요. lower()로 만든 문자열을 키로 세며 입력은 보존합니다. 빈 목록은 {}, 같은 소문자 키는 모두 합산하고 키 순서는 정규화한 키의 첫 등장 순서입니다. 함수를 직접 작성하고 아래 사례로 확인하세요.",
+      "code": "folded_frequencies([]) → {}\nfolded_frequencies([\"Cat\", \"cat\", \"DOG\"]) → {\"cat\":2, \"dog\":1}\nfolded_frequencies([\"A\", \"a\", \"A\", \"b\"]) → {\"a\":3, \"b\":1}",
+      "codeKind": "text",
+      "solution": {
+        "answer": "아래는 계약을 만족하는 구현 한 가지입니다. 반환값과 입력 변경 여부를 함께 확인하세요.",
+        "code": {
+          "kind": "python",
+          "source": "def folded_frequencies(words):\n    result = {}\n    for word in words:\n        key = word.lower()\n        result[key] = result.get(key, 0) + 1\n    return result\n\nprint(folded_frequencies([]))\nprint(folded_frequencies([\"Cat\", \"cat\", \"DOG\"]))\nprint(folded_frequencies([\"A\", \"a\", \"A\", \"b\"]))",
+          "output": "{}\n{'cat': 2, 'dog': 1}\n{'a': 3, 'b': 1}\n"
+        }
+      },
+      "explanation": "같은 값의 기준을 명시적인 키 변환으로 표현합니다. 임의로 비슷한 이름을 합치는 것이 아니라 대소문자 무시라는 입력 계약을 따릅니다."
     }
   ]
 }

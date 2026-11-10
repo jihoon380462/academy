@@ -71,49 +71,77 @@
   ],
   "examples": [
     {
-      "skill": "누적값의 뜻",
-      "question": "P[0]=0인 이유와 P[3]이 원소 세 번째 하나의 값인지 처음 세 개의 합인지 설명하세요.",
+      "exerciseType": "explain",
+      "skill": "원리 설명 · 누적값의 정의와 유효성",
+      "question": "P[i]를 처음 i개 원소의 합으로 정했습니다. [left,right) 합이 P[right]-P[left]인 이유를 빈 구간·음수·입력 변경의 경우까지 연결해 자신의 말로 설명하세요. 빠른 질의에 필요한 준비 시간과 추가 공간도 구분하세요.",
       "solution": {
-        "answer": "P[0]은 아무 원소도 포함하지 않은 합입니다. P[3]은 처음 세 원소, 즉 위치 0·1·2의 합입니다."
+        "answer": "두 누적값의 공통 앞부분을 빼면 원하는 구간만 남습니다. 빈 구간은 같은 값을 빼 0이고 음수에서도 덧셈 관계는 같습니다. 준비에는 O(n) 시간과 공간이 들며, 준비된 같은 데이터의 질의만 O(1)입니다. 입력이 바뀌면 예전 P를 다시 준비하거나 갱신해야 합니다."
       },
-      "explanation": "포함한 원소 수를 누적 배열의 인덱스로 삼기 때문에 길이가 n+1이 됩니다."
+      "explanation": "공식 암기보다 P의 의미와 구간의 포함·제외 경계를 설명합니다. 입력 변경 뒤에도 이전 값을 그대로 쓰는 것은 빠른 정답을 보장하지 않습니다."
     },
     {
-      "skill": "구간 차이 추적",
-      "question": "[3, -1, 4]의 P를 적고 [1, 3), [0, 0), [3, 3)의 합을 구하세요.",
+      "exerciseType": "implement",
+      "skill": "기본 구현 · 누적 배열 만들기",
+      "question": "정수 목록 values를 받아 P[0]=0이고 P[i]가 처음 i개 합인 새 목록을 반환하는 make_prefix(values)를 작성하세요. 빈 입력은 [0]이고 음수·중복을 허용합니다. 입력은 바꾸지 말고 반복 한 번으로 만드세요.",
+      "code": "values → 반환값\n[] → [0]\n[3,-1,4] → [0,3,2,6]\n[0,0] → [0,0,0]",
+      "codeKind": "text",
       "solution": {
-        "answer": "P는 [0, 3, 2, 6]입니다. 세 구간 합은 3, 0, 0입니다."
-      },
-      "explanation": "[1, 3)의 합은 6-3=3입니다. 시작이나 끝의 빈 구간도 같은 위치의 누적값을 빼면 됩니다."
-    },
-    {
-      "skill": "경계 식의 이유",
-      "question": "[left, right) 합을 P[right]-P[left-1]로 계산하면 왜 잘못되나요? left=0과 입력 [2, 5]의 [1, 2)를 예로 설명하세요.",
-      "solution": {
-        "answer": "빼야 하는 앞부분은 처음 left개인 P[left]입니다. left=0에서는 P[-1]이 마지막 누적값을 가리켜 잘못되고, [1, 2)는 7-2=5여야 하는데 잘못된 식은 7-0=7입니다."
-      },
-      "explanation": "이 식은 P의 정의와 반열린 구간을 섞은 오류입니다. 다른 누적 배열 정의에서 외운 공식을 그대로 가져오지 않습니다."
-    },
-    {
-      "skill": "빈 입력과 한 원소 확인",
-      "question": "본문 함수로 []의 [0, 0), [7]의 [0, 1)과 [1, 1)을 조회하세요.",
-      "solution": {
-        "answer": "각 결과는 0, 7, 0입니다.",
+        "answer": "각 원소를 한 번 더하며 입력보다 한 칸 긴 새 목록을 만듭니다.",
         "code": {
           "kind": "python",
-          "source": "def build_prefix(values):\n    prefix = [0]\n    for value in values:\n        prefix.append(prefix[-1] + value)\n    return prefix\n\ndef range_sum(prefix, left, right):\n    if not 0 <= left <= right < len(prefix):\n        raise ValueError(\"invalid range\")\n    return prefix[right] - prefix[left]\n\nprint(range_sum(build_prefix([]), 0, 0))\none = build_prefix([7])\nprint(range_sum(one, 0, 1))\nprint(range_sum(one, 1, 1))",
-          "output": "0\n7\n0\n"
+          "source": "def make_prefix(values):\n    prefix = [0]\n    for value in values:\n        prefix.append(prefix[-1] + value)\n    return prefix\n\nprint(make_prefix([]))\nprint(make_prefix([3, -1, 4]))\nprint(make_prefix([0, 0]))",
+          "output": "[0]\n[0, 3, 2, 6]\n[0, 0, 0]\n"
         }
       },
-      "explanation": "빈 입력의 누적 배열도 [0]이므로 유효한 빈 구간 조회가 가능합니다."
+      "explanation": "입력 원소의 위치와 이미 포함한 원소 수를 구별합니다. 처음의 0도 결과의 일부이며 원본 목록을 재사용해 바꾸지 않습니다."
     },
     {
-      "skill": "갱신 뒤 유효성",
-      "question": "[2, 5, 1]로 P를 만든 뒤 원본의 5를 9로 바꿨습니다. 전체 합의 오래된 답과 새 답은 무엇이며 어느 P 위치가 영향을 받나요?",
+      "exerciseType": "implement",
+      "skill": "직접 구현 · 범위를 검사한 질의",
+      "question": "올바르게 만들어진 비어 있지 않은 누적 배열 prefix와 정수 left,right를 받아 [left,right) 합을 반환하는 prefix_query(prefix,left,right)를 작성하세요. 0≤left≤right<len(prefix)가 아니면 ValueError를 내고, prefix는 바꾸지 않습니다. 빈 구간도 같은 차이식으로 처리하세요.",
+      "code": "prefix / left,right → 반환 또는 오류\n[0,2,7,6] / 1,3 → 4\n[0,2,7,6] / 3,3 → 0\n[0] / 0,0 → 0\n[0,2,7,6] / 0,4 → ValueError",
+      "codeKind": "text",
       "solution": {
-        "answer": "오래된 답은 8이고 새 답은 12입니다. 원본 위치 1을 바꿨으므로 P[2]와 P[3]이 영향을 받습니다. 다시 준비하거나 갱신 처리가 필요합니다."
+        "answer": "원래 입력의 끝 경계 n은 누적 배열의 유효 인덱스 n입니다.",
+        "code": {
+          "kind": "python",
+          "source": "def prefix_query(prefix, left, right):\n    if not 0 <= left <= right < len(prefix):\n        raise ValueError('invalid range')\n    return prefix[right] - prefix[left]\n\nprint(prefix_query([0, 2, 7, 6], 1, 3))\nprint(prefix_query([0, 2, 7, 6], 3, 3))\nprint(prefix_query([0], 0, 0))\ntry:\n    print(prefix_query([0, 2, 7, 6], 0, 4))\nexcept ValueError:\n    print('ValueError')",
+          "output": "4\n0\n0\nValueError\n"
+        }
       },
-      "explanation": "질의가 빠르더라도 자료가 오래되면 새 데이터의 정답은 아닙니다. 캐시의 유효성에도 같은 문제가 이어집니다."
+      "explanation": "prefix 길이가 n+1이므로 right≤n을 right<len(prefix)로 검사합니다. 실패를 Python의 음수 인덱스나 우연한 IndexError에 맡기지 않습니다."
+    },
+    {
+      "exerciseType": "implement",
+      "skill": "직접 구현 · 준비 한 번과 여러 질의",
+      "question": "정수 목록 values와 (left,right) 쌍 목록 queries를 받아 질문 순서의 합계 목록을 반환하는 batch_prefix_sums(values,queries)를 작성하세요. 누적 배열은 한 번만 만듭니다. 빈 질문 목록은 [], 빈 구간 합은 0이며 범위 밖 질문은 ValueError입니다. 두 입력을 바꾸지 마세요.",
+      "code": "values / queries → 반환값\n[2,-1,5] / [(0,3),(1,3),(1,1)] → [6,4,0]\n[] / [(0,0)] → [0]\n[7] / [] → []\n[7] / [(0,2)] → ValueError",
+      "codeKind": "text",
+      "solution": {
+        "answer": "같은 입력의 질문 묶음 바깥에서 한 번 준비하고 각 질문에 두 누적값의 차를 씁니다.",
+        "code": {
+          "kind": "python",
+          "source": "def batch_prefix_sums(values, queries):\n    prefix = [0]\n    for value in values:\n        prefix.append(prefix[-1] + value)\n    answers = []\n    for left, right in queries:\n        if not 0 <= left <= right <= len(values):\n            raise ValueError('invalid range')\n        answers.append(prefix[right] - prefix[left])\n    return answers\n\nprint(batch_prefix_sums([2, -1, 5], [(0, 3), (1, 3), (1, 1)]))\nprint(batch_prefix_sums([], [(0, 0)]))\nprint(batch_prefix_sums([7], []))\ntry:\n    print(batch_prefix_sums([7], [(0, 2)]))\nexcept ValueError:\n    print('ValueError')",
+          "output": "[6, 4, 0]\n[0]\n[]\nValueError\n"
+        }
+      },
+      "explanation": "질문마다 P를 다시 만들면 준비 비용을 반복하게 됩니다. 반환하는 q개 답의 공간과 추가 누적 배열 공간도 따로 셉니다."
+    },
+    {
+      "exerciseType": "implement",
+      "skill": "변형 구현 · 변경한 사본의 누적값",
+      "question": "정수 목록 values의 한 위치를 정수 new_value로 바꾼 새 스냅샷을 만들려고 합니다. index도 정수입니다. replace_and_prefix(values,index,new_value)를 작성해 (변경한 새 목록,그 목록의 새 누적 배열)을 반환하세요. 원본은 유지하고 0≤index<len(values)가 아니면 ValueError입니다. 오래된 누적값을 재사용하지 마세요.",
+      "code": "values / index,new_value → 반환값\n[2,5,1] / 1,9 → ([2,9,1],[0,2,11,12])\n[0] / 0,-3 → ([-3],[0,-3])\n[] / 0,1 → ValueError",
+      "codeKind": "text",
+      "solution": {
+        "answer": "변경할 입력을 먼저 복사하고 바뀐 전체 데이터에서 누적값을 다시 만듭니다.",
+        "code": {
+          "kind": "python",
+          "source": "def replace_and_prefix(values, index, new_value):\n    if not 0 <= index < len(values):\n        raise ValueError('invalid index')\n    changed = list(values)\n    changed[index] = new_value\n    prefix = [0]\n    for value in changed:\n        prefix.append(prefix[-1] + value)\n    return changed, prefix\n\nprint(replace_and_prefix([2, 5, 1], 1, 9))\nprint(replace_and_prefix([0], 0, -3))\ntry:\n    print(replace_and_prefix([], 0, 1))\nexcept ValueError:\n    print('ValueError')",
+          "output": "([2, 9, 1], [0, 2, 11, 12])\n([-3], [0, -3])\nValueError\n"
+        }
+      },
+      "explanation": "이 문제는 갱신 전용 고급 구조가 아니라 단순 재구성을 요구합니다. 사본의 내용과 누적 배열이 같은 데이터 버전을 가리키는지 확인합니다."
     }
   ]
 }

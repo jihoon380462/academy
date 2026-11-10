@@ -74,48 +74,76 @@
   "examples": [
     {
       "skill": "불변식 해석",
-      "question": "누적 합 절차의 불변식은 조건 검사 직전에 “total은 앞의 i개 원소의 합”입니다. values = [8, -3, 2]이고 i = 2라면 total은 무엇이어야 하나요? 아직 더하지 않은 원소도 적으세요.",
+      "question": "누적 합 절차의 불변식은 조건 검사 직전에 “total은 앞의 i개 원소의 합”입니다. values = [8, -3, 2]이고 i = 2라면 total과 아직 더하지 않은 원소를 적으세요. 불변식이 total의 숫자가 바뀌지 않는다는 뜻이 아닌 이유도 설명하세요.",
       "solution": {
-        "answer": "total은 5입니다. 처리한 원소는 8과 -3이고, 아직 더하지 않은 원소는 인덱스 2의 값 2입니다."
+        "answer": "total은 5입니다. 처리한 원소는 8과 -3이고, 아직 더하지 않은 원소는 인덱스 2의 값 2입니다. i와 total의 값이 바뀌어도 처리한 앞부분과 합의 관계가 정한 검사 지점마다 유지된다는 뜻입니다."
       },
-      "explanation": "i는 마지막 처리 인덱스가 아니라 처리한 개수입니다. 앞의 2개는 인덱스 0과 1입니다. 반복이 끝나기 전부터 total이 전체 합이어야 하는 것은 아닙니다."
+      "explanation": "i는 마지막 처리 인덱스가 아니라 처리한 개수입니다. 앞의 2개는 인덱스 0과 1입니다. 반복이 끝나기 전부터 total이 전체 합이어야 하는 것은 아닙니다.",
+      "exerciseType": "explain"
     },
     {
-      "skill": "한 단계 추적",
-      "question": "values = [4, -1, 6]에서 조건 검사 직전 (i, total)이 (2, 3)입니다. total에 values[i]를 더하고 i를 1 늘린 뒤, 다음 조건 검사 직전 상태와 불변식이 맞는 이유를 적으세요.",
+      "exerciseType": "implement",
+      "skill": "구현 · 일부 구간까지의 합",
+      "question": "sum_first(values, k)를 직접 구현하세요. values는 정수 목록이고 k는 0≤k≤목록 길이인 정수입니다. 앞의 k개 합을 반환하며 k=0이면 0입니다. sum이나 슬라이스로 계산하지 말고 인덱스와 누적값으로 구현하세요. 입력 자료는 변경하지 않습니다. 함수의 결과는 반환하며, 아래 확인 호출의 기대 반환값과 비교하세요.",
+      "code": "확인 호출 → 기대 반환값\nsum_first([], 0) → 0\nsum_first([4, -1, 6], 2) → 3\nsum_first([4, -1, 6], 3) → 9",
+      "codeKind": "text",
       "solution": {
-        "answer": "다음 상태는 (3, 9)입니다. 6을 더했으므로 total은 앞의 3개 원소의 합이며, i도 처리한 개수 3이 됩니다."
-      },
-      "explanation": "total을 갱신한 직후 i를 아직 늘리지 않은 줄 사이에서는 앞의 i개라는 표현과 total이 잠시 맞지 않을 수 있습니다. 정한 검사 지점에 돌아왔을 때 관계가 다시 맞는지 확인합니다."
-    },
-    {
-      "skill": "초기화 점검",
-      "question": "정수 목록의 전체 합을 구하면서 i = 0, total = 1로 시작했습니다. “total은 앞의 i개 합”이라는 불변식은 처음부터 성립하나요? 빈 목록에서의 실제 결과도 적으세요.",
-      "solution": {
-        "answer": "성립하지 않습니다. 앞의 0개 합은 0인데 total은 1입니다. 빈 목록에서는 반복을 한 번도 하지 않아 1을 반환하므로 계약의 기대값 0과 어긋납니다."
-      },
-      "explanation": "좋은 초기값은 그럴듯한 숫자가 아니라 변수의 뜻에서 정합니다. total을 0으로 시작하면 빈 부분의 합과 맞고, 빈 목록의 결과도 자연스럽게 얻습니다."
-    },
-    {
-      "skill": "다른 누적값에 적용",
-      "question": "정수 목록에서 음수의 개수를 세는 함수를 작성하세요. 조건 검사 직전 “count는 무엇의 개수인가?”를 처리한 개수 i로 설명하고, [3, -1, -4, 0]으로 실행하세요.",
-      "solution": {
-        "answer": "count는 앞의 i개 원소 중 음수인 원소의 개수입니다. 결과는 2입니다.",
+        "answer": "다음은 계약을 만족하는 구현 한 가지입니다. 확인 호출의 결과뿐 아니라 입력 경계와 변수의 의미도 비교하세요.",
         "code": {
           "kind": "python",
-          "source": "def count_negative(values):\n    i = 0\n    count = 0\n    while i < len(values):\n        if values[i] < 0:\n            count += 1\n        i += 1\n    return count\n\nprint(count_negative([3, -1, -4, 0]))",
-          "output": "2\n"
+          "source": "def sum_first(values, k):\n    i = 0\n    total = 0\n    while i < k:\n        total += values[i]\n        i += 1\n    return total\n\nprint(sum_first([], 0))\nprint(sum_first([4, -1, 6], 2))\nprint(sum_first([4, -1, 6], 3))\n",
+          "output": "0\n3\n9\n"
         }
       },
-      "explanation": "초기 count는 0이고, 각 원소가 음수일 때만 1을 더합니다. i도 함께 늘리면 다음 검사 직전의 count는 새로 처리한 부분의 음수 개수와 맞습니다."
+      "explanation": "조건 검사 직전 total은 앞의 i개 합입니다. 종료 시 i=k이므로 전체 목록이 아니라 계약이 지정한 앞의 k개 합을 반환합니다."
     },
     {
-      "skill": "종료 뒤 계약 연결",
-      "question": "“0 ≤ i ≤ n이고 total은 앞의 i개 합”이 반복 조건 i < n을 검사하기 직전마다 참입니다. 반복이 정상 종료했을 때 왜 total을 전체 합으로 반환할 수 있나요? “반복이 끝났으니 정답이다”보다 구체적으로 설명하세요.",
+      "exerciseType": "implement",
+      "skill": "구현 · 처리한 부분의 조건 개수",
+      "question": "count_prefix_below(values, k, limit)를 직접 구현하세요. values는 정수 목록, k는 0≤k≤길이, limit은 정수입니다. 앞의 k개 원소 중 limit보다 작은 원소 수를 반환합니다. 경계와 같은 값은 세지 않고 k=0이면 0입니다. 입력 자료는 변경하지 않습니다. 함수의 결과는 반환하며, 아래 확인 호출의 기대 반환값과 비교하세요.",
+      "code": "확인 호출 → 기대 반환값\ncount_prefix_below([], 0, 2) → 0\ncount_prefix_below([1, 2, 1], 2, 2) → 1\ncount_prefix_below([-1, -1, 0], 3, 0) → 2",
+      "codeKind": "text",
       "solution": {
-        "answer": "종료했으므로 i < n은 거짓이고 i ≥ n입니다. 불변식의 i ≤ n과 합치면 i = n입니다. total은 앞의 n개 원소의 합이므로 전체 합입니다."
+        "answer": "다음은 계약을 만족하는 구현 한 가지입니다. 확인 호출의 결과뿐 아니라 입력 경계와 변수의 의미도 비교하세요.",
+        "code": {
+          "kind": "python",
+          "source": "def count_prefix_below(values, k, limit):\n    i = 0\n    count = 0\n    while i < k:\n        if values[i] < limit:\n            count += 1\n        i += 1\n    return count\n\nprint(count_prefix_below([], 0, 2))\nprint(count_prefix_below([1, 2, 1], 2, 2))\nprint(count_prefix_below([-1, -1, 0], 3, 0))\n",
+          "output": "0\n1\n2\n"
+        }
       },
-      "explanation": "종료 사실만으로 정답이 되지는 않습니다. 끝난 상태의 변수 의미가 출력 계약을 만족함을 연결해야 합니다. 이 설명에 더해 n-i가 줄어들어 실제로 종료한다는 이유도 필요합니다."
+      "explanation": "count의 의미는 전체 목록의 개수가 아니라 이미 처리한 앞의 i개 중 조건을 만족하는 수입니다. 세지 않는 분기에서도 i는 증가해야 합니다."
+    },
+    {
+      "exerciseType": "implement",
+      "skill": "구현 · 두 상태의 불변식",
+      "question": "scan_balance(changes)를 직접 구현하세요. changes는 정수 증감량 목록입니다. 0에서 시작한 최종 누적값과, 시작 상태 0까지 포함해 누적값이 가장 작았던 값을 (최종값, 최저값)으로 반환하세요. 빈 목록은 (0, 0)입니다. 입력 자료는 변경하지 않습니다. 함수의 결과는 반환하며, 아래 확인 호출의 기대 반환값과 비교하세요.",
+      "code": "확인 호출 → 기대 반환값\nscan_balance([]) → (0, 0)\nscan_balance([3, -5, 1]) → (-1, -2)\nscan_balance([-1, 2]) → (1, -1)\nscan_balance([2, 2]) → (4, 0)",
+      "codeKind": "text",
+      "solution": {
+        "answer": "다음은 계약을 만족하는 구현 한 가지입니다. 확인 호출의 결과뿐 아니라 입력 경계와 변수의 의미도 비교하세요.",
+        "code": {
+          "kind": "python",
+          "source": "def scan_balance(changes):\n    balance = 0\n    lowest = 0\n    for change in changes:\n        balance += change\n        if balance < lowest:\n            lowest = balance\n    return balance, lowest\n\nprint(scan_balance([]))\nprint(scan_balance([3, -5, 1]))\nprint(scan_balance([-1, 2]))\nprint(scan_balance([2, 2]))\n",
+          "output": "(0, 0)\n(-1, -2)\n(1, -1)\n(4, 0)\n"
+        }
+      },
+      "explanation": "balance는 처리한 부분의 합이고 lowest는 그때까지의 누적 상태 중 최솟값입니다. 마지막 값과 중간 최저값은 다를 수 있으며 시작 상태도 최저값 후보에 넣습니다."
+    },
+    {
+      "exerciseType": "implement",
+      "skill": "구현 · 누적 조건의 첫 도달",
+      "question": "first_prefix_at_least(values, limit)를 직접 구현하세요. values는 0 이상 정수 목록이고 limit은 양의 정수입니다. 앞부분 합이 처음 limit 이상이 되는 가장 작은 원소 개수를 반환하세요. 끝까지 도달하지 못하거나 빈 목록이면 -1입니다. 입력 자료는 변경하지 않습니다. 함수의 결과는 반환하며, 아래 확인 호출의 기대 반환값과 비교하세요.",
+      "code": "확인 호출 → 기대 반환값\nfirst_prefix_at_least([], 1) → -1\nfirst_prefix_at_least([0, 2, 2], 3) → 3\nfirst_prefix_at_least([5], 5) → 1\nfirst_prefix_at_least([1, 1], 3) → -1",
+      "codeKind": "text",
+      "solution": {
+        "answer": "다음은 계약을 만족하는 구현 한 가지입니다. 확인 호출의 결과뿐 아니라 입력 경계와 변수의 의미도 비교하세요.",
+        "code": {
+          "kind": "python",
+          "source": "def first_prefix_at_least(values, limit):\n    i = 0\n    total = 0\n    while i < len(values):\n        total += values[i]\n        i += 1\n        if total >= limit:\n            return i\n    return -1\n\nprint(first_prefix_at_least([], 1))\nprint(first_prefix_at_least([0, 2, 2], 3))\nprint(first_prefix_at_least([5], 5))\nprint(first_prefix_at_least([1, 1], 3))\n",
+          "output": "-1\n3\n1\n-1\n"
+        }
+      },
+      "explanation": "반환하는 값은 인덱스가 아니라 처리한 원소 개수입니다. 원소를 더하고 i도 늘린 뒤 두 상태가 같은 앞부분을 뜻할 때 조건을 검사합니다. 앞부분들을 짧은 순으로 확인해 처음 도달한 개수를 반환합니다."
     }
   ]
 }

@@ -89,11 +89,23 @@ def validate_block(block, owner, blocks):
 def validate_question(question, owner, ids, blocks, prompt_sources, is_review=False):
     require(isinstance(question, dict), owner, 'question object required')
     require(not {'options', 'optionFormat', 'answer'} & set(question), owner, 'written exercises only')
+    if not is_review:
+        exercise_type = question.get('exerciseType')
+        require(isinstance(exercise_type, str) and exercise_type in {'explain', 'implement'}, owner + '/exerciseType',
+                'lesson example exerciseType must be explain or implement')
     for field in ['skill', 'question', 'explanation']:
         text(question.get(field), owner + '/' + field)
     solution = question.get('solution')
     require(isinstance(solution, dict), owner, 'solution object required')
     text(solution.get('answer'), owner + '/solution/answer')
+    if not is_review and question['exerciseType'] == 'implement':
+        code = solution.get('code')
+        require(isinstance(code, dict), owner + '/solution/code',
+                'implement example requires a Python solution.code block')
+        require(code.get('kind') == 'python', owner + '/solution/code/kind',
+                'implement example solution.code.kind must be python')
+        require(isinstance(code.get('output'), str), owner + '/solution/code/output',
+                'implement example requires exact expected stdout in solution.code.output')
     if 'code' in solution:
         validate_block(solution['code'], owner + '/solution/code', blocks)
     if 'code' in question:
@@ -142,7 +154,14 @@ def validate_lesson(lesson, expected, order, ids, blocks, prompt_sources):
     examples = lesson.get('examples')
     require(isinstance(examples, list) and len(examples) == 5, owner, 'exactly five examples required')
     for index, question in enumerate(examples, 1):
-        validate_question(question, f'{owner}/example{index}', ids, blocks, prompt_sources)
+        question_owner = f'{owner}/example{index}'
+        validate_question(question, question_owner, ids, blocks, prompt_sources)
+        if index == 1:
+            require(question['exerciseType'] == 'explain', question_owner + '/exerciseType',
+                    'example 1 must be explain; implementation exercises follow the concept question')
+        elif index >= 3:
+            require(question['exerciseType'] == 'implement', question_owner + '/exerciseType',
+                    'examples 3 through 5 must be implement; explanation-only examples are limited to positions 1 and 2')
 
 
 def validate_review_distribution(review, number, owner):

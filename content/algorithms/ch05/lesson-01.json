@@ -75,49 +75,77 @@
   ],
   "examples": [
     {
-      "skill": "검색 계약 · 중복의 의미",
-      "question": "[3, 7, 3]에서 목표 3에 대한 존재 여부·첫 위치·모든 위치를 각각 적고 이번 계약의 결과를 표시하세요.",
+      "exerciseType": "explain",
+      "skill": "검색 계약의 이유",
+      "question": "같은 값이 반복되는 목록을 검색할 때 존재 여부·첫 위치·모든 위치가 왜 다른 계약인지 설명하세요. 첫 위치를 반환할 때 0과 실패 -1을 단순한 참·거짓으로 검사하면 생기는 문제도 적으세요.",
       "solution": {
-        "answer": "존재 여부는 참, 첫 위치는 0, 모든 위치는 [0, 2]입니다. 이번 함수의 결과는 0입니다."
+        "answer": "첫 위치는 가장 작은 일치 인덱스 하나이고, 존재 여부는 참·거짓, 모든 위치는 일치 인덱스 목록입니다. 0은 성공이지만 거짓으로, -1은 실패 표시지만 참으로 취급되므로 result != -1로 구별합니다."
       },
-      "explanation": "같은 입력이라도 서로 다른 질문입니다. 뒤에서 발견한 2로 0을 덮어쓰면 첫 위치 계약이 바뀝니다."
+      "explanation": "반환 의미에 따라 종료 조건이 달라집니다. Python 음수 인덱스와 함수의 실패 표시도 별개입니다."
     },
     {
-      "skill": "검색 추적 · 첫 일치의 종료",
-      "question": "[8, 6, 2, 6]에서 목표 6을 찾을 때 확인하는 값·반환 인덱스·값 비교 횟수를 적으세요.",
+      "exerciseType": "implement",
+      "skill": "기본 구현 · 첫 일치 위치",
+      "question": "first_index(values, target)를 직접 작성하세요. 유한한 정수 목록에서 목표의 첫 0기반 인덱스를 반환하고 없으면 -1을 반환합니다. 중복·빈 입력을 허용하고 원본을 바꾸지 않습니다. list.index는 사용하지 마세요.",
+      "codeKind": "text",
+      "code": "확인 사례\nfirst_index([4,2,4],4) → 0\nfirst_index([4,2,4],9) → -1\nfirst_index([],4) → -1",
       "solution": {
-        "answer": "8과 6을 차례로 확인하고 인덱스 1을 반환합니다. 값 비교는 두 번이며 뒤의 2와 6은 읽지 않습니다."
-      },
-      "explanation": "두 번째 원소가 처음 일치하므로 앞에서부터 세는 인덱스 1이 첫 위치입니다."
-    },
-    {
-      "skill": "정확성 · 크기로 끝내는 반례",
-      "question": "정렬되지 않은 목록에서 현재 값이 목표보다 크면 즉시 -1을 반환하는 절차의 반례를 하나 제시하고 올바른 종료 조건을 쓰세요.",
-      "solution": {
-        "answer": "[9, 2, 7]에서 목표 7이면 9 뒤에 7이 있습니다. 크다는 이유만으로 끝내지 말고 첫 일치나 목록 끝까지 확인합니다."
-      },
-      "explanation": "아직 보지 않은 값의 크기 보장이 없으므로 한 번의 크기 비교로 뒤쪽을 배제할 수 없습니다."
-    },
-    {
-      "skill": "작은 적용 · 실패를 검사한 접근",
-      "question": "[10, 20]에서 목표 10과 7의 첫 위치를 찾아 성공 시 위치와 값을, 실패 시 없음을 출력하세요.",
-      "solution": {
-        "answer": "목표 10은 0과 10을, 목표 7은 없음을 출력합니다.",
+        "answer": "입력 계약과 확인 사례를 만족하는 함수의 한 가지 구현입니다.",
         "code": {
           "kind": "python",
-          "source": "def first_index(values, target):\n    for index in range(len(values)):\n        if values[index] == target:\n            return index\n    return -1\n\nvalues = [10, 20]\nfor target in [10, 7]:\n    result = first_index(values, target)\n    if result != -1:\n        print(result, values[result])\n    else:\n        print(\"없음\")",
-          "output": "0 10\n없음\n"
+          "source": "def first_index(values, target):\n    for index in range(len(values)):\n        if values[index] == target:\n            return index\n    return -1\n\nprint(first_index([4, 2, 4], 4))\nprint(first_index([4, 2, 4], 9))\nprint(first_index([], 4))",
+          "output": "0\n-1\n-1\n"
         }
       },
-      "explanation": "result != -1을 검사하면 음수 인덱스와 0의 진릿값을 혼동하지 않습니다."
+      "explanation": "앞에서부터 첫 일치에 반환하므로 그 앞에는 목표가 없다는 조건이 유지됩니다. 정수 비교 모델에서 최악 O(n), 보조 공간 O(1)입니다."
     },
     {
-      "skill": "경계와 비용 · 빈 목록과 부재",
-      "question": "빈 목록과 길이 n인 목록에서 목표가 전혀 없는 경우의 반환값·값 비교 횟수·보조 공간을 비교하세요.",
+      "exerciseType": "implement",
+      "skill": "요구 변경 · 모든 일치 위치",
+      "question": "all_indices(values, target)를 직접 작성하세요. 정수 목록에서 목표와 같은 모든 원소의 인덱스를 오름차순 새 목록으로 반환합니다. 없거나 비어 있으면 []이며 중복 원소도 위치별로 기록합니다. 원본은 바꾸지 마세요.",
+      "codeKind": "text",
+      "code": "확인 사례\nall_indices([2,5,2,2],2) → [0,2,3]\nall_indices([1,3],2) → []\nall_indices([],2) → []",
       "solution": {
-        "answer": "둘 다 -1을 반환합니다. 빈 목록은 값 비교 0회, 길이 n인 목록은 n회입니다. 이 반복 절차의 보조 공간은 O(1)입니다."
+        "answer": "입력 계약과 확인 사례를 만족하는 함수의 한 가지 구현입니다.",
+        "code": {
+          "kind": "python",
+          "source": "def all_indices(values, target):\n    result = []\n    for index, value in enumerate(values):\n        if value == target:\n            result.append(index)\n    return result\n\nprint(all_indices([2, 5, 2, 2], 2))\nprint(all_indices([1, 3], 2))\nprint(all_indices([], 2))",
+          "output": "[0, 2, 3]\n[]\n[]\n"
+        }
       },
-      "explanation": "빈 경우 반복은 시작되지 않습니다. 목표가 없으면 전부 확인해야 하며, 첫 원소에서 찾는 최선 경우와 구분합니다."
+      "explanation": "모든 위치가 필요하므로 첫 일치 뒤에도 끝까지 확인합니다. 시간 O(n), 결과 공간은 일치 개수 m에 대해 O(m)입니다."
+    },
+    {
+      "exerciseType": "implement",
+      "skill": "조건 변경 · 첫 기준 이상 값",
+      "question": "first_at_least(values, limit)를 직접 작성하세요. 정렬되지 않은 정수 목록에서 값이 limit 이상인 첫 원소의 인덱스를 반환합니다. 없으면 -1이며 빈 입력도 -1입니다. 목록을 정렬하거나 변경하지 마세요.",
+      "codeKind": "text",
+      "code": "확인 사례\nfirst_at_least([9,1,7],7) → 0\nfirst_at_least([1,4,3],4) → 1\nfirst_at_least([],0) → -1",
+      "solution": {
+        "answer": "입력 계약과 확인 사례를 만족하는 함수의 한 가지 구현입니다.",
+        "code": {
+          "kind": "python",
+          "source": "def first_at_least(values, limit):\n    for index, value in enumerate(values):\n        if value >= limit:\n            return index\n    return -1\n\nprint(first_at_least([9, 1, 7], 7))\nprint(first_at_least([1, 4, 3], 4))\nprint(first_at_least([], 0))",
+          "output": "0\n1\n-1\n"
+        }
+      },
+      "explanation": "일치 조건만 >=로 바꾸고 입력 순서의 첫 위치를 찾습니다. 정렬해서 작은 값부터 찾으면 원래 위치 계약을 깨뜨립니다."
+    },
+    {
+      "exerciseType": "implement",
+      "skill": "범위 변경 · 시작 위치부터 찾기",
+      "question": "find_from(values, target, start)를 직접 작성하세요. start는 정수이며 0≤start≤len(values)이면 그 위치부터 뒤에서 첫 일치의 원본 인덱스를 반환하고 없으면 -1입니다. start가 범위 밖이면 ValueError를 내세요. 원본은 보존합니다.",
+      "codeKind": "text",
+      "code": "확인 사례\nfind_from([3,1,3],3,1) → 2\nfind_from([3],3,1) → -1\nfind_from([],3,0) → -1\nfind_from([3],3,-1) → ValueError",
+      "solution": {
+        "answer": "입력 계약과 확인 사례를 만족하는 함수의 한 가지 구현입니다.",
+        "code": {
+          "kind": "python",
+          "source": "def find_from(values, target, start):\n    if start < 0 or start > len(values):\n        raise ValueError(\"start out of range\")\n    for index in range(start, len(values)):\n        if values[index] == target:\n            return index\n    return -1\n\nprint(find_from([3, 1, 3], 3, 1))\nprint(find_from([3], 3, 1))\nprint(find_from([], 3, 0))\ntry:\n    find_from([3], 3, -1)\nexcept ValueError:\n    print(\"ValueError\")",
+          "output": "2\n-1\n-1\nValueError\n"
+        }
+      },
+      "explanation": "끝 경계 start=n은 유효하지만 확인할 원소가 없습니다. 슬라이스를 만들지 않아 반환 인덱스가 원본 기준이고 추가 복사도 없습니다."
     }
   ]
 }

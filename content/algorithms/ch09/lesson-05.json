@@ -70,49 +70,77 @@
   ],
   "examples": [
     {
-      "skill": "누락된 키 입력",
-      "question": "구간 합에 scale을 곱하는데 캐시 키가 (버전, left, right)뿐입니다. scale=1로 구한 뒤 2로 요청하면 어떤 문제가 생기며 어떻게 고치나요?",
+      "exerciseType": "explain",
+      "skill": "원리 설명 · 캐시 적중과 정답의 유효성",
+      "question": "캐시 키가 같고 TTL도 아직 남아 있다는 사실이 최신 정답을 보장하지 않는 이유를 설명하세요. 데이터 버전·옵션·유효한 0 또는 None·가변 반환값을 어떻게 구분해 관리할지도 적으세요.",
       "solution": {
-        "answer": "첫 결과를 그대로 재사용해 두 배가 되어야 할 답이 틀릴 수 있습니다. scale도 키에 포함하거나 옵션별로 캐시를 구분해야 합니다."
+        "answer": "결과를 바꾸는 모든 입력과 옵션을 키에 포함하고 같은 버전은 같은 불변 데이터라는 약속이 필요합니다. TTL은 보관 기간이지 원본 변경이 없었다는 증명이 아닙니다. 값의 참·거짓 대신 키 존재로 적중을 검사하고, 가변 반환값이 내부 캐시를 오염시키지 않도록 불변 값이나 복사 정책을 정합니다."
       },
-      "explanation": "같은 키가 같은 정답을 뜻해야 합니다. 빠진 옵션이 있으면 서로 다른 질문이 충돌합니다."
+      "explanation": "과거 스냅샷의 정답과 현재 데이터의 정답도 서로 다른 질문입니다. 키 구성·무효화·만료 경계·반환 계약을 함께 설계합니다."
     },
     {
-      "skill": "유효한 0의 적중",
-      "question": "정수 제곱 함수를 캐시합니다. 입력 0을 두 번 요청할 때 계산은 한 번만 하도록 작성하고 결과 두 개와 실제 계산 횟수를 출력하세요.",
+      "exerciseType": "implement",
+      "skill": "기본 구현 · 값 0도 적중인 조회",
+      "question": "정수 제곱을 저장하는 square_cached(cache,value)를 작성해 (제곱값,기존 캐시 적중 여부)를 반환하세요. cache는 정수 키와 올바른 제곱값을 담는 dict입니다. 없을 때만 새 값을 저장하고, 이미 있으면 0도 그대로 재사용합니다. value는 바꾸지 않으며 cache의 새 항목 추가만 허용합니다.",
+      "code": "같은 빈 cache에서 순서대로 요청 → 반환값\nvalue=0 → (0,False)\nvalue=0 다시 → (0,True)\nvalue=-3 → (9,False)",
+      "codeKind": "text",
       "solution": {
-        "answer": "결과는 0, 0이며 계산 횟수는 1입니다.",
+        "answer": "값 0이 아니라 키 존재로 적중을 판정합니다.",
         "code": {
           "kind": "python",
-          "source": "cache = {}\ncomputed = []\n\ndef square_cached(value):\n    if value not in cache:\n        computed.append(value)\n        cache[value] = value * value\n    return cache[value]\n\nprint(square_cached(0))\nprint(square_cached(0))\nprint(len(computed))",
-          "output": "0\n0\n1\n"
+          "source": "def square_cached(cache, value):\n    if value in cache:\n        return cache[value], True\n    result = value * value\n    cache[value] = result\n    return result, False\n\ncache = {}\nprint(square_cached(cache, 0))\nprint(square_cached(cache, 0))\nprint(square_cached(cache, -3))",
+          "output": "(0, False)\n(0, True)\n(9, False)\n"
         }
       },
-      "explanation": "0이 거짓으로 취급되어도 저장된 정답입니다. 값의 참·거짓 대신 키 존재 여부를 검사합니다."
+      "explanation": "None이나 0처럼 거짓으로 평가되는 결과도 실제 정답일 수 있습니다. 이 함수는 기존 항목이 올바른 제곱이라는 계약 아래 동작하며 임의의 잘못된 캐시를 자동 교정하지 않습니다."
     },
     {
-      "skill": "스냅샷과 변경",
-      "question": "v1의 [2, 5, 1] 합 8이 캐시에 있습니다. 현재 데이터가 v2=[2, 9, 1]이 되었습니다. v1 질문과 v2 질문을 어떻게 처리해야 하나요?",
+      "exerciseType": "implement",
+      "skill": "직접 구현 · 스냅샷과 옵션을 포함한 키",
+      "question": "cached_range_total(cache,snapshots,version,left,right,scale)을 작성해 지정 버전의 [left,right) 합에 scale을 곱해 반환하세요. snapshots의 버전 이름은 바뀌지 않는 정수 튜플에 대응하고 대응 자체도 바꾸지 않습니다. 키는 (\"sum-v1\",version,left,right,scale)이며 누락 때만 계산합니다. 잘못된 구간은 ValueError, 유효한 빈 구간은 0입니다. cache만 갱신하세요.",
+      "code": "snapshots={v1:(2,5,1),v2:(2,9,1)}, 같은 빈 cache에서 요청\nv1 / 0,3 / scale=1 → 8\nv1 / 0,3 / scale=2 → 16\nv2 / 0,3 / scale=1 → 12\nv2 / 1,1 / scale=1 → 0",
+      "codeKind": "text",
       "solution": {
-        "answer": "불변 v1 자체를 묻는다면 8을 재사용할 수 있습니다. v2의 현재 값을 묻는 질문에는 v2 키로 12를 계산해야 하며 v1의 8을 대신 주면 안 됩니다."
+        "answer": "버전·구간·옵션이 모두 같은 문제일 때만 이전 결과를 재사용합니다.",
+        "code": {
+          "kind": "python",
+          "source": "def cached_range_total(cache, snapshots, version, left, right, scale):\n    values = snapshots[version]\n    if not 0 <= left <= right <= len(values):\n        raise ValueError('invalid range')\n    key = ('sum-v1', version, left, right, scale)\n    if key not in cache:\n        cache[key] = sum(values[left:right]) * scale\n    return cache[key]\n\nsnapshots = {'v1': (2, 5, 1), 'v2': (2, 9, 1)}\ncache = {}\nprint(cached_range_total(cache, snapshots, 'v1', 0, 3, 1))\nprint(cached_range_total(cache, snapshots, 'v1', 0, 3, 2))\nprint(cached_range_total(cache, snapshots, 'v2', 0, 3, 1))\nprint(cached_range_total(cache, snapshots, 'v2', 1, 1, 1))",
+          "output": "8\n16\n12\n0\n"
+        }
       },
-      "explanation": "같은 위치 범위여도 데이터 버전이 달라 다른 질문입니다. 버전 이름을 재사용해 데이터만 바꾸면 이 구분이 무너집니다."
+      "explanation": "동일한 버전 이름의 내용을 나중에 바꾸면 키의 전제가 깨집니다. slice와 sum은 누락 계산의 구간 길이에 따른 비용이며, 키가 없을 때 계산하는 비용과 적중한 조회 비용을 나눕니다."
     },
     {
-      "skill": "만료 경계와 최신성",
-      "question": "시각 0에 저장한 답의 만료 시각이 10이며 now < 10만 재사용합니다. 원본은 시각 6에 바뀌었습니다. 시각 9의 미만료가 최신 정답을 보장하나요? 시각 10에는 어떤가요?",
+      "exerciseType": "implement",
+      "skill": "직접 구현 · 명시적 시각의 TTL 조회",
+      "question": "cache[key]=(만료 시각,값)이고 now는 명시적으로 받은 수입니다. read_ttl(cache,key,now)를 작성해 (적중 여부,값)을 반환하세요. now<만료 시각일 때만 적중이며, 누락 또는 만료는 (False,None)입니다. 만료한 해당 키는 삭제하고 다른 키는 유지하세요. 실제 값 None·0도 허용합니다. 이 함수는 TTL만 검사하며 최신 데이터까지 보장하지 않습니다.",
+      "code": "cache={A:(10,0),N:(12,None)}에서 순서대로 요청\nA / now=9 → (True,0)\nA / now=10 → (False,None), A 삭제\nN / now=10 → (True,None)\nM / now=10 → (False,None)",
+      "codeKind": "text",
       "solution": {
-        "answer": "시각 9에도 원본이 바뀌었으므로 최신 정답은 보장되지 않습니다. 시각 10에는 now < 10이 거짓이므로 만료입니다."
+        "answer": "만료 경계를 같음까지 포함해 처리하고 성공 여부로 실제 None을 구분합니다.",
+        "code": {
+          "kind": "python",
+          "source": "def read_ttl(cache, key, now):\n    if key not in cache:\n        return False, None\n    expires, value = cache[key]\n    if now >= expires:\n        del cache[key]\n        return False, None\n    return True, value\n\ncache = {'A': (10, 0), 'N': (12, None)}\nprint(read_ttl(cache, 'A', 9))\nprint(read_ttl(cache, 'A', 10))\nprint(read_ttl(cache, 'N', 10))\nprint(read_ttl(cache, 'M', 10))",
+          "output": "(True, 0)\n(False, None)\n(True, None)\n(False, None)\n"
+        }
       },
-      "explanation": "시간 경계 정책과 변경 감지 정책은 다릅니다. 이 시각들은 설명용 고정 값이며 실제 시스템의 시계 출력이 아닙니다."
+      "explanation": "확인 사례는 고정된 가상 시각을 사용합니다. 실제 시계를 읽거나 시간이 흐르기를 기다릴 필요가 없습니다. TTL 안에 원본이 바뀌면 별도 버전·무효화 정책 없이는 최신 정답을 보장하지 않습니다."
     },
     {
-      "skill": "가변 결과의 오염",
-      "question": "캐시에 저장한 목록을 그대로 반환했는데 호출자가 append를 했습니다. 다음 조회의 위험과 가능한 보호 방법·비용을 적으세요.",
+      "exerciseType": "implement",
+      "skill": "변형 구현 · 내부 결과를 보호하는 반환",
+      "question": "cached_ids(cache,key,compute)를 작성하세요. key는 모든 결과 맥락을 담은 해시 가능한 키이고 compute는 그 키의 정수 목록을 만드는 인자 없는 함수입니다. 누락 때만 compute를 호출해 결과를 불변 튜플로 보관하고, 호출자에게는 매번 새 list를 반환하세요. 입력 키와 compute의 원본 결과는 바꾸지 않고 cache만 갱신합니다.",
+      "code": "같은 cache에서 순서대로 요청\nkey=(v1,ids), compute 결과 [2,5] → [2,5]\n첫 반환 목록에 99를 추가한 뒤 같은 키 재요청 → [2,5]\nkey=(v1,empty), compute 결과 [] → []\n위 세 요청의 실제 compute 호출 수 → 2",
+      "codeKind": "text",
       "solution": {
-        "answer": "다음 호출이 변경된 목록을 받아 정답이 오염될 수 있습니다. 불변 결과를 쓰거나 필요한 복사를 반환하는 정책을 정합니다. 길이 k의 복사에는 O(k) 비용이 들고 중첩 가변 원소는 별도 보호가 필요할 수 있습니다."
+        "answer": "내부에는 정수 튜플을 두고 반환 목록을 분리해 호출자의 변경이 다음 답에 섞이지 않게 합니다.",
+        "code": {
+          "kind": "python",
+          "source": "def cached_ids(cache, key, compute):\n    if key not in cache:\n        cache[key] = tuple(compute())\n    return list(cache[key])\n\ncalls = []\ndef make_ids():\n    calls.append('ids')\n    return [2, 5]\ndef make_empty():\n    calls.append('empty')\n    return []\n\ncache = {}\nfirst = cached_ids(cache, ('v1', 'ids'), make_ids)\nprint(first)\nfirst.append(99)\nprint(cached_ids(cache, ('v1', 'ids'), make_ids))\nprint(cached_ids(cache, ('v1', 'empty'), make_empty))\nprint(len(calls))",
+          "output": "[2, 5]\n[2, 5]\n[]\n2\n"
+        }
       },
-      "explanation": "캐시 내부 값이 계산 뒤에도 유지되어야 재사용 근거가 성립합니다. 조회만 빠르다고 전체 반환 비용까지 상수가 되지는 않습니다."
+      "explanation": "원소가 불변 정수라는 계약에서 얕은 사본으로 충분합니다. 반환 k개를 복사하는 시간·공간 O(k)는 캐시 적중에도 필요하며 중첩 가변 객체까지 자동 보호하는 깊은 복사로 설명하지 않습니다."
     }
   ]
 }

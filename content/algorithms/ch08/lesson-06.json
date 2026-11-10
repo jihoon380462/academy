@@ -71,49 +71,77 @@
   ],
   "examples": [
     {
-      "skill": "전략 구분 · 방법 선택",
-      "question": "작은 입력의 기준 결과, 근거 있는 국소 선택, 겹치는 부분 문제에 각각 어떤 방법을 고려할 수 있나요? 이름만으로 실제 성능을 정할 수 있는지도 설명하세요.",
+      "skill": "최적값과 동률 조합",
+      "exerciseType": "explain",
+      "question": "[1,2,3]의 금액 4에서 기준은 [2,2], 엄격 개선·오름차순 동전 규칙의 복원은 [1,3]을 냈습니다. 무엇을 같다고 검사하고 무엇을 별도로 확인해야 하나요?",
       "solution": {
-        "answer": "각각 완전 탐색, 조건이 증명된 탐욕, 메모이제이션이나 표 동적 계획법을 고려합니다. 후보·상태 수와 각 작업·메모리·입력 크기를 보고 비교해야 합니다."
+        "answer": "최소 개수 2는 같을 수 있습니다. 조합은 합·허용 동전·길이의 유효성을 확인하고, 정한 동률 규칙을 요구한다면 그 규칙에 맞는 [1,3]도 따로 검사해야 합니다."
       },
-      "explanation": "방법 이름이 같아도 문제의 상태 수와 구현 비용이 다를 수 있습니다."
+      "explanation": "최적값 일치만으로 부모 선택의 유효성이나 모든 동률 정책까지 같다고 볼 수는 없습니다."
     },
     {
-      "skill": "상태/전이 · 선택 기록",
-      "question": "best[x]가 5에서 3으로 개선되었는데 step[x]를 예전 선택으로 두었습니다. 최소 숫자와 복원 결과 사이에 무슨 문제가 생길 수 있나요?",
+      "skill": "최소 조합 하나 복원",
+      "exerciseType": "implement",
+      "question": "restore_min_change(coins, amount) 함수를 직접 작성하세요. coins는 오름차순의 서로 다른 양의 정수 종류이고 무제한 사용입니다. 0 이상 amount의 (최소 개수, 복원 동전 목록) 또는 불가능 None을 반환하세요. 금액 오름차순·동전 입력 순서로 확인하고 엄격히 개선할 때만 마지막 동전을 저장해 동률은 먼저 본 선택을 유지합니다. 목표 0은 (0,[])이며 빈 종류도 처리하고 입력은 불변입니다. 제시한 확인 사례와 경계 조건을 함께 검증하세요.",
+      "code": "확인 입력 → 반환값\nrestore_min_change([1, 2, 3], 4) → (2, [1, 3])\nrestore_min_change([2, 5], 9) → (3, [2, 2, 5])\nrestore_min_change([4], 6) → None\nrestore_min_change([], 0) → (0, [])",
+      "codeKind": "text",
       "solution": {
-        "answer": "숫자는 3이어도 기록한 이전 선택은 best[x-c]+1=3을 만족하지 않을 수 있어 잘못된 길이나 조합이 나올 수 있습니다. 개선한 후보의 동전을 함께 저장해야 합니다."
-      },
-      "explanation": "선택 기록은 계산 결과의 근거를 보관합니다. 값만 바꾸고 근거를 남기지 않으면 복원이 다른 계산을 따라갈 수 있습니다."
-    },
-    {
-      "skill": "반례와 비교 · 동률",
-      "question": "[1,2,3]의 금액 4에서 개수 2를 확인한 기준 해법이 [2,2]를, 이번 엄격한 개선 규칙의 표가 [1,3]을 반환했습니다. 둘 중 하나가 틀렸다고 결론 내려도 되나요?",
-      "solution": {
-        "answer": "최소 개수와 합·허용 동전만 보면 둘 다 최적 조합입니다. 이번 표의 오름차순·먼저 본 동률 유지 계약에는 [1,3]이 맞습니다. 기준 해법이 같은 동률 계약을 쓰는지도 따로 확인해야 합니다."
-      },
-      "explanation": "숫자의 최적성과 특정 경로 규칙은 다른 검사항목입니다."
-    },
-    {
-      "skill": "작은 적용 · 경로 검증",
-      "question": "[2,5]로 금액 9를 만드는 아래 복원 절차를 실행하고 개수·합·허용 동전 여부를 출력하세요.",
-      "solution": {
-        "answer": "최소 3개인 [2,2,5]가 복원되고 길이 3·합 9·모두 허용 동전임을 확인합니다.",
+        "answer": "입력·반환 계약과 경계 조건을 만족하는 구현 한 가지입니다.",
         "code": {
           "kind": "python",
-          "source": "coins = [2, 5]\namount = 9\ninfinity = float(\"inf\")\nbest = [infinity] * (amount + 1)\nstep = [None] * (amount + 1)\nbest[0] = 0\nfor subtotal in range(1, amount + 1):\n    for coin in coins:\n        if coin <= subtotal and best[subtotal - coin] != infinity:\n            candidate = best[subtotal - coin] + 1\n            if candidate < best[subtotal]:\n                best[subtotal] = candidate\n                step[subtotal] = coin\nchosen = []\nif best[amount] != infinity:\n    remaining = amount\n    while remaining > 0:\n        coin = step[remaining]\n        chosen.append(coin)\n        remaining -= coin\n    print(best[amount], chosen)\n    print(len(chosen), sum(chosen), all(coin in coins for coin in chosen))\nelse:\n    print(None)",
-          "output": "3 [2, 2, 5]\n3 9 True\n"
+          "source": "def restore_min_change(coins, amount):\n    infinity = float(\"inf\")\n    best = [infinity] * (amount + 1)\n    step = [None] * (amount + 1)\n    best[0] = 0\n    for value in range(1, amount + 1):\n        for coin in coins:\n            if coin <= value and best[value - coin] != infinity:\n                candidate = best[value - coin] + 1\n                if candidate < best[value]:\n                    best[value] = candidate\n                    step[value] = coin\n    if best[amount] == infinity:\n        return None\n    remaining = amount\n    chosen = []\n    while remaining > 0:\n        coin = step[remaining]\n        chosen.append(coin)\n        remaining = remaining - coin\n    return best[amount], chosen\n\nprint(restore_min_change([1, 2, 3], 4))\nprint(restore_min_change([2, 5], 9))\nprint(restore_min_change([4], 6))\nprint(restore_min_change([], 0))",
+          "output": "(2, [1, 3])\n(3, [2, 2, 5])\nNone\n(0, [])\n"
         }
       },
-      "explanation": "각 remaining이 양의 동전만큼 줄어 0에 도착하며, 개수뿐 아니라 실제 경로도 검사합니다."
+      "explanation": "기록한 동전을 빼면 더 작은 가능한 상태로 이동합니다. 양수라 복원이 끝나고, 불가능한 목표에서는 시작하지 않습니다."
     },
     {
-      "skill": "탐색 조건 · 불가능과 0",
-      "question": "[4]로 금액 6을 만들 수 없을 때와 금액 0일 때 복원 시작 여부와 반환값을 구별하세요.",
+      "skill": "조합의 구조적 유효성",
+      "exerciseType": "implement",
+      "question": "valid_change(coins, amount, result) 함수를 직접 작성하세요. coins는 서로 다른 양의 정수 종류, amount는 0 이상 정수입니다. result는 None 또는 (0 이상 정수 개수, 정수 동전 목록)입니다. None은 False, 나머지는 길이=개수·합=amount·모든 값이 허용 종류이면 True를 반환하세요. 최소성은 검사하지 않습니다. 빈 조합·중복 사용을 허용하고 모든 입력은 불변입니다. 제시한 확인 사례와 경계 조건을 함께 검증하세요.",
+      "code": "확인 입력 → 반환값\nvalid_change([1, 3, 4], 6, (3, [4, 1, 1])) → True\nvalid_change([2], 3, (1, [2])) → False\nvalid_change([], 0, (0, [])) → True\nvalid_change([2], 4, None) → False",
+      "codeKind": "text",
       "solution": {
-        "answer": "6은 불가능이므로 step을 따라가지 않고 None을 반환합니다. 0은 가능한 빈 조합으로 반복 0회 뒤 (0,[])를 반환합니다."
+        "answer": "입력·반환 계약과 경계 조건을 만족하는 구현 한 가지입니다.",
+        "code": {
+          "kind": "python",
+          "source": "def valid_change(coins, amount, result):\n    if result is None:\n        return False\n    count, chosen = result\n    return (len(chosen) == count and sum(chosen) == amount\n            and all(coin in coins for coin in chosen))\n\nprint(valid_change([1, 3, 4], 6, (3, [4, 1, 1])))\nprint(valid_change([2], 3, (1, [2])))\nprint(valid_change([], 0, (0, [])))\nprint(valid_change([2], 4, None))",
+          "output": "True\nFalse\nTrue\nFalse\n"
+        }
       },
-      "explanation": "불가능과 빈 해를 구별해야 None인 선택을 동전처럼 빼거나 0에서 불필요한 반복을 하지 않습니다."
+      "explanation": "이 검사는 조합이 가능한지만 확인합니다. 유효하지만 최적이 아닌 조합도 True이므로 최적성 기준과 함께 써야 합니다."
+    },
+    {
+      "skill": "최적 증거와 불가능 주장 검사",
+      "exerciseType": "implement",
+      "question": "optimal_witness(coins, amount, candidate) 함수를 직접 작성하세요. 서로 다른 양의 정수 coins, 작은 0 이상 amount, None 또는 (개수,동전목록)인 candidate를 받습니다. candidate가 유효한 최소 조합이면 True이고, None이면 실제로 불가능할 때만 True입니다. 최적 개수는 독립 최소값 표로 계산하고 같은 개수의 다른 조합도 허용하세요. 빈 종류·목표 0을 처리하며 입력은 불변입니다. 제시한 확인 사례와 경계 조건을 함께 검증하세요.",
+      "code": "확인 입력 → 반환값\noptimal_witness([1, 3, 4], 6, (3, [4, 1, 1])) → False\noptimal_witness([1, 3, 4], 6, (2, [3, 3])) → True\noptimal_witness([4], 6, None) → True\noptimal_witness([], 0, (0, [])) → True",
+      "codeKind": "text",
+      "solution": {
+        "answer": "입력·반환 계약과 경계 조건을 만족하는 구현 한 가지입니다.",
+        "code": {
+          "kind": "python",
+          "source": "def min_coins_dp(coins, amount):\n    infinity = float(\"inf\")\n    best = [infinity] * (amount + 1)\n    best[0] = 0\n    for value in range(1, amount + 1):\n        for coin in coins:\n            if coin <= value and best[value - coin] != infinity:\n                candidate = best[value - coin] + 1\n                if candidate < best[value]:\n                    best[value] = candidate\n    return None if best[amount] == infinity else best[amount]\n\ndef optimal_witness(coins, amount, candidate):\n    optimum = min_coins_dp(coins, amount)\n    if candidate is None:\n        return optimum is None\n    if optimum is None:\n        return False\n    count, chosen = candidate\n    return (count == optimum and len(chosen) == count\n            and sum(chosen) == amount\n            and all(coin in coins for coin in chosen))\n\nprint(optimal_witness([1, 3, 4], 6, (3, [4, 1, 1])))\nprint(optimal_witness([1, 3, 4], 6, (2, [3, 3])))\nprint(optimal_witness([4], 6, None))\nprint(optimal_witness([], 0, (0, [])))",
+          "output": "False\nTrue\nTrue\nTrue\n"
+        }
+      },
+      "explanation": "정확한 개수와 복원 경로의 유효성을 따로 확인합니다. 표가 불가능을 반환했을 때만 None 주장을 받아들입니다."
+    },
+    {
+      "skill": "개수 예산이 있는 복원",
+      "exerciseType": "implement",
+      "question": "change_with_budget(coins, amount, budget) 함수를 직접 작성하세요. 오름차순의 서로 다른 양의 정수 coins를 무제한 사용합니다. 0 이상 amount와 0 이상 budget을 받아 최소 조합을 복원하되 최소 개수가 budget보다 크거나 금액이 불가능하면 None을 반환하세요. 동률은 restore_min_change와 같은 엄격 개선·입력 동전 순서이고 목표 0은 budget=0도 (0,[])입니다. 입력은 불변입니다. 제시한 확인 사례와 경계 조건을 함께 검증하세요.",
+      "code": "확인 입력 → 반환값\nchange_with_budget([2, 5], 9, 2) → None\nchange_with_budget([2, 5], 9, 3) → (3, [2, 2, 5])\nchange_with_budget([], 0, 0) → (0, [])\nchange_with_budget([4], 6, 5) → None",
+      "codeKind": "text",
+      "solution": {
+        "answer": "입력·반환 계약과 경계 조건을 만족하는 구현 한 가지입니다.",
+        "code": {
+          "kind": "python",
+          "source": "def restore_min_change(coins, amount):\n    infinity = float(\"inf\")\n    best = [infinity] * (amount + 1)\n    step = [None] * (amount + 1)\n    best[0] = 0\n    for value in range(1, amount + 1):\n        for coin in coins:\n            if coin <= value and best[value - coin] != infinity:\n                candidate = best[value - coin] + 1\n                if candidate < best[value]:\n                    best[value] = candidate\n                    step[value] = coin\n    if best[amount] == infinity:\n        return None\n    remaining = amount\n    chosen = []\n    while remaining > 0:\n        coin = step[remaining]\n        chosen.append(coin)\n        remaining = remaining - coin\n    return best[amount], chosen\n\ndef change_with_budget(coins, amount, budget):\n    result = restore_min_change(coins, amount)\n    if result is None or result[0] > budget:\n        return None\n    return result\n\nprint(change_with_budget([2, 5], 9, 2))\nprint(change_with_budget([2, 5], 9, 3))\nprint(change_with_budget([], 0, 0))\nprint(change_with_budget([4], 6, 5))",
+          "output": "None\n(3, [2, 2, 5])\n(0, [])\nNone\n"
+        }
+      },
+      "explanation": "같은 최소 조합 문제에 사용 개수 제한이라는 반환 조건을 연결합니다. None이 금액 불가능과 예산 초과 모두를 뜻한다는 계약을 명시합니다."
     }
   ]
 }

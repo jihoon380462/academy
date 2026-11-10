@@ -69,49 +69,77 @@
   ],
   "examples": [
     {
-      "skill": "도구 계약 완성",
-      "question": "구간 합 도구 명세에 빈 구간·음수·원본 보존이 빠졌습니다. 이 레슨의 두 구현을 비교할 수 있도록 이 세 조건과 유효한 경계를 적으세요.",
+      "exerciseType": "explain",
+      "skill": "원리 설명 · 같은 계약과 공정한 비교",
+      "question": "직접 합산과 누적 합을 선택할 때 정확성·입력 보존·오류 처리·전처리·반복 질의·출력 공간을 어떻게 나누어 비교할지 설명하세요. 실제 측정에서 한쪽 준비를 제외한 수치를 전체 속도라고 부르면 안 되는 이유도 적으세요.",
       "solution": {
-        "answer": "0 ≤ left ≤ right ≤ n인 반열린 구간을 받고 빈 구간 합은 0입니다. 음수·중복을 허용하며 원본은 변경하지 않습니다. 질문 순서대로 합계 목록을 반환합니다."
+        "answer": "같은 구간 계약과 독립 기준으로 정답·경계·오류·입력 보존부터 확인합니다. 전처리를 포함한 첫 실행과 고정 자료 재사용 질의를 구분하고 두 방식에 같은 측정 범위를 적용합니다. 누적 배열 공간과 공통 답 목록 공간을 따로 세며, 입력·질의 수·변경·환경·반복 결과를 기록합니다."
       },
-      "explanation": "같은 입력에서 같은 뜻의 결과를 요구해야 정확성과 성능을 비교할 수 있습니다."
+      "explanation": "한 번의 시간이나 특정 단순 연산 수를 모든 기기·규모의 속도 보장으로 바꾸지 않습니다."
     },
     {
-      "skill": "준비를 재사용하는 단위",
-      "question": "길이 n 자료에 q개 질문이 있는데 매 질문마다 누적 합 전체를 다시 만들었습니다. O(n+q) 주장이 왜 맞지 않으며 어디로 준비를 옮겨야 하나요?",
+      "exerciseType": "implement",
+      "skill": "기본 구현 · 직접 합산 도구",
+      "question": "direct_queries(values,queries)를 작성해 정수 목록의 각 [left,right) 합을 질문 순서대로 반환하세요. 질문마다 해당 원소를 직접 더하며 누적 배열을 만들지 않습니다. 0≤left≤right≤n이 아니면 ValueError, 빈 구간 합은 0, 빈 질문 목록은 []입니다. 두 입력은 바꾸지 마세요.",
+      "code": "values / queries → 반환값\n[] / [(0,0)] → [0]\n[2,-1,3] / [(0,3),(1,1),(1,3)] → [4,0,2]\n[7] / [] → []\n[1] / [(-1,1)] → ValueError",
+      "codeKind": "text",
       "solution": {
-        "answer": "준비 O(n)을 q번 반복해 O(nq)까지 듭니다. 같은 고정 데이터에 대한 질문 묶음 바깥에서 한 번 준비하고 q개 질의가 재사용하도록 해야 합니다."
-      },
-      "explanation": "준비 결과를 어느 범위에서 공유하는지가 실제 알고리즘의 일부입니다. 다른 데이터 버전 사이에 무조건 공유하면 정답이 틀립니다."
-    },
-    {
-      "skill": "공정한 측정 해석",
-      "question": "직접 합산은 입력 생성부터 재고, 누적 합은 이미 만든 P의 질의만 쟀습니다. 이 숫자로 한 번 실행하는 도구의 전체 속도를 비교해도 되나요?",
-      "solution": {
-        "answer": "안 됩니다. 입력 준비와 전처리 포함 범위가 다릅니다. 두 함수에 같은 준비 조건을 주고, 한 번 실행이라면 누적 합 준비도 포함해야 합니다. 이미 P를 재사용하는 질의 성능은 별도 조건으로 보고할 수 있습니다."
-      },
-      "explanation": "측정 결과를 버릴 필요는 없지만 무엇을 잰 값인지 정확히 이름 붙여야 합니다."
-    },
-    {
-      "skill": "경계 입력 독립 비교",
-      "question": "본문 두 함수를 [], [7], [2, -3, 2]의 유효한 빈·전체·부분 구간에서 sum 기준과 비교하고 원본 보존을 확인하세요.",
-      "solution": {
-        "answer": "각 사례에서 두 구현 모두 기준과 같고 원본도 보존되어 세 개의 True가 출력됩니다.",
+        "answer": "각 질문의 범위를 먼저 확인하고 그 범위만 합산합니다.",
         "code": {
           "kind": "python",
-          "source": "def check_range(size, left, right):\n    if not 0 <= left <= right <= size:\n        raise ValueError(\"invalid range\")\n\ndef direct_batch(values, queries):\n    answers = []\n    for left, right in queries:\n        check_range(len(values), left, right)\n        total = 0\n        for index in range(left, right):\n            total = total + values[index]\n        answers.append(total)\n    return answers\n\ndef build_prefix(values):\n    prefix = [0]\n    for value in values:\n        prefix.append(prefix[-1] + value)\n    return prefix\n\ndef prefix_batch(values, queries):\n    prefix = build_prefix(values)\n    answers = []\n    for left, right in queries:\n        check_range(len(values), left, right)\n        answers.append(prefix[right] - prefix[left])\n    return answers\n\ncases = [( [], [(0, 0)]), ([7], [(0, 1), (1, 1)]), ([2, -3, 2], [(0, 3), (1, 2), (0, 0)])]\nfor values, queries in cases:\n    before = list(values)\n    expected = [sum(values[left:right]) for left, right in queries]\n    print(direct_batch(values, queries) == expected, prefix_batch(values, queries) == expected, values == before)",
-          "output": "True True True\nTrue True True\nTrue True True\n"
+          "source": "def direct_queries(values, queries):\n    answers = []\n    for left, right in queries:\n        if not 0 <= left <= right <= len(values):\n            raise ValueError('invalid range')\n        total = 0\n        for index in range(left, right):\n            total += values[index]\n        answers.append(total)\n    return answers\n\nprint(direct_queries([], [(0, 0)]))\nprint(direct_queries([2, -1, 3], [(0, 3), (1, 1), (1, 3)]))\nprint(direct_queries([7], []))\ntry:\n    print(direct_queries([1], [(-1, 1)]))\nexcept ValueError:\n    print('ValueError')",
+          "output": "[0]\n[4, 0, 2]\n[]\nValueError\n"
         }
       },
-      "explanation": "작은 입력의 독립 기준은 경계·음수·중복을 점검하는 데 유용합니다. 이 검사만으로 모든 입력을 증명했다고 쓰지는 않습니다."
+      "explanation": "덧셈 수는 전체 질문 길이의 합입니다. 처리 변수는 일정 개수지만 반환할 q개 답의 목록 공간 O(q)는 따로 필요합니다."
     },
     {
-      "skill": "상황별 선택 보고",
-      "question": "A는 고정 자료에 긴 구간 질문을 많이 반복하고 메모리 여유가 있습니다. B는 큰 자료가 매번 바뀌고 짧은 구간 하나만 묻습니다. 후보와 확인할 측정 조건을 각각 적으세요.",
+      "exerciseType": "implement",
+      "skill": "직접 구현 · 묶음에 한 번 준비한 도구",
+      "question": "prepared_queries(values,queries)를 작성해 앞 문제와 같은 합계 목록·오류 계약을 지키세요. 이번에는 누적 배열을 함수 호출마다 한 번 만들고 같은 묶음의 모든 질문에서 재사용합니다. 음수·중복·빈 구간을 허용하고 두 입력은 바꾸지 않습니다. 다른 데이터의 오래된 누적값은 공유하지 마세요.",
+      "code": "values / queries → 반환값\n[] / [(0,0)] → [0]\n[2,-1,3] / [(0,3),(1,1),(1,3)] → [4,0,2]\n[7] / [] → []\n[1] / [(-1,1)] → ValueError",
+      "codeKind": "text",
       "solution": {
-        "answer": "A는 한 번 준비해 재사용하는 누적 합을, B는 직접 합산을 우선 후보로 검토할 수 있습니다. A는 준비 포함 첫 실행과 재사용 질의를 구분하고, B는 매 변경의 준비 비용까지 포함해 측정합니다. 둘 다 정확성과 실제 메모리 예산을 확인해야 합니다."
+        "answer": "준비한 데이터와 질의 묶음을 함수 한 번의 실행 단위로 고정합니다.",
+        "code": {
+          "kind": "python",
+          "source": "def prepared_queries(values, queries):\n    prefix = [0]\n    for value in values:\n        prefix.append(prefix[-1] + value)\n    answers = []\n    for left, right in queries:\n        if not 0 <= left <= right <= len(values):\n            raise ValueError('invalid range')\n        answers.append(prefix[right] - prefix[left])\n    return answers\n\nprint(prepared_queries([], [(0, 0)]))\nprint(prepared_queries([2, -1, 3], [(0, 3), (1, 1), (1, 3)]))\nprint(prepared_queries([7], []))\ntry:\n    print(prepared_queries([1], [(-1, 1)]))\nexcept ValueError:\n    print('ValueError')",
+          "output": "[0]\n[4, 0, 2]\n[]\nValueError\n"
+        }
       },
-      "explanation": "하나의 알고리즘이 모든 사용 패턴에서 최선이라는 결론보다, 질문 수·변경 빈도·메모리·측정 범위를 연결한 선택 근거가 중요합니다."
+      "explanation": "준비 O(n)과 질의 O(q)를 합치고 추가 P 공간 O(n), 공통 출력 O(q)를 나눕니다. q가 작을 때도 준비 비용이 자동으로 사라지는 것은 아닙니다."
+    },
+    {
+      "exerciseType": "implement",
+      "skill": "직접 구현 · 독립 기준과 입력 보존 검사",
+      "question": "check_tool(tool,values,queries)를 작성해 후보 함수가 독립적인 sum 기준의 답을 내고 두 입력도 바꾸지 않으면 True, 아니면 False를 반환하세요. 유효한 질문만 주며 후보는 정상 반환한다고 가정합니다. 후보에는 입력의 사본을 넘겨 검사 함수 호출자의 원본을 보호하세요. 단지 후보끼리 같은 답인지 비교하지 마세요.",
+      "code": "values=[1,2], queries=[(0,2)]에서 후보별 기대\n올바른 직접 합산 함수 → True\n올바른 누적 합 함수 → True\n무조건 [0]을 반환하는 함수 → False\n올바른 답을 내지만 values에 0을 추가하는 함수 → False",
+      "codeKind": "text",
+      "solution": {
+        "answer": "정답 기준과 입력 보존을 모두 확인하므로 같은 오답이나 부작용을 놓치지 않습니다.",
+        "code": {
+          "kind": "python",
+          "source": "def check_tool(tool, values, queries):\n    working_values = list(values)\n    working_queries = list(queries)\n    expected = [sum(values[left:right]) for left, right in queries]\n    actual = tool(working_values, working_queries)\n    return (actual == expected and working_values == values\n            and working_queries == queries)\n\ndef direct_tool(values, queries):\n    answers = []\n    for left, right in queries:\n        total = 0\n        for index in range(left, right):\n            total += values[index]\n        answers.append(total)\n    return answers\n\ndef prefix_tool(values, queries):\n    prefix = [0]\n    for value in values:\n        prefix.append(prefix[-1] + value)\n    return [prefix[right] - prefix[left] for left, right in queries]\n\ndef wrong_tool(values, queries):\n    return [0 for _ in queries]\n\ndef mutating_tool(values, queries):\n    answers = [sum(values[left:right]) for left, right in queries]\n    values.append(0)\n    return answers\n\nvalues = [1, 2]\nqueries = [(0, 2)]\nprint(check_tool(direct_tool, values, queries))\nprint(check_tool(prefix_tool, values, queries))\nprint(check_tool(wrong_tool, values, queries))\nprint(check_tool(mutating_tool, values, queries))",
+          "output": "True\nTrue\nFalse\nFalse\n"
+        }
+      },
+      "explanation": "입력은 정수 목록과 튜플 구간 목록이어서 바깥 목록 사본으로 검사용 상태를 분리할 수 있습니다. 후보가 오류를 내는 경우나 잘못된 구간의 오류 계약 검사는 별도로 추가할 수 있습니다."
+    },
+    {
+      "exerciseType": "implement",
+      "skill": "변형 구현 · 산술 작업량 보고 함수",
+      "question": "0 이상의 정수 size와 질문 목록을 받아 (직접 합산 덧셈 수,누적값 준비 덧셈 수,질의 뺄셈 수)를 반환하는 operation_counts(size,queries)를 작성하세요. 준비는 질문이 없어도 한 번 수행하는 모델입니다. 유효 범위 밖 질문이나 음수 size는 ValueError이며 queries는 바꾸지 않습니다. 실제 시간을 재거나 print만 하는 함수로 대신하지 마세요.",
+      "code": "size / queries → 반환값\n6 / [(0,6),(0,5),(1,6),(2,6)] → (20,6,4)\n3 / [] → (0,3,0)\n0 / [(0,0)] → (0,0,1)\n2 / [(1,3)] → ValueError",
+      "codeKind": "text",
+      "solution": {
+        "answer": "입력 데이터의 값과 무관하게 지정한 산술 횟수를 반환하는 작은 보고 함수를 만듭니다.",
+        "code": {
+          "kind": "python",
+          "source": "def operation_counts(size, queries):\n    if size < 0:\n        raise ValueError('size must be nonnegative')\n    direct = 0\n    differences = 0\n    for left, right in queries:\n        if not 0 <= left <= right <= size:\n            raise ValueError('invalid range')\n        direct += right - left\n        differences += 1\n    return direct, size, differences\n\nprint(operation_counts(6, [(0, 6), (0, 5), (1, 6), (2, 6)]))\nprint(operation_counts(3, []))\nprint(operation_counts(0, [(0, 0)]))\ntry:\n    print(operation_counts(2, [(1, 3)]))\nexcept ValueError:\n    print('ValueError')",
+          "output": "(20, 6, 4)\n(0, 3, 0)\n(0, 0, 1)\nValueError\n"
+        }
+      },
+      "explanation": "이 계수에서 검증·할당·함수 호출·출력 비용은 제외했습니다. 빈 구간도 누적값 차 한 번으로 답하는 모델입니다. 이런 고정 작업량과 변동하는 실제 시간·메모리를 구분해 선택 보고서에 씁니다."
     }
   ]
 }
