@@ -369,3 +369,11 @@
 - `python3 build-algorithms.py --check-code`로 CPython 3.12.14 / Linux의 311블록 정확 stdout·오류·종료 검사를 통과했고 생성·`--check` 바이트 일치·JavaScript 구문·Markdown 상대 링크 41개·diff 검사도 통과했다. 이후 변경은 표시 정의와 조사뿐이며 Python payload는 계속 동일함을 확인했다. 기록 이동/수학 전체 suite는 재실행하지 않았다.
 - 로컬 HTTP + Playwright / Chromium 156.0.8078.79에서 변경 제목 19레슨·과목 홈·9챕터 목차의 29경로 × 1440/390/320px × 밝음/블랙 글래스 = 174조합을 통과했다. 제목·목차·사이드바·이전/다음·실제 명칭/본문·대표 문제/답 펼침과 문서 가로 넘침 없음을 확인했다. ch07/ch08 복습 PC/모바일 4상태와 최종 LIFO/FIFO/ADT/BST 정의 4레슨의 모바일 두 테마 8조합도 통과했다. 페이지 오류는 0개다.
 - `previews/algorithm-names-dfs-bfs-pc.png`·`algorithm-names-sort-mobile.png`·`algorithm-names-dp-mobile.png`를 직접 검토했다. 긴 복합 제목은 모바일에서 줄바꿈되며 영문·한글이 잘리지 않는다. 실제 휴대전화·모든 운영체제 브라우저를 검증한 것은 아니다. PATCH 종류의 표시 수정을 미확정 최초 목표 `0.1.0`에 포함해 VERSION을 유지하고 태그·Release는 만들지 않는다.
+
+## 명칭 병기 병합·Pages·공개 확인 (2026-11-11 KST)
+
+- [PR #21](https://github.com/jihoon380462/academy/pull/21)을 main에 병합했다. 승인한 head는 `acf735e5bafe15d50a37cb62857b0039f810010a`, 병합 SHA는 `f732cc3d97f202c77778d78e90c7765cc99aa690`다. GitHub의 merged 결과와 같은 main SHA를 확인했다. 구현 소스 `4570ba5` 이후 PR 내 커밋은 로컬 검증 기록이다.
+- 해당 SHA의 [Pages 실행 42853207246](https://github.com/jihoon380462/academy/actions/runs/42853207246)은 completed/success이며 확인한 updated_at은 `2026-11-10T16:20:02Z`다. 공개 index.html·algorithms-content.js·algorithms-ui.js·preview.html·app.js·subjects.js 6개가 병합 소스와 바이트 동일했다.
+- 실제 공개 사이트에서 Chromium 156.0.8078.79로 대표 l018/l025/l026/l028/l030/l034/l038/l039/l047의 9레슨 × 1440/390px × 밝음/블랙 글래스 = 36조합·4그룹을 통과했다. 전체 공개 콘텐츠 객체가 9챕터·54레슨·270예제·90복습의 병합 원본과 완전히 같고 홈 54개 제목/링크도 일치했다. 이 검사는 로컬 174조합의 전체 재실행이 아닌 공개 집중 확인이다.
+- 제목·사이드바·이전다음·본문에 실제 등장하는 명칭/전체 문단·문제/실제 답 펼침·접힘/펼침의 문서 넘침 없음, DFS→BFS→DFS 이동을 확인했다. 초기 임시 검사는 본문이 자기 명칭을 반드시 언급한다는 과한 기대를 실제 본문 명칭 기준으로 정정한 뒤 재실행했다. 소스·배포 오류는 아니었고 제품 코드는 바꾸지 않았다.
+- 읽음/재로드·기존 읽음·과거 점수·수학/Python/테마 원문 보존과 새 저장 키 없음을 확인했다. 페이지 오류·자체 요청 실패·HTTP 오류 모두 0개였다. TLS 검증과 환경 프록시를 사용했고 기존 CA 4개를 보존했다. 실제 휴대전화·모든 운영체제 브라우저를 검증한 것은 아니다. 이번 후속 문서는 공개 상태·근거만 갱신하며 앱·콘텐츠·자산·캐시·VERSION은 위 검증 소스와 동일하다. 목표 `0.1.0` 유지, 태그·Release는 만들지 않는다.
