@@ -1,0 +1,16 @@
+{
+  "id": "algorithms-ch04",
+  "slug": "ch04",
+  "number": 4,
+  "title": "키로 찾는 집합과 맵",
+  "description": "집합과 키-값 관계를 구분하고, 해시·충돌·크기 조정·키의 동일성을 근거로 중복 제거와 집계를 설계합니다.",
+  "prerequisite": "챕터 2·3의 비용 모델과 자료구조 연산. Python의 리스트·튜플·딕셔너리·집합 기초를 사용합니다.",
+  "runtime": "Python 3",
+  "lessonFiles": ["lesson-01.json", "lesson-02.json", "lesson-03.json", "lesson-04.json", "lesson-05.json", "lesson-06.json"],
+  "references": [
+    {"title": "Python 3.12 표준 타입 · 집합과 매핑", "url": "https://docs.python.org/3.12/library/stdtypes.html"},
+    {"title": "Python 3.12 데이터 모델 · 해시와 동일성", "url": "https://docs.python.org/3.12/reference/datamodel.html#object.__hash__"}
+  ],
+  "referenceCheckedAt": "2026-11-10 KST",
+  "validationEnvironment": "CPython 3.12.14 / Linux"
+}

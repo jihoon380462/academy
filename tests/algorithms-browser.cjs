@@ -9,12 +9,13 @@ try { playwright = require('playwright'); }
 catch { playwright = require('/opt/codex/runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright'); }
 
 const BASE = (process.env.ACADEMY_BASE_URL || 'http://127.0.0.1:8000').replace(/\/$/, '');
-const ALGO_KEY = 'academy-algorithms-ch03-v1';
+const ALGO_KEY = 'academy-algorithms-ch05-v1';
 const MATH_KEY = 'understand-math-grade1-v1';
 const THEME_KEY = 'academy-theme-v1';
-const chapters = Array.from({ length: 3 }, (_, index) => ({
+const chapterSizes = [6, 6, 6, 6, 7];
+const chapters = chapterSizes.map((size, index) => ({
   slug: 'ch' + String(index + 1).padStart(2, '0'),
-  ids: Array.from({ length: 6 }, (_, offset) => 'algorithms-l' + String(index * 6 + offset + 1).padStart(3, '0'))
+  ids: Array.from({ length: size }, (_, offset) => 'algorithms-l' + String(chapterSizes.slice(0, index).reduce((sum, count) => sum + count, 0) + offset + 1).padStart(3, '0'))
 }));
 const ids = chapters.flatMap(chapter => chapter.ids);
 const chapterOf = id => chapters.find(chapter => chapter.ids.includes(id));
@@ -59,23 +60,23 @@ async function expectHash(page, hash) {
   assert.equal(await page.locator('.subject-card').count(), 22);
   assert.equal(await page.locator('.subject-card.available').count(), 3);
   const catalogTotals = await page.locator('.catalog-totals b').allTextContents();
-  assert.deepEqual(catalogTotals, ['22', '3', '94']);
+  assert.deepEqual(catalogTotals, ['22', '3', '107']);
   await page.locator('.subject-card[href="#/subjects/algorithms"]').click();
   await expectHash(page, '#/subjects/algorithms');
   const actualCourses = await page.evaluate(() => window.ALGORITHMS_COURSES.map(course => ({ slug: course.slug, ids: course.lessons.map(lesson => lesson.id) })));
   assert.deepEqual(actualCourses, chapters);
-  assert.equal(await page.locator('.py-home-chapter').count(), 3);
+  assert.equal(await page.locator('.py-home-chapter').count(), 5);
   for (const [index, chapter] of chapters.entries()) {
     const card = page.locator('.py-home-chapter').nth(index);
     assert.equal(await card.evaluate(el => el.open), false);
     await card.locator('summary').click();
     assert.equal(await card.evaluate(el => el.open), true);
-    assert.equal(await card.locator('.lesson-row').count(), 6);
+    assert.equal(await card.locator('.lesson-row').count(), chapter.ids.length);
     assert.deepEqual(await card.locator('.lesson-row').evaluateAll(links => links.map(link => link.getAttribute('href'))), chapter.ids.map(lessonRoute));
     await card.locator('summary').click();
     assert.equal(await card.evaluate(el => el.open), false);
   }
-  assert.match(await page.locator('#main').innerText(), /챕터 4~9 준비 중/);
+  assert.match(await page.locator('#main').innerText(), /챕터 6~9 준비 중/);
   groups.push('catalog counts, subject entry and collapsed chapter toggle');
 
   let combinations = 0;
@@ -119,6 +120,12 @@ async function expectHash(page, hash) {
     }
     await page.locator('.lesson-nav a').last().click();
     await expectHash(page, chapterRoute(chapter) + '/review');
+    const nextChapter = chapters[chapters.indexOf(chapter) + 1];
+    if (nextChapter) {
+      await page.locator('#main .actions a[href="' + chapterRoute(nextChapter) + '"]').click();
+      await expectHash(page, chapterRoute(nextChapter));
+      await visit(page, chapterRoute(chapter) + '/review');
+    } else assert.equal(await page.locator('#main a[href="#/algorithms/ch06"]').count(), 0);
     await page.locator('.py-solution').first().locator('summary').click();
     const related = page.locator('.py-related a').first();
     const relatedHash = await related.getAttribute('href');
@@ -126,7 +133,7 @@ async function expectHash(page, hash) {
     await related.click();
     await expectHash(page, relatedHash);
   }
-  for (const route of ['#/algorithms/ch04', '#/algorithms/ch02/lesson/python-l001', '#/algorithms/ch01/lesson/algorithms-l007', '#/algorithms/ch02/lesson/algorithms-l013', '#/algorithms/ch03/lesson/algorithms-l019', '#/algorithms/ch03/review/extra']) {
+  for (const route of ['#/algorithms/ch06', '#/algorithms/ch02/lesson/python-l001', '#/algorithms/ch01/lesson/algorithms-l007', '#/algorithms/ch03/lesson/algorithms-l019', '#/algorithms/ch04/lesson/algorithms-l025', '#/algorithms/ch05/lesson/algorithms-l024', '#/algorithms/ch05/lesson/algorithms-l032', '#/algorithms/ch05/review/extra']) {
     await page.goto(BASE + '/' + route);
     await page.locator('#main h1').waitFor();
     assert.match(await page.locator('#main h1').innerText(), /찾는 페이지/);
@@ -137,12 +144,15 @@ async function expectHash(page, hash) {
   const seeded = await page.evaluate(({ mathKey, themeKey }) => {
     const records = {};
     const mathId = window.CURRICULUM.lessons[0].id;
-    records[mathKey] = JSON.stringify({ completed: [mathId], scores: { [mathId]: { latest: 3, best: 5, date: '2026-10-01T10:00:00.000Z' }, review: { latest: 8, best: 10, date: '2026-10-02T10:00:00.000Z' } }, last: mathId, visitedAt: 1000 });
+    records[mathKey] = JSON.stringify({ completed: window.CURRICULUM.lessons.filter(lesson => lesson.unit === 'factors').map(lesson => lesson.id), scores: { [mathId]: { latest: 3, best: 5, date: '2026-10-01T10:00:00.000Z' }, review: { latest: 8, best: 10, date: '2026-10-02T10:00:00.000Z' } }, last: mathId, visitedAt: 1000 });
     for (const [index, course] of window.PYTHON_COURSES.entries()) {
       const id = course.lessons[0].id;
       records['academy-python-' + course.slug + '-v1'] = JSON.stringify({ completed: [id], scores: { [id]: { latest: 2, best: 4, date: '2026-10-01T10:00:00.000Z' } }, last: id, visitedAt: 2000 + index });
     }
-    records['academy-algorithms-ch01-v1'] = '{ "completed": ["algorithms-l002"], "scores": {}, "last": "algorithms-l002", "visitedAt": 3000 }';
+    for (const [index, course] of window.ALGORITHMS_COURSES.slice(0, 3).entries()) {
+      const id = course.lessons[1].id;
+      records['academy-algorithms-' + course.slug + '-v1'] = JSON.stringify({ completed: [id], scores: { [id]: { latest: 2, best: 4, date: '2026-10-01T10:00:00.000Z' } }, last: id, visitedAt: 3000 + index }, null, 1);
+    }
     records[themeKey] = 'ink';
     records['algorithms-test-unrelated'] = '보존할 값 <&>';
     localStorage.clear();
@@ -151,7 +161,7 @@ async function expectHash(page, hash) {
   }, { mathKey: MATH_KEY, themeKey: THEME_KEY });
   await page.reload();
   await page.locator('#main h1').waitFor();
-  for (const chapter of chapters.slice(1)) {
+  for (const chapter of chapters.slice(3)) {
     const before = await values(page);
     await visit(page, lessonRoute(chapter.ids[0]));
     await page.locator('[data-algo-complete]').click();
@@ -171,16 +181,16 @@ async function expectHash(page, hash) {
   await visit(page, lessonRoute(ids.at(-1)));
   await visit(page, '#/progress');
   assert.equal(await page.locator('.learning-resume a').getAttribute('href'), lessonRoute(ids.at(-1)));
-  assert.equal(await page.locator('.algo-progress').count(), 3);
-  for (const chapter of chapters.slice(1)) assert.equal(await page.locator('.algo-progress a[href="' + lessonRoute(chapter.ids[0]) + '"]').count() > 0, true);
+  assert.equal(await page.locator('.algo-progress').count(), 5);
+  for (const chapter of chapters.slice(3)) assert.equal(await page.locator('.algo-progress a[href="' + lessonRoute(chapter.ids[0]) + '"]').count() > 0, true);
   await visit(page, '#/');
   assert.equal(await page.locator('.catalog-footer a').getAttribute('href'), lessonRoute(ids.at(-1)));
   const current = await values(page);
   for (const [key, value] of Object.entries(seeded)) assert.equal(current[key], value, key + ' preserved after progress and resume');
-  for (const chapter of chapters.slice(1)) assert.deepEqual(JSON.parse(current['academy-algorithms-' + chapter.slug + '-v1']).scores, {});
+  for (const chapter of chapters.slice(3)) assert.deepEqual(JSON.parse(current['academy-algorithms-' + chapter.slug + '-v1']).scores, {});
   groups.push('read/reload, latest lesson, independent store and existing raw record preservation');
 
-  await visit(page, lessonRoute(chapters[2].ids[0]));
+  await visit(page, lessonRoute(chapters.at(-1).ids[0]));
   await page.evaluate(() => {
     window.__algorithmWrites = 0;
     const original = Storage.prototype.setItem;
@@ -203,6 +213,8 @@ async function expectHash(page, hash) {
 
   await visit(page, '#/lesson/prime');
   await expectHash(page, '#/math/middle-1/lesson/prime');
+  assert.equal(await page.locator('.lesson-sidebar [data-unit-read="factors"]').evaluate(badge => badge.hidden), false);
+  assert.equal(await page.locator('a.math-contents-back').getAttribute('href'), '#/math/middle-1?unit=factors');
   await page.locator('[data-quiz="prime"]').click();
   await page.locator('#quiz[open]').waitFor();
   assert.equal(await page.locator('#quiz .quiz-option').count(), 4);
@@ -210,7 +222,11 @@ async function expectHash(page, hash) {
   await page.locator('#quiz [data-action="check"]').click();
   assert.ok((await page.locator('#quiz .quiz-feedback').innerText()).length > 10);
   await page.locator('#quiz .quiz-close').click();
-  groups.push('legacy math route and existing multiple choice feedback');
+  await page.locator('a.math-contents-back').click();
+  await expectHash(page, '#/math/middle-1?unit=factors');
+  assert.equal(await page.locator('#unit-factors').evaluate(unit => unit.open), true);
+  assert.equal(await page.locator('#unit-factors [data-unit-read="factors"]').evaluate(badge => badge.hidden), false);
+  groups.push('legacy math route, read aggregate, unit contents return and existing multiple choice feedback');
 
   for (const [query, route, count] of [
     ['lesson=algorithms-l005', '/algorithms/ch01/lesson/algorithms-l005', 5],
@@ -219,6 +235,11 @@ async function expectHash(page, hash) {
     ['page=algorithms-review&chapter=ch02', '/algorithms/ch02/review', 10],
     ['lesson=algorithms-l017', '/algorithms/ch03/lesson/algorithms-l017', 5],
     ['page=algorithms-review&chapter=ch03', '/algorithms/ch03/review', 10],
+    ['lesson=algorithms-l024', '/algorithms/ch04/lesson/algorithms-l024', 5],
+    ['page=algorithms-review&chapter=ch04', '/algorithms/ch04/review', 10],
+    ['lesson=algorithms-l030', '/algorithms/ch05/lesson/algorithms-l030', 5],
+    ['lesson=algorithms-l031', '/algorithms/ch05/lesson/algorithms-l031', 5],
+    ['page=algorithms-review&chapter=ch05', '/algorithms/ch05/review', 10],
     ['lesson=python-l001', '/python/ch01/lesson/python-l001', 5],
     ['page=python-review&chapter=ch09', '/python/ch09/review', 10]
   ]) {
@@ -230,20 +251,25 @@ async function expectHash(page, hash) {
       assert.equal(await frame.locator('.py-problem').count(), count, query + ' ' + id);
       assert.equal(await frame.evaluate(() => location.hash), '#' + route);
       await noOverflow(frame, query + ' ' + id + ' preview');
+      if (query === 'lesson=algorithms-l030' || query === 'lesson=algorithms-l031') {
+        const order = query.endsWith('030') ? 6 : 7;
+        assert.match(await frame.locator('.lesson-heading .eyebrow').innerText(), new RegExp('LESSON 0' + order + ' / 7'));
+        assert.equal(await frame.locator('[data-algo-lesson]').count(), 7);
+      }
     }
   }
   groups.push('new algorithm and existing Python PC/mobile preview links');
 
-  const previewDir = path.join(__dirname, '..', 'previews');
+  const previewDir = process.env.ACADEMY_SCREENSHOT_DIR || '/tmp/academy-algorithms-ch04-ch05/previews';
   await fs.mkdir(previewDir, { recursive: true });
   const screenshots = [];
-  for (const chapter of chapters.slice(1)) {
+  for (const chapter of chapters.slice(3)) {
     for (const [width, device] of [[1440, 'pc'], [390, 'mobile']]) {
       await page.setViewportSize({ width, height: 1000 });
       await visit(page, lessonRoute(chapter.ids[4]));
       const file = 'algorithms-' + chapter.slug + '-' + device + '.jpg';
       await page.screenshot({ path: path.join(previewDir, file), type: 'jpeg', quality: 85, fullPage: false });
-      screenshots.push('previews/' + file);
+      screenshots.push(path.join(previewDir, file));
     }
   }
   assert.deepEqual(errors, []);
