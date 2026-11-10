@@ -42,7 +42,7 @@
 | 21 | GitHub | 준비 중 |
 | 22 | vim | 준비 중 |
 
-현재 소스에는 수학·파이썬·알고리즘·자료구조의 **3개 분야 · 총 107개 레슨**이 구현되어 있습니다. 수학 30레슨·파이썬 46레슨·알고리즘 31레슨이며, 나머지 19개 분야는 준비 중입니다. 알고리즘 챕터 1은 PR #10, 챕터 2·3은 [PR #11](https://github.com/jihoon380462/academy/pull/11)로 main에 병합했고, 병합 SHA `4c85004`의 [Pages 배포](https://github.com/jihoon380462/academy/actions/runs/42775841237)가 성공했고 공개 브라우저에서 새 챕터와 기록 이동을 확인했습니다. 실제 확인 범위와 소스는 검증 기록으로 구분합니다. 챕터 4·5의 13레슨은 이번 작업의 추가이며 병합·배포·공개 확인은 별도 기록합니다. 파이썬 기초와 파이썬 실전, 터미널·Git과 GitHub 등은 각각 별도의 분야로 구분합니다. 실제 배포·화면 검증 기록은 [verification.md](verification.md)를 확인합니다.
+현재 소스에는 수학·파이썬·알고리즘·자료구조의 **3개 분야 · 총 107개 레슨**이 구현되어 있습니다. 수학 30레슨·파이썬 46레슨·알고리즘 31레슨이며, 나머지 19개 분야는 준비 중입니다. 알고리즘 챕터 1은 PR #10, 챕터 2·3은 [PR #11](https://github.com/jihoon380462/academy/pull/11)로 main에 병합했고, 병합 SHA `4c85004`의 [Pages 배포](https://github.com/jihoon380462/academy/actions/runs/42775841237)가 성공했고 공개 브라우저에서 새 챕터와 기록 이동을 확인했습니다. 실제 확인 범위와 소스는 검증 기록으로 구분합니다. 챕터 4·5도 [PR #15](https://github.com/jihoon380462/academy/pull/15)로 main에 병합했고 SHA `91e4e82`의 [Pages 배포](https://github.com/jihoon380462/academy/actions/runs/42835323465)와 공개 브라우저 확인을 완료했습니다. 파이썬 기초와 파이썬 실전, 터미널·Git과 GitHub 등은 각각 별도의 분야로 구분합니다. 실제 배포·화면 검증 기록은 [verification.md](verification.md)를 확인합니다.
 
 ## 수학 과정 구성
 
