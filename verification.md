@@ -226,3 +226,11 @@
 - 로컬 HTTP + Playwright/Chromium의 `node tests/progress-transfer-browser.cjs` 9개 그룹 통과, 페이지 JavaScript 오류 0개. 별도 PC·모바일 브라우저 컨텍스트의 실제 JSON 다운로드/선택과 복사 코드 가져오기, 기존 읽음·점수·최근 레슨 보존, 테마 해제/선택, 미리보기 무쓰기·취소·수정 무효화·잘못된 입력, 같은 탭 메모리 반영·새로고침, 다른 탭의 학습 중 입력·초점 유지, 확정 직전 최신 기록 재읽기, 중간 quota 실패 후 원문·화면 복구를 확인했다.
 - 1440px·390px·320px의 밝은 화면/블랙 글래스에서 긴 코드와 미리보기를 포함해 가로 넘침이 없었고, 390px에서 7개 테마를 확인했다. 명시적 입력 라벨·상태 안내·키보드 미리보기/취소, 기존 수학 URL의 정규화와 객관식 퀴즈도 통과했다. PC와 모바일 화면 캡처를 직접 검토했다. 실제 휴대전화·iOS Safari·Firefox까지 검증한 것은 아니다.
 - 변경된 JavaScript 구문 검사와 `git diff --check`를 통과했다. 수학·파이썬 콘텐츠와 기존 ID·URL·저장 키는 변경하지 않았다. 기존 공개 콘텐츠의 529개 Python 예제 실행 검사를 이번 UI 작업에서 다시 수행한 것으로 보고하지 않는다. README·AGENTS·START-HERE·CHANGELOG에 사용법·병합 규칙·실제 상태를 반영했다. 최초 미확정 목표 `0.1.0`의 MINOR 종류 추가로 VERSION은 유지하며 릴리스 태그·Release는 만들지 않는다.
+
+## 학습 기록 이동 병합·배포·공개 확인 (2026-11-10 KST)
+
+- [PR #8](https://github.com/jihoon380462/academy/pull/8)을 main에 병합했다. 병합 SHA는 `875562edd9b080057b71ad8a063320c2d151c4d0`이며 로컬 main도 같은 SHA와 깨끗한 작업 트리임을 확인했다.
+- 해당 SHA의 [Pages 실행 42742084991](https://github.com/jihoon380462/academy/actions/runs/42742084991)은 completed/success이며 build·report-build-status·deploy가 모두 성공했다. deploy 완료 시각은 2026-11-10 11:24:40 KST(02:24:40 UTC)다.
+- [공개 사이트](https://jihoon380462.github.io/academy/#/settings)의 index.html·progress-transfer.js·transfer-ui.js·app.js·theme.js·settings.css 6개 파일이 병합 소스와 바이트 단위로 일치했다.
+- 공개 주소에서 같은 Playwright/Chromium 156.0.8078.79 브라우저 검증 9개 그룹을 다시 실행해 모두 통과했다. 별도 PC·모바일 컨텍스트의 파일 다운로드·선택·코드 가져오기, 진도·점수 병합과 테마 선택, 미리보기 무쓰기·입력 무효화·다른 탭 반영·확정 직전 재읽기·저장 실패 복구, 3개 폭·7개 테마·입력 라벨·상태 안내·키보드 미리보기/취소·기존 수학 퀴즈를 확인했고 페이지 JavaScript 오류는 0개였다. 실제 휴대전화의 운영체제별 브라우저를 시험한 결과로 해석하지 않는다.
+- 이 공개 확인 이후의 문서 최신화는 Markdown만 변경하며 앱 코드·테스트·콘텐츠·VERSION·자산 캐시를 바꾸지 않는다. 목표 0.1.0은 계속 미확정이며 태그·Release는 생성하지 않았다.
