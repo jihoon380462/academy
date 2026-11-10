@@ -4,7 +4,7 @@
   "number": 7,
   "title": "관계를 그래프로 다루기",
   "description": "방향·가중치·도달 관계를 명세하고, 방문 관리·거리 층·의존 순서·거리 갱신의 조건으로 그래프 탐색을 검증합니다.",
-  "prerequisite": "챕터 3~6의 스택·큐·집합·맵·힙, 함수와 작은 재귀를 사용합니다.",
+  "prerequisite": "챕터 3~6의 스택·큐·집합·맵·힙, 함수와 작은 Recursion(재귀)을 사용합니다.",
   "runtime": "Python 3",
   "lessonFiles": [
     "lesson-01.json",

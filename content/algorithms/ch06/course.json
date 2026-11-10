@@ -4,7 +4,7 @@
   "number": 6,
   "title": "트리와 우선순위",
   "description": "계층과 순회의 의미를 정하고, 트리 높이·검색 비용·힙의 부분 순서를 근거로 우선순위와 상위 항목을 처리합니다.",
-  "prerequisite": "챕터 2~5의 시간·공간, 선형 구조와 정렬·검색. 함수와 재귀의 기초를 사용합니다.",
+  "prerequisite": "챕터 2~5의 시간·공간, 선형 구조와 정렬·검색. 함수와 Recursion(재귀)의 기초를 사용합니다.",
   "runtime": "Python 3",
   "lessonFiles": [
     "lesson-01.json",
