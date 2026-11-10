@@ -42,7 +42,7 @@
       "title": "bisect는 위치를 찾고 insort는 실제로 넣습니다",
       "body": [
         "Python bisect_left와 bisect_right는 같은 왼쪽·오른쪽 삽입 경계를 제공합니다. bisect는 순서를 위한 < 비교를 사용하며, 함수 자체가 ==로 존재 여부를 확인하는 검색 함수는 아닙니다. 여기처럼 정수 순서를 사용한다면 경계를 받은 뒤 범위와 ==를 따로 검사해 존재 여부를 판단할 수 있습니다.",
-        "insort_left는 경계를 찾은 뒤 list.insert로 원소를 넣습니다. 경계 검색이 O(log n)이어도 배열 뒤쪽 참조를 밀어야 하는 삽입은 최악 O(n)이므로 전체 삽입을 O(log n)이라고 할 수 없습니다. 이진 탐색으로 위치를 빨리 아는 것과 실제 공간을 만드는 것은 다른 작업입니다."
+        "insort_left는 경계를 찾은 뒤 list.insert로 원소를 넣습니다. 경계 검색이 O(log n)이어도 배열 뒤쪽 참조를 밀어야 하는 삽입은 최악 O(n)이므로 전체 삽입을 O(log n)이라고 할 수 없습니다. Binary Search(이진 탐색)로 위치를 빨리 아는 것과 실제 공간을 만드는 것은 다른 작업입니다."
       ],
       "code": {
         "kind": "python",
@@ -88,7 +88,7 @@
     {
       "exerciseType": "implement",
       "skill": "기본 구현 · 왼쪽 삽입 경계",
-      "question": "lower_bound(values, target)를 직접 작성하세요. 비감소 정수 목록에서 처음으로 target 이상인 위치를 반환하고 없으면 len(values)을 반환합니다. 빈 입력은 0이며 원본을 바꾸지 않습니다. 반복 이진 탐색으로 구현하고 bisect는 쓰지 마세요.",
+      "question": "lower_bound(values, target)를 직접 작성하세요. 비감소 정수 목록에서 처음으로 target 이상인 위치를 반환하고 없으면 len(values)을 반환합니다. 빈 입력은 0이며 원본을 바꾸지 않습니다. 반복 Binary Search(이진 탐색)로 구현하고 bisect는 쓰지 마세요.",
       "codeKind": "text",
       "code": "확인 사례\nlower_bound([1,2,2,5],2) → 1\nlower_bound([1,2,2,5],7) → 4\nlower_bound([],2) → 0",
       "solution": {
@@ -104,7 +104,7 @@
     {
       "exerciseType": "implement",
       "skill": "구간 반환 · 중복 양끝",
-      "question": "equal_bounds(values, target)를 직접 작성하세요. 비감소 정수 목록에서 (첫 목표 이상 위치, 첫 목표 초과 위치)를 반환합니다. 목표가 없으면 두 경계가 같고, 빈 입력은 (0,0)입니다. 원본 보존·bisect 금지이며 양쪽 경계를 이진 탐색으로 구하세요.",
+      "question": "equal_bounds(values, target)를 직접 작성하세요. 비감소 정수 목록에서 (첫 목표 이상 위치, 첫 목표 초과 위치)를 반환합니다. 목표가 없으면 두 경계가 같고, 빈 입력은 (0,0)입니다. 원본 보존·bisect 금지이며 양쪽 경계를 Binary Search(이진 탐색)로 구하세요.",
       "codeKind": "text",
       "code": "확인 사례\nequal_bounds([1,2,2,2,5],2) → (1,4)\nequal_bounds([1,2,5],3) → (2,2)\nequal_bounds([],3) → (0,0)",
       "solution": {
@@ -120,7 +120,7 @@
     {
       "exerciseType": "implement",
       "skill": "조건 범위 · 값 사이 원소 수",
-      "question": "count_between(values, low, high)를 직접 작성하세요. 비감소 정수 목록에서 low 이상 high 이하인 원소 개수를 중복 포함해 반환합니다. low>high이면 ValueError, 빈 입력은 0입니다. 원본을 보존하고 전체 순회·슬라이스·bisect 없이 두 이진 탐색 경계로 계산하세요.",
+      "question": "count_between(values, low, high)를 직접 작성하세요. 비감소 정수 목록에서 low 이상 high 이하인 원소 개수를 중복 포함해 반환합니다. low>high이면 ValueError, 빈 입력은 0입니다. 원본을 보존하고 전체 순회·슬라이스·bisect 없이 두 Binary Search(이진 탐색) 경계로 계산하세요.",
       "codeKind": "text",
       "code": "확인 사례\ncount_between([1,2,2,5,8],2,5) → 3\ncount_between([1,8],3,6) → 0\ncount_between([],0,1) → 0\ncount_between([1],2,1) → ValueError",
       "solution": {
@@ -136,7 +136,7 @@
     {
       "exerciseType": "implement",
       "skill": "변경 결과 · 지정 쪽으로 삽입",
-      "question": "insert_sorted(values, value, side)를 직접 작성하세요. 비감소 정수 목록을 보존하고 (새 정렬 목록, 삽입 인덱스)를 반환합니다. side가 left면 기존 같은 값 앞, right면 뒤에 삽입하고 다른 문자열이면 ValueError입니다. 경계는 직접 이진 탐색으로 구하고 목록 복사·insert 사용은 허용합니다.",
+      "question": "insert_sorted(values, value, side)를 직접 작성하세요. 비감소 정수 목록을 보존하고 (새 정렬 목록, 삽입 인덱스)를 반환합니다. side가 left면 기존 같은 값 앞, right면 뒤에 삽입하고 다른 문자열이면 ValueError입니다. 경계는 직접 Binary Search(이진 탐색)로 구하고 목록 복사·insert 사용은 허용합니다.",
       "codeKind": "text",
       "code": "확인 사례\ninsert_sorted([1,2,2,5],2,\"left\") → ([1,2,2,2,5],1)\ninsert_sorted([1,2,2,5],2,\"right\") → ([1,2,2,2,5],3)\ninsert_sorted([],4,\"left\") → ([4],0)\ninsert_sorted([1],2,\"middle\") → ValueError",
       "solution": {

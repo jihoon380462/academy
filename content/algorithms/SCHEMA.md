@@ -35,6 +35,8 @@ node --check algorithms-content.js
 
 ## 레슨과 문항
 
+알고리즘과 기법 이름은 표시 필드에서 `영어(한글)`로 적는다. 대표 표기는 `DFS(깊이 우선 탐색)`, `BFS(너비 우선 탐색)`, `DP(동적 계획법)`, `BST(이진 탐색 트리)`, `Binary Search(이진 탐색)`다. 제목과 교육과정 목차의 표시 제목을 함께 맞추며 ID·파일명·실행 코드·기대 출력은 그대로 둔다. 복습 `skill`의 검증용 접두어는 기존 분류 계약을 유지하고, 질문과 풀이에서 실제 명칭을 소개한다. 단순 합계 누적과 구간 질의용 `Prefix Sum(누적 합)`처럼 서로 다른 뜻을 기계적으로 같은 알고리즘으로 바꾸지 않는다.
+
 레슨은 `id`, `order`, `title`, `subtitle`, 양의 정수 `minutes`, `goal`, `intro`, `sections`, `worked`, `misconception`, `keypoints`, `examples`를 가진다. ID·제목·순서는 과목 문서의 해당 챕터와 일치해야 한다.
 
 - `sections`: 3개 이상의 개념 설명. 각 항목은 `title`, 비어 있지 않은 문단 문자열 배열 `body`, 선택적 `code`를 가진다. 먼저 언어 중립 절차나 작은 입력의 상태를 설명하고 필요한 Python 구현을 연결한다.
