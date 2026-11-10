@@ -1,0 +1,29 @@
+{
+  "id": "algorithms-ch01",
+  "slug": "ch01",
+  "number": 1,
+  "title": "문제를 절차로 바꾸기",
+  "description": "입력과 출력의 약속을 세우고, 작은 사례·반례·반복 불변식·종료 조건으로 절차가 올바른지 점검합니다.",
+  "prerequisite": "변수·조건·반복·함수·리스트의 기초. 필요한 개념만 복습해도 괜찮아요.",
+  "runtime": "Python 3",
+  "lessonFiles": [
+    "lesson-01.json",
+    "lesson-02.json",
+    "lesson-03.json",
+    "lesson-04.json",
+    "lesson-05.json",
+    "lesson-06.json"
+  ],
+  "references": [
+    {
+      "title": "Python 3.12 튜토리얼 · 제어 흐름과 함수",
+      "url": "https://docs.python.org/3.12/tutorial/controlflow.html"
+    },
+    {
+      "title": "Python 3.12 튜토리얼 · 자료구조",
+      "url": "https://docs.python.org/3.12/tutorial/datastructures.html"
+    }
+  ],
+  "referenceCheckedAt": "2026-11-10 KST",
+  "validationEnvironment": "CPython 3.12.14 / Linux"
+}

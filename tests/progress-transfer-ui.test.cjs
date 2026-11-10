@@ -27,7 +27,7 @@ function ui({ importFails = false } = {}) {
     encode(snapshot) { return 'ACADEMY1.request-' + snapshot.sequence; },
     parse() { return { theme: 'light' }; },
     summary() {
-      return { completed: 1, total: 76, mathCompleted: 1, pythonCompleted: 0,
+      return { completed: 3, total: 82, mathCompleted: 1, pythonCompleted: 0, algorithmsCompleted: 2,
         scoreCount: 0, exportedAt: '2026-11-10T00:00:00.000Z' };
     },
     apply() {
@@ -63,6 +63,13 @@ test('late clipboard completion preserves the successful import announcement', a
   assert.equal(view.status.textContent, message);
   assert.equal(view.status.dataset.error, 'false');
   assert.equal(view.status.focused, true);
+});
+
+test('the preview identifies algorithms separately from Python and includes the expanded total', () => {
+  const view = ui();
+  view.click('preview');
+  assert.match(view.element('[data-transfer-summary]').textContent, /읽음 3 \/ 82개 · 수학 1개 · 파이썬 0개 · 알고리즘·자료구조 2개/);
+  assert.equal(view.imported.length, 0);
 });
 
 test('late clipboard completion preserves an import failure and its retry preview', async () => {

@@ -6,9 +6,10 @@ const { test } = require('node:test');
 
 const root = path.join(__dirname, '..');
 const curriculum = vm.createContext({ window: {} });
-for (const file of ['curriculum.js', 'python-content.js']) vm.runInContext(fs.readFileSync(path.join(root, file), 'utf8'), curriculum);
+for (const file of ['curriculum.js', 'python-content.js', 'algorithms-content.js']) vm.runInContext(fs.readFileSync(path.join(root, file), 'utf8'), curriculum);
 const source = fs.readFileSync(path.join(root, 'progress-transfer.js'), 'utf8');
 const MATH = 'understand-math-grade1-v1';
+const ALGORITHMS = 'academy-algorithms-ch01-v1';
 const THEME = 'academy-theme-v1';
 const pyKey = number => `academy-python-ch${String(number).padStart(2, '0')}-v1`;
 const date = '2026-11-10T12:00:00.000Z';
@@ -31,7 +32,7 @@ function memory(entries = {}) {
 }
 
 function engine(storage = memory(), data = curriculum.window) {
-  const window = { CURRICULUM: data.CURRICULUM, PYTHON_COURSES: data.PYTHON_COURSES, localStorage: storage };
+  const window = { CURRICULUM: data.CURRICULUM, PYTHON_COURSES: data.PYTHON_COURSES, ALGORITHMS_COURSES: data.ALGORITHMS_COURSES, localStorage: storage };
   const context = vm.createContext({ window, TextEncoder, TextDecoder, btoa, atob });
   vm.runInContext(source, context, { filename: 'progress-transfer.js' });
   return window.AcademyProgressTransfer;
@@ -45,14 +46,14 @@ function mutations(storage) {
   return storage.calls.filter(call => call[0] !== 'get');
 }
 
-test('exports the frozen API and captures all ten courses with the real 76 lesson IDs', () => {
+test('exports the frozen API and captures all eleven courses with the real 82 lesson IDs', () => {
   const storage = memory(), api = engine(storage), captured = api.capture();
   assert.ok(Object.isFrozen(api));
   assert.equal(api.MAX_BYTES, 1048576);
   assert.deepEqual(Object.keys(api), ['MAX_BYTES', 'capture', 'encode', 'parse', 'summary', 'apply']);
-  assert.deepEqual(Object.keys(captured.records), [MATH, ...Array.from({ length: 9 }, (_, index) => pyKey(index + 1))]);
+  assert.deepEqual(Object.keys(captured.records), [MATH, ...Array.from({ length: 9 }, (_, index) => pyKey(index + 1)), ALGORITHMS]);
   assert.equal(captured.theme, 'light');
-  assert.equal(api.summary(captured).total, 76);
+  assert.equal(api.summary(captured).total, 82);
   assert.equal(api.summary(captured).completed, 0);
   assert.ok(Number.isFinite(Date.parse(captured.exportedAt)));
   assert.equal(mutations(storage).length, 0);
@@ -61,7 +62,7 @@ test('exports the frozen API and captures all ten courses with the real 76 lesso
 test('JSON and copy-code round trips preserve every course, review score and optional theme', () => {
   const api = engine(), captured = api.capture();
   for (const [index, [key, record]] of Object.entries(captured.records).entries()) {
-    const id = index === 0 ? 'prime' : curriculum.window.PYTHON_COURSES[index - 1].lessons[0].id;
+    const id = index === 0 ? 'prime' : key === ALGORITHMS ? curriculum.window.ALGORITHMS_COURSES[0].lessons[0].id : curriculum.window.PYTHON_COURSES[index - 1].lessons[0].id;
     Object.assign(record, state({ completed: [id], scores: { [id]: score(3, 5), review: score(8, 10) }, last: id, visitedAt: 1234 }));
   }
   captured.theme = 'ink';
@@ -70,7 +71,45 @@ test('JSON and copy-code round trips preserve every course, review score and opt
   const code = api.encode(captured);
   assert.match(code, /^ACADEMY1\./);
   assert.deepEqual(json(api.parse(` \n${code}\n `)), expected);
-  assert.deepEqual(json(api.summary(captured)), { completed: 10, total: 76, mathCompleted: 1, pythonCompleted: 9, scoreCount: 20, exportedAt: captured.exportedAt, theme: 'ink' });
+  assert.deepEqual(json(api.summary(captured)), { completed: 11, total: 82, mathCompleted: 1, pythonCompleted: 9, algorithmsCompleted: 1, scoreCount: 22, exportedAt: captured.exportedAt, theme: 'ink' });
+});
+
+test('old ten-course version 1 files preserve the local algorithms record and unrelated keys', () => {
+  const algorithmsRaw = '{ "completed": ["algorithms-l002"], "scores": {}, "last": "algorithms-l002", "visitedAt": 200 }';
+  const storage = memory({ [ALGORITHMS]: algorithmsRaw, unrelated: 'keep raw value', [THEME]: 'forest' });
+  const api = engine(storage), old = api.capture();
+  delete old.records[ALGORITHMS];
+  old.records[MATH] = state({ completed: ['prime'] });
+  old.records[pyKey(1)] = state({ completed: ['python-l001'] });
+  assert.equal(Object.keys(old.records).length, 10);
+  const parsed = api.parse(api.encode(old));
+  assert.equal(parsed.version, 1);
+  assert.equal(Object.hasOwn(parsed.records, ALGORITHMS), false);
+  const result = api.apply(parsed);
+  assert.deepEqual(json(result.records[ALGORITHMS]), state({ completed: ['algorithms-l002'], last: 'algorithms-l002', visitedAt: 200 }));
+  assert.equal(storage.values.get(ALGORITHMS), algorithmsRaw);
+  assert.equal(storage.values.get('unrelated'), 'keep raw value');
+  assert.equal(storage.values.get(THEME), 'forest');
+  assert.deepEqual(mutations(storage).map(call => call[1]), [MATH, pyKey(1)]);
+});
+
+test('algorithms records round-trip, merge independently and count under their own subject', () => {
+  const mathRaw = JSON.stringify(state({ completed: ['prime'] }));
+  const pythonRaw = JSON.stringify(state({ completed: ['python-l001'], scores: { 'python-l001': score(4, 5) } }));
+  const storage = memory({ [MATH]: mathRaw, [pyKey(1)]: pythonRaw, [ALGORITHMS]: JSON.stringify(state({ completed: ['algorithms-l001'], last: 'algorithms-l001', visitedAt: 10 })) });
+  const api = engine(storage);
+  const incoming = snapshot({ [ALGORITHMS]: state({ completed: ['algorithms-l002', 'algorithms-l006'], last: 'algorithms-l006', visitedAt: 20 }) });
+  const parsed = api.parse(api.encode(incoming));
+  assert.deepEqual(json(parsed), incoming);
+  assert.deepEqual(json(api.summary(parsed)), { completed: 2, total: 82, mathCompleted: 0, pythonCompleted: 0, algorithmsCompleted: 2, scoreCount: 0, exportedAt: date });
+  const result = api.apply(parsed);
+  assert.equal(result.addedCompleted, 2);
+  assert.deepEqual(json(result.records[ALGORITHMS]), state({ completed: ['algorithms-l001', 'algorithms-l002', 'algorithms-l006'], last: 'algorithms-l006', visitedAt: 20 }));
+  assert.equal(storage.values.get(MATH), mathRaw);
+  assert.equal(storage.values.get(pyKey(1)), pythonRaw);
+  assert.deepEqual(mutations(storage).map(call => call[1]), [ALGORITHMS]);
+  expectCode(() => api.parse(JSON.stringify(snapshot({ [ALGORITHMS]: state({ completed: ['python-l001'] }) }))), 'INVALID_DATA');
+  expectCode(() => api.parse(JSON.stringify(snapshot({ [ALGORITHMS]: state({ last: 'algorithms-l007' }) }))), 'INVALID_DATA');
 });
 
 test('UTF-8 copy codes preserve Korean and non-BMP curriculum IDs', () => {
@@ -118,7 +157,7 @@ test('apply rereads fresh storage and merges union, maximum best, newest latest 
   storage.values.set(MATH, JSON.stringify(live));
   const result = api.apply(incoming);
   assert.equal(result.addedCompleted, 1);
-  assert.equal(Object.keys(result.records).length, 10);
+  assert.equal(Object.keys(result.records).length, 11);
   assert.deepEqual(json(result.records[MATH]), state({ completed: ['prime', 'factorization', 'gcd-lcm'], scores: { prime: score(1, 5, later), factorization: score(2, 5, later), review: score(7, 10, later) }, last: 'factorization', visitedAt: 250 }));
   assert.deepEqual(json(result.records[pyKey(9)].scores), { 'python-l046': score(4, 5) });
   assert.equal(result.theme, 'forest');
@@ -320,9 +359,9 @@ test('mid-transaction quota failure restores exact original strings in reverse o
 test('rollback removes newly created records when a later theme write fails', () => {
   const storage = memory({ [THEME]: 'forest' }), set = storage.setItem;
   storage.setItem = function (key, value) { if (key === THEME) throw new Error('quota'); set.call(this, key, value); };
-  expectCode(() => engine(storage).apply(snapshot({ [MATH]: state({ completed: ['prime'] }), [pyKey(1)]: state({ completed: ['python-l001'] }) }, { theme: 'ink' }), storage, { includeTheme: true }), 'WRITE_FAILED');
+  expectCode(() => engine(storage).apply(snapshot({ [MATH]: state({ completed: ['prime'] }), [pyKey(1)]: state({ completed: ['python-l001'] }), [ALGORITHMS]: state({ completed: ['algorithms-l001'] }) }, { theme: 'ink' }), storage, { includeTheme: true }), 'WRITE_FAILED');
   assert.deepEqual([...storage.values], [[THEME, 'forest']]);
-  assert.deepEqual(mutations(storage).slice(-2), [['remove', pyKey(1)], ['remove', MATH]]);
+  assert.deepEqual(mutations(storage).slice(-3), [['remove', ALGORITHMS], ['remove', pyKey(1)], ['remove', MATH]]);
 });
 
 test('rollback failures are distinguished and remaining originals still get restored', () => {
