@@ -36,7 +36,8 @@ PC와 모바일에서 모두 읽고 사용할 수 있어야 한다. 여백 중�
 | 화면 테마 | 상단 설정 (`#/settings`)에서 기본 밝은 테마+다크 6개 선택. `academy-theme-v1`에 저장·첫 화면 복원, 동일 브라우저 탭 동기화. 기록 옮기기에서는 사용자가 선택할 때만 테마도 가져옴. 기기 간 자동 동기화 없음 |
 | 수학 중1 | 한 챕터, 8단원, 30레슨, 레슨별 5예제, 종합 복습 10문제 공개 |
 | 파이썬 기초 | 챕터 1~9 (`python-ch01`~`python-ch09`): 46레슨, 레슨별 5예제(230문제), 챕터별 10복습(90문제). 챕터 6만 6레슨, 나머지는 각각 5레슨. 총 320문항을 직접 작성·실행·수정하는 세로 목록으로 제공. 설계된 기초 9챕터를 모두 구현했으며 챕터 7~9는 로컬 검증·PR #6 main 병합·해당 코드의 Pages 배포·공개 화면 확인 완료. 확인 범위와 SHA는 검증 기록에서 구분 |
-| 공개 대상으로 구현된 수업 | 수학·파이썬 2개 분야, 총 76레슨. 나머지 20개 분야는 준비 중 |
+| 현재 소스의 수업 | 수학·파이썬·알고리즘·자료구조 3개 분야, 총 82레슨. 나머지 19개 분야는 준비 중. 기존 공개 76레슨과 이번 알고리즘 작업 브랜치 6레슨을 구분 |
+| 알고리즘·자료구조 | 챕터 1 ‘문제를 절차로 바꾸기’ 6레슨(`algorithms-l001`~`algorithms-l006`)·30예제·10복습. 분야 홈·목차·레슨·복습·내 학습·기록 옮기기 연결. 이번 작업의 구현·로컬 검증 범위이며 병합·배포·공개 확인은 별도 기록 |
 | 교육과정 설계 | 22개 분야 전체의 챕터·레슨 뼈대, 범위·도달점·연결 기준, 후속 집필 지침 |
 | 파이썬 구현 | 분야 홈·챕터 목차·레슨·복습, 읽음·최근 레슨·내 학습 연결. 본문과 예상 출력은 기본 Python 3, 코드 샘플 검증 환경은 Python 3.12.14 |
 | 학습 기록 | 현재 브라우저 localStorage. 수학 `understand-math-grade1-v1`의 문제·점수 기능 유지. 파이썬은 `academy-python-ch01-v1`·`academy-python-ch02-v1`·`academy-python-ch03-v1`·`academy-python-ch04-v1`·`academy-python-ch05-v1`·`academy-python-ch06-v1`·`academy-python-ch07-v1`·`academy-python-ch08-v1`·`academy-python-ch09-v1`에 챕터별 읽음·최근 레슨 저장. 이전의 유효한 scores는 보존하되 표시하지 않음. 파일·복사 코드로 수동 이동 가능. 기기 간 자동 동기화 없음 |
@@ -50,6 +51,12 @@ PC와 모바일에서 모두 읽고 사용할 수 있어야 한다. 여백 중�
 파이썬에서는 문제를 고르고 제출하는 화면을 만들지 않는다. 사용자가 PC의 편집기에서 직접 입력하고 실행한 뒤 각 문제의 예시 답·해설을 확인하는 것이 확정된 방식이다. 모바일에서도 문제·본문·해설을 읽을 수 있게 하며, 사이트 내부 코드 실행기나 자동 채점이 있다고 가정하지 않는다. `input()`의 예시 입력과 여러 파일 실습의 실행 파일명·함께 둘 파일·실행 후 파일은 읽기 전용이다. 학습자는 PC에서 파일을 준비하고 입력·실행하며, 가상환경의 실제 경로와 패키지 관리 대상도 자기 환경에서 확인한다.
 
 파이썬 분야 홈은 `#/subjects/python`이다. 챕터 1은 `#/python/ch01`, `#/python/ch01/lesson/python-l001`부터 `python-l005`까지, `#/python/ch01/review`다. 챕터 2는 `#/python/ch02`, `#/python/ch02/lesson/python-l006`부터 `python-l010`까지, `#/python/ch02/review`다. 챕터 3은 `#/python/ch03`, `#/python/ch03/lesson/python-l011`부터 `python-l015`까지, `#/python/ch03/review`다. 챕터 4는 `#/python/ch04`, `#/python/ch04/lesson/python-l016`부터 `python-l020`까지, `#/python/ch04/review`다. 챕터 5는 `#/python/ch05`, `#/python/ch05/lesson/python-l021`부터 `python-l025`까지, `#/python/ch05/review`다. 챕터 6은 `#/python/ch06`, `#/python/ch06/lesson/python-l026`부터 `python-l031`까지, `#/python/ch06/review`다. 챕터 7은 `#/python/ch07`, 레슨 `python-l032`~`python-l036`, 복습 `#/python/ch07/review`다. 챕터 8은 `#/python/ch08`, 레슨 `python-l037`~`python-l041`, 복습 `#/python/ch08/review`다. 챕터 9는 `#/python/ch09`, 레슨 `python-l042`~`python-l046`, 복습 `#/python/ch09/review`다. 레슨 경로는 각 챕터 아래의 `/lesson/<레슨 ID>` 형식이다. 현재 파이썬 기초 목차에 미구현 레슨은 없으며 추가 집필은 사용자 요청에 따른다.
+
+## 알고리즘·자료구조를 이어서 작업할 때
+
+사용자는 1챕터부터 순서대로 진행하기로 했다. 이번 범위는 `algorithms-ch01`의 6레슨이며, 다음 미구현 시작점은 챕터 2의 `algorithms-l007`이다. [과목 문서](curriculum/algorithms.md), [콘텐츠 형식](../content/algorithms/SCHEMA.md), `content/algorithms/ch01/`, `build-algorithms.py`, `algorithms-ui.js`를 읽는다. 원본 변경 시 `python3 build-algorithms.py --check-code`로 작성자 Python 출력과 구조를 검사하고 `algorithms-content.js`를 갱신한다.
+
+언어 중립 명세·의사코드·손 추적을 먼저 설명하고 Python 구현 예시로 확인한다. 6레슨 각각 예제 5개, 복습 10개는 세로 목록과 접힌 예시 답·해설을 사용한다. 읽음·최근 레슨은 `academy-algorithms-ch01-v1`에 저장한다. 기존 수학·파이썬·테마 키를 유지하며 설정의 기록 옮기기에 새 키를 포함한다. 이전 자료에 새 키가 없으면 현재 알고리즘 기록은 그대로 둔다. 새 키가 든 자료는 챕터를 지원하는 사이트에서 가져온다.
 
 ## 학습 기록 이동을 이어서 작업할 때
 

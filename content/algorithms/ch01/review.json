@@ -1,0 +1,130 @@
+[
+  {
+    "skill": "명세 · 입력과 반환값",
+    "question": "합격자 수를 세는 count_pass(scores)의 계약을 작성하세요. scores는 0~100의 정수 점수 목록이고, 80점 이상을 합격으로 셉니다. 빈 목록과 같은 점수가 반복되는 경우를 포함하고, 반환값과 입력 목록 변경 여부도 명시하세요.",
+    "solution": {
+      "answer": "입력은 0~100의 정수로 이루어진 목록이며 빈 목록과 중복을 허용합니다. 각 원소를 한 사람의 점수로 보고 80 이상인 원소의 개수를 정수로 반환합니다. 빈 목록은 0을 반환하며 입력 목록과 그 순서는 변경하지 않습니다. 예를 들어 [80, 79, 80]의 결과는 2입니다. 범위 밖 입력의 처리는 이 계약의 보장 범위에 포함하지 않습니다."
+    },
+    "explanation": "입력의 허용 조건과 결과가 만족할 조건을 나누어 적습니다. 중복된 80점 두 개를 한 점수로 합치면 사람 수를 세는 계약과 달라집니다. 반환하는 정수와 화면에 출력하는 문장은 서로 다른 결과입니다.",
+    "related": ["algorithms-l001", "algorithms-l002"]
+  },
+  {
+    "skill": "명세 · 모호한 검색 요청",
+    "question": "'목록에서 번호를 찾아 줘'를 구현 가능한 계약으로 바꾸세요. 입력은 정수 목록 numbers와 찾을 정수 target입니다. 중복된 값이 있을 때 첫 위치를 반환하고, 없으면 -1을 반환하도록 정합니다. 위치를 세는 기준과 빈 목록의 결과까지 적은 뒤 [4, 7, 7]에서 7을 찾는 결과를 쓰세요.",
+    "solution": {
+      "answer": "빈 목록과 중복을 허용하는 정수 목록 numbers와 정수 target을 받습니다. 원래 순서에서 target과 같은 원소의 가장 작은 0부터 시작하는 인덱스를 정수로 반환합니다. 일치하는 값이 없거나 목록이 비면 -1을 반환합니다. numbers는 변경하지 않습니다. [4, 7, 7]에서 7의 첫 위치는 1입니다."
+    },
+    "explanation": "'찾는다'만으로는 존재 여부, 값 자체, 첫 위치, 모든 위치 중 무엇을 원하는지 알 수 없습니다. 시작 인덱스·동률 처리·미발견 결과를 정해야 서로 같은 답을 기대할 수 있습니다.",
+    "related": ["algorithms-l001", "algorithms-l002"]
+  },
+  {
+    "skill": "명세 · 크기와 값의 제약",
+    "question": "온도 기록을 받는 계약이 '정수 목록, 길이 n은 0~1000, 각 값은 -50~50, 중복 허용, 입력 순서 보존'입니다. [5, 5, -2]에서 n과 각 조건의 충족 여부를 쓰세요. 값 50이 하나뿐인 목록과 값 0이 1001개인 목록 중 길이 제한을 어기는 것은 무엇인가요?",
+    "solution": {
+      "answer": "[5, 5, -2]의 n은 3이고 길이·정수·값 범위 조건을 충족합니다. 두 개의 5도 중복을 허용하므로 유효하며, 함수는 원래의 [5, 5, -2] 순서를 보존해야 합니다. [50]의 길이는 1로 유효합니다. 0이 1001개인 목록은 각 값은 유효해도 길이가 1001이므로 입력 계약을 어깁니다."
+    },
+    "explanation": "입력 크기는 원소 수이고 값의 범위는 각각의 원소가 가질 수 있는 값입니다. 값이 작다고 입력도 작은 것은 아닙니다. 중복 허용과 순서 보존도 별도로 확인해야 하는 조건입니다.",
+    "related": ["algorithms-l002"]
+  },
+  {
+    "skill": "절차 추적 · 누적 합",
+    "question": "다음 절차를 [4, -2, 0, 3]에 손으로 적용하세요. 시작할 때와 각 원소를 처리한 직후의 total을 차례로 적고, 종료 후 total이 무엇을 뜻하는지 설명하세요.",
+    "code": "total ← 0\n앞에서부터 각 value에 대해:\n    total ← total + value\n결과로 total을 반환",
+    "codeKind": "text",
+    "solution": {
+      "answer": "시작은 0, 처리 직후 값은 4 → 2 → 2 → 5입니다. 마지막 total은 네 원소 전체의 합 5입니다. 0을 처리해도 처리한 원소 수는 늘지만 누적 합은 그대로일 수 있습니다.",
+      "code": {
+        "kind": "python",
+        "source": "numbers = [4, -2, 0, 3]\ntotal = 0\nprint(total)\nfor value in numbers:\n    total = total + value\n    print(total)",
+        "output": "0\n4\n2\n2\n5\n"
+      }
+    },
+    "explanation": "누적값은 이번 원소 하나가 아니라 지금까지 처리한 부분의 결과를 담습니다. 음수를 만나면 합이 작아질 수도 있으므로 값이 계속 커지는지로 진행 여부를 판단하지 않습니다.",
+    "related": ["algorithms-l003", "algorithms-l005"]
+  },
+  {
+    "skill": "절차 추적 · 조건과 개수",
+    "question": "count를 0으로 시작해 [79, 80, 80, 91]을 앞에서부터 읽고, value가 80 이상일 때만 count를 1 늘립니다. 각 원소를 처리한 직후 count를 적으세요. 조건을 '80 초과'로 바꾸면 최종 결과는 어떻게 달라지나요?",
+    "solution": {
+      "answer": "80 이상일 때 처리 직후 count는 0 → 1 → 2 → 3이고 최종 결과는 3입니다. 80 초과로 바꾸면 두 개의 80은 세지 않으므로 최종 결과는 1입니다.",
+      "code": {
+        "kind": "python",
+        "source": "scores = [79, 80, 80, 91]\ncount = 0\nfor value in scores:\n    if value >= 80:\n        count = count + 1\n    print(count)\nstrict_count = 0\nfor value in scores:\n    if value > 80:\n        strict_count = strict_count + 1\nprint(strict_count)",
+        "output": "0\n1\n2\n3\n1\n"
+      }
+    },
+    "explanation": "절차를 찾을 때는 경계와 같은 값을 넣어 보아야 합니다. 80을 포함하는 계약과 포함하지 않는 조건은 한 글자 차이여도 다른 문제를 풉니다.",
+    "related": ["algorithms-l001", "algorithms-l003", "algorithms-l006"]
+  },
+  {
+    "skill": "절차 추적 · 첫 위치와 종료",
+    "question": "아래 절차에서 numbers=[4, 7, 7], target=7일 때 확인하는 인덱스를 차례로 적으세요. 왜 마지막 7까지 확인하지 않아도 첫 위치라는 계약을 지키나요?",
+    "code": "i ← 0\ni가 목록 길이보다 작은 동안:\n    numbers[i]가 target과 같으면 i를 반환하고 종료\n    i ← i + 1\n-1을 반환",
+    "codeKind": "text",
+    "solution": {
+      "answer": "인덱스 0에서 4를 확인하고, 인덱스 1에서 7을 확인해 1을 반환하고 종료합니다. 앞에서부터 확인했고 0에는 target이 없으므로 1이 가장 작은 일치 인덱스입니다. 인덱스 2의 값은 첫 위치를 더 작게 바꿀 수 없습니다.",
+      "code": {
+        "kind": "python",
+        "source": "def first_index(numbers, target):\n    i = 0\n    while i < len(numbers):\n        if numbers[i] == target:\n            return i\n        i = i + 1\n    return -1\n\nprint(first_index([4, 7, 7], 7))",
+        "output": "1\n"
+      }
+    },
+    "explanation": "일찍 종료해도 되는 이유는 단순히 값이 나왔기 때문이 아닙니다. 인덱스를 작은 쪽부터 확인했고, 앞에서 일치하는 값이 없었다는 사실이 첫 위치라는 약속을 보장합니다.",
+    "related": ["algorithms-l003", "algorithms-l005", "algorithms-l006"]
+  },
+  {
+    "skill": "정확성 판단 · 반례를 고르기",
+    "question": "빈 목록을 허용하지 않는 정수 목록에서 최댓값을 구하려고 best를 0으로 시작하고, 더 큰 원소를 만날 때만 바꾸었습니다. [2, 5]에서 5가 나왔다는 이유로 모든 허용 입력에서 맞는다고 할 수 있나요? 원소 하나짜리 반례와 계약을 지키는 초기값을 제시하세요.",
+    "solution": {
+      "answer": "그렇게 말할 수 없습니다. [-5]의 최댓값은 -5지만 잘못된 절차는 목록에 없는 0을 반환합니다. 목록이 비어 있지 않다는 계약을 이용해 첫 원소를 best로 시작하고 나머지 원소와 비교할 수 있습니다.",
+      "code": {
+        "kind": "python",
+        "source": "def largest(numbers):\n    best = numbers[0]\n    i = 1\n    while i < len(numbers):\n        if numbers[i] > best:\n            best = numbers[i]\n        i = i + 1\n    return best\n\nprint(largest([-5]))\nprint(largest([-8, -3, -6]))",
+        "output": "-5\n-3\n"
+      }
+    },
+    "explanation": "한 개의 유효한 반례만으로 '모든 허용 입력에서 맞다'는 주장은 깨집니다. 이 수정안은 비어 있지 않은 입력이라는 전제를 사용하며 빈 목록까지 처리한다고 주장하지 않습니다.",
+    "related": ["algorithms-l002", "algorithms-l004"]
+  },
+  {
+    "skill": "정확성 판단 · 불변식으로 연결하기",
+    "question": "정수 목록의 합을 구하는 절차가 'i=0, total=0으로 시작 → i<n인 동안 total에 numbers[i]를 더하고 i를 1 증가 → total 반환'입니다. '반복 조건을 검사할 때 total은 앞의 i개 원소의 합이고 0≤i≤n'이라는 불변식의 시작·유지·종료를 설명하세요. 종료도 보이려면 어떤 양을 함께 보면 좋을까요?",
+    "solution": {
+      "answer": "시작에는 i=0이고 아무 원소도 더하지 않은 합은 0이므로 성립합니다. i<n일 때 다음 원소 numbers[i]를 더하고 i를 1 늘리면 새 total은 새 i개 원소의 합이 되어 유지됩니다. 반복이 끝나면 i=n이므로 total은 전체 합입니다. n-i는 처음에 0 이상의 정수이고, 반복 한 번마다 1 줄어드므로 반복이 무한히 계속되지 않습니다."
+    },
+    "explanation": "불변식이 참인 채로 계속 반복할 수도 있으므로 결과의 정확성과 종료는 각각 설명합니다. 입력 목록을 바꾸지 않는다는 조건도 n과 각 원소의 의미를 일정하게 유지해 줍니다.",
+    "related": ["algorithms-l004", "algorithms-l005", "algorithms-l006"]
+  },
+  {
+    "skill": "경계 입력 · 빈 목록과 인덱스",
+    "question": "레슨에서 정한 '첫 일치 인덱스, 없으면 -1' 계약을 따르려는데, 반복 조건을 i≤목록 길이로 적었습니다. 빈 목록에서 무엇이 잘못되는지 설명하고, 올바른 조건으로 바꾼 뒤 [], [7], [4]에서 target=7의 결과를 적으세요.",
+    "code": "i ← 0\ni ≤ 목록 길이인 동안:\n    numbers[i]가 target과 같으면 i를 반환\n    i ← i + 1\n-1을 반환",
+    "codeKind": "text",
+    "solution": {
+      "answer": "빈 목록은 길이가 0이어서 0≤0이 참이지만 numbers[0]은 존재하지 않습니다. 조건을 i<목록 길이로 고치면 빈 목록에서는 본문에 들어가지 않습니다. [], [7], [4]의 결과는 각각 -1, 0, -1입니다.",
+      "code": {
+        "kind": "python",
+        "source": "def first_index(numbers, target):\n    i = 0\n    while i < len(numbers):\n        if numbers[i] == target:\n            return i\n        i = i + 1\n    return -1\n\nprint(first_index([], 7))\nprint(first_index([7], 7))\nprint(first_index([4], 7))",
+        "output": "-1\n0\n-1\n"
+      }
+    },
+    "explanation": "길이가 n인 목록의 유효한 인덱스는 0부터 n-1까지입니다. 빈 목록·원소 하나의 발견·미발견을 나누면 조건 경계와 반환 위치를 함께 점검할 수 있습니다.",
+    "related": ["algorithms-l001", "algorithms-l006"]
+  },
+  {
+    "skill": "경계 입력 · 종료까지 보장하기",
+    "question": "음수가 아닌 정수 remaining을 0까지 줄이려 합니다. 다음 의사코드를 그대로 실행하지 말고 remaining=1일 때를 손으로 추적하세요. 왜 끝나지 않나요? 한 번마다 1씩 줄이도록 고치고 시작값 0·1·3에서 반복 횟수를 적으세요.",
+    "code": "remaining이 0보다 큰 동안:\n    remaining이 2 이상이면:\n        remaining ← remaining - 1",
+    "codeKind": "text",
+    "solution": {
+      "answer": "remaining=1이면 바깥 조건은 참이지만 안쪽 조건이 거짓이라 값이 바뀌지 않습니다. 같은 상태가 반복되어 종료하지 않습니다. 안쪽 조건을 없애 매번 remaining을 1 줄이면 시작값 0·1·3에서 각각 0·1·3번 반복하고 0에 도달합니다.",
+      "code": {
+        "kind": "python",
+        "source": "def countdown_steps(remaining):\n    steps = 0\n    while remaining > 0:\n        remaining = remaining - 1\n        steps = steps + 1\n    return steps\n\nprint(countdown_steps(0))\nprint(countdown_steps(1))\nprint(countdown_steps(3))",
+        "output": "0\n1\n3\n"
+      }
+    },
+    "explanation": "종료 조건을 적어 놓는 것만으로는 충분하지 않습니다. 모든 반복 경로에서 0 이상의 정수가 엄밀히 줄어드는지 확인합니다. 처음부터 0이면 본문을 한 번도 실행하지 않는 것도 계약에 맞는 정상 동작입니다.",
+    "related": ["algorithms-l005", "algorithms-l006"]
+  }
+]

@@ -1,4 +1,4 @@
-// Manual, account-free transfer. Load after curriculum.js and python-content.js.
+// Manual, account-free transfer. Load after the available subject content bundles.
 (() => {
   'use strict';
 
@@ -12,6 +12,9 @@
   const courses = new Map([[MATH_KEY, window.CURRICULUM.lessons.map(lesson => lesson.id)]]);
   for (const course of window.PYTHON_COURSES) {
     courses.set('academy-python-' + (course.slug || course.id.replace('python-', '')) + '-v1', course.lessons.map(lesson => lesson.id));
+  }
+  for (const course of window.ALGORITHMS_COURSES || []) {
+    courses.set('academy-algorithms-' + (course.slug || course.id.replace('algorithms-', '')) + '-v1', course.lessons.map(lesson => lesson.id));
   }
   const total = [...courses.values()].reduce((count, ids) => count + ids.length, 0);
   const encoder = new TextEncoder();
@@ -205,7 +208,10 @@
       scoreCount += Object.keys(record.scores).length;
     }
     const mathCompleted = clean.records[MATH_KEY]?.completed.length || 0;
-    return { completed, total, mathCompleted, pythonCompleted: completed - mathCompleted, scoreCount, exportedAt: clean.exportedAt, theme: clean.theme };
+    const countSubject = prefix => Object.entries(clean.records).reduce((sum, [key, record]) => sum + (key.startsWith(prefix) ? record.completed.length : 0), 0);
+    const pythonCompleted = countSubject('academy-python-');
+    const algorithmsCompleted = countSubject('academy-algorithms-');
+    return { completed, total, mathCompleted, pythonCompleted, algorithmsCompleted, scoreCount, exportedAt: clean.exportedAt, theme: clean.theme };
   }
 
   function mergeState(local, incoming, ids) {
