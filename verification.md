@@ -282,3 +282,10 @@
 - 1440·390·320px × 밝음/미드나이트/블랙 글래스 × 목차/하단/결과 등 54개 조합에서 문서 가로 넘침 없음, 돌아가기 링크 44px 이상 터치 영역을 확인했다. 모바일 390px에서 7개 테마도 확인했다. `previews/math-navigation-return-mobile.png`·`previews/math-unit-read-mobile.png`를 직접 검토했다. 실제 휴대전화·iOS Safari·Firefox 전체 검증으로 해석하지 않는다.
 - `python3 build-content.py`의 수학 8단원·30레슨·150예제·10복습, JavaScript 구문·문서 상대 링크·diff 검사를 통과했다. 수학/Python/알고리즘 콘텐츠와 생성물·기존 저장 키·점수·기록 이동 런타임·테마 파일은 기준 main과 동일하다. 운영 진입점에서 바뀐 app.js·app.css의 캐시 참조만 갱신했다. 기존 콘텐츠 실행 검사까지 반복했다고 주장하지 않는다.
 - 기존 동작을 유지하는 탐색/진도 표시 추가는 MINOR 종류이며 미확정 최초 목표 `0.1.0` 묶음에 포함해 VERSION을 유지한다. 릴리스 태그와 GitHub Release는 생성하지 않는다.
+
+## 수학 탐색·단원 읽음 병합·공개 확인 (2026-11-10 KST)
+
+- [PR #13](https://github.com/jihoon380462/academy/pull/13)을 main에 병합했다. PR head `b2c0b56c8b1f9ef8633dee04beaeba85d4f7f9eb`, 병합 SHA `16b0c407d4fe9dd0e8bdaa56934bb4768966b3fd`이며 해당 [Pages 실행 42790702308](https://github.com/jihoon380462/academy/actions/runs/42790702308)은 completed/success다. 확인한 실행의 updated_at은 `2026-11-10T09:26:57Z`다.
+- [공개 사이트](https://jihoon380462.github.io/academy/#/math/middle-1)의 index.html·app.js·app.css가 병합 소스와 바이트 단위로 동일했다. 실제 공개 주소에서 수학 탐색 브라우저 6개 그룹·54개 화면 조합·모바일 7테마 검사를 다시 실행해 통과했고 페이지 JavaScript 오류는 0개였다.
+- 하단·예제 결과·복습 결과의 목차 복귀, 직접 접속/이전 URL, 해당 단원 펼침과 위치 이동, 전체/부분/취소·검색·새로고침의 단원 표시, 퀴즈 중 다른 탭 변경에도 선택/초점 유지, 가져오기·기존 점수와 다른 과목 기록 보존을 공개 브라우저에서 확인했다. 공개 미드나이트 모바일 캡처 2개를 임시 폴더에서 직접 검토했다. 실제 휴대기기의 모든 운영체제 브라우저까지 검증한 것은 아니다.
+- 실행 환경의 기존 CA를 유지하고 NSS DB 접근만 승인받아 TLS 검증을 활성화한 상태로 실행했다. 이번 후속 변경은 검증 기록만 추가하며 앱·콘텐츠·자산·캐시·VERSION은 위 공개 배포 소스와 동일하다. 릴리스 태그·GitHub Release는 생성하지 않는다.
