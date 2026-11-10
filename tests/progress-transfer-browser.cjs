@@ -11,6 +11,7 @@ const { chromium } = playwright;
 const BASE = (process.env.ACADEMY_BASE_URL || 'http://127.0.0.1:8000').replace(/\/$/, '');
 const MATH = 'understand-math-grade1-v1';
 const ALGORITHMS = 'academy-algorithms-ch01-v1';
+const algorithmKeys = ['academy-algorithms-ch01-v1', 'academy-algorithms-ch02-v1', 'academy-algorithms-ch03-v1'];
 const THEME = 'academy-theme-v1';
 const OTHER = 'transfer-test-unrelated';
 const checks = [], errors = [];
@@ -91,13 +92,13 @@ function watch(page) { page.on('pageerror', error => errors.push(error.message))
     local[py].scores[ids[py][0]] = { latest: 1, best: 5, date: oldDate };
     return { ids, source, local, newDate };
   });
-  assert.equal(Object.keys(fixture.ids).length, 11);
+  assert.equal(Object.keys(fixture.ids).length, 13);
   await seed(pc, fixture.source, 'glass');
   const captured = await pc.evaluate(() => window.AcademyProgressTransfer.capture());
   const summary = await pc.evaluate(() => window.AcademyProgressTransfer.summary(window.AcademyProgressTransfer.capture()));
-  assert.equal(summary.total, 82);
+  assert.equal(summary.total, 94);
   assert.equal(summary.pythonCompleted, 18);
-  assert.equal(summary.algorithmsCompleted, 2);
+  assert.equal(summary.algorithmsCompleted, 6);
   const downloadPromise = pc.waitForEvent('download');
   await pc.locator('[data-transfer-download]').click();
   const download = await downloadPromise;
@@ -118,7 +119,7 @@ function watch(page) { page.on('pageerror', error => errors.push(error.message))
   let before = await snapshot(mobile);
   await mobile.locator('#transfer-file').setInputFiles({ name: 'academy-records.json', mimeType: 'application/json', buffer: Buffer.from(fileText) });
   await mobile.locator('[data-transfer-preview-panel]').waitFor({ state: 'visible' });
-  assert.match(await mobile.locator('[data-transfer-summary]').innerText(), /알고리즘·자료구조 2개/);
+  assert.match(await mobile.locator('[data-transfer-summary]').innerText(), /알고리즘·자료구조 6개/);
   assert.deepEqual(await snapshot(mobile), before, 'file preview must not write');
   assert.equal(await mobile.locator('#transfer-include-theme').isChecked(), false);
   await mobile.locator('[data-transfer-confirm]').click();
@@ -127,8 +128,8 @@ function watch(page) { page.on('pageerror', error => errors.push(error.message))
   await mobile.evaluate(() => { location.hash = '#/progress'; });
   await mobile.locator('.py-progress:not(.algo-progress)').first().waitFor();
   assert.equal(await mobile.locator('.py-progress:not(.algo-progress)').count(), 9);
-  assert.equal(await mobile.locator('.algo-progress').count(), 1);
-  assert.match(await mobile.locator('.algo-progress').innerText(), /3\s*\/\s*6/);
+  assert.equal(await mobile.locator('.algo-progress').count(), 3);
+  for (const panel of await mobile.locator('.algo-progress').all()) assert.match(await panel.innerText(), /3\s*\/\s*6/);
   assert.match(await mobile.locator('.py-progress:not(.algo-progress)').first().locator('.py-reading-count').innerText(), /3\s*\/\s*5/);
   assert.equal(await mobile.locator('.py-progress:not(.algo-progress)').first().getByText(/최고|최근 결과|점수/).count(), 0);
   await mobile.reload();
@@ -150,15 +151,17 @@ function watch(page) { page.on('pageerror', error => errors.push(error.message))
   assert.deepEqual(await snapshot(mobile), once, 'repeated import must be idempotent');
   passed('Copy-code merge, explicit theme import, and repeated-import idempotence');
 
-  const legacyRecords = { ...captured.records };
-  delete legacyRecords[ALGORITHMS];
-  const legacy = { ...captured, records: legacyRecords };
-  const algorithmRaw = (await snapshot(mobile))[ALGORITHMS];
-  await preview(mobile, JSON.stringify(legacy));
-  assert.match(await mobile.locator('[data-transfer-summary]').innerText(), /알고리즘·자료구조 0개/);
-  await mobile.locator('[data-transfer-confirm]').click();
-  assert.equal((await snapshot(mobile))[ALGORITHMS], algorithmRaw, 'old ten-course version 1 files preserve algorithms state');
-  passed('Old ten-course files preserve the new algorithms record');
+  for (const count of [10, 11]) {
+    const legacyRecords = Object.fromEntries(Object.entries(captured.records).slice(0, count));
+    const legacy = { ...captured, records: legacyRecords };
+    const prior = await snapshot(mobile);
+    await preview(mobile, JSON.stringify(legacy));
+    assert.match(await mobile.locator('[data-transfer-summary]').innerText(), new RegExp('알고리즘·자료구조 ' + (count === 10 ? 0 : 2) + '개'));
+    await mobile.locator('[data-transfer-confirm]').click();
+    const after = await snapshot(mobile);
+    for (const key of algorithmKeys.slice(count === 10 ? 0 : 1)) assert.equal(after[key], prior[key], 'old ' + count + '-course files preserve omitted algorithms state ' + key);
+  }
+  passed('Old ten/eleven-course files preserve omitted algorithms chapters');
 
   before = await snapshot(mobile);
   await preview(mobile, exportCode);

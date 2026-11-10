@@ -17,6 +17,11 @@ ROOT = Path(__file__).resolve().parent
 SOURCE = ROOT / 'content' / 'algorithms'
 OUTPUT = ROOT / 'algorithms-content.js'
 BLOCK_FIELDS = {'source', 'kind', 'output', 'error', 'caption'}
+REVIEW_DISTRIBUTIONS = {
+    1: {'명세': 3, '절차 추적': 3, '정확성 판단': 2, '경계 입력': 2},
+    2: {'성장률': 3, '비용 계산': 3, '공간': 2, '측정 해석': 2},
+    3: {'구조 원리': 3, '연산 비용': 3, '순서 추적': 2, '구조 선택': 2},
+}
 
 
 def require(condition, owner, message):
@@ -134,6 +139,15 @@ def validate_lesson(lesson, expected, order, ids, blocks, prompt_sources):
         validate_question(question, f'{owner}/example{index}', ids, blocks, prompt_sources)
 
 
+def validate_review_distribution(review, number, owner):
+    expected = REVIEW_DISTRIBUTIONS.get(number)
+    if expected is not None:
+        actual = {name: sum(question['skill'].startswith(name + ' ·') for question in review)
+                  for name in expected}
+        require(actual == expected, owner,
+                f'chapter {number} review distribution must be {expected}, got {actual}')
+
+
 def read_courses():
     courses, blocks, prompts, all_ids = [], [], [], set()
     for path in sorted(SOURCE.glob('ch[0-9][0-9]/course.json')):
@@ -162,11 +176,7 @@ def read_courses():
         for index, question in enumerate(review, 1):
             validate_question(question, f'{metadata["id"]}/review{index}', ids, blocks, prompts, True)
         require(set().union(*(set(question['related']) for question in review)) == ids, path, 'review must cover all lessons')
-        if number == 1:
-            counts = {name: sum(question['skill'].startswith(name + ' ·') for question in review)
-                      for name in ['명세', '절차 추적', '정확성 판단', '경계 입력']}
-            require(counts == {'명세': 3, '절차 추적': 3, '정확성 판단': 2, '경계 입력': 2}, path,
-                    'chapter one review needs specification3/trace3/correctness2/boundary2')
+        validate_review_distribution(review, number, path)
         course = {key: value for key, value in metadata.items() if key != 'lessonFiles'}
         course.update(lessons=lessons, review=review)
         courses.append(course)

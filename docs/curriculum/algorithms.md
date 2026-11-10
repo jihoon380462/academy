@@ -7,7 +7,7 @@
 | 목표 | 입력 규모와 필요한 연산을 바탕으로 자료구조와 알고리즘을 선택하고, 작은 구현의 정확성과 비용을 설명한다. |
 | 진입 지식 | `python` 또는 `c-family`의 변수·조건·반복·함수·배열 개념. 수학의 사칙연산·비교·간단한 함수 관계. 과목 전체 완주나 이산수학 선행은 요구하지 않는다. |
 | 완료 기준 | 검색·집계·작업 순서 처리 중 한 작업을 두 방식으로 구현하여 경계 입력, 연산 비용, 측정 결과와 선택 이유를 제시한다. |
-| 콘텐츠 상태 | 챕터 1의 6레슨·30예제·10복습 구현. 챕터 2~9는 설계만 완료·본문 미작성. 병합·배포·공개 확인은 검증 기록에서 구분 |
+| 콘텐츠 상태 | 챕터 1~3의 18레슨·90예제·30복습 구현. 챕터 4~9는 설계만 완료·본문 미작성. 병합·배포·공개 확인은 검증 기록에서 구분 |
 
 ## 범위와 과목 경계
 
@@ -166,18 +166,21 @@
 - [MIT 6.006 Syllabus](https://www.ocw.mit.edu/courses/6-006-introduction-to-algorithms-spring-2020/pages/syllabus/) — 자료구조·정렬·그래프 탐색·동적 계획법과 성능 분석의 기본 범위를 확인했다. 대학 과목의 선수 지식·시험 난이도·과제는 그대로 채택하지 않는다.
 
 
-## 챕터 1 구현 현황
+## 챕터 1~3 구현 현황
 
-2026-11-10 KST 기준 작업 브랜치의 구현 범위다. 본문의 9챕터·54레슨 전체 설계와 구분하며 다음 집필 시작점은 `algorithms-ch02` / `algorithms-l007`이다.
+2026-11-10 KST 기준 현재 소스의 구현 범위다. 전체 9챕터·54레슨 설계와 구분한다. 챕터 1은 PR #10으로 main에 병합되었으며 챕터 2·3은 이번 작업의 추가다. 다음 집필 시작점은 `algorithms-ch04` / `algorithms-l019`이다.
 
-| 범위 | 실제 파일·경로 | 상태 |
+| 범위 | 실제 파일·경로 | 구현 |
 | --- | --- | --- |
-| `algorithms-l001`~`algorithms-l006` | `content/algorithms/ch01/lesson-01.json`~`lesson-06.json` | 6레슨·각 5예제 구현 |
-| 챕터 복습 | `content/algorithms/ch01/review.json` | 명세 3·절차 추적 3·정확성 2·경계 입력 2, 총 10문항 |
-| 분야 홈·목차·레슨·복습 | `#/subjects/algorithms`, `#/algorithms/ch01`, `/lesson/<레슨 ID>`, `/review` | 화면과 읽음·최근 레슨 연결 |
-| 학습 기록 | `academy-algorithms-ch01-v1` | 내 학습·파일/복사 코드 옮기기에 포함, 기존 키 유지 |
-| 챕터 2~9 | 이 문서의 설계 목차 | 본문 미작성 |
+| 챕터 1 `algorithms-l001`~`algorithms-l006` | `content/algorithms/ch01/lesson-01.json`~`lesson-06.json` | 6레슨·30예제·복습 10개 |
+| 챕터 2 `algorithms-l007`~`algorithms-l012` | `content/algorithms/ch02/lesson-01.json`~`lesson-06.json` | 6레슨·30예제·복습 10개 |
+| 챕터 3 `algorithms-l013`~`algorithms-l018` | `content/algorithms/ch03/lesson-01.json`~`lesson-06.json` | 6레슨·30예제·복습 10개 |
+| 분야 홈·각 챕터 목차·레슨·복습 | `#/subjects/algorithms`, `#/algorithms/ch01`~`ch03`, 각 `/lesson/<레슨 ID>`·`/review` | 읽음·최근 레슨·내 학습 연결 |
+| 학습 기록 | `academy-algorithms-ch01-v1`~`academy-algorithms-ch03-v1` | 챕터별 독립 저장·파일/복사 코드 옮기기, 기존 키 유지 |
+| 챕터 4~9 | 이 문서의 설계 목차 | 본문 미작성 |
 
-집필은 언어 중립 계약·의사코드·손 추적을 먼저 쓰고 Python 구현 예시로 이어간다. 파이썬 입문 문법을 다시 전체 강의하거나 비용·자료구조 심화 챕터를 앞당기지 않는다. 작성자 코드는 `python3 build-algorithms.py --check-code`로 검증하고 `algorithms-content.js`를 갱신한다. 코드 블록과 문제의 요구·예시 답·해설, 브라우저 동작을 함께 확인한다. 실제 검증 결과와 소스 SHA·병합·배포·공개 여부는 [검증 기록](../../verification.md)에 남긴다.
+챕터 2 복습은 성장률 3·비용 계산 3·공간 2·측정 해석 2, 챕터 3은 구조 원리 3·연산 비용 3·순서 추적 2·구조 선택 2로 구성한다. 언어 중립 명세·의사코드·손 추적 후 Python 구현 예시를 둔다. 점근적 상계와 긴밀한 성장 차수, 최선/평균/최악과 분할 상환, 총 할당량과 동시 추가 공간, 이론 배열 모델과 CPython의 참조 배열을 구분한다. 연결 리스트는 위치 탐색과 연결 변경 비용을 함께 다루며 단일 연결 삭제의 앞 노드 가정을 명시한다.
 
-Python 구현 대조 자료(확인일 2026-11-10 KST): [제어 흐름·range·함수 반환](https://docs.python.org/3.12/tutorial/controlflow.html), [리스트와 순회](https://docs.python.org/3.12/tutorial/datastructures.html). 시퀀스 순서대로 순회, range 끝 제외, return과 print 구분을 확인했다. 작성자 코드 실행 환경은 CPython 3.12.14 / Linux다.
+작성자 코드는 `python3 build-algorithms.py --check-code`로 검증하고 `algorithms-content.js`를 갱신한다. 실제 시간·메모리 수치는 환경에 따라 달라지므로 고정 출력으로 단정하지 않는다. 요구·예시 답·해설과 PC·모바일 동작, 소스 SHA·병합·Pages 배포·공개 화면 상태는 [검증 기록](../../verification.md)에 구분한다.
+
+Python 구현 대조 자료(확인일 2026-11-10 KST): [제어 흐름·range·함수 반환](https://docs.python.org/3.12/tutorial/controlflow.html), [리스트와 순회](https://docs.python.org/3.12/tutorial/datastructures.html), [CPython 리스트 구현 FAQ](https://docs.python.org/3.12/faq/design.html#how-are-lists-implemented-in-cpython), [deque 양끝 연산·중간 인덱스·list 앞쪽 이동](https://docs.python.org/3.12/library/collections.html#deque-objects), [timeit 반복 측정과 잡음 해석](https://docs.python.org/3.12/library/timeit.html). 작성자 코드 실행 환경은 CPython 3.12.14 / Linux다.

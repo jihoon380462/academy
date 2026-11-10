@@ -22,7 +22,7 @@
 | 01 | 수학 | 중학교 1학년 과정 학습 가능 |
 | 02 | 파이썬 | 기초 9챕터·46레슨 구현, 챕터 7~9 로컬 검증·PR #6 병합·Pages 배포·공개 화면 확인 완료. 확인 범위는 검증 기록 참고 |
 | 03 | C++/# | 준비 중 |
-| 04 | 알고리즘·자료구조 | 챕터 1 · 6레슨·30예제·10복습 구현. 병합·공개 배포는 검증 기록과 구분 |
+| 04 | 알고리즘·자료구조 | 챕터 1~3 · 18레슨·90예제·30복습 구현. 병합·공개 배포는 검증 기록과 구분 |
 | 05 | CS | 준비 중 |
 | 06 | 운영체제 | 준비 중 |
 | 07 | 디버깅·테스트 | 준비 중 |
@@ -42,7 +42,7 @@
 | 21 | GitHub | 준비 중 |
 | 22 | vim | 준비 중 |
 
-현재 소스에는 수학·파이썬·알고리즘·자료구조의 **3개 분야 · 총 82개 레슨**이 구현되어 있습니다. 수학 30레슨·파이썬 46레슨·알고리즘 6레슨이며, 나머지 19개 분야는 준비 중입니다. 알고리즘 챕터 1은 이번 작업 브랜치의 추가이며 기존 공개 사이트의 76레슨과 구분합니다. 파이썬 기초와 파이썬 실전, 터미널·Git과 GitHub 등은 각각 별도의 분야로 구분합니다. 실제 배포·화면 검증 기록은 [verification.md](verification.md)를 확인합니다.
+현재 소스에는 수학·파이썬·알고리즘·자료구조의 **3개 분야 · 총 94개 레슨**이 구현되어 있습니다. 수학 30레슨·파이썬 46레슨·알고리즘 18레슨이며, 나머지 19개 분야는 준비 중입니다. 알고리즘 챕터 1은 PR #10으로 main에 병합되었고, 챕터 2·3의 12레슨은 이번 작업의 추가입니다. 실제 공개 반영은 검증 기록으로 구분합니다. 파이썬 기초와 파이썬 실전, 터미널·Git과 GitHub 등은 각각 별도의 분야로 구분합니다. 실제 배포·화면 검증 기록은 [verification.md](verification.md)를 확인합니다.
 
 ## 수학 과정 구성
 
@@ -55,15 +55,16 @@
 
 ## 알고리즘·자료구조 과정 구성
 
-첫 챕터 **‘문제를 절차로 바꾸기’**를 구현했습니다. [과목 문서](docs/curriculum/algorithms.md)의 9챕터·54레슨 설계 중 챕터 1의 6레슨만 현재 수업입니다. 다음 범위는 챕터 2 ‘시간과 공간을 세는 법’의 `algorithms-l007`이며 자동으로 완료 처리하지 않습니다.
+[과목 문서](docs/curriculum/algorithms.md)의 9챕터·54레슨 설계 중 **챕터 1~3 · 18레슨·90예제·30복습**을 구현했습니다. 다음 범위는 챕터 4 ‘키로 찾는 집합과 맵’의 `algorithms-l019`이며 아직 수업은 제공하지 않습니다.
 
-- `algorithms-l001`~`algorithms-l006`: 입출력 계약, 데이터 크기와 제약, 작은 사례 추적, 정확성과 반례, 반복 불변식, 종료 조건과 경계 입력
-- 레슨마다 원리 설명·의사코드·절차 추적·작동 예시·오개념·핵심 정리와 예제 5개, 총 30예제
-- 챕터 복습 10개: 명세 3·추적 3·정확성 2·경계 입력 2, 접힌 예시 답·해설과 관련 레슨 연결
-- 손으로 명세·추적을 적고 Python 구현은 PC에서 직접 실행하는 방식. 사이트 내부 실행·자동 채점·점수는 제공하지 않습니다.
-- 읽음·최근 레슨은 독립 키 `academy-algorithms-ch01-v1`에 저장하며 내 학습과 파일·복사 코드 기록 옮기기에 포함합니다. 이전 10개 과정만 든 자료도 가져올 수 있습니다. 새 알고리즘 키를 포함한 자료는 해당 챕터를 지원하는 사이트에서 가져와야 합니다.
+- 챕터 1 ‘문제를 절차로 바꾸기’ (`algorithms-l001`~`algorithms-l006`): 계약·제약·작은 사례·반례·불변식·종료와 경계
+- 챕터 2 ‘시간과 공간을 세는 법’ (`algorithms-l007`~`algorithms-l012`): 연산 수·성장률·반복 비용·경우별 비용·추가 공간·분할 상환과 측정
+- 챕터 3 ‘순서를 저장하는 구조’ (`algorithms-l013`~`algorithms-l018`): 배열·연결 리스트·삽입과 삭제·스택·큐/덱·추상 자료형
+- 레슨마다 원리 설명·의사코드·절차 추적·작동 예시·오개념·핵심 정리와 예제 5개, 챕터마다 복습 10개와 관련 레슨 연결
+- 손으로 명세·상태·비용을 적고 Python 구현은 PC에서 직접 실행합니다. 예시 답·해설은 접혀 있으며 사이트 내부 실행·자동 채점·점수는 제공하지 않습니다.
+- 읽음·최근 레슨은 `academy-algorithms-ch01-v1`·`academy-algorithms-ch02-v1`·`academy-algorithms-ch03-v1`에 각각 저장하며 내 학습과 파일·복사 코드 옮기기에 포함합니다. 이전 10개/11개 과정만 든 자료를 가져와도 새 챕터 기록은 지우지 않습니다. 새 키를 포함한 자료는 해당 챕터를 지원하는 사이트에서 가져와야 합니다.
 
-[콘텐츠 형식](content/algorithms/SCHEMA.md)에 따라 `python3 build-algorithms.py --check-code`로 작성자 코드의 예상 출력을 검증하고 `algorithms-content.js`를 생성합니다. `python3 build-algorithms.py --check --check-code`는 생성물을 바꾸지 않고 최신 여부까지 확인합니다. Python 3.12 공식 제어 흐름·자료구조 문서와 대조했으며 실제 검사 환경은 CPython 3.12.14 / Linux입니다. 병합·Pages 배포·공개 화면 확인은 [검증 기록](verification.md)을 따릅니다.
+[콘텐츠 형식](content/algorithms/SCHEMA.md)에 따라 `python3 build-algorithms.py --check-code`로 작성자 코드의 예상 출력을 검증하고 `algorithms-content.js`를 생성합니다. `python3 build-algorithms.py --check --check-code`는 생성물의 최신 여부까지 확인합니다. 이론 모델과 CPython 구현, 연산 횟수와 실측 시간, 평균과 분할 상환을 구분하며 실행 환경은 CPython 3.12.14 / Linux입니다. 병합·Pages 배포·공개 화면 확인은 [검증 기록](verification.md)을 따릅니다.
 
 ## 파이썬 과정 구성
 
@@ -134,6 +135,7 @@ node tests/progress-transfer-ui.test.cjs
 | `algorithms-ui.js` | 알고리즘 분야·목차·레슨·복습·학습 기록 화면 |
 | `algorithms-content.js` | 알고리즘 콘텐츠 생성 묶음 |
 | `content/algorithms/ch01/` | 알고리즘 챕터 1의 원본·6레슨·30예제·10복습 |
+| `content/algorithms/ch02/`·`ch03/` | 알고리즘 챕터 2·3의 원본·12레슨·60예제·20복습 |
 | `build-algorithms.py` | 알고리즘 구조·작성자 코드 검증과 묶음 생성 |
 | `subjects.js` | 학습 분야, 소개, 준비 상태, 예정 주제 |
 | `visuals.js` | 정확한 수학 SVG 도식 |
@@ -230,6 +232,8 @@ node --check app.js
 - `#/algorithms/ch01`: 알고리즘 챕터 1 목차
 - `#/algorithms/ch01/lesson/algorithms-l001`: 알고리즘 첫 레슨 (`algorithms-l006`까지)
 - `#/algorithms/ch01/review`: 알고리즘 챕터 1 복습
+- `#/algorithms/ch02` · `#/algorithms/ch02/lesson/algorithms-l007` · `#/algorithms/ch02/review`: 챕터 2 목차·첫 레슨(`algorithms-l012`까지)·복습
+- `#/algorithms/ch03` · `#/algorithms/ch03/lesson/algorithms-l013` · `#/algorithms/ch03/review`: 챕터 3 목차·첫 레슨(`algorithms-l018`까지)·복습
 - `#/math/middle-1`: 중학교 1학년 목차
 - `#/math/middle-1/lesson/<레슨 ID>`: 수학 레슨
 - `#/math/middle-1/review`: 중1 챕터 복습
@@ -241,7 +245,7 @@ node --check app.js
 
 ## 학습 기록
 
-기존 수학 저장 키(`understand-math-grade1-v1`)와 수학의 예제·복습 점수 기능을 유지합니다. 파이썬은 `academy-python-ch01-v1`·`academy-python-ch02-v1`·`academy-python-ch03-v1`·`academy-python-ch04-v1`·`academy-python-ch05-v1`·`academy-python-ch06-v1`·`academy-python-ch07-v1`·`academy-python-ch08-v1`·`academy-python-ch09-v1`에 챕터별 읽음 표시와 최근 레슨을 따로 기록합니다. 파이썬의 이전 버전에서 저장한 유효한 `scores` 데이터는 삭제하지 않지만 표시하거나 새로 채점하지 않습니다. 알고리즘 챕터 1의 읽음·최근 레슨은 `academy-algorithms-ch01-v1`에 따로 저장하며 점수를 새로 기록하지 않습니다. 새 챕터를 추가해도 기존 모든 파이썬 챕터·수학 기록과 테마 설정은 유지합니다.
+기존 수학 저장 키(`understand-math-grade1-v1`)와 수학의 예제·복습 점수 기능을 유지합니다. 파이썬은 `academy-python-ch01-v1`·`academy-python-ch02-v1`·`academy-python-ch03-v1`·`academy-python-ch04-v1`·`academy-python-ch05-v1`·`academy-python-ch06-v1`·`academy-python-ch07-v1`·`academy-python-ch08-v1`·`academy-python-ch09-v1`에 챕터별 읽음 표시와 최근 레슨을 따로 기록합니다. 파이썬의 이전 버전에서 저장한 유효한 `scores` 데이터는 삭제하지 않지만 표시하거나 새로 채점하지 않습니다. 알고리즘 챕터 1~3의 읽음·최근 레슨은 `academy-algorithms-ch01-v1`·`academy-algorithms-ch02-v1`·`academy-algorithms-ch03-v1`에 각각 따로 저장하며 점수를 새로 기록하지 않습니다. 새 챕터를 추가해도 기존 모든 파이썬 챕터·수학 기록과 테마 설정은 유지합니다.
 
 학습 기록은 현재 브라우저의 `localStorage`에 저장됩니다. **기록은 이 브라우저에 저장되며, 설정에서 다른 기기로 옮길 수 있습니다.** 계정이나 서버 저장소를 사용하지 않고, 사이트가 기록을 서버로 보내지 않습니다. 기기 간 자동 동기화는 없으며 다른 브라우저·도메인으로 접속해도 기록이 자동으로 나타나지 않습니다.
 

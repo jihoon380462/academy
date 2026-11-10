@@ -44,6 +44,7 @@
       all.find(item => readCount(item) < items(item).length) || all[0];
     const next = nextLesson(current), total = all.reduce((sum, item) => sum + items(item).length, 0);
     const completed = all.reduce((sum, item) => sum + readCount(item), 0);
+    const lastNumber = Math.max(...all.map(number));
     return `<main id="main" class="wrap py-home algo-home"><div class="crumb subject-crumb"><a href="#/">학습 분야</a> / 알고리즘·자료구조</div>
       <section class="home-hero py-hero"><div><div class="eyebrow">ALGORITHMS &amp; DATA STRUCTURES</div><h1>알고리즘·<br>자료구조</h1><p class="subject-lead">문제를 분명히 적고,<br>해결하는 절차를 설명해요.</p><p class="hero-copy">어떤 입력을 받아 무엇을 돌려줄까요?<br>작은 사례부터 따라가며 절차가 맞는 이유를 이해합니다.<br>현재 ${all.length}개 챕터 · ${total}개 레슨을 학습할 수 있어요.</p><div class="actions"><a class="btn primary" href="${lessonPath(next.id, current)}">${visited.length ? '이어서 배우기' : '첫 레슨 시작하기'} <span>→</span></a><a class="text-link" href="${chapterPath(all[0])}">챕터 ${number(all[0])} 목차 보기</a></div></div>
       <div class="py-intro-card"><div class="eyebrow">FROM A QUESTION TO A PROCEDURE</div>${codeBlock({
@@ -54,14 +55,14 @@
       <div class="section-head"><div><div class="eyebrow">THE FIRST STEPS</div><h2>작은 절차부터 차근차근.</h2></div><p>챕터를 누르면 레슨 목차가 펼쳐집니다.</p></div>
       ${all.map(item => `<details class="py-home-chapter"><summary class="chapter-banner py-chapter-toggle" aria-labelledby="algo-home-${esc(item.course.slug)}"><div><div class="eyebrow">CHAPTER ${pad(number(item))} · 학습 가능</div><h2 id="algo-home-${esc(item.course.slug)}">${esc(item.course.title)}</h2><p>${esc(item.course.description)}</p></div><div class="py-chapter-overview">${stats(item)}<span class="py-chapter-disclosure" aria-hidden="true"><span class="py-disclosure-closed">목차 펼치기</span><span class="py-disclosure-open">목차 접기</span><span class="py-disclosure-chevron"></span></span></div></summary><div class="py-chapter-contents"><div class="actions py-chapter-actions"><a class="text-link" href="${chapterPath(item)}">챕터 ${number(item)} 전체 목차 ↗</a><a class="text-link" href="${reviewPath(item)}">챕터 ${number(item)} 복습 ${item.course.review.length}문제 ↗</a></div><div class="py-lesson-list">${items(item).map(lesson => row(lesson, item)).join('')}</div></div></details>`).join('')}
       <section class="home-bottom"><div><div class="eyebrow">YOUR READING</div><h3>생각한 과정을 남겨요.</h3><p>알고리즘·자료구조 · ${completed} / ${total} 레슨 읽음<br>읽음 표시와 마지막 레슨에서 이어갈 수 있습니다.</p>${readingBar(completed, total, '알고리즘·자료구조 전체 읽음')}<a class="text-link" href="#/progress">내 학습 기록 →</a></div><div><div class="eyebrow">DESCRIBE, TRACE, EXPLAIN</div><h3>답과 함께 이유를 확인해요.</h3><p>요구 사항과 중간 상태를 손으로 적어 보세요.<br>Python 예시는 PC에서 직접 실행하고,<br>접힌 예시 답·해설을 펼쳐 자신의 생각과 비교합니다.</p><a class="text-link" href="${reviewPath(current)}">챕터 ${number(current)} 복습 →</a></div></section>
-      <aside class="py-course-note"><span class="status-badge">챕터 2~9 준비 중</span><p>전체 교육과정은 9개 챕터로 설계되어 있습니다. 현재는 챕터 1 ‘문제를 절차로 바꾸기’를 학습할 수 있습니다. 시간·공간 비용, 자료구조와 탐색·정렬 등은 다음 챕터에서 이어갑니다.</p></aside></main>`;
+      <aside class="py-course-note"><span class="status-badge">${lastNumber < 9 ? '챕터 ' + (lastNumber + 1) + '~9 준비 중' : '과정 구성 완료'}</span><p>전체 교육과정은 9개 챕터로 설계되어 있습니다. 현재 ${all.length}개 챕터 · ${total}개 레슨에서 문제의 명세와 비용, 자료구조의 선택 이유를 연결합니다. 필요한 챕터의 목차와 복습으로 돌아가 자신의 절차를 확인해 보세요.</p></aside></main>`;
   }
 
   function chapter(ctx) {
     return `<main id="main" class="wrap py-chapter algo-chapter"><div class="page-title"><div class="crumb"><a href="#/">학습 분야</a> / <a href="#/subjects/algorithms">알고리즘·자료구조</a> / 챕터 ${number(ctx)}</div><div class="eyebrow">CHAPTER ${pad(number(ctx))} · ALGORITHMS</div><h1>${esc(ctx.course.title)}</h1><p>${esc(ctx.course.description)}</p></div>
       <section class="chapter-banner"><div><h2>챕터 ${number(ctx)} · ${items(ctx).length}개 레슨</h2><p>${esc(ctx.course.prerequisite)}<br>${readCount(ctx)} / ${items(ctx).length} 레슨 읽음</p></div>${stats(ctx)}</section>
       ${learningNote()}<div class="section-head"><div><div class="eyebrow">THE CONTENTS</div><h2>입력에서 결과까지, 이유를 따라가요.</h2></div><p>레슨마다 원리 설명과 예제 5문제</p></div><div class="py-lesson-list">${items(ctx).map(item => row(item, ctx)).join('')}</div>
-      <section class="review-band"><div><div class="eyebrow">CHAPTER ${pad(number(ctx))} REVIEW</div><h2>배운 절차를, ${ctx.course.review.length}문제로.</h2><p>명세·추적·정확성·경계 입력을 연결해 다시 생각합니다.</p></div><a class="btn primary" href="${reviewPath(ctx)}">챕터 복습 시작 <span>→</span></a></section></main>`;
+      <section class="review-band"><div><div class="eyebrow">CHAPTER ${pad(number(ctx))} REVIEW</div><h2>배운 절차를, ${ctx.course.review.length}문제로.</h2><p>${esc(ctx.course.description)}</p></div><a class="btn primary" href="${reviewPath(ctx)}">챕터 복습 시작 <span>→</span></a></section></main>`;
   }
 
   function sidebar(lesson, ctx) {
@@ -90,9 +91,10 @@
   }
 
   function review(ctx) {
-    return `<main id="main" class="wrap py-review algo-review"><div class="page-title"><div class="crumb"><a href="#/subjects/algorithms">알고리즘·자료구조</a> / <a href="${chapterPath(ctx)}">챕터 ${number(ctx)}</a> / 복습</div><div class="eyebrow">CHAPTER ${pad(number(ctx))} · REVISIT THE IDEAS</div><h1>생각을 연결하는<br>챕터 ${number(ctx)} 복습 ${ctx.course.review.length}문제</h1><p>${esc(ctx.course.title)}.<br>입출력 계약부터 불변식·종료까지, 절차가 맞는 이유를 설명해 보세요.</p></div>
+    const nextChapter = chapters(ctx).find(item => number(item) === number(ctx) + 1);
+    return `<main id="main" class="wrap py-review algo-review"><div class="page-title"><div class="crumb"><a href="#/subjects/algorithms">알고리즘·자료구조</a> / <a href="${chapterPath(ctx)}">챕터 ${number(ctx)}</a> / 복습</div><div class="eyebrow">CHAPTER ${pad(number(ctx))} · REVISIT THE IDEAS</div><h1>생각을 연결하는<br>챕터 ${number(ctx)} 복습 ${ctx.course.review.length}문제</h1><p>${esc(ctx.course.title)}.<br>${esc(ctx.course.description)}</p></div>
       <section class="py-review-problems" aria-label="챕터 ${number(ctx)} 복습 문제"><p class="py-practice-note">문제의 요구를 먼저 적고 자신의 절차를 따라가 보세요. 필요한 때 예시 답·해설을 펼치고 관련 레슨으로 돌아갈 수 있습니다. 다른 절차도 계약을 지키는 이유를 설명할 수 있다면 가능합니다.</p>${problems(ctx.course.review, '복습', ctx, 'review')}</section>
-      <section class="py-review-keypoints"><div class="section-head"><div><div class="eyebrow">IDEAS TO KEEP</div><h2>필요할 때 다시 보는 핵심 정리</h2></div></div>${items(ctx).map(item => `<details class="review-overview"><summary>${pad(lessonNumber(item.id, ctx))} · ${esc(item.title)}</summary><ul class="summary-list py-review-summary">${item.keypoints.map(point => `<li>${esc(point)}</li>`).join('')}</ul><a href="${lessonPath(item.id, ctx)}">이 레슨 다시 읽기 ↗</a></details>`).join('')}</section><div class="actions"><a class="text-link" href="${chapterPath(ctx)}">챕터 ${number(ctx)} 목차로 →</a></div></main>`;
+      <section class="py-review-keypoints"><div class="section-head"><div><div class="eyebrow">IDEAS TO KEEP</div><h2>필요할 때 다시 보는 핵심 정리</h2></div></div>${items(ctx).map(item => `<details class="review-overview"><summary>${pad(lessonNumber(item.id, ctx))} · ${esc(item.title)}</summary><ul class="summary-list py-review-summary">${item.keypoints.map(point => `<li>${esc(point)}</li>`).join('')}</ul><a href="${lessonPath(item.id, ctx)}">이 레슨 다시 읽기 ↗</a></details>`).join('')}</section><div class="actions"><a class="text-link" href="${chapterPath(ctx)}">챕터 ${number(ctx)} 목차로 →</a>${nextChapter ? `<a class="text-link" href="${chapterPath(nextChapter)}">다음 챕터 · ${esc(nextChapter.course.title)} →</a>` : ''}</div></main>`;
   }
 
   function progress(ctx) {
