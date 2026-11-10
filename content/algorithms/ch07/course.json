@@ -1,0 +1,29 @@
+{
+  "id": "algorithms-ch07",
+  "slug": "ch07",
+  "number": 7,
+  "title": "관계를 그래프로 다루기",
+  "description": "방향·가중치·도달 관계를 명세하고, 방문 관리·거리 층·의존 순서·거리 갱신의 조건으로 그래프 탐색을 검증합니다.",
+  "prerequisite": "챕터 3~6의 스택·큐·집합·맵·힙, 함수와 작은 재귀를 사용합니다.",
+  "runtime": "Python 3",
+  "lessonFiles": [
+    "lesson-01.json",
+    "lesson-02.json",
+    "lesson-03.json",
+    "lesson-04.json",
+    "lesson-05.json",
+    "lesson-06.json"
+  ],
+  "references": [
+    {
+      "title": "Python 3.12 collections.deque · 탐색 큐",
+      "url": "https://docs.python.org/3.12/library/collections.html#collections.deque"
+    },
+    {
+      "title": "Python 3.12 heapq · 거리 후보의 우선순위",
+      "url": "https://docs.python.org/3.12/library/heapq.html"
+    }
+  ],
+  "referenceCheckedAt": "2026-11-10 KST",
+  "validationEnvironment": "CPython 3.12.14 / Linux"
+}

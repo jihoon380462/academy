@@ -1,0 +1,119 @@
+{
+  "id": "algorithms-l048",
+  "order": 6,
+  "title": "방법 선택과 결과 복원",
+  "subtitle": "최적값뿐 아니라 어떤 선택으로 만들었는지 되짚습니다",
+  "minutes": 19,
+  "goal": "작은 기준 해법과 비교해 방법을 선택하고, 저장한 선택을 따라 유효한 결과를 복원합니다.",
+  "intro": "최소 동전 수가 2라는 숫자만으로 사용자가 어떤 동전을 준비해야 하는지 알 수 있을까요? 실제 선택 목록이 필요하면 답을 갱신할 때 그 선택도 남겨야 합니다. 복원한 결과의 합과 개수까지 확인하고, 해가 여럿일 때 무엇을 돌려줄지도 계약으로 정해 봅시다.",
+  "sections": [
+    {
+      "title": "반환해야 할 결과에 맞춰 방법을 고릅니다",
+      "body": [
+        "작은 입력의 모든 후보 비교는 기준 결과를 만들기 좋습니다. 탐욕은 선택을 고정해도 최적해가 남는 조건을 설명할 수 있을 때 사용합니다. 같은 부분 문제가 겹치면 메모나 표 계산을 고려합니다. 상태 수와 의존 관계, 필요한 출력, 메모리와 호출 깊이를 보고 선택하며 방법 이름만으로 빠르다고 정하지 않습니다.",
+        "이번 계약은 오름차순으로 주어진 서로 다른 양의 정수 동전을 무제한 사용해 정확한 금액을 만드는 최소 개수와 조합 하나를 반환하는 것입니다. 금액은 0 이상의 정수이고 불가능하면 None입니다. 같은 개수의 후보는 먼저 본 동전을 유지합니다. 입력 순서가 정해져 있으므로 동률에서도 결과가 재현됩니다. 모든 최적 조합을 나열하는 계약은 아닙니다."
+      ]
+    },
+    {
+      "title": "답을 갱신한 선택도 같이 저장합니다",
+      "body": [
+        "best[x]가 더 작아질 때 step[x]에 그 후보의 마지막 동전을 저장합니다. best[x-c]가 가능한 경우에만 c를 붙이므로, 기록한 c를 떼면 이미 가능한 더 작은 상태 x-c로 갑니다. strict한 candidate<best[x]일 때만 덮어써 동률에서는 먼저 확인한 동전이 남습니다.",
+        "예를 들어 [1,2,3]의 금액 4는 1+3과 2+2가 모두 두 개입니다. 금액 4에서 동전 1을 먼저 확인해 두 개 후보를 기록하므로 뒤의 동률 2로 덮어쓰지 않습니다. 복원 순서는 [1,3]입니다. 이는 정한 동률 규칙의 결과이며 최적값만 맞으면 어떤 목록이든 항상 같은 결과라는 뜻은 아닙니다."
+      ],
+      "code": {
+        "kind": "text",
+        "source": "best[x]가 개선될 때:\n  best[x] ← best[x-c]+1\n  step[x] ← c\n같은 개수라면 기존 step 유지\n\n금액4, 동전[1,2,3]\nc=1: best[3]+1=2 → step[4]=1\nc=2: best[2]+1=2 → 동률 유지\nc=3: best[1]+1=2 → 동률 유지"
+      }
+    },
+    {
+      "title": "양의 동전을 거슬러 가면 복원이 끝납니다",
+      "body": [
+        "remaining을 목표로 시작해 step[remaining]의 동전을 답 목록에 넣고 그 동전만큼 뺍니다. 모든 동전이 양수여서 remaining이 매번 줄고 0에 도착합니다. 도달 불가능한 목표에서는 복원을 시작하지 않습니다. 금액 0이면 반복 없이 (0,[])를 반환합니다.",
+        "각 기록이 best[x]=best[x-c]+1을 만족하므로 0까지의 선택 수는 최소 개수와 같습니다. 반환 전후에 선택한 값들이 허용 동전인지, 합이 목표인지, 길이가 최소 개수인지 확인할 수 있습니다. 숫자만 비교해서는 틀린 부모 포인터나 잘못된 조합을 놓칠 수 있습니다."
+      ]
+    },
+    {
+      "title": "비교 기준과 복원 비용까지 검증합니다",
+      "body": [
+        "표 두 개는 O(A+1) 공간이고, 표 계산은 상수 정수 연산 모델에서 O((A+1)(k+1))입니다. 결과에 동전 L개가 있으면 복원 시간·결과 공간은 O(L)이며 양의 동전에서는 L≤A입니다. 재귀 메모와 표가 같은 최적값을 내는지 작은 입력에서 비교하되, 동률 경로는 정한 규칙에 맞추어 따로 검사합니다.",
+        "아래 구현은 오름차순 동전 입력을 그대로 읽고 표를 채웁니다. 작은 완전 탐색 기준과 개수를 비교한 뒤 복원 결과의 합·개수·허용 동전을 확인하는 검증을 함께 사용합니다. 큰 입력의 모든 정확성은 상태 의미·전이·진행 조건으로도 설명해야 합니다."
+      ],
+      "code": {
+        "kind": "python",
+        "source": "def minimum_coins_path(coins, amount):\n    infinity = float(\"inf\")\n    best = [infinity] * (amount + 1)\n    step = [None] * (amount + 1)\n    best[0] = 0\n    for subtotal in range(1, amount + 1):\n        for coin in coins:\n            if coin <= subtotal and best[subtotal - coin] != infinity:\n                candidate = best[subtotal - coin] + 1\n                if candidate < best[subtotal]:\n                    best[subtotal] = candidate\n                    step[subtotal] = coin\n    if best[amount] == infinity:\n        return None\n    chosen = []\n    remaining = amount\n    while remaining > 0:\n        coin = step[remaining]\n        chosen.append(coin)\n        remaining -= coin\n    return best[amount], chosen\n\nprint(minimum_coins_path([1, 3, 4], 6))\nprint(minimum_coins_path([1, 2, 3], 4))\nprint(minimum_coins_path([4], 6))\nprint(minimum_coins_path([1, 3], 0))",
+        "output": "(2, [3, 3])\n(2, [1, 3])\nNone\n(0, [])\n",
+        "caption": "동전 목록이 오름차순이라는 계약 아래 같은 개수이면 먼저 본 선택을 유지합니다."
+      }
+    }
+  ],
+  "worked": {
+    "question": "[1,3,4]의 금액 6에서 저장한 step을 따라 최소 조합을 복원하고, [1,2,3]의 금액 4에서는 동률 규칙을 설명하세요.",
+    "code": {
+      "kind": "text",
+      "source": "동전[1,3,4], 금액6\nstep[6]=3 → remaining3\nstep[3]=3 → remaining0\n선택 [3,3], 길이2, 합6\n\n동전[1,2,3], 금액4\nstep[4]=1 → remaining3\nstep[3]=3 → remaining0\n선택 [1,3], 길이2, 합4"
+    },
+    "steps": [
+      "금액 6에서 기록한 3을 떼면 금액 3의 최적 상태로 돌아갑니다. 다시 3을 떼어 0에 도착합니다.",
+      "길이 2와 합 6을 확인하고 모든 값이 허용 동전인지 확인합니다.",
+      "금액 4의 동률에서는 먼저 본 동전 1을 유지해 [1,3]이 나옵니다. [2,2]도 최적이지만 이번 규칙의 반환 목록은 아닙니다.",
+      "서로 다른 최적 경로를 무조건 오류로 판단하지 말고, 개수의 정확성과 반환 경로 규칙을 구분해 검사합니다."
+    ],
+    "answer": "최소 개수와 실제 조합을 함께 검증합니다. 결과는 각각 (2,[3,3])과 정한 동률 규칙의 (2,[1,3])입니다."
+  },
+  "misconception": {
+    "question": "최소 개수가 맞으면 복원한 목록도 자동으로 맞고, 동률에서 무엇을 반환할지 정할 필요가 없나요?",
+    "answer": "부모 선택을 잘못 저장하거나 따라가면 합·개수·허용 동전이 틀릴 수 있습니다. 실제 경로를 따로 검증해야 합니다. 최적 조합 하나면 충분한 계약이라도 결과를 재현하려면 동률 규칙을 정하는 것이 좋습니다. 모든 최적 조합을 요구한다면 선택 하나만 저장하는 자료로는 부족합니다."
+  },
+  "keypoints": [
+    "방법은 입력 조건·상태 수·의존 관계·필요한 출력과 자원을 보고 선택하며 작은 기준 해법과 비교합니다.",
+    "최적값을 갱신할 때 선택도 저장하고, 양의 감소를 따라 불가능 상태를 피하며 결과를 복원합니다.",
+    "복원 결과의 합·개수·허용 선택과 동률 규칙을 확인하며 최적값 일치와 같은 경로 일치를 구별합니다."
+  ],
+  "examples": [
+    {
+      "skill": "전략 구분 · 방법 선택",
+      "question": "작은 입력의 기준 결과, 근거 있는 국소 선택, 겹치는 부분 문제에 각각 어떤 방법을 고려할 수 있나요? 이름만으로 실제 성능을 정할 수 있는지도 설명하세요.",
+      "solution": {
+        "answer": "각각 완전 탐색, 조건이 증명된 탐욕, 메모이제이션이나 표 동적 계획법을 고려합니다. 후보·상태 수와 각 작업·메모리·입력 크기를 보고 비교해야 합니다."
+      },
+      "explanation": "방법 이름이 같아도 문제의 상태 수와 구현 비용이 다를 수 있습니다."
+    },
+    {
+      "skill": "상태/전이 · 선택 기록",
+      "question": "best[x]가 5에서 3으로 개선되었는데 step[x]를 예전 선택으로 두었습니다. 최소 숫자와 복원 결과 사이에 무슨 문제가 생길 수 있나요?",
+      "solution": {
+        "answer": "숫자는 3이어도 기록한 이전 선택은 best[x-c]+1=3을 만족하지 않을 수 있어 잘못된 길이나 조합이 나올 수 있습니다. 개선한 후보의 동전을 함께 저장해야 합니다."
+      },
+      "explanation": "선택 기록은 계산 결과의 근거를 보관합니다. 값만 바꾸고 근거를 남기지 않으면 복원이 다른 계산을 따라갈 수 있습니다."
+    },
+    {
+      "skill": "반례와 비교 · 동률",
+      "question": "[1,2,3]의 금액 4에서 개수 2를 확인한 기준 해법이 [2,2]를, 이번 엄격한 개선 규칙의 표가 [1,3]을 반환했습니다. 둘 중 하나가 틀렸다고 결론 내려도 되나요?",
+      "solution": {
+        "answer": "최소 개수와 합·허용 동전만 보면 둘 다 최적 조합입니다. 이번 표의 오름차순·먼저 본 동률 유지 계약에는 [1,3]이 맞습니다. 기준 해법이 같은 동률 계약을 쓰는지도 따로 확인해야 합니다."
+      },
+      "explanation": "숫자의 최적성과 특정 경로 규칙은 다른 검사항목입니다."
+    },
+    {
+      "skill": "작은 적용 · 경로 검증",
+      "question": "[2,5]로 금액 9를 만드는 아래 복원 절차를 실행하고 개수·합·허용 동전 여부를 출력하세요.",
+      "solution": {
+        "answer": "최소 3개인 [2,2,5]가 복원되고 길이 3·합 9·모두 허용 동전임을 확인합니다.",
+        "code": {
+          "kind": "python",
+          "source": "coins = [2, 5]\namount = 9\ninfinity = float(\"inf\")\nbest = [infinity] * (amount + 1)\nstep = [None] * (amount + 1)\nbest[0] = 0\nfor subtotal in range(1, amount + 1):\n    for coin in coins:\n        if coin <= subtotal and best[subtotal - coin] != infinity:\n            candidate = best[subtotal - coin] + 1\n            if candidate < best[subtotal]:\n                best[subtotal] = candidate\n                step[subtotal] = coin\nchosen = []\nif best[amount] != infinity:\n    remaining = amount\n    while remaining > 0:\n        coin = step[remaining]\n        chosen.append(coin)\n        remaining -= coin\n    print(best[amount], chosen)\n    print(len(chosen), sum(chosen), all(coin in coins for coin in chosen))\nelse:\n    print(None)",
+          "output": "3 [2, 2, 5]\n3 9 True\n"
+        }
+      },
+      "explanation": "각 remaining이 양의 동전만큼 줄어 0에 도착하며, 개수뿐 아니라 실제 경로도 검사합니다."
+    },
+    {
+      "skill": "탐색 조건 · 불가능과 0",
+      "question": "[4]로 금액 6을 만들 수 없을 때와 금액 0일 때 복원 시작 여부와 반환값을 구별하세요.",
+      "solution": {
+        "answer": "6은 불가능이므로 step을 따라가지 않고 None을 반환합니다. 0은 가능한 빈 조합으로 반복 0회 뒤 (0,[])를 반환합니다."
+      },
+      "explanation": "불가능과 빈 해를 구별해야 None인 선택을 동전처럼 빼거나 0에서 불필요한 반복을 하지 않습니다."
+    }
+  ]
+}
