@@ -1,0 +1,22 @@
+{
+  "id": "algorithms-ch02",
+  "slug": "ch02",
+  "number": 2,
+  "title": "시간과 공간을 세는 법",
+  "description": "무엇을 한 번의 연산으로 셀지 정하고, 입력 크기에 따른 시간·추가 공간·누적 비용을 측정 결과와 구별해 설명합니다.",
+  "prerequisite": "챕터 1 · 문제를 절차로 바꾸기. 변수·조건·반복·함수·리스트의 기초를 사용합니다.",
+  "runtime": "Python 3",
+  "lessonFiles": ["lesson-01.json", "lesson-02.json", "lesson-03.json", "lesson-04.json", "lesson-05.json", "lesson-06.json"],
+  "references": [
+    {
+      "title": "Python 3.12 튜토리얼 · 제어 흐름",
+      "url": "https://docs.python.org/3.12/tutorial/controlflow.html"
+    },
+    {
+      "title": "Python 3.12 timeit · 작은 코드의 실행 시간 측정",
+      "url": "https://docs.python.org/3.12/library/timeit.html"
+    }
+  ],
+  "referenceCheckedAt": "2026-11-10 KST",
+  "validationEnvironment": "CPython 3.12.14 / Linux"
+}
