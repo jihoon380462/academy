@@ -1,0 +1,37 @@
+{
+  "id": "algorithms-ch09",
+  "slug": "ch09",
+  "number": 9,
+  "title": "실제 데이터 처리에 적용하기",
+  "description": "누적값·두 포인터·문자열·스트리밍·캐시를 실제 계약에 맞춰 적용하고, 두 해법의 정확성·공간·측정 결과로 선택 이유를 설명합니다.",
+  "prerequisite": "챕터 1~8에서 작업에 필요한 구조·비용·검증과 함수 테스트의 기초를 사용합니다.",
+  "runtime": "Python 3",
+  "lessonFiles": [
+    "lesson-01.json",
+    "lesson-02.json",
+    "lesson-03.json",
+    "lesson-04.json",
+    "lesson-05.json",
+    "lesson-06.json"
+  ],
+  "references": [
+    {
+      "title": "Python 3.12 itertools · 순차 입력 처리",
+      "url": "https://docs.python.org/3.12/library/itertools.html"
+    },
+    {
+      "title": "Python 3.12 functools · 캐시의 키와 보관",
+      "url": "https://docs.python.org/3.12/library/functools.html"
+    },
+    {
+      "title": "Python 3.12 timeit · 반복 측정",
+      "url": "https://docs.python.org/3.12/library/timeit.html"
+    },
+    {
+      "title": "Python 3.12 표준 타입 · 문자열과 컬렉션",
+      "url": "https://docs.python.org/3.12/library/stdtypes.html"
+    }
+  ],
+  "referenceCheckedAt": "2026-11-10 KST",
+  "validationEnvironment": "CPython 3.12.14 / Linux"
+}

@@ -10,7 +10,7 @@ for (const file of ['curriculum.js', 'python-content.js', 'algorithms-content.js
 const source = fs.readFileSync(path.join(root, 'progress-transfer.js'), 'utf8');
 const MATH = 'understand-math-grade1-v1';
 const ALGORITHMS = 'academy-algorithms-ch01-v1';
-const algorithmKeys = Array.from({ length: 5 }, (_, index) => 'academy-algorithms-ch' + String(index + 1).padStart(2, '0') + '-v1');
+const algorithmKeys = Array.from({ length: 9 }, (_, index) => 'academy-algorithms-ch' + String(index + 1).padStart(2, '0') + '-v1');
 const THEME = 'academy-theme-v1';
 const pyKey = number => `academy-python-ch${String(number).padStart(2, '0')}-v1`;
 const date = '2026-11-10T12:00:00.000Z';
@@ -47,14 +47,14 @@ function mutations(storage) {
   return storage.calls.filter(call => call[0] !== 'get');
 }
 
-test('exports the frozen API and captures all fifteen courses with the real 107 lesson IDs', () => {
+test('exports the frozen API and captures all nineteen courses with the real 130 lesson IDs', () => {
   const storage = memory(), api = engine(storage), captured = api.capture();
   assert.ok(Object.isFrozen(api));
   assert.equal(api.MAX_BYTES, 1048576);
   assert.deepEqual(Object.keys(api), ['MAX_BYTES', 'capture', 'encode', 'parse', 'summary', 'apply']);
   assert.deepEqual(Object.keys(captured.records), [MATH, ...Array.from({ length: 9 }, (_, index) => pyKey(index + 1)), ...algorithmKeys]);
   assert.equal(captured.theme, 'light');
-  assert.equal(api.summary(captured).total, 107);
+  assert.equal(api.summary(captured).total, 130);
   assert.equal(api.summary(captured).completed, 0);
   assert.ok(Number.isFinite(Date.parse(captured.exportedAt)));
   assert.equal(mutations(storage).length, 0);
@@ -73,7 +73,7 @@ test('JSON and copy-code round trips preserve every course, review score and opt
   const code = api.encode(captured);
   assert.match(code, /^ACADEMY1\./);
   assert.deepEqual(json(api.parse(` \n${code}\n `)), expected);
-  assert.deepEqual(json(api.summary(captured)), { completed: 15, total: 107, mathCompleted: 1, pythonCompleted: 9, algorithmsCompleted: 5, scoreCount: 30, exportedAt: captured.exportedAt, theme: 'ink' });
+  assert.deepEqual(json(api.summary(captured)), { completed: 19, total: 130, mathCompleted: 1, pythonCompleted: 9, algorithmsCompleted: 9, scoreCount: 38, exportedAt: captured.exportedAt, theme: 'ink' });
 });
 
 test('old ten-course version 1 files preserve the local algorithms record and unrelated keys', () => {
@@ -107,7 +107,7 @@ test('algorithms records round-trip, merge independently and count under their o
   const incoming = snapshot({ [ALGORITHMS]: state({ completed: ['algorithms-l002', 'algorithms-l006'], last: 'algorithms-l006', visitedAt: 20 }) });
   const parsed = api.parse(api.encode(incoming));
   assert.deepEqual(json(parsed), incoming);
-  assert.deepEqual(json(api.summary(parsed)), { completed: 2, total: 107, mathCompleted: 0, pythonCompleted: 0, algorithmsCompleted: 2, scoreCount: 0, exportedAt: date });
+  assert.deepEqual(json(api.summary(parsed)), { completed: 2, total: 130, mathCompleted: 0, pythonCompleted: 0, algorithmsCompleted: 2, scoreCount: 0, exportedAt: date });
   const result = api.apply(parsed);
   assert.equal(result.addedCompleted, 2);
   assert.deepEqual(json(result.records[ALGORITHMS]), state({ completed: ['algorithms-l001', 'algorithms-l002', 'algorithms-l006'], last: 'algorithms-l006', visitedAt: 20 }));
@@ -144,14 +144,14 @@ test('old eleven-course files preserve new chapters byte-for-byte and cross-chap
   assert.deepEqual(json(result.records[algorithmKeys[2]]), state({ completed: ['algorithms-l013', 'algorithms-l014', 'algorithms-l018'], last: 'algorithms-l018', visitedAt: 500 }));
   assert.equal(result.addedCompleted, 4);
   assert.deepEqual(mutations(storage).map(call => call[1]), algorithmKeys.slice(1, 3));
-  assert.deepEqual(json(api.summary(incoming)), { completed: 4, total: 107, mathCompleted: 0, pythonCompleted: 0, algorithmsCompleted: 4, scoreCount: 0, exportedAt: date });
+  assert.deepEqual(json(api.summary(incoming)), { completed: 4, total: 130, mathCompleted: 0, pythonCompleted: 0, algorithmsCompleted: 4, scoreCount: 0, exportedAt: date });
   for (const [key, wrongId] of [[algorithmKeys[1], 'algorithms-l013'], [algorithmKeys[2], 'algorithms-l007']]) {
     expectCode(() => api.parse(JSON.stringify(snapshot({ [key]: state({ completed: [wrongId] }) }))), 'INVALID_DATA');
   }
 });
 
-test('old ten, eleven and thirteen-course files preserve omitted current algorithm records', () => {
-  for (const count of [10, 11, 13]) {
+test('old ten, eleven, thirteen and fifteen-course files preserve omitted current algorithm records', () => {
+  for (const count of [10, 11, 13, 15]) {
     const raw = Object.fromEntries(curriculum.window.ALGORITHMS_COURSES.map((course, index) => {
       const id = course.lessons.at(-1).id;
       return [algorithmKeys[index], JSON.stringify(state({ completed: [id], scores: { [id]: score(2, 4) }, last: id, visitedAt: 100 + index }), null, 2)];
@@ -188,10 +188,39 @@ test('chapters four and five merge in isolation, retain prior thirteen stores an
   assert.equal(result.records[algorithmKeys[4]].last, 'algorithms-l031');
   assert.equal(result.addedCompleted, 4);
   for (const key of [...before.keys()].slice(0, 13)) assert.equal(storage.values.get(key), before.get(key), key + ' raw state retained');
-  assert.deepEqual(mutations(storage).map(call => call[1]), algorithmKeys.slice(3));
+  assert.deepEqual(mutations(storage).map(call => call[1]), algorithmKeys.slice(3, 5));
   for (const [key, wrongId] of [[algorithmKeys[3], 'algorithms-l025'], [algorithmKeys[4], 'algorithms-l024'], [algorithmKeys[4], 'algorithms-l032']]) {
     expectCode(() => api.parse(JSON.stringify(snapshot({ [key]: state({ completed: [wrongId], last: wrongId }) }))), 'INVALID_DATA');
   }
+});
+
+test('chapters six through nine retain prior fifteen raw records and merge only their own lesson IDs', () => {
+  const storage = memory(), api = engine(storage), all = api.capture();
+  for (const [index, [key]] of Object.entries(all.records).entries()) {
+    const course = [...curriculum.window.PYTHON_COURSES, ...curriculum.window.ALGORITHMS_COURSES].find(item => key === 'academy-' + item.id + '-v1');
+    const id = index === 0 ? 'prime' : course.lessons[0].id;
+    storage.values.set(key, JSON.stringify(state({ completed: [id], scores: { [id]: score(2, 4) }, last: id, visitedAt: 100 + index }), null, 1));
+  }
+  const before = new Map(storage.values), incoming = snapshot({});
+  for (const [index, course] of curriculum.window.ALGORITHMS_COURSES.entries()) {
+    if (index < 5) continue;
+    const ids = course.lessons.slice(-2).map(lesson => lesson.id);
+    incoming.records[algorithmKeys[index]] = state({ completed: ids, last: ids.at(-1), visitedAt: 500 + index });
+  }
+  const result = api.apply(api.parse(api.encode(incoming)));
+  assert.equal(result.addedCompleted, 8);
+  for (const [key, value] of [...before.entries()].slice(0, 15)) assert.equal(storage.values.get(key), value, key + ' raw record retained');
+  for (const [index, course] of curriculum.window.ALGORITHMS_COURSES.entries()) {
+    if (index < 5) continue;
+    const record = result.records[algorithmKeys[index]], ids = course.lessons.map(lesson => lesson.id);
+    assert.deepEqual(json(record.completed), [ids[0], ...ids.slice(-2)]);
+    assert.equal(record.last, ids.at(-1));
+    assert.deepEqual(json(record.scores), { [ids[0]]: score(2, 4) });
+    const wrongId = curriculum.window.ALGORITHMS_COURSES[index - 1].lessons.at(-1).id;
+    expectCode(() => api.parse(JSON.stringify(snapshot({ [algorithmKeys[index]]: state({ completed: [wrongId], last: wrongId }) }))), 'INVALID_DATA');
+  }
+  assert.deepEqual(mutations(storage).map(call => call[1]), algorithmKeys.slice(5));
+  expectCode(() => api.parse(JSON.stringify(snapshot({ [algorithmKeys[8]]: state({ completed: ['algorithms-l055'] }) }))), 'INVALID_DATA');
 });
 
 test('UTF-8 copy codes preserve Korean and non-BMP curriculum IDs', () => {
@@ -239,7 +268,7 @@ test('apply rereads fresh storage and merges union, maximum best, newest latest 
   storage.values.set(MATH, JSON.stringify(live));
   const result = api.apply(incoming);
   assert.equal(result.addedCompleted, 1);
-  assert.equal(Object.keys(result.records).length, 15);
+  assert.equal(Object.keys(result.records).length, 19);
   assert.deepEqual(json(result.records[MATH]), state({ completed: ['prime', 'factorization', 'gcd-lcm'], scores: { prime: score(1, 5, later), factorization: score(2, 5, later), review: score(7, 10, later) }, last: 'factorization', visitedAt: 250 }));
   assert.deepEqual(json(result.records[pyKey(9)].scores), { 'python-l046': score(4, 5) });
   assert.equal(result.theme, 'forest');
