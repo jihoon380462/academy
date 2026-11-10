@@ -81,46 +81,72 @@
       "solution": {
         "answer": "두 입력에서 기대 결과를 반환했다는 사실은 말할 수 있습니다. 모든 비어 있지 않은 정수 목록에서 정확하다는 결론은 아직 뒷받침되지 않습니다."
       },
-      "explanation": "음수만 있는 목록, 한 원소, 같은 값만 있는 목록 등은 확인하지 않았습니다. 사례 관찰을 허용 입력 전체에 대한 주장으로 바로 넓히면 안 됩니다."
+      "explanation": "음수만 있는 목록, 한 원소, 같은 값만 있는 목록 등은 확인하지 않았습니다. 사례 관찰을 허용 입력 전체에 대한 주장으로 바로 넓히면 안 됩니다.",
+      "exerciseType": "explain"
     },
     {
-      "skill": "반례 추적",
-      "question": "다음 절차의 계약은 target과 같은 원소의 개수를 세는 것입니다. values가 [6, 1, 6], target이 6일 때 기대 결과와 실제 결과를 적고 왜 반례인지 설명하세요.",
+      "exerciseType": "implement",
+      "skill": "구현 · 음수와 동률을 견디는 최댓값 위치",
+      "question": "largest_index(values)를 직접 구현하세요. 유한한 정수 목록의 최댓값이 처음 나오는 0 기반 인덱스를 반환하고, 빈 목록이면 -1입니다. 같은 최댓값이 뒤에 다시 나와도 첫 위치를 유지하세요. 입력 자료는 변경하지 않습니다. 함수의 결과는 반환하며, 아래 확인 호출의 기대 반환값과 비교하세요.",
+      "code": "확인 호출 → 기대 반환값\nlargest_index([]) → -1\nlargest_index([-5]) → 0\nlargest_index([-8, -3, -3]) → 1",
+      "codeKind": "text",
       "solution": {
-        "answer": "기대 결과는 2, 실제 결과는 1입니다. 첫 6에서 바로 끝나므로 마지막 6을 세지 못합니다."
-      },
-      "explanation": "이 절차는 존재 여부에는 쓸 수 있지만 등장 횟수 계약을 지키지는 않습니다. 중복을 허용하는 입력이므로 이 사례는 유효한 반례입니다.",
-      "code": "각 원소를 순서대로 본다\n    target과 같으면 1을 돌려주고 끝낸다\n끝까지 없으면 0을 돌려준다",
-      "codeKind": "text"
-    },
-    {
-      "skill": "경계값을 고르는 이유",
-      "question": "정수 값을 받아 0 이상이면 True, 음수이면 False를 반환해야 합니다. 조건을 value > 0으로 구현했을 때, [양수 하나, 음수 하나]만 검사하는 것보다 반드시 추가해야 할 입력과 기대 결과를 적으세요.",
-      "solution": {
-        "answer": "입력 0을 추가하며 기대 결과는 True입니다. 잘못된 조건은 0에서 False가 됩니다."
-      },
-      "explanation": "0 이상은 0을 포함합니다. 조건의 경계 바로 위와 아래만 보면 경계 자체를 빠뜨린 실수를 놓칠 수 있습니다."
-    },
-    {
-      "skill": "절차 수정",
-      "question": "정수 목록에서 target과 같은 원소의 개수를 세는 함수를 작성하세요. 빈 목록은 0, 중복은 각각 세며 입력 목록을 바꾸지 않습니다. [2, 2, 5]와 target 2, 빈 목록과 target 2로 실행해 보세요.",
-      "solution": {
-        "answer": "첫 결과는 2, 빈 목록의 결과는 0입니다. 다음은 가능한 구현 한 가지입니다.",
+        "answer": "다음은 계약을 만족하는 구현 한 가지입니다. 확인 호출의 결과뿐 아니라 입력 경계와 변수의 의미도 비교하세요.",
         "code": {
           "kind": "python",
-          "source": "def count_equal(values, target):\n    count = 0\n    for value in values:\n        if value == target:\n            count += 1\n    return count\n\nprint(count_equal([2, 2, 5], 2))\nprint(count_equal([], 2))",
-          "output": "2\n0\n"
+          "source": "def largest_index(values):\n    if len(values) == 0:\n        return -1\n    best_index = 0\n    i = 1\n    while i < len(values):\n        if values[i] > values[best_index]:\n            best_index = i\n        i += 1\n    return best_index\n\nprint(largest_index([]))\nprint(largest_index([-5]))\nprint(largest_index([-8, -3, -3]))\n",
+          "output": "-1\n0\n1\n"
         }
       },
-      "explanation": "count를 0으로 시작해 각 원소를 한 번씩 확인하고, 같은 경우만 증가시킵니다. return은 반복 밖에 있어야 뒤에 있는 일치 원소까지 셉니다."
+      "explanation": "값 0을 최댓값 후보로 가정하지 않고 첫 원소의 위치로 시작합니다. 동률에서 갱신하지 않아 가장 앞의 최댓값 위치를 보존합니다."
     },
     {
-      "skill": "가정이 바뀐 경우",
-      "question": "비어 있지 않은 정수 목록의 최댓값을 찾을 때 best를 0으로 시작하고 더 큰 원소만 best에 넣었습니다. 입력 값에 음수를 허용한다면 한 원소짜리 반례와 수정 방향을 적으세요.",
+      "exerciseType": "implement",
+      "skill": "구현 · 전체 순서 조건 검사",
+      "question": "is_non_decreasing(values)를 직접 구현하세요. 유한한 정수 목록이 앞 값≤뒤 값인 오름차순인지 True/False로 반환합니다. 중복은 허용하고 빈 목록과 한 원소는 True입니다. 첫 두 값만 맞아도 전체가 맞다고 판단하지 마세요. 입력 자료는 변경하지 않습니다. 함수의 결과는 반환하며, 아래 확인 호출의 기대 반환값과 비교하세요.",
+      "code": "확인 호출 → 기대 반환값\nis_non_decreasing([]) → True\nis_non_decreasing([4]) → True\nis_non_decreasing([2, 2, 3]) → True\nis_non_decreasing([1, 3, 2]) → False",
+      "codeKind": "text",
       "solution": {
-        "answer": "[-3]이 반례입니다. 기대값 -3 대신 0을 남깁니다. 비어 있지 않다는 계약을 사용해 best를 첫 원소로 시작하고 나머지를 비교할 수 있습니다."
+        "answer": "다음은 계약을 만족하는 구현 한 가지입니다. 확인 호출의 결과뿐 아니라 입력 경계와 변수의 의미도 비교하세요.",
+        "code": {
+          "kind": "python",
+          "source": "def is_non_decreasing(values):\n    i = 1\n    while i < len(values):\n        if values[i] < values[i - 1]:\n            return False\n        i += 1\n    return True\n\nprint(is_non_decreasing([]))\nprint(is_non_decreasing([4]))\nprint(is_non_decreasing([2, 2, 3]))\nprint(is_non_decreasing([1, 3, 2]))\n",
+          "output": "True\nTrue\nTrue\nFalse\n"
+        }
       },
-      "explanation": "0은 모든 허용 입력보다 작거나 같다는 보장이 없습니다. 반례를 피하려고 음수를 금지하면 원래 계약을 바꾼 것입니다. 빈 목록까지 허용하려면 그때의 출력 계약을 추가로 정해야 합니다."
+      "explanation": "반례가 될 수 있는 인접 역전을 끝까지 확인합니다. 같은 값은 계약상 유효하므로 <와 ≤를 혼동하지 않습니다."
+    },
+    {
+      "exerciseType": "implement",
+      "skill": "구현 · 계약이 허용하는 조기 반환",
+      "question": "count_until_limit(values, target, limit)를 직접 구현하세요. values는 정수 목록, target은 정수, limit은 0 이상 정수입니다. target의 등장 횟수와 limit 중 작은 값을 반환합니다. limit=0과 빈 목록은 0이며, 개수가 limit에 도달하면 남은 원소를 보지 않아도 됩니다. 입력 자료는 변경하지 않습니다. 함수의 결과는 반환하며, 아래 확인 호출의 기대 반환값과 비교하세요.",
+      "code": "확인 호출 → 기대 반환값\ncount_until_limit([], 2, 3) → 0\ncount_until_limit([2, 2, 5, 2], 2, 2) → 2\ncount_until_limit([2, 2], 2, 0) → 0\ncount_until_limit([2, 5], 2, 5) → 1",
+      "codeKind": "text",
+      "solution": {
+        "answer": "다음은 계약을 만족하는 구현 한 가지입니다. 확인 호출의 결과뿐 아니라 입력 경계와 변수의 의미도 비교하세요.",
+        "code": {
+          "kind": "python",
+          "source": "def count_until_limit(values, target, limit):\n    if limit == 0:\n        return 0\n    count = 0\n    for value in values:\n        if value == target:\n            count += 1\n            if count == limit:\n                return count\n    return count\n\nprint(count_until_limit([], 2, 3))\nprint(count_until_limit([2, 2, 5, 2], 2, 2))\nprint(count_until_limit([2, 2], 2, 0))\nprint(count_until_limit([2, 5], 2, 5))\n",
+          "output": "0\n2\n0\n1\n"
+        }
+      },
+      "explanation": "정확한 전체 개수와 달리 상한에 잘린 개수를 요구합니다. 첫 발견에서 무조건 끝내는 오류를 피하되, 새 계약이 허용하는 limit 도달 시점에는 반환할 수 있습니다."
+    },
+    {
+      "exerciseType": "implement",
+      "skill": "구현 · 기대값과 실제값 대조",
+      "question": "mismatch_index(expected, actual)를 직접 구현하세요. 두 입력은 길이가 같은 정수 목록입니다. 두 결과가 처음 다른 0 기반 인덱스를 반환하고 모두 같으면 -1입니다. 두 빈 목록도 -1입니다. 입력 자료는 변경하지 않습니다. 함수의 결과는 반환하며, 아래 확인 호출의 기대 반환값과 비교하세요.",
+      "code": "확인 호출 → 기대 반환값\nmismatch_index([], []) → -1\nmismatch_index([2, 0], [2, 1]) → 1\nmismatch_index([3, 3], [3, 3]) → -1",
+      "codeKind": "text",
+      "solution": {
+        "answer": "다음은 계약을 만족하는 구현 한 가지입니다. 확인 호출의 결과뿐 아니라 입력 경계와 변수의 의미도 비교하세요.",
+        "code": {
+          "kind": "python",
+          "source": "def mismatch_index(expected, actual):\n    i = 0\n    while i < len(expected):\n        if expected[i] != actual[i]:\n            return i\n        i += 1\n    return -1\n\nprint(mismatch_index([], []))\nprint(mismatch_index([2, 0], [2, 1]))\nprint(mismatch_index([3, 3], [3, 3]))\n",
+          "output": "-1\n1\n-1\n"
+        }
+      },
+      "explanation": "기대 결과는 별도로 정해 두어야 합니다. 처음 다른 위치를 반환하면 구체적 실패를 찾는 데 도움이 되지만, 대조한 사례 전체가 모든 입력의 정확성을 증명하는 것은 아닙니다."
     }
   ]
 }

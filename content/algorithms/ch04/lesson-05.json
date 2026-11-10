@@ -90,46 +90,72 @@
       "solution": {
         "answer": "동등한 키이면 두 해시값도 같아야 합니다. 반대로 해시값이 같다는 사실만으로 같은 키라는 결론은 낼 수 없습니다."
       },
-      "explanation": "서로 다른 키의 해시 충돌이 가능하므로 저장 위치 후보를 찾은 다음 실제 동등성 비교가 필요합니다. 버킷 번호만 같은 조건은 전체 해시가 같은 조건보다도 약합니다."
+      "explanation": "서로 다른 키의 해시 충돌이 가능하므로 저장 위치 후보를 찾은 다음 실제 동등성 비교가 필요합니다. 버킷 번호만 같은 조건은 전체 해시가 같은 조건보다도 약합니다.",
+      "exerciseType": "explain"
     },
     {
-      "skill": "튜플 요소 점검",
-      "question": "(\"A\", 3), (\"A\", [3]), \"A\" 중 일반적인 Python dict 키로 쓸 수 있는 것을 고르고 이유를 적으세요.",
+      "exerciseType": "implement",
+      "skill": "직접 구현 · 해시 가능성 검사",
+      "question": "기본 자료형 값 value를 받아 hash(value)가 성공하면 True, TypeError가 나면 False를 반환하는 is_hashable(value)를 작성하세요. 정수·문자열·list·dict·이들을 담은 tuple을 다루며 입력을 바꾸지 않습니다. 해시 숫자는 반환하거나 출력하지 않습니다. 튜플도 안쪽 요소에 따라 실패할 수 있습니다. 함수를 직접 작성하고 아래 사례로 확인하세요.",
+      "code": "is_hashable(\"A\") → True\nis_hashable((\"A\", 3)) → True\nis_hashable((\"A\", [3])) → False\nis_hashable([]) → False",
+      "codeKind": "text",
       "solution": {
-        "answer": "(\"A\", 3)과 \"A\"는 해시 가능합니다. (\"A\", [3])은 list 요소가 해시 불가능하여 키로 쓸 수 없습니다."
-      },
-      "explanation": "튜플이 해시 가능하려면 모든 요소가 해시 가능해야 합니다. 바깥 칸을 교체할 수 없다는 성질만으로 안쪽 자료의 해시 가능성이 생기지는 않습니다."
-    },
-    {
-      "skill": "타입과 키 갱신",
-      "question": "다음 코드에서 항목 수와 data[1]의 값을 예상하고, 타입이 다른 키를 세 번 썼는데 왜 그런지 설명하세요.",
-      "solution": {
-        "answer": "항목 수는 1이며 data[1]은 \"마지막\"입니다. 1·True·1.0이 서로 같은 키로 비교되고 해시도 같아 같은 항목의 값을 갱신합니다."
-      },
-      "explanation": "서로 다른 타입을 구별된 업무 의미로 써야 한다면 타입 구분용 문자열 같은 정보를 키에 명시적으로 포함해야 합니다.",
-      "code": "data = {1: \"처음\"}\ndata[True] = \"중간\"\ndata[1.0] = \"마지막\"\nprint(len(data))\nprint(data[1])",
-      "codeKind": "python"
-    },
-    {
-      "skill": "값의 변경 가능성",
-      "question": "팀 이름 문자열을 키로, 참가자 list를 값으로 둡니다. \"초록\" 팀에 \"가람\"과 \"누리\"를 차례로 추가하는 코드를 작성하세요. 값이 list여도 이 맵을 사용할 수 있는 이유를 적으세요.",
-      "solution": {
-        "answer": "값 list에는 두 이름이 순서대로 들어갑니다. 해시 가능성과 안정성은 키 쪽의 요구이며, 연결된 값까지 해시 가능할 필요는 없습니다.",
+        "answer": "아래는 계약을 만족하는 구현 한 가지입니다. 반환값과 입력 변경 여부를 함께 확인하세요.",
         "code": {
           "kind": "python",
-          "source": "teams = {\"초록\": []}\nteams[\"초록\"].append(\"가람\")\nteams[\"초록\"].append(\"누리\")\nprint(teams[\"초록\"])",
-          "output": "['가람', '누리']\n"
+          "source": "def is_hashable(value):\n    try:\n        hash(value)\n    except TypeError:\n        return False\n    return True\n\nprint(is_hashable(\"A\"))\nprint(is_hashable((\"A\", 3)))\nprint(is_hashable((\"A\", [3])))\nprint(is_hashable([]))",
+          "output": "True\nTrue\nFalse\nFalse\n"
         }
       },
-      "explanation": "팀 이름 문자열은 그대로 유지하고 참가자 목록만 변경합니다. list를 값으로 두는 것과 list 자체를 키로 쓰는 일은 다릅니다."
+      "explanation": "바깥 튜플이 고정돼 있다는 사실만으로 모든 요소가 해시 가능해지지 않습니다. 실행마다 달라질 수 있는 실제 문자열 해시 숫자를 고정 정답으로 쓰지 않습니다."
     },
     {
-      "skill": "변경되는 키 설계",
-      "question": "어떤 사용자 객체는 이메일 주소로 동등성과 해시를 정의합니다. 그 객체를 맵 키로 저장한 뒤 이메일 속성을 바꿨습니다. 조회가 항상 안전하다고 할 수 있을까요? 바뀌는 프로필을 보관할 설계 한 가지를 제안하세요.",
+      "exerciseType": "implement",
+      "skill": "직접 구현 · 복합 키로 예약 묶기",
+      "question": "(강의실 문자열, 날짜 문자열, 이름 문자열) 목록 records를 받는 group_bookings(records)를 작성하세요. (강의실, 날짜) 튜플을 키, 그 순서대로 들어온 이름 목록을 값으로 하는 새 사전을 반환합니다. 입력은 보존하고 중복 이름도 각각 남깁니다. 빈 입력은 {}이며 키 순서는 처음 등장 순서입니다. 함수를 직접 작성하고 아래 사례로 확인하세요.",
+      "code": "group_bookings([]) → {}\n[(\"A\",\"월\",\"민\"),(\"A\",\"월\",\"누\")] → {(\"A\",\"월\"): [\"민\",\"누\"]}\n[(\"A\",\"월\",\"민\"),(\"A\",\"화\",\"민\")] → {(\"A\",\"월\"): [\"민\"], (\"A\",\"화\"): [\"민\"]}",
+      "codeKind": "text",
       "solution": {
-        "answer": "항상 안전하다고 할 수 없습니다. 동등성과 해시에 관여하는 내용이 바뀌어 저장 당시의 위치·비교 약속이 깨질 수 있습니다. 바뀌지 않는 사용자 ID를 키로 두고 이메일 등 프로필은 값에 보관할 수 있습니다."
+        "answer": "아래는 계약을 만족하는 구현 한 가지입니다. 반환값과 입력 변경 여부를 함께 확인하세요.",
+        "code": {
+          "kind": "python",
+          "source": "def group_bookings(records):\n    result = {}\n    for room, day, name in records:\n        key = (room, day)\n        if key not in result:\n            result[key] = []\n        result[key].append(name)\n    return result\n\nprint(group_bookings([]))\nprint(group_bookings([(\"A\", \"월\", \"민\"), (\"A\", \"월\", \"누\")]))\nprint(group_bookings([(\"A\", \"월\", \"민\"), (\"A\", \"화\", \"민\")]))",
+          "output": "{}\n{('A', '월'): ['민', '누']}\n{('A', '월'): ['민'], ('A', '화'): ['민']}\n"
+        }
       },
-      "explanation": "가변 객체가 기술적으로 해시 가능하게 구현되었다는 사실만으로 키 계약을 충족하지는 않습니다. 조회 실패가 반드시 즉시 발생한다고 단정하기보다 올바른 조회 보장이 깨진다는 점을 이해합니다."
+      "explanation": "안정적인 문자열들의 튜플은 두 조건을 함께 구분하는 키가 됩니다. 값 쪽의 이름 목록은 가변이어도 키의 해시 약속을 바꾸지 않습니다."
+    },
+    {
+      "exerciseType": "implement",
+      "skill": "직접 구현 · 같은 수치의 타입 구별",
+      "question": "기본 bool·int·유한 float 값 목록에 대해 typed_counts(values)를 작성하세요. 업무상 True·1·1.0을 별개로 세려고 (type(value).__name__, value)를 키로 등장 횟수 사전을 반환합니다. NaN·무한대는 입력에 없고 입력은 보존합니다. 빈 목록은 {}이며 키는 처음 등장 순서입니다. 함수를 직접 작성하고 아래 사례로 확인하세요.",
+      "code": "typed_counts([]) → {}\ntyped_counts([1, True, 1.0, True]) → {(\"int\",1):1, (\"bool\",True):2, (\"float\",1.0):1}\ntyped_counts([0, False, 0.0]) → {(\"int\",0):1, (\"bool\",False):1, (\"float\",0.0):1}",
+      "codeKind": "text",
+      "solution": {
+        "answer": "아래는 계약을 만족하는 구현 한 가지입니다. 반환값과 입력 변경 여부를 함께 확인하세요.",
+        "code": {
+          "kind": "python",
+          "source": "def typed_counts(values):\n    result = {}\n    for value in values:\n        key = (type(value).__name__, value)\n        result[key] = result.get(key, 0) + 1\n    return result\n\nprint(typed_counts([]))\nprint(typed_counts([1, True, 1.0, True]))\nprint(typed_counts([0, False, 0.0]))",
+          "output": "{}\n{('int', 1): 1, ('bool', True): 2, ('float', 1.0): 1}\n{('int', 0): 1, ('bool', False): 1, ('float', 0.0): 1}\n"
+        }
+      },
+      "explanation": "기본 수치 동등성은 True·1·1.0을 같은 키로 봅니다. 별개로 세겠다는 계약을 타입 이름이 포함된 안정적인 복합 키로 표현합니다."
+    },
+    {
+      "exerciseType": "implement",
+      "skill": "직접 구현 · 안정적인 ID로 값 변경",
+      "question": "문자열 사용자 ID를 키, {\"email\": 문자열}을 값으로 둔 사전 profiles가 있습니다. update_email(profiles, user_id, email)은 ID가 있으면 그 프로필의 복사본에서 email을 바꾼 뒤 profiles의 해당 ID 값만 교체하고 True를 반환합니다. 없으면 아무것도 바꾸지 않고 False입니다. 서로 다른 ID가 같은 프로필 객체를 가리켜도 다른 ID의 값과 원래 프로필 객체는 보존합니다. 키·다른 프로필을 유지하고 같은 이메일은 허용하며 빈 사전은 False입니다. 함수를 직접 작성하고 아래 사례로 확인하세요.",
+      "code": "{}, ID=\"A\", email=\"x\" → False, {}\n{\"A\":{\"email\":\"old\"},\"B\":{\"email\":\"same\"}}, ID=\"A\", email=\"same\" → True, A·B 모두 email=\"same\", 키 2개 유지\n{\"A\":{\"email\":\"x\"}}, ID=\"B\", email=\"y\" → False, 원본 유지\nA·B가 같은 {\"email\":\"old\"} 객체를 공유, ID=\"A\", email=\"new\" → True, A는 new·B와 원래 공유 객체는 old",
+      "codeKind": "text",
+      "solution": {
+        "answer": "아래는 계약을 만족하는 구현 한 가지입니다. 반환값과 입력 변경 여부를 함께 확인하세요.",
+        "code": {
+          "kind": "python",
+          "source": "def update_email(profiles, user_id, email):\n    if user_id not in profiles:\n        return False\n    updated = profiles[user_id].copy()\n    updated[\"email\"] = email\n    profiles[user_id] = updated\n    return True\n\nfor profiles, user_id, email in [({}, \"A\", \"x\"), ({\"A\": {\"email\": \"old\"}, \"B\": {\"email\": \"same\"}}, \"A\", \"same\"), ({\"A\": {\"email\": \"x\"}}, \"B\", \"y\")]:\n    print(update_email(profiles, user_id, email), profiles)\nshared = {\"email\": \"old\"}\nprofiles = {\"A\": shared, \"B\": shared}\nprint(update_email(profiles, \"A\", \"new\"), profiles)\nprint(shared)",
+          "output": "False {}\nTrue {'A': {'email': 'same'}, 'B': {'email': 'same'}}\nFalse {'A': {'email': 'x'}}\nTrue {'A': {'email': 'new'}, 'B': {'email': 'old'}}\n{'email': 'old'}\n"
+        }
+      },
+      "explanation": "바뀌는 이메일은 안정적인 ID의 값 쪽에서 갱신합니다. 다른 ID와 프로필 객체를 공유할 수 있으므로 타깃 값만 복사해 교체합니다. 이메일 값은 문자열이라 이 계약에서는 얕은 사전 복사로 충분합니다."
     }
   ]
 }

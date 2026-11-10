@@ -78,39 +78,68 @@
     {
       "skill": "빅오의 뜻",
       "question": "정한 단순 연산 모델에서 T(n)=4n+3입니다. O(n)으로 설명할 수 있는지, 이것이 정확히 n회 또는 n초를 뜻하는지 적으세요.",
-      "solution": {"answer": "O(n)으로 설명할 수 있습니다. n≥1에서 4n+3≤7n이므로 일정 배수의 선형 상한이 있습니다. 정확히 n회나 n초라는 뜻은 아닙니다."},
-      "explanation": "일정한 배수와 작은 덧셈항이 있어도 큰 입력의 성장 모양은 선형입니다. 상한이라는 의미와 실제 정확한 비용을 구별합니다."
-    },
-    {
-      "skill": "성장표 해석",
-      "question": "n을 8에서 16으로 늘릴 때 log₂ n, n, n²의 값이 각각 어떻게 바뀌는지 적으세요. 어느 식이 네 배가 되나요?",
-      "solution": {"answer": "log₂ n은 3→4, n은 8→16, n²은 64→256입니다. 제곱 식이 네 배가 됩니다."},
-      "explanation": "입력을 두 배로 늘릴 때 로그는 한 단계, 선형은 두 배, 제곱은 네 배로 변합니다. 이 계산은 시간 측정이 아니라 수식의 증가 모양 비교입니다."
+      "solution": {
+        "answer": "O(n)으로 설명할 수 있습니다. n≥1에서 4n+3≤7n이므로 일정 배수의 선형 상한이 있습니다. 정확히 n회나 n초라는 뜻은 아닙니다."
+      },
+      "explanation": "일정한 배수와 작은 덧셈항이 있어도 큰 입력의 성장 모양은 선형입니다. 상한이라는 의미와 실제 정확한 비용을 구별합니다.",
+      "exerciseType": "explain"
     },
     {
       "skill": "상한과 경우 구별",
       "question": "비용이 2n+1인 절차에 O(n²)이라고 썼습니다. 반드시 틀린 표기인가요? 또 O라는 글자만 보고 최악 비용을 분석했다고 결론 내릴 수 있나요?",
-      "solution": {"answer": "O(n²)은 가능한 느슨한 상한이므로 반드시 틀리지는 않습니다. 이 경우 O(n)이나 빡빡한 Θ(n)이 성장 수준을 더 잘 설명합니다. O만으로 최악 비용을 분석했다고 결론 내릴 수는 없습니다."},
-      "explanation": "상한은 여러 개일 수 있습니다. 최선·평균·최악 등 어떤 비용 함수를 택했는지와, 그 함수에 어떤 상한을 붙이는지는 서로 다른 질문입니다."
+      "solution": {
+        "answer": "O(n²)은 가능한 느슨한 상한이므로 반드시 틀리지는 않습니다. 이 경우 O(n)이나 빡빡한 Θ(n)이 성장 수준을 더 잘 설명합니다. O만으로 최악 비용을 분석했다고 결론 내릴 수는 없습니다."
+      },
+      "explanation": "상한은 여러 개일 수 있습니다. 최선·평균·최악 등 어떤 비용 함수를 택했는지와, 그 함수에 어떤 상한을 붙이는지는 서로 다른 질문입니다.",
+      "exerciseType": "explain"
     },
     {
-      "skill": "로그 과정 적용",
-      "question": "remaining을 64에서 시작해 1보다 큰 동안 2로 나눈 몫으로 바꿉니다. 손으로 상태와 반복 횟수를 적은 뒤, 같은 절차를 작성해 횟수를 확인하세요.",
+      "exerciseType": "implement",
+      "skill": "구현 · 반감 상태 생성",
+      "question": "halving_trace(n)를 직접 구현하세요. n은 0 이상 정수입니다. n부터 시작해 현재 값이 1보다 큰 동안 2로 나눈 몫으로 바꾸고, 시작값과 각 변경값을 새 목록으로 반환합니다. 0과 1은 각각 [0], [1]이며 실수 로그 함수는 사용하지 마세요. 입력 자료는 변경하지 않습니다. 함수의 결과는 반환하며, 아래 확인 호출의 기대 반환값과 비교하세요.",
+      "code": "확인 호출 → 기대 반환값\nhalving_trace(0) → [0]\nhalving_trace(1) → [1]\nhalving_trace(9) → [9, 4, 2, 1]\nhalving_trace(16) → [16, 8, 4, 2, 1]",
+      "codeKind": "text",
       "solution": {
-        "answer": "64→32→16→8→4→2→1로 6회 반복합니다.",
+        "answer": "다음은 계약을 만족하는 구현 한 가지입니다. 확인 호출의 결과뿐 아니라 입력 경계와 변수의 의미도 비교하세요.",
         "code": {
           "kind": "python",
-          "source": "remaining = 64\nsteps = 0\nwhile remaining > 1:\n    remaining = remaining // 2\n    steps = steps + 1\nprint(steps)",
-          "output": "6\n"
+          "source": "def halving_trace(n):\n    remaining = n\n    trace = [remaining]\n    while remaining > 1:\n        remaining //= 2\n        trace.append(remaining)\n    return trace\n\nprint(halving_trace(0))\nprint(halving_trace(1))\nprint(halving_trace(9))\nprint(halving_trace(16))\n",
+          "output": "[0]\n[1]\n[9, 4, 2, 1]\n[16, 8, 4, 2, 1]\n"
         }
       },
-      "explanation": "2를 여섯 번 곱하면 64가 됩니다. 한 단계마다 남은 크기가 절반이 되므로 처음 크기가 두 배가 되어도 단계는 하나만 추가됩니다."
+      "explanation": "입력 크기를 한 번에 1 줄이는 대신 절반으로 줄이는 실제 갱신 절차입니다. 2의 거듭제곱이 아닌 입력에서도 정수 몫 규칙과 종료 상태를 지킵니다."
     },
     {
-      "skill": "성장률 해석의 경계",
-      "question": "동일한 모델의 정확한 비용이 A(n)=1000n, B(n)=n²입니다. n=10과 n=10000에서 각각 어느 식이 작은지 적으세요. '선형이면 모든 입력에서 실제로 더 빠르다'고 말할 수 있는지도 판단하세요.",
-      "solution": {"answer": "n=10에서는 A=10000, B=100이므로 B가 작습니다. n=10000에서는 A=10000000, B=100000000이므로 A가 작습니다. 성장률만으로 모든 입력의 실제 실행 시간까지 보장할 수는 없습니다."},
-      "explanation": "비용식의 상수와 입력 범위에 따라 작은 입력의 유불리가 달라집니다. 초 단위 실행 시간에는 이 모델 밖의 구현·환경 요소도 영향을 줍니다."
+      "exerciseType": "implement",
+      "skill": "구현 · 필요한 두 배 증가 수",
+      "question": "doubling_steps(n)를 직접 구현하세요. n은 0 이상 정수이며 크기 1부터 시작해 현재 크기가 n 이상이 될 때까지 두 배로 늘립니다. 증가 횟수를 반환하고 n=0 또는 1이면 0입니다. 로그 함수나 미리 계산한 공식 대신 반복으로 구하세요. 입력 자료는 변경하지 않습니다. 함수의 결과는 반환하며, 아래 확인 호출의 기대 반환값과 비교하세요.",
+      "code": "확인 호출 → 기대 반환값\ndoubling_steps(0) → 0\ndoubling_steps(1) → 0\ndoubling_steps(9) → 4\ndoubling_steps(16) → 4",
+      "codeKind": "text",
+      "solution": {
+        "answer": "다음은 계약을 만족하는 구현 한 가지입니다. 확인 호출의 결과뿐 아니라 입력 경계와 변수의 의미도 비교하세요.",
+        "code": {
+          "kind": "python",
+          "source": "def doubling_steps(n):\n    current = 1\n    steps = 0\n    while current < n:\n        current *= 2\n        steps += 1\n    return steps\n\nprint(doubling_steps(0))\nprint(doubling_steps(1))\nprint(doubling_steps(9))\nprint(doubling_steps(16))\n",
+          "output": "0\n0\n4\n4\n"
+        }
+      },
+      "explanation": "경계 n과 같아지면 더 늘리지 않습니다. 9와 16이 모두 4회인 것은 두 배 증가가 통과하는 크기가 1·2·4·8·16이기 때문입니다."
+    },
+    {
+      "exerciseType": "implement",
+      "skill": "구현 · 기하 간격으로 원소 읽기",
+      "question": "power_two_items(values)를 직접 구현하세요. 정수 목록에서 1번째·2번째·4번째·8번째처럼 위치 번호가 두 배가 되는 원소만 읽어 (0 기반 인덱스, 값) 튜플의 새 목록으로 반환합니다. 범위를 넘으면 끝내고 빈 목록은 []입니다. 전체 원소를 한 번씩 훑어 고르는 방식 대신 위치 번호를 두 배씩 바꾸세요. 입력 자료는 변경하지 않습니다. 함수의 결과는 반환하며, 아래 확인 호출의 기대 반환값과 비교하세요.",
+      "code": "확인 호출 → 기대 반환값\npower_two_items([]) → []\npower_two_items([5]) → [(0, 5)]\npower_two_items([10, 20, 30, 40, 50]) → [(0, 10), (1, 20), (3, 40)]",
+      "codeKind": "text",
+      "solution": {
+        "answer": "다음은 계약을 만족하는 구현 한 가지입니다. 확인 호출의 결과뿐 아니라 입력 경계와 변수의 의미도 비교하세요.",
+        "code": {
+          "kind": "python",
+          "source": "def power_two_items(values):\n    position = 1\n    result = []\n    while position <= len(values):\n        index = position - 1\n        result.append((index, values[index]))\n        position *= 2\n    return result\n\nprint(power_two_items([]))\nprint(power_two_items([5]))\nprint(power_two_items([10, 20, 30, 40, 50]))\n",
+          "output": "[]\n[(0, 5)]\n[(0, 10), (1, 20), (3, 40)]\n"
+        }
+      },
+      "explanation": "원소 접근 횟수는 위치 번호를 몇 번 두 배로 늘릴 수 있는지와 연결됩니다. 위치 번호와 실제 인덱스의 차이 1을 반영하고, 결과 저장 공간도 선택한 항목 수만큼 사용합니다."
     }
   ]
 }

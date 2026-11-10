@@ -77,41 +77,77 @@
   ],
   "examples": [
     {
-      "skill": "계층 용어",
-      "question": "루트 A의 자식은 B와 C이고 B의 자식은 D입니다. B의 부모, D의 부모, 잎 노드들을 적으세요. 이 트리의 노드 수와 간선 수도 적으세요.",
-      "solution": {"answer": "B의 부모는 A, D의 부모는 B입니다. 잎은 C와 D이며 노드 4개·간선 3개입니다."},
-      "explanation": "잎은 자식이 없는 노드입니다. 비어 있지 않은 연결·비순환 트리의 간선은 노드 수보다 하나 적습니다."
-    },
-    {
-      "skill": "깊이와 높이 해석",
-      "question": "루트 A에서 B를 거쳐 D로 내려가며, A의 다른 자식 C는 잎입니다. A·C·D의 깊이와 높이를 간선 수로 각각 적으세요.",
-      "solution": {"answer": "A는 깊이 0·높이 2, C는 깊이 1·높이 0, D는 깊이 2·높이 0입니다."},
-      "explanation": "깊이는 루트부터, 높이는 아래의 가장 먼 잎까지 셉니다. 같은 잎이어도 루트에서의 거리는 다를 수 있습니다."
-    },
-    {
-      "skill": "트리 조건의 이유",
-      "question": "루트 A 아래 B와 C가 있고, B와 C가 같은 노드 D를 자식으로 가리킵니다. 각 글자가 유일한 노드를 뜻할 때 이 연결을 이번 루트 트리 계약으로 다루면 안 되는 이유를 설명하세요.",
-      "solution": {"answer": "D에 부모가 두 개 있고 A에서 D로 가는 경로도 두 개입니다. 방향을 무시하면 순환도 생겨 이번 트리의 유일 경로·부모 조건을 만족하지 않습니다."},
-      "explanation": "같은 노드를 공유하는 계층은 일반 그래프로 다룰 필요가 있습니다. 자식마다 무조건 재귀하는 트리 절차를 전제 없이 적용하면 같은 노드를 중복 처리할 수 있습니다."
-    },
-    {
-      "skill": "부모 경로로 깊이 구하기",
-      "question": "부모 연결 A→없음, B→A, D→B가 있습니다. D에서 부모를 따라가며 간선을 세어 깊이를 구하는 코드를 작성하세요. 순환이 없고 모든 부모가 정의되어 있다고 가정합니다.",
+      "exerciseType": "explain",
+      "skill": "깊이와 높이의 계약",
+      "question": "간선 수로 깊이와 높이를 세는 트리에서 루트의 깊이, 잎의 높이, 빈 트리의 높이를 적으세요. 노드가 4개인 사슬과 루트 아래 잎 3개인 트리의 높이가 다른 이유도 설명하세요.",
       "solution": {
-        "answer": "D→B→A로 두 간선을 거슬러 올라가므로 D의 깊이는 2입니다.",
+        "answer": "루트의 깊이는 0이고 잎의 높이는 0이며 이 레슨의 빈 트리 높이는 -1입니다. 노드 4개 사슬의 높이는 3, 루트와 잎 3개의 트리는 높이 1입니다. 높이는 노드 수 자체가 아니라 루트에서 가장 먼 잎까지의 간선 수입니다."
+      },
+      "explanation": "자식이 없는 노드가 잎입니다. 같은 노드 수라도 구조가 다르면 높이가 다르므로 경로를 따라가는 연산의 비용도 달라질 수 있습니다."
+    },
+    {
+      "exerciseType": "implement",
+      "skill": "기본 구현 · 트리 높이",
+      "question": "tree_height(children, root)를 직접 작성하세요. children은 모든 노드 ID를 키로, 그 노드의 자식 ID 목록을 값으로 갖는 작은 유한 트리입니다. 순환·공유 자식은 없고 root가 None이면 빈 트리입니다. 간선 수로 높이를 반환하세요(빈 트리 -1, 잎 0). 입력 사전과 목록을 변경하지 않습니다.",
+      "codeKind": "text",
+      "code": "확인 사례\nchildren={\"A\":[\"B\",\"C\"],\"B\":[\"D\"],\"C\":[],\"D\":[]}\ntree_height(children,\"A\") → 2\ntree_height(children,\"C\") → 0\ntree_height({},None) → -1",
+      "solution": {
+        "answer": "입력 계약과 확인 사례를 만족하는 함수의 한 가지 구현입니다.",
         "code": {
           "kind": "python",
-          "source": "parent = {\"A\": None, \"B\": \"A\", \"D\": \"B\"}\nnode = \"D\"\ndepth = 0\nwhile parent[node] is not None:\n    node = parent[node]\n    depth = depth + 1\nprint(depth)",
-          "output": "2\n"
+          "source": "def tree_height(children, root):\n    if root is None:\n        return -1\n    height = 0\n    stack = [(root, 0)]\n    while stack:\n        node, depth = stack.pop()\n        height = max(height, depth)\n        for child in children[node]:\n            stack.append((child, depth + 1))\n    return height\n\nchildren = {\"A\": [\"B\", \"C\"], \"B\": [\"D\"], \"C\": [], \"D\": []}\n\nprint(tree_height(children, \"A\"))\nprint(tree_height(children, \"C\"))\nprint(tree_height({}, None))",
+          "output": "2\n0\n-1\n"
         }
       },
-      "explanation": "루트에 도달하면 더 올라갈 간선이 없어 멈춥니다. 시작 노드 자체를 한 번으로 세지 않고 이동한 간선 수를 셉니다."
+      "explanation": "각 노드를 한 번 방문하므로 n개 노드의 시간은 O(n), 명시적 스택은 최악 O(n)입니다. 일반 트리에서는 자식이 많은 한 노드의 형제를 스택에 함께 넣으므로 공간을 높이만으로 단정하지 않습니다."
     },
     {
-      "skill": "경계와 계층 변경",
-      "question": "한 노드 A만 있는 트리의 깊이·높이와 빈 트리 높이를 적으세요. 이후 새 루트 R을 만들고 A를 그 자식으로 두면 A의 깊이와 R의 높이는 어떻게 바뀌나요?",
-      "solution": {"answer": "처음 A는 깊이 0·높이 0이고 빈 트리 높이는 -1입니다. R을 새 루트로 추가하면 A의 깊이는 1, R의 높이는 1이며 잎 A의 높이는 0으로 남습니다."},
-      "explanation": "깊이는 정한 루트와의 관계에 따라 달라집니다. 높이는 해당 노드 아래의 경로로 정하므로 자식이 늘지 않은 잎 A는 여전히 높이 0입니다."
+      "exerciseType": "implement",
+      "skill": "방향 변경 · 부모를 따라 깊이 찾기",
+      "question": "depth_of(parent, node)를 직접 작성하세요. parent는 유효한 유한 트리의 각 ID를 부모 ID에 대응시키며 루트만 값이 None입니다. 존재하는 node의 깊이를 간선 수로 반환하세요. node가 사전에 없으면 빈 사전도 포함해 ValueError입니다. 부모를 반복해서 따라가며 사전은 보존합니다.",
+      "codeKind": "text",
+      "code": "확인 사례\nparent={\"A\":None,\"B\":\"A\",\"C\":\"B\"}\ndepth_of(parent,\"C\") → 2\ndepth_of(parent,\"A\") → 0\ndepth_of({},\"A\") → ValueError",
+      "solution": {
+        "answer": "입력 계약과 확인 사례를 만족하는 함수의 한 가지 구현입니다.",
+        "code": {
+          "kind": "python",
+          "source": "def depth_of(parent, node):\n    if node not in parent:\n        raise ValueError(\"unknown node\")\n    depth = 0\n    while parent[node] is not None:\n        node = parent[node]\n        depth += 1\n    return depth\n\nparent = {\"A\": None, \"B\": \"A\", \"C\": \"B\"}\n\nprint(depth_of(parent, \"C\"))\nprint(depth_of(parent, \"A\"))\ntry:\n    depth_of({}, \"A\")\nexcept ValueError:\n    print(\"ValueError\")",
+          "output": "2\n0\nValueError\n"
+        }
+      },
+      "explanation": "루트에 도착할 때까지 부모 간선 하나마다 깊이를 1 더합니다. 깊이가 d이면 평균 O(1) 사전 접근 모델에서 시간 O(d+1), 보조 공간 O(1)입니다. 유효 트리라는 전제가 순환에 의한 무한 반복을 막습니다."
+    },
+    {
+      "exerciseType": "implement",
+      "skill": "출력 변경 · 잎 목록 수집",
+      "question": "leaf_ids(children, root)를 직접 작성하세요. 모든 노드가 키에 있으며 자식 ID 목록으로 표현한 유효한 유한 트리입니다. 자식 목록의 왼쪽부터 깊이 우선 방문했을 때 만나는 잎 ID만 새 목록으로 반환합니다. root=None이면 [], 단일 노드이면 그 ID 하나입니다. 입력을 변경하지 마세요.",
+      "codeKind": "text",
+      "code": "확인 사례\nchildren={\"A\":[\"B\",\"C\"],\"B\":[\"D\",\"E\"],\"C\":[],\"D\":[],\"E\":[]}\nleaf_ids(children,\"A\") → [\"D\",\"E\",\"C\"]\nleaf_ids(children,\"C\") → [\"C\"]\nleaf_ids({},None) → []",
+      "solution": {
+        "answer": "입력 계약과 확인 사례를 만족하는 함수의 한 가지 구현입니다.",
+        "code": {
+          "kind": "python",
+          "source": "def leaf_ids(children, root):\n    if root is None:\n        return []\n    leaves = []\n    stack = [root]\n    while stack:\n        node = stack.pop()\n        if not children[node]:\n            leaves.append(node)\n        else:\n            for child in reversed(children[node]):\n                stack.append(child)\n    return leaves\n\nchildren = {\"A\": [\"B\", \"C\"], \"B\": [\"D\", \"E\"], \"C\": [], \"D\": [], \"E\": []}\n\nprint(leaf_ids(children, \"A\"))\nprint(leaf_ids(children, \"C\"))\nprint(leaf_ids({}, None))",
+          "output": "['D', 'E', 'C']\n['C']\n[]\n"
+        }
+      },
+      "explanation": "스택은 마지막에 넣은 것을 먼저 꺼내므로 자식을 역순으로 넣어 원래 자식 순서를 지킵니다. n개 노드에 O(n) 시간, 결과와 스택을 합쳐 최악 O(n) 공간입니다."
+    },
+    {
+      "exerciseType": "implement",
+      "skill": "집계 변경 · 노드·간선·높이",
+      "question": "tree_profile(children, root)를 직접 작성하세요. 모든 노드가 키에 있는 자식 목록 사전으로 유효한 유한 트리를 받습니다. root에서 시작하는 부분 트리의 (노드 수, 간선 수, 높이)를 반환하세요. 높이는 간선 수 기준이며 root=None은 (0,0,-1), 단일 노드는 (1,0,0)입니다. 사전·목록은 보존합니다.",
+      "codeKind": "text",
+      "code": "확인 사례\nchildren={\"A\":[\"B\",\"C\"],\"B\":[\"D\"],\"C\":[],\"D\":[]}\ntree_profile(children,\"A\") → (4,3,2)\ntree_profile(children,\"B\") → (2,1,1)\ntree_profile({},None) → (0,0,-1)\ntree_profile({\"X\":[]},\"X\") → (1,0,0)",
+      "solution": {
+        "answer": "입력 계약과 확인 사례를 만족하는 함수의 한 가지 구현입니다.",
+        "code": {
+          "kind": "python",
+          "source": "def tree_profile(children, root):\n    if root is None:\n        return 0, 0, -1\n    nodes = edges = 0\n    height = 0\n    stack = [(root, 0)]\n    while stack:\n        node, depth = stack.pop()\n        nodes += 1\n        height = max(height, depth)\n        edges += len(children[node])\n        for child in children[node]:\n            stack.append((child, depth + 1))\n    return nodes, edges, height\n\nchildren = {\"A\": [\"B\", \"C\"], \"B\": [\"D\"], \"C\": [], \"D\": []}\n\nprint(tree_profile(children, \"A\"))\nprint(tree_profile(children, \"B\"))\nprint(tree_profile({}, None))\nprint(tree_profile({\"X\": []}, \"X\"))",
+          "output": "(4, 3, 2)\n(2, 1, 1)\n(0, 0, -1)\n(1, 0, 0)\n"
+        }
+      },
+      "explanation": "연결된 비어 있지 않은 트리는 간선 수가 노드 수보다 1 작습니다. 집계는 root 아래만 방문하며 사전 평균 접근 비용을 일정하게 보면 시간 O(n), 스택 최악 O(n)입니다."
     }
   ]
 }

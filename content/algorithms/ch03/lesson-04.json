@@ -88,49 +88,72 @@
       "solution": {
         "answer": "꼭대기는 C이고 pop은 C를 반환합니다. 남은 상태는 [A, B]이며 B가 새 꼭대기입니다."
       },
-      "explanation": "스택은 값의 크기나 이름순이 아니라 넣은 순서로 다음 원소를 정합니다. C를 꺼낸 뒤 꼭대기도 달라집니다."
+      "explanation": "스택은 값의 크기나 이름순이 아니라 넣은 순서로 다음 원소를 정합니다. C를 꺼낸 뒤 꼭대기도 달라집니다.",
+      "exerciseType": "explain"
     },
     {
-      "skill": "혼합 연산 추적",
-      "question": "오른쪽이 꼭대기입니다. 빈 스택에서 push(3), push(8), pop, push(5), pop, pop을 수행합니다. pop의 반환값 세 개와 최종 상태를 적으세요.",
+      "exerciseType": "implement",
+      "skill": "직접 구현 · 빈 스택과 None 값",
+      "question": "오른쪽이 꼭대기인 Python 목록 stack에서 safe_pop(stack)을 작성하세요. 비어 있지 않으면 한 값을 제자리 제거해 (True, 값), 비었으면 변경 없이 (False, None)을 반환합니다. 저장값으로 None과 중복값도 허용하므로 값만 보고 성공 여부를 판단하지 않습니다. 함수를 직접 작성하고 아래 사례로 확인하세요.",
+      "code": "[] → (False, None), 남은 []\n[None] → (True, None), 남은 []\n[1, 2] → (True, 2), 남은 [1]",
+      "codeKind": "text",
       "solution": {
-        "answer": "pop의 반환값은 8, 5, 3이며 최종 상태는 []입니다."
-      },
-      "explanation": "첫 pop으로 8을 제거한 뒤 새로 넣은 5가 3보다 위에 놓입니다. 이미 제거된 8은 이후 상태에 다시 등장하지 않습니다."
-    },
-    {
-      "skill": "되돌릴 순서의 이유",
-      "question": "글을 빈 문자열 → A → AB 순서로 편집했습니다. 이전 상태를 [빈 문자열, A] 순서로 기록했는데 오래된 기록부터 꺼내면 첫 실행 취소가 왜 잘못되나요?",
-      "solution": {
-        "answer": "첫 실행 취소는 바로 이전 상태 A로 돌아가야 합니다. 오래된 빈 문자열부터 꺼내면 최근 변경 하나를 취소하는 대신 더 오래된 상태로 건너뜁니다."
-      },
-      "explanation": "실행 취소 한 번을 최근 편집 한 번의 취소로 정의했기 때문입니다. 가장 최근 이전 상태를 먼저 꺼내는 LIFO 규칙이 이 계약에 맞습니다."
-    },
-    {
-      "skill": "빈 상태와 유효한 값",
-      "question": "None을 유효한 원소로 허용합니다. [None]에서 한 번 꺼낸 값과 그 직후 길이를 출력한 뒤, 두 번째 꺼내기에서는 비어 있으면 비어 있음이라고 출력하세요. None을 빈 상태 신호로 쓰지 마세요.",
-      "solution": {
-        "answer": "첫 꺼내기는 성공하며 값은 None, 남은 길이는 0입니다. 두 번째에는 비어 있음이 출력됩니다.",
+        "answer": "아래는 계약을 만족하는 구현 한 가지입니다. 반환값과 입력 변경 여부를 함께 확인하세요.",
         "code": {
           "kind": "python",
-          "source": "stack = [None]\nif stack:\n    value = stack.pop()\n    print(value, len(stack))\nif stack:\n    print(stack.pop())\nelse:\n    print(\"비어 있음\")",
-          "output": "None 0\n비어 있음\n"
+          "source": "def safe_pop(stack):\n    if not stack:\n        return False, None\n    return True, stack.pop()\n\nfor stack in [[], [None], [1, 2]]:\n    print(safe_pop(stack), stack)",
+          "output": "(False, None) []\n(True, None) []\n(True, 2) [1]\n"
         }
       },
-      "explanation": "if stack은 원소 존재 여부를 검사합니다. 꺼낸 값이 None인지와 상관없이 첫 pop은 실제 원소를 제거한 정상 동작입니다."
+      "explanation": "빈 상태와 실제 None 원소를 성공 표식으로 구별합니다. LIFO에 따라 끝의 원소 하나만 제거합니다."
     },
     {
-      "skill": "복원 정보와 비용",
-      "question": "현재 글이 CAT이고 변경 전 글 CO를 history 꼭대기에 저장했습니다. 한 번 되돌리는 코드를 작성하세요. 글 길이가 커져도 상태 기록 비용까지 항상 O(1)이라고 할 수 있는지도 설명하세요.",
+      "exerciseType": "implement",
+      "skill": "직접 구현 · 스택으로 순서 뒤집기",
+      "question": "정수 목록 values를 새 스택에 차례로 넣고 꺼내 역순의 새 목록을 반환하는 reversed_stack(values)를 작성하세요. reverse·reversed·역방향 슬라이스는 쓰지 않습니다. 입력은 보존하고 빈 목록은 [], 중복값은 개수 그대로 남깁니다. 함수를 직접 작성하고 아래 사례로 확인하세요.",
+      "code": "reversed_stack([1, 2, 3]) → [3, 2, 1]\nreversed_stack([]) → []\nreversed_stack([4, 4, 1]) → [1, 4, 4]",
+      "codeKind": "text",
       "solution": {
-        "answer": "pop한 이전 글을 현재 글에 대입하면 CO가 됩니다. 스택 끝 연산과 별개로 큰 글의 이전 상태를 만들고 보관하는 비용이 있을 수 있으므로 전체 편집 기록 비용을 항상 O(1)이라고 할 수는 없습니다.",
+        "answer": "아래는 계약을 만족하는 구현 한 가지입니다. 반환값과 입력 변경 여부를 함께 확인하세요.",
         "code": {
           "kind": "python",
-          "source": "text = \"CAT\"\nhistory = [\"\", \"CO\"]\nif history:\n    text = history.pop()\nprint(text)\nprint(history)",
-          "output": "CO\n['']\n"
+          "source": "def reversed_stack(values):\n    stack = []\n    for value in values:\n        stack.append(value)\n    result = []\n    while stack:\n        result.append(stack.pop())\n    return result\n\nprint(reversed_stack([1, 2, 3]))\nprint(reversed_stack([]))\nprint(reversed_stack([4, 4, 1]))",
+          "output": "[3, 2, 1]\n[]\n[1, 4, 4]\n"
         }
       },
-      "explanation": "이 코드는 이미 저장된 불변 문자열을 가리키는 값을 꺼냅니다. 실제 편집 시스템이 이전 문서 전체를 복사한다면 복사와 보관에 필요한 시간·공간도 따로 계산해야 합니다."
+      "explanation": "나중에 들어간 원소가 먼저 나와 순서가 뒤집힙니다. 중복을 없애는 연산이 아니므로 모든 원소를 한 번씩 반환합니다."
+    },
+    {
+      "exerciseType": "implement",
+      "skill": "직접 구현 · 괄호의 중첩 확인",
+      "question": "문자열 text에서 소괄호 (와 )가 올바르게 짝지어졌는지 반환하는 parentheses_ok(text)를 작성하세요. 다른 문자는 무시합니다. 여는 괄호를 스택에 넣고 닫는 괄호마다 하나를 꺼내며, 꺼낼 것이 없거나 마지막에 남으면 False입니다. 빈 문자열은 True이며 문자열은 바꾸지 않습니다. 함수를 직접 작성하고 아래 사례로 확인하세요.",
+      "code": "parentheses_ok(\"\") → True\nparentheses_ok(\"(())\") → True\nparentheses_ok(\"())(\") → False\nparentheses_ok(\"a(b)c\") → True",
+      "codeKind": "text",
+      "solution": {
+        "answer": "아래는 계약을 만족하는 구현 한 가지입니다. 반환값과 입력 변경 여부를 함께 확인하세요.",
+        "code": {
+          "kind": "python",
+          "source": "def parentheses_ok(text):\n    stack = []\n    for character in text:\n        if character == \"(\":\n            stack.append(character)\n        elif character == \")\":\n            if not stack:\n                return False\n            stack.pop()\n    return not stack\n\nfor text in [\"\", \"(())\", \"())(\", \"a(b)c\"]:\n    print(parentheses_ok(text))",
+          "output": "True\nTrue\nFalse\nTrue\n"
+        }
+      },
+      "explanation": "닫는 괄호를 볼 때 아직 끝나지 않은 가장 최근 괄호를 처리합니다. 개수 합계만 같아도 닫는 괄호가 먼저 나오면 올바른 중첩이 아닙니다."
+    },
+    {
+      "exerciseType": "implement",
+      "skill": "직접 구현 · 이전 글 되돌리기",
+      "question": "edit_history(actions)를 작성하세요. actions의 문자열은 현재 글을 그 문자열로 바꾸는 편집, None은 한 번 되돌리기입니다. 처음 글은 \"\"이고 편집 직전 글을 스택에 저장합니다. 되돌릴 기록이 없으면 무시합니다. (마지막 글, 남은 이력 목록)을 반환하며 입력 actions는 보존합니다. 같은 글로 바꾸는 편집도 한 번의 이력으로 기록합니다. 함수를 직접 작성하고 아래 사례로 확인하세요.",
+      "code": "edit_history([]) → (\"\", [])\nedit_history([\"A\", \"AB\", None]) → (\"A\", [\"\"])\nedit_history([None, \"A\", None, None]) → (\"\", [])",
+      "codeKind": "text",
+      "solution": {
+        "answer": "아래는 계약을 만족하는 구현 한 가지입니다. 반환값과 입력 변경 여부를 함께 확인하세요.",
+        "code": {
+          "kind": "python",
+          "source": "def edit_history(actions):\n    text = \"\"\n    history = []\n    for action in actions:\n        if action is None:\n            if history:\n                text = history.pop()\n        else:\n            history.append(text)\n            text = action\n    return text, history\n\nprint(edit_history([]))\nprint(edit_history([\"A\", \"AB\", None]))\nprint(edit_history([None, \"A\", None, None]))",
+          "output": "('', [])\n('A', [''])\n('', [])\n"
+        }
+      },
+      "explanation": "스택은 복원할 순서를 정합니다. 기록을 pop한 결과를 현재 글에 다시 대입해야 실제 되돌리기가 됩니다."
     }
   ]
 }

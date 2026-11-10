@@ -82,41 +82,77 @@
   ],
   "examples": [
     {
-      "skill": "부분 트리 순서 조건",
-      "question": "루트 10의 왼쪽 자식이 5이고, 5의 오른쪽 자식이 12입니다. 바로 부모와 자식의 비교는 5<10, 5<12로 맞습니다. 이 트리가 BST가 아닌 이유를 설명하세요.",
-      "solution": {"answer": "12는 루트 10의 왼쪽 부분 트리에 있으므로 10보다 작아야 합니다. 조상의 범위 조건을 어겨 BST가 아닙니다."},
-      "explanation": "왼쪽·오른쪽의 크기 조건은 자식 하나가 아닌 모든 자손에게 적용됩니다. 바로 옆 연결만 검사하면 이런 위반을 놓칩니다."
-    },
-    {
-      "skill": "검색 경로 해석",
-      "question": "루트 6, 왼쪽 자식 3, 오른쪽 자식 9이고 3의 오른쪽 자식이 4입니다. 다른 자식은 없습니다. 키 4와 8을 찾을 때 방문 키와 결과를 적으세요.",
-      "solution": {"answer": "4는 6→3→4에서 성공합니다. 8은 6→9 다음 왼쪽 빈 자리에서 실패합니다."},
-      "explanation": "현재 키보다 작으면 왼쪽, 크면 오른쪽으로 갑니다. 8을 못 찾았다고 전체 트리를 다시 읽지 않아도 되는 근거는 BST의 전체 순서 조건입니다."
-    },
-    {
-      "skill": "높이와 비용의 이유",
-      "question": "키 1부터 n까지를 단순 BST에 오름차순으로 넣어 오른쪽 한 줄이 되었습니다. 높이와 마지막 키 검색의 최악 방문 수를 적고 O(log n)을 보장할 수 없는 이유를 설명하세요.",
-      "solution": {"answer": "비어 있지 않은 트리의 높이는 n-1이고 마지막 키까지 n개 노드를 방문할 수 있습니다. 높이가 선형이므로 최악 O(n)이며 로그 높이의 균형 보장이 없습니다."},
-      "explanation": "이진이라는 말은 자식 자리가 두 개라는 뜻입니다. 각 단계에서 남은 노드 수가 절반이 된다는 뜻은 아닙니다."
-    },
-    {
-      "skill": "같은 키 유지 구현",
-      "question": "중복 키는 무시하는 단순 BST에 [2, 1, 3, 2]를 넣습니다. 빈 자리만 새 노드로 만들고 같은 키면 끝내는 삽입을 작성해, 루트 2와 자식 1·3만 남는지 확인하세요.",
+      "exerciseType": "explain",
+      "skill": "BST 범위와 균형의 이유",
+      "question": "이진 탐색 트리에서 왼쪽 자식 하나가 작다는 조건만으로 부족한 이유를 반례로 설명하세요. 검색 시간이 항상 O(log n)인지, 같은 키를 다시 넣을 때 어떤 계약이 필요한지도 적으세요.",
       "solution": {
-        "answer": "두 번째 2는 기존 루트와 같아 새 노드를 만들지 않습니다. 최종 노드는 세 개입니다.",
+        "answer": "예를 들어 루트 10의 왼쪽 자식 5 아래 오른쪽에 12가 있으면 각 부모와 자식만 비교한 조건을 통과해도 12가 루트의 왼쪽 범위를 위반합니다. 왼쪽 부분 트리 전체는 작고 오른쪽 전체는 커야 합니다. 검색은 높이에 비례하므로 균형이 없으면 O(n)까지 길어집니다. 중복을 무시할지 세거나 별도 위치에 둘지 미리 정해야 합니다."
+      },
+      "explanation": "이 레슨은 중복 키를 무시하는 집합 모형입니다. 자동으로 균형을 잡지 않는 일반 BST의 높이를 작다고 가정하지 않습니다."
+    },
+    {
+      "exerciseType": "implement",
+      "skill": "기본 구현 · BST 존재 검색",
+      "question": "bst_contains(root, key)를 직접 작성하세요. 정수 BST의 노드는 [키, 왼쪽 노드, 오른쪽 노드]인 목록이고 빈 자식·트리는 None입니다. 중복 키가 없고 전체 BST 순서가 유효하다고 가정합니다. 반복문으로 존재 여부 bool을 반환하고 입력 트리를 변경하지 마세요.",
+      "codeKind": "text",
+      "code": "확인 사례\nroot=[5,[2,None,[3,None,None]],[8,None,None]]\nbst_contains(root,3) → True\nbst_contains(root,7) → False\nbst_contains(None,3) → False",
+      "solution": {
+        "answer": "입력 계약과 확인 사례를 만족하는 함수의 한 가지 구현입니다.",
         "code": {
           "kind": "python",
-          "source": "def insert(root, key):\n    if root is None:\n        return [key, None, None]\n    node = root\n    while True:\n        if key == node[0]:\n            return root\n        side = 1 if key < node[0] else 2\n        if node[side] is None:\n            node[side] = [key, None, None]\n            return root\n        node = node[side]\n\nroot = None\nfor key in [2, 1, 3, 2]:\n    root = insert(root, key)\nprint(root)",
-          "output": "[2, [1, None, None], [3, None, None]]\n"
+          "source": "def bst_contains(root, key):\n    node = root\n    while node is not None:\n        if key == node[0]:\n            return True\n        if key < node[0]:\n            node = node[1]\n        else:\n            node = node[2]\n    return False\n\nroot = [5, [2, None, [3, None, None]], [8, None, None]]\n\nprint(bst_contains(root, 3))\nprint(bst_contains(root, 7))\nprint(bst_contains(None, 3))",
+          "output": "True\nFalse\nFalse\n"
         }
       },
-      "explanation": "각 단계에서 같은 키면 종료하거나 자식 한 단계로 내려갑니다. 이 삽입은 순서 계약은 지키지만 별도의 균형 유지 규칙을 포함하지 않습니다."
+      "explanation": "일치하지 않으면 비교 결과에 따라 한쪽만 따라갑니다. 높이 h의 시간은 O(h+1), 반복 구현의 보조 공간은 O(1)입니다. 균형을 유지하지 않으므로 h가 n-1일 수 있습니다."
     },
     {
-      "skill": "새 계약과 경계 판단",
-      "question": "정수 키의 등장 횟수도 보관하려고 BST를 바꿉니다. 같은 키를 만날 때 새 노드를 만들지 않는 기존 계약에서 무엇을 추가로 저장할 수 있을까요? 빈 트리의 검색과 중위 순회 결과도 적으세요.",
-      "solution": {"answer": "각 키 노드에 등장 개수를 함께 저장하고 같은 키가 들어오면 개수만 늘릴 수 있습니다. 빈 트리 검색은 실패, 중위 순회 결과는 빈 목록입니다."},
-      "explanation": "중복 처리 정책은 자료구조 계약의 일부입니다. 개수를 추가해도 키별 순서 조건은 유지해야 하며, 빈 입력에서 존재하지 않는 노드에 접근하지 않아야 합니다."
+      "exerciseType": "implement",
+      "skill": "변경 구현 · 중복 없는 삽입",
+      "question": "bst_insert(root, key)를 직접 작성하세요. 노드는 [정수 키, 왼쪽, 오른쪽], 빈 트리는 None인 유효 BST입니다. 키가 없으면 빈 자식 위치에 새 노드를 연결해 트리를 직접 변경하고 최종 루트를 반환하세요. 같은 키는 무시합니다. root=None이면 새 단일 노드를 반환하므로 호출자는 반환 루트를 받아야 합니다. 균형 조정은 하지 않습니다.",
+      "codeKind": "text",
+      "code": "확인 사례\nbst_insert(None,4) → [4,None,None]\nroot=[5,[2,None,None],None]에 3 삽입 → [5,[2,None,[3,None,None]],None]\n그 결과에 2 다시 삽입 → 구조 변화 없음",
+      "solution": {
+        "answer": "입력 계약과 확인 사례를 만족하는 함수의 한 가지 구현입니다.",
+        "code": {
+          "kind": "python",
+          "source": "def bst_insert(root, key):\n    if root is None:\n        return [key, None, None]\n    node = root\n    while True:\n        if key == node[0]:\n            return root\n        side = 1 if key < node[0] else 2\n        if node[side] is None:\n            node[side] = [key, None, None]\n            return root\n        node = node[side]\n\nroot = [5, [2, None, None], None]\n\nprint(bst_insert(None, 4))\nroot = bst_insert(root, 3)\nprint(root)\nroot = bst_insert(root, 2)\nprint(root)",
+          "output": "[4, None, None]\n[5, [2, None, [3, None, None]], None]\n[5, [2, None, [3, None, None]], None]\n"
+        }
+      },
+      "explanation": "연결할 부모를 반복으로 찾으므로 시간 O(h+1), 추가 탐색 공간 O(1)입니다. 실제 삽입 때만 크기 일정한 새 노드 하나를 만들고 중복이면 만들지 않습니다."
+    },
+    {
+      "exerciseType": "implement",
+      "skill": "기록 변경 · 검색 경로 반환",
+      "question": "bst_search_path(root, key)를 직접 작성하세요. [정수 키, 왼쪽, 오른쪽]과 None으로 표현한 중복 없는 유효 BST에서 (찾았는지 bool, 방문한 키 목록)을 반환합니다. 실패한 경우에도 실제 방문한 키를 남기고 None 자체는 기록하지 않습니다. 빈 트리는 (False,[])이며 입력은 보존하세요.",
+      "codeKind": "text",
+      "code": "확인 사례\nroot=[5,[2,None,[3,None,None]],[8,None,None]]\nbst_search_path(root,3) → (True,[5,2,3])\nbst_search_path(root,7) → (False,[5,8])\nbst_search_path(None,3) → (False,[])",
+      "solution": {
+        "answer": "입력 계약과 확인 사례를 만족하는 함수의 한 가지 구현입니다.",
+        "code": {
+          "kind": "python",
+          "source": "def bst_search_path(root, key):\n    path = []\n    node = root\n    while node is not None:\n        path.append(node[0])\n        if key == node[0]:\n            return True, path\n        node = node[1] if key < node[0] else node[2]\n    return False, path\n\nroot = [5, [2, None, [3, None, None]], [8, None, None]]\n\nprint(bst_search_path(root, 3))\nprint(bst_search_path(root, 7))\nprint(bst_search_path(None, 3))",
+          "output": "(True, [5, 2, 3])\n(False, [5, 8])\n(False, [])\n"
+        }
+      },
+      "explanation": "시간은 O(h+1)이며 경로를 반환하므로 결과 공간도 최악 O(h+1)입니다. 경로를 기록하지 않는 반복 검색의 보조 공간 O(1)과 구별합니다."
+    },
+    {
+      "exerciseType": "implement",
+      "skill": "조건 변경 · 닫힌 구간 검색",
+      "question": "bst_range(root, low, high)를 직접 작성하세요. [정수 키, 왼쪽, 오른쪽]과 None으로 표현한 작은 유효 BST이며 중복은 없습니다. low 이상 high 이하인 키를 오름차순 새 목록으로 반환합니다. low>high는 ValueError, 빈 트리는 []입니다. 입력을 보존하고 범위 밖임을 보장할 수 있는 부분 트리는 건너뛰세요. 높이는 재귀 제한보다 작습니다.",
+      "codeKind": "text",
+      "code": "확인 사례\nroot=[5,[2,None,[3,None,None]],[8,None,None]]\nbst_range(root,3,8) → [3,5,8]\nbst_range(root,6,7) → []\nbst_range(None,0,9) → []\nbst_range(root,9,1) → ValueError",
+      "solution": {
+        "answer": "입력 계약과 확인 사례를 만족하는 함수의 한 가지 구현입니다.",
+        "code": {
+          "kind": "python",
+          "source": "def bst_range(root, low, high):\n    if low > high:\n        raise ValueError(\"invalid range\")\n    result = []\n    def visit(node):\n        if node is None:\n            return\n        key, left, right = node\n        if key > low:\n            visit(left)\n        if low <= key <= high:\n            result.append(key)\n        if key < high:\n            visit(right)\n    visit(root)\n    return result\n\nroot = [5, [2, None, [3, None, None]], [8, None, None]]\n\nprint(bst_range(root, 3, 8))\nprint(bst_range(root, 6, 7))\nprint(bst_range(None, 0, 9))\ntry:\n    bst_range(root, 9, 1)\nexcept ValueError:\n    print(\"ValueError\")",
+          "output": "[3, 5, 8]\n[]\n[]\nValueError\n"
+        }
+      },
+      "explanation": "중위 순서로 결과를 만들고 조건상 답이 없는 방향은 방문하지 않습니다. 결과 m개와 높이 h에 대해 시간 O(h+m+1), 결과 O(m), 호출 스택 O(h+1)입니다. 최악에는 치우친 트리의 O(n) 시간이 될 수 있습니다."
     }
   ]
 }

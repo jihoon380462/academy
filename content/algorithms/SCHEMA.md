@@ -41,30 +41,47 @@ node --check algorithms-content.js
 - `worked`: `question`, 단계별 문자열 배열 `steps`, 결과와 이유인 `answer`, 선택적 `code`를 가진다.
 - `misconception`: `question`, `answer`로 오개념과 적용 경계를 설명한다.
 - `keypoints`: 비어 있지 않은 핵심 정리 문자열 정확히 3개.
-- `examples`: 아래 문항 형식 정확히 5개. 서로 다른 확인 목적을 가지며 문항 요구·예시 답·해설이 일치해야 한다.
+- `examples`: 아래 문항 형식 정확히 5개. 모든 예제에 `exerciseType`을 명시하고 아래 유형 배치를 지킨다. 서로 다른 확인 목적을 가지며 문항 요구·예시 답·해설이 일치해야 한다.
+
+### 레슨 예제 5개의 유형과 순서
+
+| 예제 위치 | 필수 `exerciseType` | 학습자가 할 일 |
+| --- | --- | --- |
+| 1번 | `explain` | 개념의 뜻·조건·이유를 자신의 말로 설명한다. |
+| 2번 | `explain` 또는 `implement` | 필요한 개념을 한 번 더 설명하거나 직접 구현을 시작한다. |
+| 3~5번 | `implement` | Python 코드를 직접 작성·완성·수정하고 실행하여 요구한 동작을 확인한다. |
+
+논술형 예제는 1번과 선택적인 2번에만 두므로 레슨마다 최대 2개다. 구현형은 최소 3개이며, 2번도 구현형이면 4개다. `exerciseType`은 `explain` 또는 `implement` 문자열만 허용한다. 유형을 생략하거나 3~5번을 설명형으로 배치하면 생성 검증이 실패한다.
+
+`implement`의 `solution.code`는 `kind: "python"`인 실행 가능한 풀이 블록과 정확한 stdout 문자열 `output`을 반드시 가진다. 출력이 없으면 `""`을 명시한다. `solution.answer`와 해설도 유지한다. 질문에는 구현할 기능, 허용 입력·경계, 반환값 또는 출력 등 확인할 계약을 적고, 해설은 구현이 그 계약을 지키는 이유를 설명한다. 결과 숫자만 적거나 절차를 설명하는 것으로 끝나는 문항은 구현형이 아니다.
+
+검증기는 유형 배치·필수 Python 풀이·구문과 예상 출력의 일치를 검사한다. `exerciseType`이나 코드 문자열이 있다는 사실만으로 학습자가 실제 구현을 해야 하는 문항인지 증명하지는 못한다. 질문이 코드 작성·완성·수정을 요구하는지, 제공된 풀이가 그 요구와 맞는지, 답을 그대로 출력하기만 하는 코드로 핵심을 우회하지 않는지는 별도로 내용 검토한다. 브라우저의 코드와 예상 출력은 읽기 전용이며 학습자는 자기 PC에서 실행한다.
+
+이 유형 배치와 `exerciseType` 필수 조건은 레슨의 `examples`에만 적용한다. 기존 챕터 `review`의 문항·배분·연결 검증은 유지하며 복습에는 `exerciseType`을 요구하지 않는다.
 
 예제·복습 문항은 다음 형식을 쓴다.
 
 ```json
 {
-  "skill": "절차 추적 · 누적 합",
-  "question": "[2, 3]을 처리한 직후 total을 차례로 적으세요.",
-  "code": "total ← 0\n각 value에 대해 total ← total + value",
+  "exerciseType": "implement",
+  "skill": "직접 구현 · 누적 합",
+  "question": "정수 목록 values를 받아 모든 원소의 합을 반환하는 total_values 함수를 Python으로 작성하세요. 빈 목록은 0을 반환하고 입력 목록은 바꾸지 않아야 합니다. [2, 3]과 []로 실행하여 확인하세요.",
+  "code": "입력: 유한한 정수 목록 values\n출력: 모든 원소의 합을 정수로 반환\n빈 입력의 반환값: 0\n입력 목록의 내용과 순서를 보존",
   "codeKind": "text",
   "solution": {
-    "answer": "2 → 5입니다.",
+    "answer": "합계를 0에서 시작해 각 값을 한 번씩 더하고 반환합니다. 두 호출의 반환값은 각각 5와 0입니다.",
     "code": {
       "kind": "python",
-      "source": "total = 0\nfor value in [2, 3]:\n    total = total + value\n    print(total)",
-      "output": "2\n5\n"
+      "source": "def total_values(values):\n    total = 0\n    for value in values:\n        total = total + value\n    return total\n\nprint(total_values([2, 3]))\nprint(total_values([]))",
+      "output": "5\n0\n"
     }
   },
-  "explanation": "total은 이번 값만이 아니라 지금까지 처리한 값들의 합입니다.",
+  "explanation": "total은 지금까지 처리한 값들의 합입니다. 빈 목록이면 반복을 하지 않아 초기값 0을 반환하며 원래 목록에 대입하거나 원소를 바꾸지 않습니다.",
   "related": ["algorithms-l003"]
 }
 ```
 
-`skill`, `question`, `solution.answer`, `explanation`은 필수 문자열이다. `code`는 질문 자료 문자열이며 `codeKind`는 `python` 또는 `text`다. 의사코드·추적표·잘못된 비종료 절차는 `text`로 표시하고, 실행하지 않고 손으로 추적할 자료임을 설명한다. Python 질문 자료는 구문만 자동 검사하므로 요구·예시 답과의 일치 및 실행 결과는 별도로 검토한다.
+`skill`, `question`, `solution.answer`, `explanation`은 예제·복습의 공통 필수 문자열이다. 위 예시는 구현형 예제이며 `exerciseType`은 레슨 예제에만 필수다. `code`는 질문 자료 문자열이며 `codeKind`는 `python` 또는 `text`다. 의사코드·추적표·잘못된 비종료 절차는 `text`로 표시하고, 실행하지 않고 손으로 추적할 자료임을 설명한다. Python 질문 자료는 구문만 자동 검사하므로 요구·예시 답과의 일치 및 실행 결과는 별도로 검토한다.
 
 `related`는 해당 챕터 레슨 ID만 허용한다. 복습에는 한 개 이상이 필수이며 10문항 전체가 해당 챕터의 모든 레슨(챕터 5는 7개, 챕터 6은 5개)을 연결해야 한다. 검증기는 과목 문서의 실제 레슨 표에서 수량·ID·제목을 읽으며 레슨 수를 일률적으로 6개에 고정하지 않는다. `options`, `optionFormat`, 최상위 `answer`는 쓰지 않는다. 예제·복습은 페이지 안에 세로로 나열하고 각 예시 답·해설을 접어서 제공한다. 손으로 명세·추적·이유를 적거나 PC에서 Python 예시를 작성하며 확인한다. 사이트에는 코드 실행기·자동 채점·점수 표시가 없다.
 

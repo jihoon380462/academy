@@ -74,49 +74,77 @@
   ],
   "examples": [
     {
-      "skill": "문자와 바이트 구분",
-      "question": "한의 str 길이가 1이고 UTF-8 바이트 수가 3입니다. len(text)로 네트워크 전송 바이트 수를 정해도 되나요? 화면 글자 수와도 항상 같은가요?",
+      "exerciseType": "explain",
+      "skill": "원리 설명 · 길이와 복사량의 단위",
+      "question": "str의 코드 포인트 수·UTF-8 바이트 수·화면 글자 묶음을 구별하세요. 접두사들을 실제로 모두 만드는 작업과 경계 인덱스만 저장하는 작업의 공간 차이, 반복 결합의 복사 모델과 특정 Python 최적화의 차이도 설명하세요.",
       "solution": {
-        "answer": "그렇게 정하면 안 됩니다. 인코딩한 바이트 길이를 따로 확인해야 합니다. 여러 코드 포인트가 화면 글자 한 묶음이 될 수도 있어 len이 화면 글자 수와 항상 같지도 않습니다."
+        "answer": "len과 인덱스는 코드 포인트 기준이고 인코딩 바이트나 화면 글자 묶음과 항상 같지는 않습니다. 길이 1부터 n인 실제 접두사를 모으면 결과 크기 자체가 이차일 수 있습니다. 경계만 저장하면 내용을 만드는 일을 미룰 수 있습니다. 매번 전체를 복사하는 결합 모델과 실제 CPython의 일부 최적화는 구별합니다."
       },
-      "explanation": "문자열 처리의 길이 단위를 정해야 비용·위치·출력 제한을 올바르게 해석할 수 있습니다."
+      "explanation": "한 줄의 표현이나 라이브러리 이름만으로 시간·공간을 판단하지 말고 읽고 만드는 전체 길이를 셉니다."
     },
     {
-      "skill": "누적 복사량",
-      "question": "길이 5의 문자열에서 길이 1·2·3·4·5인 접두사를 모두 실제 문자열로 저장하면 결과 문자 수 합은 얼마인가요? 일반 길이 n에서는 어떤 성장을 하나요?",
+      "exerciseType": "implement",
+      "skill": "기본 구현 · 조각을 구분자로 결합",
+      "question": "문자열 목록 parts와 문자열 separator를 받아 조각 사이에만 구분자를 넣은 새 문자열을 반환하는 join_labels(parts,separator)를 작성하세요. 빈 목록은 빈 문자열이고 빈 조각도 보존합니다. 입력 목록은 바꾸지 말고 join을 사용하세요.",
+      "code": "parts / separator → 반환 문자열\n[] / \",\" → \"\"\n[\"가\",\"나\"] / \"-\" → \"가-나\"\n[\"\",\"A\",\"\"] / \"|\" → \"|A|\"",
+      "codeKind": "text",
       "solution": {
-        "answer": "합은 15이고, 일반적으로 n(n+1)/2이므로 O(n²)입니다."
-      },
-      "explanation": "결과를 전부 만드는 요구 자체가 큰 출력을 요구합니다. 반복 횟수가 n이라고 전체 출력 크기까지 O(n)이 되는 것은 아닙니다."
-    },
-    {
-      "skill": "최적화와 비용 모델",
-      "question": "매 결합에서 전체 문자열을 복사하는 모델에서 한 글자씩 +=를 하면 누적 복사량은 어떻게 자라나요? 이 설명만으로 모든 CPython += 코드의 실제 시간이 반드시 제곱이라고 주장해도 되나요?",
-      "solution": {
-        "answer": "그 모델에서는 O(n²)로 자랍니다. 그러나 CPython이 특정 사용 패턴을 최적화할 수 있으므로 모든 실행에 대한 실제 시간 주장은 할 수 없습니다."
-      },
-      "explanation": "가정한 복사 모델과 특정 구현의 관찰을 구분합니다. 조각 결합 의도는 join으로 표현하고 실제 측정 조건도 기록할 수 있습니다."
-    },
-    {
-      "skill": "결합과 검색 적용",
-      "question": "[\"ab\", \"cd\"]를 빈 구분자로 합치고 ab를 찾습니다. 위치 0도 성공으로 안내하는 코드를 작성하세요.",
-      "solution": {
-        "answer": "결과는 abcd이며 ab는 위치 0에 있습니다. -1과 비교해 성공을 판단합니다.",
+        "answer": "구분자가 앞뒤에 무조건 붙는 방식이 아니라 조각 사이에만 들어갑니다.",
         "code": {
           "kind": "python",
-          "source": "text = \"\".join([\"ab\", \"cd\"])\nposition = text.find(\"ab\")\nprint(text)\nif position != -1:\n    print(\"찾음\", position)\nelse:\n    print(\"없음\")",
-          "output": "abcd\n찾음 0\n"
+          "source": "def join_labels(parts, separator):\n    return separator.join(parts)\n\nprint(repr(join_labels([], ',')))\nprint(repr(join_labels(['가', '나'], '-')))\nprint(repr(join_labels(['', 'A', ''], '|')))",
+          "output": "''\n'가-나'\n'|A|'\n"
         }
       },
-      "explanation": "0은 Python에서 거짓으로 취급되므로 if position 대신 없음 신호 -1을 검사해야 합니다."
+      "explanation": "빈 조각도 목록의 원소이므로 양옆 구분자의 위치에 영향을 줍니다. repr은 빈 문자열도 확인하기 위한 출력 도구이며 함수는 문자열 자체를 반환합니다."
     },
     {
-      "skill": "검색 작업량의 경계",
-      "question": "길이 n의 본문에서 여러 위치마다 길이 m 패턴을 처음부터 비교하는 직접 구현은 왜 최악 O(nm) 비교가 될 수 있나요? Python find도 반드시 똑같이 비교한다고 결론 낼 수 있나요?",
+      "exerciseType": "implement",
+      "skill": "직접 구현 · 코드 포인트 미리보기",
+      "question": "문자열 text와 0 이상의 정수 limit을 받아 (최대 limit 코드 포인트의 접두사,잘렸는지 여부)를 반환하는 prefix_preview(text,limit)를 작성하세요. 음수 limit은 ValueError입니다. 문자열을 바꾸지 않으며 화면 글자 묶음을 보존한다고 약속하지 않습니다.",
+      "code": "text / limit → 반환값\n\"가나다\" / 2 → (\"가나\",True)\n\"e\\u0301\" (e와 U+0301 결합 악센트) / 1 → (\"e\",True)\n\"\" / 0 → (\"\",False)\n\"AB\" / 5 → (\"AB\",False)",
+      "codeKind": "text",
       "solution": {
-        "answer": "가능한 시작 위치가 O(n)개이고 각 위치에서 최대 m개를 다시 비교할 수 있기 때문입니다. find의 내부 구현까지 같다고 결론 낼 수는 없습니다."
+        "answer": "자른 길이와 원래 길이를 비교해 실제로 생략된 내용이 있는지 반환합니다.",
+        "code": {
+          "kind": "python",
+          "source": "def prefix_preview(text, limit):\n    if limit < 0:\n        raise ValueError('limit must be nonnegative')\n    return text[:limit], len(text) > limit\n\nprint(prefix_preview('가나다', 2))\nprint(prefix_preview('é', 1))\nprint(prefix_preview('', 0))\nprint(prefix_preview('AB', 5))",
+          "output": "('가나', True)\n('e', True)\n('', False)\n('AB', False)\n"
+        }
       },
-      "explanation": "비슷한 접두사가 반복되면 직접 구현은 같은 문자를 여러 번 볼 수 있습니다. 라이브러리의 알고리즘·최적화는 별도로 확인합니다."
+      "explanation": "e와 결합 악센트는 두 코드 포인트이므로 이 계약에서 e만 남을 수 있습니다. 화면 글자 묶음 단위 자르기를 구현한 것으로 안내하지 않습니다."
+    },
+    {
+      "exerciseType": "implement",
+      "skill": "직접 구현 · 겹치는 검색 위치 수집",
+      "question": "문자열 text와 비어 있지 않은 pattern을 받아 일치하는 모든 시작 위치를 오름차순 목록으로 반환하는 find_all_positions(text,pattern)을 작성하세요. 겹치는 일치도 포함하고 없으면 []입니다. 빈 pattern은 ValueError이며 문자열은 바꾸지 않습니다. find를 사용할 수 있지만 성공 뒤에는 한 칸 다음부터 다시 찾아 겹침을 보존하세요.",
+      "code": "text / pattern → 반환값\n\"ababa\" / \"aba\" → [0,2]\n\"가가가\" / \"가가\" → [0,1]\n\"abc\" / \"z\" → []\n\"abc\" / \"\" → ValueError",
+      "codeKind": "text",
+      "solution": {
+        "answer": "위치 0도 일치이며 -1만 부재 신호로 사용합니다.",
+        "code": {
+          "kind": "python",
+          "source": "def find_all_positions(text, pattern):\n    if pattern == '':\n        raise ValueError('pattern must be nonempty')\n    positions = []\n    start = 0\n    while True:\n        position = text.find(pattern, start)\n        if position == -1:\n            return positions\n        positions.append(position)\n        start = position + 1\n\nprint(find_all_positions('ababa', 'aba'))\nprint(find_all_positions('가가가', '가가'))\nprint(find_all_positions('abc', 'z'))\ntry:\n    print(find_all_positions('abc', ''))\nexcept ValueError:\n    print('ValueError')",
+          "output": "[0, 2]\n[0, 1]\n[]\nValueError\n"
+        }
+      },
+      "explanation": "pattern 길이만큼 건너뛰면 겹친 일치를 놓칩니다. 이 반복 전체의 실제 검색 비용을 라이브러리 구현 확인 없이 무조건 선형이라고 부르지는 않습니다. 반환 위치 목록의 공간도 필요합니다."
+    },
+    {
+      "exerciseType": "implement",
+      "skill": "변형 구현 · 결합 전 출력 크기 검사",
+      "question": "join_if_fits(parts,separator,limit)를 작성하세요. 문자열 목록을 결합한 코드 포인트 수가 0 이상의 limit 이하면 새 문자열, 초과하면 None을 반환합니다. 음수 limit은 ValueError입니다. 먼저 조각·구분자의 길이로 전체 크기를 계산하고, 초과할 때는 큰 결합 결과를 만들지 마세요. 입력은 유지합니다.",
+      "code": "parts / separator / limit → 반환값\n[\"가\",\"나\"] / \"-\" / 3 → \"가-나\"\n[\"가\",\"나\"] / \"-\" / 2 → None\n[] / \",\" / 0 → \"\"\n[\"\",\"\"] / \"|\" / 0 → None",
+      "codeKind": "text",
+      "solution": {
+        "answer": "조각 m개 사이의 구분자는 max(m-1,0)개입니다.",
+        "code": {
+          "kind": "python",
+          "source": "def join_if_fits(parts, separator, limit):\n    if limit < 0:\n        raise ValueError('limit must be nonnegative')\n    length = sum(len(part) for part in parts)\n    length += max(len(parts) - 1, 0) * len(separator)\n    if length > limit:\n        return None\n    return separator.join(parts)\n\nprint(repr(join_if_fits(['가', '나'], '-', 3)))\nprint(join_if_fits(['가', '나'], '-', 2))\nprint(repr(join_if_fits([], ',', 0)))\nprint(join_if_fits(['', ''], '|', 0))",
+          "output": "'가-나'\nNone\n''\nNone\n"
+        }
+      },
+      "explanation": "빈 조각만 있어도 사이 구분자 길이는 들어갑니다. 성공하면 최종 문자열 공간이 필요하고, 거절하면 그 큰 결과를 만들지 않는 정책입니다. 바이트 제한이 아닌 코드 포인트 제한입니다."
     }
   ]
 }

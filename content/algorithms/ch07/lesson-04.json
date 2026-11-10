@@ -74,49 +74,77 @@
   ],
   "examples": [
     {
-      "skill": "순환 판단",
-      "question": "방향 간선 A → B, A → C, B → C가 있습니다. DFS가 B를 거쳐 C를 완료한 뒤 A에서 C를 다시 보면 그것만으로 순환이라고 할 수 있나요?",
+      "skill": "방향 순환의 증거",
+      "exerciseType": "explain",
+      "question": "A→B, A→C, B→C에서 B가 이미 본 C를 가리킨다는 사실만으로 순환이라고 할 수 있나요?",
       "solution": {
-        "answer": "그것만으로 순환이라고 할 수 없습니다. C는 이미 완료한 정점이며 A로 돌아오는 방향 경로는 없습니다. 이 그래프는 순환이 없습니다."
+        "answer": "없습니다. 같은 정점으로 여러 경로가 합쳐질 수 있습니다. DFS에서는 현재 탐색 경로로 돌아가는지 구분하거나, 위상 정렬로 전체 처리 가능성을 판단합니다."
       },
-      "explanation": "이미 발견한 모든 이웃을 순환이라고 판단하면 합쳐지는 경로를 잘못 처리합니다. 현재 호출 경로 안의 탐색 중 정점과 완료 정점을 구분합니다."
+      "explanation": "완료한 정점을 가리키는 간선과 현재 경로의 조상으로 돌아가는 간선은 다릅니다."
     },
     {
-      "skill": "진입차수 추적",
-      "question": "A → C와 B → C에서 초기 C의 진입차수, A를 처리한 뒤, B까지 처리한 뒤 값을 적으세요. 언제 C를 준비 큐에 넣나요?",
+      "skill": "진입차수 계산",
+      "exerciseType": "implement",
+      "question": "indegrees(graph) 함수를 직접 작성하세요. graph는 모든 정점이 키인 방향 의존 그래프입니다. 정점별 들어오는 간선 항목 수 사전을 키 순서로 반환하세요. 중복 항목은 각각 세고 자기 간선도 1로 셉니다. 고립 정점은 0, 빈 graph는 {}이며 입력은 바꾸지 않습니다. 제시한 확인 사례와 경계 조건을 함께 검증하세요. 이웃으로 지정한 모든 정점도 graph의 키입니다.",
+      "code": "확인 입력 → 반환값\nindegrees({'A': ['C'], 'B': ['C'], 'C': [], 'D': []}) → {'A': 0, 'B': 0, 'C': 2, 'D': 0}\nindegrees({'A': ['A', 'A']}) → {'A': 2}\nindegrees({}) → {}",
+      "codeKind": "text",
       "solution": {
-        "answer": "차례로 2·1·0이며 B까지 처리해 0이 되었을 때 넣습니다."
-      },
-      "explanation": "한 선행 조건만 끝났다고 준비시키면 나머지 의존 관계를 어깁니다. 각 들어오는 간선에 대응해 차수를 정확히 한 번씩 줄입니다."
-    },
-    {
-      "skill": "연결되지 않은 순환",
-      "question": "graph = {\"A\":[], \"B\":[\"C\"], \"C\":[\"B\"]}입니다. A만 처리한 뒤 큐가 빕니다. 전체 위상 순서는 가능한가요? 본문 함수를 실행해 확인하세요.",
-      "solution": {
-        "answer": "불가능하며 None을 반환합니다. 전체 3정점 중 A 하나만 처리했고 B·C는 서로를 기다리는 순환입니다.",
+        "answer": "입력·반환 계약과 경계 조건을 만족하는 구현 한 가지입니다.",
         "code": {
           "kind": "python",
-          "source": "from collections import deque\n\ndef topological_order(graph):\n    indegree = {}\n    for vertex in graph:\n        indegree[vertex] = 0\n    for vertex in graph:\n        for neighbor in graph[vertex]:\n            indegree[neighbor] += 1\n    ready = deque()\n    for vertex in graph:\n        if indegree[vertex] == 0:\n            ready.append(vertex)\n    order = []\n    while ready:\n        vertex = ready.popleft()\n        order.append(vertex)\n        for neighbor in graph[vertex]:\n            indegree[neighbor] -= 1\n            if indegree[neighbor] == 0:\n                ready.append(neighbor)\n    if len(order) != len(graph):\n        return None\n    return order\n\ngraph = {\"A\": [], \"B\": [\"C\"], \"C\": [\"B\"]}\nprint(topological_order(graph))",
-          "output": "None\n"
+          "source": "def indegrees(graph):\n    degree = {v: 0 for v in graph}\n    for neighbors in graph.values():\n        for neighbor in neighbors:\n            degree[neighbor] = degree[neighbor] + 1\n    return degree\n\nprint(indegrees({'A': ['C'], 'B': ['C'], 'C': [], 'D': []}))\nprint(indegrees({'A': ['A', 'A']}))\nprint(indegrees({}))",
+          "output": "{'A': 0, 'B': 0, 'C': 2, 'D': 0}\n{'A': 2}\n{}\n"
         }
       },
-      "explanation": "한 시작점이나 준비된 일부 작업만 성공했다고 전체 의존 관계가 올바른 것은 아닙니다. 모든 정점 수와 처리 수를 비교해야 합니다."
+      "explanation": "나가는 목록 길이는 진출차수입니다. 진입차수는 각 간선의 도착점에 더하며 중복을 줄일 때도 같은 개수로 반영해야 합니다."
     },
     {
-      "skill": "순서의 비유일성",
-      "question": "A → C와 B → C만 있고 정점은 A·B·C입니다. [A,B,C]와 [B,A,C] 중 가능한 순서를 모두 고르고, 검증 기준을 적으세요.",
+      "skill": "전체 위상 순서",
+      "exerciseType": "implement",
+      "question": "topological_order(graph) 함수를 직접 작성하세요. 모든 정점이 키인 방향 graph의 전체 위상 순서를 반환하세요. 초기 준비 큐는 키 순서, 이후는 FIFO·이웃 목록 순서입니다. 중복 간선도 차수 계산과 감소에 모두 반영하고 순환이면 None, 빈 graph면 []입니다. 고립 정점을 포함하며 원본 이웃 목록은 바꾸지 않습니다. 제시한 확인 사례와 경계 조건을 함께 검증하세요. 이웃으로 지정한 모든 정점도 graph의 키입니다.",
+      "code": "확인 입력 → 반환값\ntopological_order({'A': ['C'], 'B': ['C'], 'C': [], 'D': []}) → ['A', 'B', 'D', 'C']\ntopological_order({'A': ['B'], 'B': ['A']}) → None\ntopological_order({}) → []\ntopological_order({'A': ['B', 'B'], 'B': []}) → ['A', 'B']",
+      "codeKind": "text",
       "solution": {
-        "answer": "둘 다 가능합니다. 모든 정점을 한 번씩 포함하고 A와 B가 각각 C보다 앞에 있어야 합니다."
+        "answer": "입력·반환 계약과 경계 조건을 만족하는 구현 한 가지입니다.",
+        "code": {
+          "kind": "python",
+          "source": "from collections import deque\n\ndef indegrees(graph):\n    degree = {v: 0 for v in graph}\n    for neighbors in graph.values():\n        for neighbor in neighbors:\n            degree[neighbor] = degree[neighbor] + 1\n    return degree\n\ndef topological_order(graph):\n    degree = indegrees(graph)\n    queue = deque(v for v in graph if degree[v] == 0)\n    order = []\n    while queue:\n        vertex = queue.popleft()\n        order.append(vertex)\n        for neighbor in graph[vertex]:\n            degree[neighbor] = degree[neighbor] - 1\n            if degree[neighbor] == 0:\n                queue.append(neighbor)\n    return order if len(order) == len(graph) else None\n\nprint(topological_order({'A': ['C'], 'B': ['C'], 'C': [], 'D': []}))\nprint(topological_order({'A': ['B'], 'B': ['A']}))\nprint(topological_order({}))\nprint(topological_order({'A': ['B', 'B'], 'B': []}))",
+          "output": "['A', 'B', 'D', 'C']\nNone\n[]\n['A', 'B']\n"
+        }
       },
-      "explanation": "예시 큐가 한 순서를 골랐다고 다른 유효한 순서가 틀린 것은 아닙니다. 정점 누락·중복과 각 간선의 앞뒤 조건을 확인합니다."
+      "explanation": "전체 처리 수가 정점 수와 같은지 확인해야 부분 순서를 성공으로 반환하지 않습니다. 차수표만 별도로 줄입니다."
     },
     {
-      "skill": "무방향의 부모 간선",
-      "question": "무방향 간선 A—B 하나를 A:[B], B:[A]로 저장했습니다. A에서 B를 방문한 뒤 B의 이웃 A가 이미 방문됐다는 이유로 순환이라고 했습니다. 무엇을 빠뜨렸나요?",
+      "skill": "제안된 실행 순서 검사",
+      "exerciseType": "implement",
+      "question": "valid_topological_order(graph, order) 함수를 직접 작성하세요. 모든 정점이 키인 방향 graph와 정점 목록 order를 받습니다. 모든 정점이 정확히 한 번 나오고 모든 간선의 출발점이 도착점보다 앞이면 True, 아니면 False를 반환하세요. 중복·누락·알 수 없는 정점도 False이며 빈 graph의 []는 True입니다. 입력은 불변입니다. 제시한 확인 사례와 경계 조건을 함께 검증하세요. 이웃으로 지정한 모든 정점도 graph의 키입니다.",
+      "code": "확인 입력 → 반환값\nvalid_topological_order({'A': ['C'], 'B': ['C'], 'C': []}, ['B', 'A', 'C']) → True\nvalid_topological_order({'A': ['B'], 'B': []}, ['B', 'A']) → False\nvalid_topological_order({'A': [], 'B': []}, ['A', 'A']) → False\nvalid_topological_order({}, []) → True",
+      "codeKind": "text",
       "solution": {
-        "answer": "바로 앞 부모로 돌아가는 같은 간선의 반대 저장 항목이라는 점을 빠뜨렸습니다. 이 한 간선만으로 순환이 생기는 것은 아닙니다."
+        "answer": "입력·반환 계약과 경계 조건을 만족하는 구현 한 가지입니다.",
+        "code": {
+          "kind": "python",
+          "source": "def valid_topological_order(graph, order):\n    if len(order) != len(graph) or set(order) != set(graph):\n        return False\n    position = {v: i for i, v in enumerate(order)}\n    return all(position[start] < position[end]\n               for start, neighbors in graph.items() for end in neighbors)\n\nprint(valid_topological_order({'A': ['C'], 'B': ['C'], 'C': []}, ['B', 'A', 'C']))\nprint(valid_topological_order({'A': ['B'], 'B': []}, ['B', 'A']))\nprint(valid_topological_order({'A': [], 'B': []}, ['A', 'A']))\nprint(valid_topological_order({}, []))",
+          "output": "True\nFalse\nFalse\nTrue\n"
+        }
       },
-      "explanation": "무방향 순환 검사는 부모 간선을 구분해야 합니다. 평행 간선을 허용하면 부모 정점 이름만으로 충분하지 않을 수 있어 간선 식별까지 필요합니다. 방향 순환 규칙을 그대로 복사하지 않습니다."
+      "explanation": "유효한 위상 순서는 하나가 아닐 수 있습니다. 예시 문자열 일치 대신 전체 정점과 모든 간선 조건을 검사합니다."
+    },
+    {
+      "skill": "준비 단계 묶음",
+      "exerciseType": "implement",
+      "question": "ready_batches(graph) 함수를 직접 작성하세요. 모든 정점이 키인 방향 의존 graph를 준비 단계 목록으로 반환하세요. 한 단계는 그 단계 시작 시 진입차수 0인 작업들이며 단계 안은 발견 FIFO 순서입니다. 첫 단계는 키 순서이고 간선은 이웃 순서로 처리합니다. 전체 처리가 안 되면 None, 빈 graph면 []입니다. 중복 간선을 개수대로 반영하고 원본은 불변입니다. 이것은 자원·실행시간 최적화 시간표가 아닙니다. 제시한 확인 사례와 경계 조건을 함께 검증하세요. 이웃으로 지정한 모든 정점도 graph의 키입니다.",
+      "code": "확인 입력 → 반환값\nready_batches({'A': ['C'], 'B': ['C'], 'C': [], 'D': []}) → [['A', 'B', 'D'], ['C']]\nready_batches({'A': ['A']}) → None\nready_batches({}) → []",
+      "codeKind": "text",
+      "solution": {
+        "answer": "입력·반환 계약과 경계 조건을 만족하는 구현 한 가지입니다.",
+        "code": {
+          "kind": "python",
+          "source": "from collections import deque\n\ndef indegrees(graph):\n    degree = {v: 0 for v in graph}\n    for neighbors in graph.values():\n        for neighbor in neighbors:\n            degree[neighbor] = degree[neighbor] + 1\n    return degree\n\ndef ready_batches(graph):\n    degree = indegrees(graph)\n    queue = deque(v for v in graph if degree[v] == 0)\n    batches = []\n    processed = 0\n    while queue:\n        batch = []\n        for _ in range(len(queue)):\n            vertex = queue.popleft()\n            batch.append(vertex)\n            processed = processed + 1\n            for neighbor in graph[vertex]:\n                degree[neighbor] = degree[neighbor] - 1\n                if degree[neighbor] == 0:\n                    queue.append(neighbor)\n        batches.append(batch)\n    return batches if processed == len(graph) else None\n\nprint(ready_batches({'A': ['C'], 'B': ['C'], 'C': [], 'D': []}))\nprint(ready_batches({'A': ['A']}))\nprint(ready_batches({}))",
+          "output": "[['A', 'B', 'D'], ['C']]\nNone\n[]\n"
+        }
+      },
+      "explanation": "현재 큐 길이만큼만 이번 단계에 넣으면 처리 도중 새로 준비된 작업이 다음 단계로 갑니다. 실제 자원 배정 문제까지 해결한 것은 아닙니다."
     }
   ]
 }

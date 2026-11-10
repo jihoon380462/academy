@@ -55,6 +55,8 @@ PC와 모바일에서 모두 읽고 사용할 수 있어야 한다. 여백 중�
 
 ## 알고리즘·자료구조를 이어서 작업할 때
 
+사용자는 레슨별 예제의 1번(중요한 경우만 2번까지)을 논술형으로, 나머지는 직접 알고리즘 함수를 작성하는 구현 문제로 바꾸도록 확정했다. 함수 계약과 확인 사례를 문제에, 완성 예시 구현·출력을 접힌 풀이에 둔다. 모든 54레슨에 적용하며 이번 예제 개편의 실제 공개 상태는 검증 기록을 따른다.
+
 사용자는 1챕터부터 순서대로 진행하기로 했다. 현재는 `algorithms-ch01`~`algorithms-ch09`의 54레슨을 모두 구현했다. 추가 집필은 사용자 요청에 따르며 미구현 챕터 10이 있다고 가정하지 않는다. [과목 문서](curriculum/algorithms.md), [콘텐츠 형식](../content/algorithms/SCHEMA.md), `content/algorithms/ch01/`~`ch09/`, `build-algorithms.py`, `algorithms-ui.js`를 읽는다. 원본 변경 시 `python3 build-algorithms.py --check-code`로 작성자 Python 출력과 구조를 검사하고 `algorithms-content.js`를 갱신한다.
 
 언어 중립 명세·의사코드·손 추적을 먼저 설명하고 Python 구현 예시로 확인한다. 챕터 5는 7레슨, 챕터 6은 5레슨이고 나머지는 각각 6레슨이며 레슨별 예제 5개·챕터별 복습 10개는 세로 목록과 접힌 예시 답·해설을 사용한다. 읽음·최근 레슨은 `academy-algorithms-ch01-v1`·`academy-algorithms-ch02-v1`·`academy-algorithms-ch03-v1`·`academy-algorithms-ch04-v1`·`academy-algorithms-ch05-v1`·`academy-algorithms-ch06-v1`·`academy-algorithms-ch07-v1`·`academy-algorithms-ch08-v1`·`academy-algorithms-ch09-v1`에 각각 저장한다. 기존 수학·파이썬·테마 키를 유지하며 설정의 기록 옮기기에 새 키를 포함한다. 이전 자료에 새 키가 없으면 현재 알고리즘 기록은 그대로 둔다. 새 키가 든 자료는 챕터를 지원하는 사이트에서 가져온다.

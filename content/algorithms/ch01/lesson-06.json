@@ -84,53 +84,72 @@
       "solution": {
         "answer": "남은 개수 n-i를 고를 수 있습니다. 처음 n이고 반복을 계속할 때마다 1씩 줄어들며, 0이 되면 i < n이 거짓입니다."
       },
-      "explanation": "유한한 0 이상의 정수는 끝없이 1씩 줄어들 수 없습니다. i를 늘리는 줄이 일부 분기에서 빠지거나 목록 길이를 계속 늘린다면 이 설명을 그대로 사용할 수 없습니다."
+      "explanation": "유한한 0 이상의 정수는 끝없이 1씩 줄어들 수 없습니다. i를 늘리는 줄이 일부 분기에서 빠지거나 목록 길이를 계속 늘린다면 이 설명을 그대로 사용할 수 없습니다.",
+      "exerciseType": "explain"
     },
     {
-      "skill": "빈 입력과 한 원소",
-      "question": "전체 합 함수가 total = 0으로 시작해 각 원소를 한 번씩 더합니다. 빈 목록을 허용하며 빈 합의 출력은 0입니다. [], [0], [-5]의 기대 결과와 반복 횟수를 각각 적으세요.",
+      "exerciseType": "implement",
+      "skill": "구현 · 종료까지의 횟수",
+      "question": "step_count(start, step)를 직접 구현하세요. start는 0 이상 정수, step은 양의 정수입니다. 매번 step을 빼되 0보다 작아지면 0으로 바꾸는 반복이 0에 도달할 때까지 실행된 횟수를 반환하세요. start=0이면 0회입니다. 입력 자료는 변경하지 않습니다. 함수의 결과는 반환하며, 아래 확인 호출의 기대 반환값과 비교하세요.",
+      "code": "확인 호출 → 기대 반환값\nstep_count(0, 3) → 0\nstep_count(5, 2) → 3\nstep_count(6, 3) → 2",
+      "codeKind": "text",
       "solution": {
-        "answer": "[]는 결과 0·반복 0회, [0]은 결과 0·반복 1회, [-5]는 결과 -5·반복 1회입니다."
-      },
-      "explanation": "[]와 [0]의 결과는 같지만 처리 과정은 다릅니다. 결과만 보지 말고 원소가 0개인지, 값이 0인 원소가 1개인지 구분하면 경계 오류를 찾기 쉽습니다."
-    },
-    {
-      "skill": "끝 경계 오류",
-      "question": "길이 n인 목록의 합을 구하는 아래 의사코드에서 비교를 어떻게 고쳐야 할까요? 빈 목록과 한 원소 [5]에서 잘못된 조건이 만드는 문제도 적으세요. 손으로만 추적하세요.",
-      "solution": {
-        "answer": "i <= n을 i < n으로 고칩니다. 빈 목록에서는 처음부터 없는 values[0]을 읽으려 하고, [5]에서는 값을 한 번 더한 뒤 없는 values[1]을 읽으려 합니다."
-      },
-      "explanation": "n은 원소가 있는 마지막 위치가 아니라 끝 경계입니다. i < n이면 빈 목록은 0회, 길이 1이면 인덱스 0에서만 본문을 실행합니다.",
-      "code": "i ← 0\ntotal ← 0\n반복: i <= n인 동안\n    total ← total + values[i]\n    i ← i + 1",
-      "codeKind": "text"
-    },
-    {
-      "skill": "빠진 갱신 고치기",
-      "question": "양수 개수를 세는 아래 절차는 values = [3, 0, 2]에서 끝나지 않습니다. 그대로 실행하지 말고, 어느 입력에서 진행이 멈추는지 추적한 뒤 i 갱신 위치를 고친 함수를 작성해 실행하세요. 빈 목록은 0을 반환해야 합니다.",
-      "solution": {
-        "answer": "0을 만났을 때 i가 늘지 않아 같은 0을 계속 봅니다. count는 양수일 때만 늘리고 i는 양수인지와 관계없이 매 반복마다 늘려야 합니다. 수정 후 결과는 2, 빈 목록은 0입니다.",
+        "answer": "다음은 계약을 만족하는 구현 한 가지입니다. 확인 호출의 결과뿐 아니라 입력 경계와 변수의 의미도 비교하세요.",
         "code": {
           "kind": "python",
-          "source": "def count_positive(values):\n    i = 0\n    count = 0\n    while i < len(values):\n        if values[i] > 0:\n            count += 1\n        i += 1\n    return count\n\nprint(count_positive([3, 0, 2]))\nprint(count_positive([]))",
-          "output": "2\n0\n"
+          "source": "def step_count(start, step):\n    remaining = start\n    steps = 0\n    while remaining > 0:\n        remaining -= step\n        if remaining < 0:\n            remaining = 0\n        steps += 1\n    return steps\n\nprint(step_count(0, 3))\nprint(step_count(5, 2))\nprint(step_count(6, 3))\n",
+          "output": "0\n3\n2\n"
         }
       },
-      "explanation": "세어야 할 조건과 다음 원소로 진행할 조건을 분리합니다. 값 0을 세지 않는 것은 맞지만, 그 원소의 확인을 마쳤으므로 다음 위치로 진행해야 합니다.",
-      "code": "i ← 0\ncount ← 0\n반복: i < 목록 길이인 동안\n    values[i]가 양수이면\n        count ← count + 1\n        i ← i + 1\ncount를 돌려준다",
-      "codeKind": "text"
+      "explanation": "계속 반복하는 동안 remaining은 양의 step만큼 줄거나 0이 됩니다. 나누어떨어지지 않는 마지막 단계에서도 0을 지나쳐 영원히 반복하지 않아야 합니다."
     },
     {
-      "skill": "출력 계약이 바뀔 때",
-      "question": "검색 요구가 “첫 위치”에서 “마지막 위치, 없으면 -1”로 바뀌었습니다. 정수 목록 [7, 2, 7]과 target 7에서 첫 일치 즉시 반환하면 왜 틀릴까요? 마지막 위치를 기억하며 끝까지 확인하는 함수를 작성하고 빈 목록도 실행하세요.",
+      "exerciseType": "implement",
+      "skill": "구현 · 시작 경계가 있는 검색",
+      "question": "find_from(values, target, start)를 직접 구현하세요. values는 정수 목록, target은 정수, start는 0≤start≤길이입니다. start 이상인 위치 중 첫 일치 인덱스를 반환하고 없으면 -1입니다. start가 길이와 같거나 목록이 비면 -1입니다. 입력 자료는 변경하지 않습니다. 함수의 결과는 반환하며, 아래 확인 호출의 기대 반환값과 비교하세요.",
+      "code": "확인 호출 → 기대 반환값\nfind_from([], 7, 0) → -1\nfind_from([7, 2, 7], 7, 1) → 2\nfind_from([7, 2, 7], 7, 3) → -1\nfind_from([0], 0, 0) → 0",
+      "codeKind": "text",
       "solution": {
-        "answer": "첫 일치에서 0을 반환하지만 기대값은 2입니다. 마지막으로 본 일치 위치를 저장하고 목록 끝에서 반환하면 됩니다. 빈 목록은 저장값 -1을 그대로 반환합니다.",
+        "answer": "다음은 계약을 만족하는 구현 한 가지입니다. 확인 호출의 결과뿐 아니라 입력 경계와 변수의 의미도 비교하세요.",
         "code": {
           "kind": "python",
-          "source": "def last_index(values, target):\n    i = 0\n    found = -1\n    while i < len(values):\n        if values[i] == target:\n            found = i\n        i += 1\n    return found\n\nprint(last_index([7, 2, 7], 7))\nprint(last_index([], 7))",
-          "output": "2\n-1\n"
+          "source": "def find_from(values, target, start):\n    i = start\n    while i < len(values):\n        if values[i] == target:\n            return i\n        i += 1\n    return -1\n\nprint(find_from([], 7, 0))\nprint(find_from([7, 2, 7], 7, 1))\nprint(find_from([7, 2, 7], 7, 3))\nprint(find_from([0], 0, 0))\n",
+          "output": "-1\n2\n-1\n0\n"
         }
       },
-      "explanation": "종료가 빠르다는 이유만으로 조기 반환할 수는 없습니다. 마지막 위치는 뒤에 같은 값이 더 없는지 끝까지 확인해야 합니다. 인덱스는 매 반복 증가하므로 이 수정도 유한한 목록에서 종료합니다."
+      "explanation": "첫 원소가 아니라 지정한 시작 경계부터 확인합니다. start=길이는 유효한 시작 경계지만 실제 원소 인덱스가 아니므로 본문을 실행하지 않습니다."
+    },
+    {
+      "exerciseType": "implement",
+      "skill": "구현 · 모든 분기에서 진행",
+      "question": "count_nonzero(values)를 while문으로 직접 구현하세요. 유한한 정수 목록에서 0이 아닌 원소 수를 반환합니다. 빈 목록은 0이며, 값 0을 만났을 때도 다음 인덱스로 진행해 종료해야 합니다. 입력 자료는 변경하지 않습니다. 함수의 결과는 반환하며, 아래 확인 호출의 기대 반환값과 비교하세요.",
+      "code": "확인 호출 → 기대 반환값\ncount_nonzero([]) → 0\ncount_nonzero([3, 0, 2]) → 2\ncount_nonzero([0, 0]) → 0\ncount_nonzero([-1]) → 1",
+      "codeKind": "text",
+      "solution": {
+        "answer": "다음은 계약을 만족하는 구현 한 가지입니다. 확인 호출의 결과뿐 아니라 입력 경계와 변수의 의미도 비교하세요.",
+        "code": {
+          "kind": "python",
+          "source": "def count_nonzero(values):\n    i = 0\n    count = 0\n    while i < len(values):\n        if values[i] != 0:\n            count += 1\n        i += 1\n    return count\n\nprint(count_nonzero([]))\nprint(count_nonzero([3, 0, 2]))\nprint(count_nonzero([0, 0]))\nprint(count_nonzero([-1]))\n",
+          "output": "0\n2\n0\n1\n"
+        }
+      },
+      "explanation": "개수를 세는 조건과 위치를 진행하는 조건은 다릅니다. i 갱신을 if 안에 넣으면 0에서 진행이 멈춥니다. 모든 계속 경로에서 남은 길이가 줄어드는지 확인합니다."
+    },
+    {
+      "exerciseType": "implement",
+      "skill": "구현 · 끝 경계 안의 마지막 위치",
+      "question": "last_match_before(values, target, end)를 직접 구현하세요. values는 정수 목록, target은 정수, end는 0≤end≤길이입니다. 0 이상 end 미만에서 일치하는 마지막 인덱스를 반환하고 없으면 -1입니다. end=0과 빈 목록은 -1입니다. 입력 자료는 변경하지 않습니다. 함수의 결과는 반환하며, 아래 확인 호출의 기대 반환값과 비교하세요.",
+      "code": "확인 호출 → 기대 반환값\nlast_match_before([], 7, 0) → -1\nlast_match_before([7, 2, 7], 7, 2) → 0\nlast_match_before([7, 2, 7], 7, 3) → 2",
+      "codeKind": "text",
+      "solution": {
+        "answer": "다음은 계약을 만족하는 구현 한 가지입니다. 확인 호출의 결과뿐 아니라 입력 경계와 변수의 의미도 비교하세요.",
+        "code": {
+          "kind": "python",
+          "source": "def last_match_before(values, target, end):\n    i = 0\n    found = -1\n    while i < end:\n        if values[i] == target:\n            found = i\n        i += 1\n    return found\n\nprint(last_match_before([], 7, 0))\nprint(last_match_before([7, 2, 7], 7, 2))\nprint(last_match_before([7, 2, 7], 7, 3))\n",
+          "output": "-1\n0\n2\n"
+        }
+      },
+      "explanation": "끝 경계 end의 원소는 포함하지 않습니다. 마지막 위치 계약이라 첫 일치에서 반환하지 않고, 경계 안을 끝까지 확인하며 최근 일치 위치를 유지합니다."
     }
   ]
 }

@@ -77,49 +77,77 @@
   ],
   "examples": [
     {
-      "skill": "전략 구분 · 선택을 고정하기",
-      "question": "탐욕과 백트래킹에서 첫 선택이 나중에 불리해 보일 때의 차이를 설명하세요. 동전 합이 맞는다는 것과 최소라는 것도 구별하세요.",
+      "skill": "탐욕 결과와 최적성",
+      "exerciseType": "explain",
+      "question": "가장 큰 동전부터 골라 정확한 금액을 만들었으면 최소 동전 수도 자동으로 보장되나요? 실패했다면 금액 자체가 불가능한가요?",
       "solution": {
-        "answer": "탐욕은 정한 규칙의 선택을 되돌리지 않고, 백트래킹은 다른 선택으로 돌아갈 수 있습니다. 합이 맞는 조합은 가능한 해이고 최소 개수는 모든 가능한 해와의 비교가 필요한 조건입니다."
+        "answer": "둘 다 아닙니다. [1,3,4]의 6은 탐욕 세 개보다 [3,3] 두 개가 낫고, [3,4]의 6은 탐욕이 실패해도 [3,3]이 가능합니다."
       },
-      "explanation": "가능한 해를 만드는 규칙과 최적해를 보장하는 규칙은 동일하지 않을 수 있습니다."
+      "explanation": "선택 규칙의 성공과 전체 최적성·가능성을 따로 확인합니다."
     },
     {
-      "skill": "반례와 비교 · 더 작은 조합",
-      "question": "[1,4,5]로 8을 만들 때 큰 동전 우선의 조합과 더 적은 동전 조합을 적어 최적성 반례를 만드세요.",
+      "skill": "큰 동전 우선 규칙",
+      "exerciseType": "implement",
+      "question": "greedy_coins(coins, amount) 함수를 직접 작성하세요. coins는 서로 다른 양의 정수 종류이고 각 종류를 무제한 사용할 수 있습니다. 0 이상 amount에서 큰 동전부터 가능한 만큼 사용하는 조합을 반환하세요. 남은 금액을 못 채우면 None, amount=0이면 []입니다. 종류가 비어 있어도 이 규칙을 지키고 원본 coins는 정렬로 바꾸지 않습니다. 최소 개수를 보장하는 함수는 아닙니다. 제시한 확인 사례와 경계 조건을 함께 검증하세요.",
+      "code": "확인 입력 → 반환값\ngreedy_coins([1, 3, 4], 6) → [4, 1, 1]\ngreedy_coins([3, 4], 6) → None\ngreedy_coins([], 0) → []",
+      "codeKind": "text",
       "solution": {
-        "answer": "탐욕은 [5,1,1,1] 네 개이고 [4,4] 두 개가 더 좋습니다. 8짜리 동전이 없어 한 개는 불가능하므로 최소는 두 개입니다."
-      },
-      "explanation": "각 단계에서 잔액을 많이 줄여도 작은 동전이 많이 남을 수 있습니다."
-    },
-    {
-      "skill": "탐색 조건 · 실패와 불가능",
-      "question": "[3,4]로 6을 만드는 큰 동전 우선이 None을 반환했습니다. 이것만으로 불가능이라고 결론 내릴 수 있나요?",
-      "solution": {
-        "answer": "아닙니다. [3,3] 두 개로 가능합니다. None은 이 탐욕 경로를 완성하지 못했다는 뜻일 뿐입니다."
-      },
-      "explanation": "모든 가능한 첫 선택을 검사하지 않은 실패는 전체 후보가 불가능하다는 근거가 아닙니다."
-    },
-    {
-      "skill": "작은 적용 · 전체 기준 비교",
-      "question": "각 종류를 제한 없이 쓰는 [2,5]에서 목표 6과 3의 최소 동전 수를 작은 재귀 기준 해법으로 출력하세요.",
-      "solution": {
-        "answer": "6은 2 세 개로 최소 3, 3은 불가능해 None입니다.",
+        "answer": "입력·반환 계약과 경계 조건을 만족하는 구현 한 가지입니다.",
         "code": {
           "kind": "python",
-          "source": "def minimum_coins_plain(coins, amount):\n    def solve(remaining):\n        if remaining == 0:\n            return 0\n        best = None\n        for coin in coins:\n            if coin <= remaining:\n                rest = solve(remaining - coin)\n                if rest is not None:\n                    candidate = rest + 1\n                    if best is None or candidate < best:\n                        best = candidate\n        return best\n    return solve(amount)\n\nprint(minimum_coins_plain([2, 5], 6))\nprint(minimum_coins_plain([2, 5], 3))",
-          "output": "3\nNone\n"
+          "source": "def greedy_coins(coins, amount):\n    result = []\n    remaining = amount\n    for coin in sorted(coins, reverse=True):\n        while coin <= remaining:\n            result.append(coin)\n            remaining = remaining - coin\n    return result if remaining == 0 else None\n\nprint(greedy_coins([1, 3, 4], 6))\nprint(greedy_coins([3, 4], 6))\nprint(greedy_coins([], 0))",
+          "output": "[4, 1, 1]\nNone\n[]\n"
         }
       },
-      "explanation": "양의 동전을 하나씩 빼는 모든 분기를 비교합니다. 동전 2 하나만 쓸 수 있는 문제와 다릅니다."
+      "explanation": "양수 조건이 있어 남은 금액이 줄어 종료합니다. 정렬한 사본을 사용해 입력 순서를 보존합니다."
     },
     {
-      "skill": "반례와 비교 · 성공 사례의 한계",
-      "question": "어떤 탐욕 규칙이 작은 입력 50개에서 최소 개수와 같았습니다. 이를 모든 입력의 최적성 근거로 삼기 전에 무엇을 더 확인해야 하나요?",
+      "skill": "작은 전체 기준 최소값",
+      "exerciseType": "implement",
+      "question": "brute_min_coins(coins, amount) 함수를 직접 작성하세요. 서로 다른 양의 정수 coins를 무제한 사용해 작은 0 이상 amount의 정확한 최소 동전 수를 재귀 전체 비교로 반환하세요. 불가능하면 None, amount=0이면 종류가 비어도 0입니다. 동전 순서는 결과 개수에 영향을 주지 않으며 입력은 불변입니다. 큰 금액용 성능을 주장하지 마세요. 제시한 확인 사례와 경계 조건을 함께 검증하세요.",
+      "code": "확인 입력 → 반환값\nbrute_min_coins([1, 3, 4], 6) → 2\nbrute_min_coins([2, 5], 3) → None\nbrute_min_coins([], 0) → 0",
+      "codeKind": "text",
       "solution": {
-        "answer": "허용 입력의 조건과 탐욕 선택을 포함하는 최적해가 항상 남는 이유를 설명해야 합니다. 다른 동전 종류·부재·0 목표 등 반례 후보도 확인합니다."
+        "answer": "입력·반환 계약과 경계 조건을 만족하는 구현 한 가지입니다.",
+        "code": {
+          "kind": "python",
+          "source": "def brute_min_coins(coins, amount):\n    if amount == 0:\n        return 0\n    best = None\n    for coin in coins:\n        if coin <= amount:\n            previous = brute_min_coins(coins, amount - coin)\n            if previous is not None:\n                candidate = previous + 1\n                if best is None or candidate < best:\n                    best = candidate\n    return best\n\nprint(brute_min_coins([1, 3, 4], 6))\nprint(brute_min_coins([2, 5], 3))\nprint(brute_min_coins([], 0))",
+          "output": "2\nNone\n0\n"
+        }
       },
-      "explanation": "유한한 성공 검사는 그 사례들의 일치만 보입니다. 임의의 입력 전체에 대한 보장은 별도 논증이 필요합니다."
+      "explanation": "각 가능한 첫 동전을 시도해 남은 금액의 최소값과 비교합니다. 양수 조건은 재귀 진행의 근거이며 작은 기준에 한정합니다."
+    },
+    {
+      "skill": "탐욕과 기준 결과 비교",
+      "exerciseType": "implement",
+      "question": "compare_greedy(coins, amount) 함수를 직접 작성하세요. 서로 다른 양의 정수 coins와 작은 0 이상 amount를 받아 (탐욕 동전 수 또는 None, 전체 기준 최소 수 또는 None)을 반환하세요. 종류는 무제한이며 amount=0은 (0,0)입니다. 두 함수가 실패 의미를 공유한다고 가정하지 말고 입력은 불변입니다. 제시한 확인 사례와 경계 조건을 함께 검증하세요.",
+      "code": "확인 입력 → 반환값\ncompare_greedy([1, 3, 4], 6) → (3, 2)\ncompare_greedy([3, 4], 6) → (None, 2)\ncompare_greedy([], 0) → (0, 0)",
+      "codeKind": "text",
+      "solution": {
+        "answer": "입력·반환 계약과 경계 조건을 만족하는 구현 한 가지입니다.",
+        "code": {
+          "kind": "python",
+          "source": "def greedy_coins(coins, amount):\n    result = []\n    remaining = amount\n    for coin in sorted(coins, reverse=True):\n        while coin <= remaining:\n            result.append(coin)\n            remaining = remaining - coin\n    return result if remaining == 0 else None\n\ndef brute_min_coins(coins, amount):\n    if amount == 0:\n        return 0\n    best = None\n    for coin in coins:\n        if coin <= amount:\n            previous = brute_min_coins(coins, amount - coin)\n            if previous is not None:\n                candidate = previous + 1\n                if best is None or candidate < best:\n                    best = candidate\n    return best\n\ndef compare_greedy(coins, amount):\n    chosen = greedy_coins(coins, amount)\n    greedy_count = None if chosen is None else len(chosen)\n    return greedy_count, brute_min_coins(coins, amount)\n\nprint(compare_greedy([1, 3, 4], 6))\nprint(compare_greedy([3, 4], 6))\nprint(compare_greedy([], 0))",
+          "output": "(3, 2)\n(None, 2)\n(0, 0)\n"
+        }
+      },
+      "explanation": "어떤 조합을 찾았는지와 최적값은 별도입니다. 탐욕 None과 전체 기준 None도 서로 다른 결론일 수 있습니다."
+    },
+    {
+      "skill": "작은 범위에서 첫 반례 찾기",
+      "exerciseType": "implement",
+      "question": "first_greedy_counterexample(coins, limit) 함수를 직접 작성하세요. 서로 다른 양의 정수 coins와 0 이상 limit를 받습니다. 금액 0부터 limit까지 탐욕 개수와 작은 전체 기준 개수(None 포함)를 비교해 처음 다른 금액을 반환하세요. 그 범위에서 없으면 None이며 coins가 비어도 처리하고 입력은 불변입니다. None을 모든 금액에서의 증명으로 해석하지 않습니다. 제시한 확인 사례와 경계 조건을 함께 검증하세요.",
+      "code": "확인 입력 → 반환값\nfirst_greedy_counterexample([1, 3, 4], 6) → 6\nfirst_greedy_counterexample([1, 2], 8) → None\nfirst_greedy_counterexample([3, 4], 6) → 6\nfirst_greedy_counterexample([], 3) → None",
+      "codeKind": "text",
+      "solution": {
+        "answer": "입력·반환 계약과 경계 조건을 만족하는 구현 한 가지입니다.",
+        "code": {
+          "kind": "python",
+          "source": "def greedy_coins(coins, amount):\n    result = []\n    remaining = amount\n    for coin in sorted(coins, reverse=True):\n        while coin <= remaining:\n            result.append(coin)\n            remaining = remaining - coin\n    return result if remaining == 0 else None\n\ndef brute_min_coins(coins, amount):\n    if amount == 0:\n        return 0\n    best = None\n    for coin in coins:\n        if coin <= amount:\n            previous = brute_min_coins(coins, amount - coin)\n            if previous is not None:\n                candidate = previous + 1\n                if best is None or candidate < best:\n                    best = candidate\n    return best\n\ndef first_greedy_counterexample(coins, limit):\n    for amount in range(limit + 1):\n        chosen = greedy_coins(coins, amount)\n        count = None if chosen is None else len(chosen)\n        if count != brute_min_coins(coins, amount):\n            return amount\n    return None\n\nprint(first_greedy_counterexample([1, 3, 4], 6))\nprint(first_greedy_counterexample([1, 2], 8))\nprint(first_greedy_counterexample([3, 4], 6))\nprint(first_greedy_counterexample([], 3))",
+          "output": "6\nNone\n6\nNone\n"
+        }
+      },
+      "explanation": "반례 하나로 보편적 주장을 깨뜨릴 수 있지만 유한 범위의 성공은 전역 증명이 아닙니다. 같은 숫자만 바꾸는 대신 반례 검색 도구를 직접 만듭니다."
     }
   ]
 }

@@ -80,35 +80,75 @@
     {
       "skill": "구조 원리 · 위치 계산",
       "question": "설명용 배열의 시작 위치는 200이고 한 칸의 크기는 8입니다. 인덱스 3의 칸 위치와 다섯 번째 원소의 인덱스를 적고, 앞 원소를 모두 읽어야 하는지도 설명하세요.",
-      "solution": {"answer": "인덱스 3의 위치는 200 + 3 × 8 = 224입니다. 다섯 번째 원소의 인덱스는 4입니다. 유효한 인덱스를 알고 있다면 앞 원소들을 읽지 않고 칸 위치를 계산합니다."},
-      "explanation": "처음 칸이 0번이므로 순서와 인덱스는 하나 차이 납니다. 값으로 검색하는 일이 아니라 알려진 번호의 위치를 계산하는 상황입니다."
-    },
-    {
-      "skill": "확장 추적 · 길이와 용량",
-      "question": "길이 2·용량 4인 [A, B]에 C, D, E를 차례로 붙입니다. 가득 찼을 때 용량을 두 배로 늘리고 기존 원소를 모두 옮기는 모델에서, 각 추가 뒤의 길이·용량과 기존 원소 이동 수를 적으세요.",
-      "solution": {"answer": "C 뒤는 길이 3·용량 4·기존 이동 0개, D 뒤는 길이 4·용량 4·기존 이동 0개, E 뒤는 길이 5·용량 8·기존 이동 4개입니다."},
-      "explanation": "각 새 값을 한 번 기록하는 일과 기존 원소를 옮기는 일을 구분합니다. 용량 8이라고 원소가 8개가 되는 것은 아닙니다."
-    },
-    {
-      "skill": "비용 이유 · 한 번과 누적",
-      "question": "동적 배열이 append 한 번에서 n개를 옮겼습니다. 이를 보고 '끝 추가는 분할 상환 O(1)이 아니다'라고 말할 수 있나요? 또 확장 때마다 용량을 딱 한 칸만 늘리는 정책에도 같은 분할 상환 결론을 적용할 수 있는지 설명하세요.",
-      "solution": {"answer": "한 번의 O(n) 이동만으로 분할 상환 O(1)을 반박할 수 없습니다. 기하급수적 확장 정책에서는 앞선 싼 추가를 포함한 누적 비용이 O(n)입니다. 매번 한 칸만 늘리고 기존 원소를 복사하는 정책은 누적 복사가 O(n²)까지 늘어 같은 결론을 적용할 수 없습니다."},
-      "explanation": "분할 상환 비용의 근거는 일련의 연산 전체와 확장 정책입니다. '동적'이라는 이름만으로 어떤 정책에서도 똑같은 비용이 보장되지는 않습니다."
-    },
-    {
-      "skill": "작은 적용 · 읽기와 끝 추가",
-      "question": "Python 목록 [7, 9]의 첫 값을 8로 바꾸고 끝에 11을 붙인 뒤 목록과 길이를 출력하세요. 인덱스 대입이 길이를 늘리는 연산인지도 설명하세요.",
       "solution": {
-        "answer": "결과는 [8, 9, 11], 길이는 3입니다. 인덱스 0의 대입은 기존 칸을 바꾸며, 길이를 늘리는 것은 append입니다.",
-        "code": {"kind": "python", "source": "values = [7, 9]\nvalues[0] = 8\nvalues.append(11)\nprint(values)\nprint(len(values))", "output": "[8, 9, 11]\n3\n"}
+        "answer": "인덱스 3의 위치는 200 + 3 × 8 = 224입니다. 다섯 번째 원소의 인덱스는 4입니다. 유효한 인덱스를 알고 있다면 앞 원소들을 읽지 않고 칸 위치를 계산합니다."
       },
-      "explanation": "존재하는 칸을 덮어쓰는 일과 새 원소를 끝에 추가하는 일은 서로 다른 계약입니다. 이 출력으로 내부 용량이나 실제 재할당 여부까지 알 수는 없습니다."
+      "explanation": "처음 칸이 0번이므로 순서와 인덱스는 하나 차이 납니다. 값으로 검색하는 일이 아니라 알려진 번호의 위치를 계산하는 상황입니다.",
+      "exerciseType": "explain"
     },
     {
-      "skill": "경계와 선택 · 번호로 읽는 자료",
-      "question": "빈 동적 배열에서 시작해 데이터를 끝에 계속 추가한 뒤 알려진 번호의 원소를 자주 읽으려 합니다. 어떤 성질이 유리한가요? 빈 상태에서 인덱스 0을 바로 읽어도 되는지도 설명하세요.",
-      "solution": {"answer": "끝 추가의 분할 상환 O(1)과 알려진 유효 인덱스의 O(1) 접근이 유리합니다. 빈 상태에서는 유효한 원소 인덱스가 없으므로 0번을 읽을 수 없습니다. 원소가 하나 생긴 뒤에야 인덱스 0이 유효합니다."},
-      "explanation": "빠른 접근은 유효한 위치라는 계약 아래에서의 비용입니다. 빈 목록에서 값을 만들어 주는 보장이 아니며, 앞쪽 삽입이 많아지면 다른 이동 비용도 검토해야 합니다."
+      "exerciseType": "implement",
+      "skill": "직접 구현 · 범위를 확인하는 인덱스 읽기",
+      "question": "정수 목록 values와 정수 index를 받는 read_at(values, index)를 작성하세요. 0부터 세는 유효한 인덱스면 그 값을, 음수이거나 길이 이상이면 None을 반환합니다. 빈 목록은 항상 None이며 입력은 바꾸지 않습니다. 음수 인덱스를 뒤에서 세는 Python 규칙은 사용하지 않습니다. 함수를 직접 작성하고 아래 사례로 확인하세요.",
+      "code": "read_at([10, 20, 10], 1) → 20\nread_at([], 0) → None\nread_at([5], -1) → None",
+      "codeKind": "text",
+      "solution": {
+        "answer": "아래는 계약을 만족하는 구현 한 가지입니다. 반환값과 입력 변경 여부를 함께 확인하세요.",
+        "code": {
+          "kind": "python",
+          "source": "def read_at(values, index):\n    if index < 0 or index >= len(values):\n        return None\n    return values[index]\n\nprint(read_at([10, 20, 10], 1))\nprint(read_at([], 0))\nprint(read_at([5], -1))",
+          "output": "20\nNone\nNone\n"
+        }
+      },
+      "explanation": "배열은 유효한 번호를 알면 앞의 칸을 순회하지 않고 읽습니다. 없는 위치를 먼저 거르는 조건과 실제 값 읽기를 분리합니다."
+    },
+    {
+      "exerciseType": "implement",
+      "skill": "직접 구현 · 한 칸을 바꾼 복사본",
+      "question": "정수 목록 values의 index 위치만 new_value로 바꾼 새 목록을 반환하는 replaced_copy(values, index, new_value)를 작성하세요. 원본은 보존합니다. index가 음수이거나 범위 밖이면 None이며 빈 목록에는 유효한 위치가 없습니다. 중복값이 있어도 지정한 위치 하나만 바꿉니다. 함수를 직접 작성하고 아래 사례로 확인하세요.",
+      "code": "replaced_copy([2, 2, 3], 1, 9) → [2, 9, 3], 원본 [2, 2, 3]\nreplaced_copy([], 0, 9) → None\nreplaced_copy([5], 1, 9) → None",
+      "codeKind": "text",
+      "solution": {
+        "answer": "아래는 계약을 만족하는 구현 한 가지입니다. 반환값과 입력 변경 여부를 함께 확인하세요.",
+        "code": {
+          "kind": "python",
+          "source": "def replaced_copy(values, index, new_value):\n    if index < 0 or index >= len(values):\n        return None\n    result = values[:]\n    result[index] = new_value\n    return result\n\nvalues = [2, 2, 3]\nprint(replaced_copy(values, 1, 9), values)\nprint(replaced_copy([], 0, 9))\nprint(replaced_copy([5], 1, 9))",
+          "output": "[2, 9, 3] [2, 2, 3]\nNone\nNone\n"
+        }
+      },
+      "explanation": "복사본의 한 칸 덮어쓰기는 상수 작업이지만 원본 보존을 위한 전체 복사에는 길이에 비례한 시간·추가 공간이 듭니다."
+    },
+    {
+      "exerciseType": "implement",
+      "skill": "직접 구현 · 두 배 확장 관찰기",
+      "question": "이론적 동적 배열의 growth_model(length, capacity, count)를 작성하세요. capacity≥1, 0≤length≤capacity, count≥0인 정수를 받고 count번 끝에 추가한 뒤 (길이, 용량, 옮긴 기존 원소 수의 합)을 반환합니다. 추가 직전 가득 찼을 때만 용량을 두 배로 하고 기존 length개를 옮깁니다. 새 값 쓰기는 이동 수에 포함하지 않으며 count=0이면 그대로입니다. 실제 Python 내부 용량을 측정하지 않습니다. 함수를 직접 작성하고 아래 사례로 확인하세요.",
+      "code": "growth_model(0, 1, 0) → (0, 1, 0)\ngrowth_model(3, 4, 2) → (5, 8, 4)\ngrowth_model(0, 1, 5) → (5, 8, 7)",
+      "codeKind": "text",
+      "solution": {
+        "answer": "아래는 계약을 만족하는 구현 한 가지입니다. 반환값과 입력 변경 여부를 함께 확인하세요.",
+        "code": {
+          "kind": "python",
+          "source": "def growth_model(length, capacity, count):\n    moved = 0\n    for _ in range(count):\n        if length == capacity:\n            moved += length\n            capacity *= 2\n        length += 1\n    return length, capacity, moved\n\nprint(growth_model(0, 1, 0))\nprint(growth_model(3, 4, 2))\nprint(growth_model(0, 1, 5))",
+          "output": "(0, 1, 0)\n(5, 8, 4)\n(5, 8, 7)\n"
+        }
+      },
+      "explanation": "가득 찬 시점마다 비용을 더해야 합니다. 다섯 번 추가의 이동은 1+2+4이며 매 추가마다 같은 양을 옮기는 것이 아닙니다."
+    },
+    {
+      "exerciseType": "implement",
+      "skill": "직접 구현 · 번호 범위 복사",
+      "question": "정수 목록에서 start 이상 stop 미만 인덱스의 값들을 새 목록으로 반환하는 interval_copy(values, start, stop)를 작성하세요. 0≤start≤stop≤len(values)를 전제로 하고 슬라이스 대신 인덱스 반복으로 복사합니다. 입력·중복값의 순서를 보존하며 빈 범위와 빈 목록은 []입니다. 함수를 직접 작성하고 아래 사례로 확인하세요.",
+      "code": "interval_copy([4, 4, 7], 1, 3) → [4, 7]\ninterval_copy([4], 1, 1) → []\ninterval_copy([], 0, 0) → []",
+      "codeKind": "text",
+      "solution": {
+        "answer": "아래는 계약을 만족하는 구현 한 가지입니다. 반환값과 입력 변경 여부를 함께 확인하세요.",
+        "code": {
+          "kind": "python",
+          "source": "def interval_copy(values, start, stop):\n    result = []\n    for index in range(start, stop):\n        result.append(values[index])\n    return result\n\nprint(interval_copy([4, 4, 7], 1, 3))\nprint(interval_copy([4], 1, 1))\nprint(interval_copy([], 0, 0))",
+          "output": "[4, 7]\n[]\n[]\n"
+        }
+      },
+      "explanation": "반환한 원소 수만큼 읽기와 쓰기가 필요합니다. 인덱스 하나의 접근 비용과 범위 전체를 복사하는 비용을 구분합니다."
     }
   ]
 }

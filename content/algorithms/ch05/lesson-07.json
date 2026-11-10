@@ -86,54 +86,77 @@
   ],
   "examples": [
     {
-      "skill": "복사와 제자리 반환 계약",
-      "question": "values = [2, 1]에서 a = sorted(values)를 실행한 뒤 b = values.sort()를 실행합니다. 마지막 values, a, b의 값을 각각 적으세요.",
+      "exerciseType": "explain",
+      "skill": "정렬 기준과 안정성의 이유",
+      "question": "학생 점수를 내림차순으로 정렬하되 동점이면 입력 순서를 지키려 합니다. 안정성이 이 요구를 어떻게 해결하는지, reverse=True가 동점 순서도 뒤집는지 설명하세요. 점수와 이름을 튜플 키로 주는 경우와도 비교하세요.",
       "solution": {
-        "answer": "values는 [1, 2], a는 [1, 2], b는 None입니다."
+        "answer": "점수만 key로 정하고 reverse=True를 쓰면 큰 점수가 먼저이며 동점은 원래 순서를 유지합니다. Python 정렬의 안정성은 역순 정렬에도 적용됩니다. (-점수, 이름)을 키로 주면 동점 안에서는 이름이 다음 기준이 되어 입력 순서와 다를 수 있습니다."
       },
-      "explanation": "sorted는 a에 새 목록을 반환하고 처음 values를 바꾸지 않습니다. 이후 sort가 values를 바꾸지만 정렬된 목록을 반환하지는 않습니다."
+      "explanation": "반환할 새 목록이 필요하면 sorted를, 원본 자체를 바꾸려면 list.sort를 고릅니다. key는 각 원소에서 한 번 계산되며 그 결과로 비교합니다."
     },
     {
-      "skill": "복합 기준 해석",
-      "question": "원소가 (이름, 정수 점수)이고 데이터는 [(B, 2), (A, 2), (C, 1)]입니다. key=(-점수, 이름)을 오름차순으로 정렬한 결과를 적으세요. key=(점수, 이름)에 reverse=True를 준 경우와 동점 이름순이 어떻게 다른가요?",
+      "exerciseType": "implement",
+      "skill": "기본 구현 · 동점 순위 보존",
+      "question": "rank_scores(records)를 직접 작성하세요. 입력은 (이름 문자열, 정수 점수) 목록입니다. 점수 내림차순의 새 목록을 반환하되 동점은 입력 순서를 유지합니다. 빈 입력은 []이며 원본은 바꾸지 않습니다. 이 레슨에서는 sorted와 key를 사용할 수 있습니다.",
+      "codeKind": "text",
+      "code": "확인 사례\nrank_scores([(\"A\",80),(\"B\",90),(\"C\",90)]) → [(\"B\",90),(\"C\",90),(\"A\",80)]\nrank_scores([]) → []\nrank_scores([(\"Z\",5),(\"A\",5)]) → [(\"Z\",5),(\"A\",5)]",
       "solution": {
-        "answer": "첫 결과는 [(A, 2), (B, 2), (C, 1)]입니다. 두 번째 방식은 동점 이름도 내림차순이 되어 [(B, 2), (A, 2), (C, 1)]이 됩니다."
-      },
-      "explanation": "reverse는 복합 키 전체의 정렬 방향을 뒤집습니다. 일부 기준만 내림차순으로 바꾸려면 각 기준을 표현하는 방법을 정해야 합니다."
-    },
-    {
-      "skill": "안정성과 내림차순",
-      "question": "[(A, 80), (B, 80), (C, 90)]을 점수만으로 내림차순 정렬할 때 동점 입력 순서를 유지하려면 reverse=True와 오름차순 후 전체 뒤집기 중 어느 방식을 써야 하나요? 두 식별자 순서를 적으세요.",
-      "solution": {
-        "answer": "reverse=True를 직접 지정합니다. 이때 C, A, B이며 오름차순 후 전체 뒤집기는 C, B, A가 됩니다."
-      },
-      "explanation": "전체 뒤집기는 같은 점수 집단 내부까지 뒤집습니다. 내림차순을 지정한 안정 정렬과 동률 처리가 다릅니다."
-    },
-    {
-      "skill": "두 단계 기준 적용",
-      "question": "(분류, 가격) 목록 [(A, 2), (B, 1), (A, 1), (B, 2)]를 분류 오름차순, 같은 분류에서는 가격 내림차순으로 정렬하세요. 두 번의 안정 정렬을 어떤 순서로 할지 코드로 확인하세요.",
-      "solution": {
-        "answer": "덜 중요한 가격을 내림차순으로 먼저 정렬하고, 우선 기준인 분류를 오름차순으로 정렬합니다. 결과는 [(A, 2), (A, 1), (B, 2), (B, 1)]입니다.",
+        "answer": "입력 계약과 확인 사례를 만족하는 함수의 한 가지 구현입니다.",
         "code": {
           "kind": "python",
-          "source": "def price_key(row):\n    return row[1]\n\ndef group_key(row):\n    return row[0]\n\nrows = [(\"A\", 2), (\"B\", 1), (\"A\", 1), (\"B\", 2)]\nby_price = sorted(rows, key=price_key, reverse=True)\nordered = sorted(by_price, key=group_key)\nprint(ordered)",
-          "output": "[('A', 2), ('A', 1), ('B', 2), ('B', 1)]\n"
+          "source": "def rank_scores(records):\n    return sorted(records, key=lambda record: record[1], reverse=True)\n\nprint(rank_scores([(\"A\", 80), (\"B\", 90), (\"C\", 90)]))\nprint(rank_scores([]))\nprint(rank_scores([(\"Z\", 5), (\"A\", 5)]))",
+          "output": "[('B', 90), ('C', 90), ('A', 80)]\n[]\n[('Z', 5), ('A', 5)]\n"
         }
       },
-      "explanation": "마지막 분류 정렬은 같은 분류 안에서 앞 단계의 가격 내림차순을 유지합니다. 우선 기준을 먼저 적용한 뒤 가격으로 정렬하면 가격이 최종 우선 기준이 됩니다."
+      "explanation": "점수만 키에 포함해야 동점의 원래 순서가 보존됩니다. 정수 키 비교 모델에서 최악 O(n log n) 시간이며 새 결과와 정렬 보조 공간은 O(n)입니다."
     },
     {
-      "skill": "기준값 자료형의 경계",
-      "question": "점수 필드에 정수 10과 문자열 \"2\"가 섞여 있습니다. 그대로 key로 반환하면 숫자순 비교가 보장되나요? 모두 유효한 정수 표기라는 계약 아래 비교 기준만 정수로 통일하고, 원래 필드 내용은 바꾸지 않는 코드를 작성하세요.",
+      "exerciseType": "implement",
+      "skill": "기준 변경 · 점수 뒤 이름",
+      "question": "sort_by_score_name(records)를 직접 작성하세요. (이름 문자열, 정수 점수) 목록에서 점수 내림차순, 동점이면 이름 오름차순으로 정렬한 새 목록을 반환합니다. 문자열 순서는 Python 기본 비교를 따르며 두 필드가 모두 같으면 입력 순서를 유지합니다. 빈 목록을 허용하고 원본은 보존합니다.",
+      "codeKind": "text",
+      "code": "확인 사례\nsort_by_score_name([(\"Z\",80),(\"B\",90),(\"A\",90)]) → [(\"A\",90),(\"B\",90),(\"Z\",80)]\nsort_by_score_name([]) → []\nsort_by_score_name([(\"B\",2),(\"A\",2),(\"B\",1)]) → [(\"A\",2),(\"B\",2),(\"B\",1)]",
       "solution": {
-        "answer": "정수와 문자열을 그대로 섞어 비교하는 숫자순 정렬은 보장되지 않으며 이 경우 Python은 TypeError를 냅니다. key에서 int로 통일하면 2가 10보다 먼저 비교됩니다. 원래 문자열 필드는 그대로 남습니다.",
+        "answer": "입력 계약과 확인 사례를 만족하는 함수의 한 가지 구현입니다.",
         "code": {
           "kind": "python",
-          "source": "def numeric_score(row):\n    return int(row[1])\n\nrows = [(\"A\", 10), (\"B\", \"2\")]\nordered = sorted(rows, key=numeric_score)\nprint(ordered)\nprint(rows)",
-          "output": "[('B', '2'), ('A', 10)]\n[('A', 10), ('B', '2')]\n"
+          "source": "def sort_by_score_name(records):\n    return sorted(records, key=lambda record: (-record[1], record[0]))\n\nprint(sort_by_score_name([(\"Z\", 80), (\"B\", 90), (\"A\", 90)]))\nprint(sort_by_score_name([]))\nprint(sort_by_score_name([(\"B\", 2), (\"A\", 2), (\"B\", 1)]))",
+          "output": "[('A', 90), ('B', 90), ('Z', 80)]\n[]\n[('A', 2), ('B', 2), ('B', 1)]\n"
         }
       },
-      "explanation": "문자열끼리 비교해도 \"10\"과 \"2\"는 숫자값과 다른 사전식 순서입니다. 입력 계약과 변환 정책을 정해 키를 일관되게 만들며, 유효하지 않은 숫자 표기 처리는 별도로 정해야 합니다."
+      "explanation": "음수 점수와 이름을 사전식으로 비교하면 첫 기준만 내림차순이 됩니다. 튜플 키 전체에 reverse=True를 주면 이름까지 내림차순이 되어 다른 계약입니다. 문자열 비교 비용은 이름 길이에 따라 추가될 수 있습니다."
+    },
+    {
+      "exerciseType": "implement",
+      "skill": "기준 조합 · 긴급 작업 정렬",
+      "question": "sort_tasks(tasks)를 직접 작성하세요. 각 작업은 (이름, 긴급 여부 bool, 소요 분 정수)입니다. 긴급 작업을 먼저, 같은 긴급 여부 안에서는 짧은 작업을 먼저 두고 두 기준이 같으면 입력 순서를 유지한 새 목록을 반환하세요. 빈 입력은 []이고 원본을 변경하지 않습니다. 이름은 정렬 기준에 넣지 마세요.",
+      "codeKind": "text",
+      "code": "확인 사례\nsort_tasks([(\"A\",False,2),(\"B\",True,5),(\"C\",True,2),(\"D\",True,2)]) → [(\"C\",True,2),(\"D\",True,2),(\"B\",True,5),(\"A\",False,2)]\nsort_tasks([]) → []\nsort_tasks([(\"Z\",False,3),(\"A\",False,3)]) → [(\"Z\",False,3),(\"A\",False,3)]",
+      "solution": {
+        "answer": "입력 계약과 확인 사례를 만족하는 함수의 한 가지 구현입니다.",
+        "code": {
+          "kind": "python",
+          "source": "def sort_tasks(tasks):\n    return sorted(tasks, key=lambda task: (not task[1], task[2]))\n\nprint(sort_tasks([(\"A\", False, 2), (\"B\", True, 5), (\"C\", True, 2), (\"D\", True, 2)]))\nprint(sort_tasks([]))\nprint(sort_tasks([(\"Z\", False, 3), (\"A\", False, 3)]))",
+          "output": "[('C', True, 2), ('D', True, 2), ('B', True, 5), ('A', False, 2)]\n[]\n[('Z', False, 3), ('A', False, 3)]\n"
+        }
+      },
+      "explanation": "False가 True보다 먼저 오므로 긴급 여부를 뒤집은 not urgent를 첫 키로 씁니다. 두 기준이 같으면 안정성이 이름과 무관하게 입력 순서를 유지합니다."
+    },
+    {
+      "exerciseType": "implement",
+      "skill": "관찰 변경 · key 호출 기록",
+      "question": "key_call_report(values)를 직접 작성하세요. 정수 목록을 절댓값 오름차순으로 안정 정렬한 새 목록과, key 함수가 호출될 때 받은 원소를 기록한 목록을 (정렬 결과, 호출 기록)으로 반환합니다. sorted에 직접 정의한 key 함수를 전달하고 원본을 바꾸지 마세요. 빈 입력은 ([],[])입니다. 정렬용 키를 계산할 때만 기록하세요.",
+      "codeKind": "text",
+      "code": "확인 사례\nkey_call_report([2,-2,1]) → ([1,2,-2],[2,-2,1])\nkey_call_report([]) → ([],[])\nkey_call_report([-3,0,-1]) → ([0,-1,-3],[-3,0,-1])",
+      "solution": {
+        "answer": "입력 계약과 확인 사례를 만족하는 함수의 한 가지 구현입니다.",
+        "code": {
+          "kind": "python",
+          "source": "def key_call_report(values):\n    calls = []\n    def get_key(value):\n        calls.append(value)\n        return abs(value)\n    result = sorted(values, key=get_key)\n    return result, calls\n\nprint(key_call_report([2, -2, 1]))\nprint(key_call_report([]))\nprint(key_call_report([-3, 0, -1]))",
+          "output": "([1, 2, -2], [2, -2, 1])\n([], [])\n([0, -1, -3], [-3, 0, -1])\n"
+        }
+      },
+      "explanation": "Python의 key 함수는 입력 순서대로 각 원소에 한 번 호출됩니다. 비교할 때마다 key를 다시 계산하는 방식이 아니며 호출 기록과 정렬 결과는 서로 다른 순서를 담습니다. 두 목록을 포함한 저장 공간은 O(n)입니다."
     }
   ]
 }

@@ -74,49 +74,77 @@
   ],
   "examples": [
     {
-      "skill": "거리 완화",
-      "question": "현재 A까지 거리 3이고 A → B 비용 4입니다. B의 기존 잠정 거리가 9라면 새 후보와 갱신 결과를 적으세요. 기존 거리가 5였다면 어떨까요?",
+      "skill": "비음수 조건의 이유",
+      "exerciseType": "explain",
+      "question": "다익스트라에서 가장 작은 현재 거리 후보를 꺼냈을 때 음수 간선이 없다는 조건을 어디에 사용하나요?",
       "solution": {
-        "answer": "새 후보는 3+4 = 7입니다. 기존 9이면 7로 줄이고, 기존 5이면 5를 그대로 둡니다."
+        "answer": "더 먼 후보에서 경로를 이어도 음수 비용으로 갑자기 더 짧아지지 않는다는 데 사용합니다. 음수에서는 현재 확정이나 목적지 조기 종료의 근거가 깨집니다."
       },
-      "explanation": "완화는 현재 경로로 만들어진 후보가 더 작을 때만 개선합니다. 마지막에 본 간선 비용으로 덮어쓰는 절차가 아닙니다."
+      "explanation": "가중치를 임의로 양수로 바꾸는 것은 해결이 아니라 원래 질문의 변경입니다."
     },
     {
-      "skill": "오래된 힙 항목",
-      "question": "힙에서 (8, \"B\")를 꺼냈지만 distance[\"B\"]는 이미 5입니다. 이 항목으로 B의 이웃을 다시 처리해야 하나요?",
+      "skill": "비음수 전체 최단 거리",
+      "exerciseType": "implement",
+      "question": "dijkstra_distances(graph, start) 함수를 직접 작성하세요. graph는 모든 문자열 정점을 키로 둔 방향 가중치 인접 리스트이며 (이웃, 0 이상 정수 비용) 항목입니다. 전체 최단 거리 사전을 반환하고 도달 불가는 float(\"inf\")로 둡니다. 힙 동률은 문자열 정점 순서, 갱신은 엄격한 개선만 허용하고 오래된 후보는 건너뜁니다. 0 비용 순환·중복 간선을 허용하며 빈 graph의 start=None은 {}입니다. 입력은 불변입니다. 제시한 확인 사례와 경계 조건을 함께 검증하세요. 이웃으로 지정한 모든 정점도 graph의 키입니다. 빈 그래프 특례를 제외한 start는 graph의 키입니다.",
+      "code": "확인 입력 → 반환값\ndijkstra_distances({'A': [('B', 4), ('C', 1)], 'B': [('D', 1)], 'C': [('B', 2), ('D', 5)], 'D': [], 'E': []}, 'A') → {'A': 0, 'B': 3, 'C': 1, 'D': 4, 'E': inf}\ndijkstra_distances({'A': [('B', 0)], 'B': [('A', 0)], 'C': []}, 'A') → {'A': 0, 'B': 0, 'C': inf}\ndijkstra_distances({}, None) → {}",
+      "codeKind": "text",
       "solution": {
-        "answer": "처리하지 않고 건너뜁니다. 더 좋은 거리 5의 후보가 별도로 들어갔으므로 8은 오래된 항목입니다."
-      },
-      "explanation": "단순한 새 후보 추가 구현에서는 같은 정점의 후보가 여러 개일 수 있습니다. current != distance[vertex] 검사가 그 오래된 항목을 구분합니다."
-    },
-    {
-      "skill": "0 비용과 도달 불가",
-      "question": "A → B 비용 0, B → A 비용 0이고 C는 고립 정점입니다. 본문 함수로 A에서의 거리 A·B·C를 확인하세요. 같은 거리 후보까지 재삽입하지 않는 이유도 적으세요.",
-      "solution": {
-        "answer": "A·B는 0, C는 inf입니다. 같은 거리 후보까지 계속 넣으면 0 비용 순환에서 불필요한 반복이 생길 수 있어 엄격히 개선될 때만 넣습니다.",
+        "answer": "입력·반환 계약과 경계 조건을 만족하는 구현 한 가지입니다.",
         "code": {
           "kind": "python",
-          "source": "from heapq import heappop, heappush\n\ndef dijkstra(graph, start):\n    distance = {}\n    for vertex in graph:\n        distance[vertex] = float(\"inf\")\n    distance[start] = 0\n    heap = [(0, start)]\n    while heap:\n        current, vertex = heappop(heap)\n        if current != distance[vertex]:\n            continue\n        for neighbor, weight in graph[vertex]:\n            candidate = current + weight\n            if candidate < distance[neighbor]:\n                distance[neighbor] = candidate\n                heappush(heap, (candidate, neighbor))\n    return distance\n\ngraph = {\"A\": [(\"B\", 0)], \"B\": [(\"A\", 0)], \"C\": []}\ndistance = dijkstra(graph, \"A\")\nfor vertex in graph:\n    print(vertex, distance[vertex])",
-          "output": "A 0\nB 0\nC inf\n"
+          "source": "from heapq import heappop, heappush\n\ndef dijkstra_core(graph, start):\n    distance = {v: float(\"inf\") for v in graph}\n    parent = {v: None for v in graph}\n    stale = 0\n    if not graph:\n        return distance, parent, stale\n    distance[start] = 0\n    heap = [(0, start)]\n    while heap:\n        current, vertex = heappop(heap)\n        if current != distance[vertex]:\n            stale = stale + 1\n            continue\n        for neighbor, weight in graph[vertex]:\n            candidate = current + weight\n            if candidate < distance[neighbor]:\n                distance[neighbor] = candidate\n                parent[neighbor] = vertex\n                heappush(heap, (candidate, neighbor))\n    return distance, parent, stale\n\ndef dijkstra_distances(graph, start):\n    return dijkstra_core(graph, start)[0]\n\nprint(dijkstra_distances({'A': [('B', 4), ('C', 1)], 'B': [('D', 1)], 'C': [('B', 2), ('D', 5)], 'D': [], 'E': []}, 'A'))\nprint(dijkstra_distances({'A': [('B', 0)], 'B': [('A', 0)], 'C': []}, 'A'))\nprint(dijkstra_distances({}, None))",
+          "output": "{'A': 0, 'B': 3, 'C': 1, 'D': 4, 'E': inf}\n{'A': 0, 'B': 0, 'C': inf}\n{}\n"
         }
       },
-      "explanation": "거리 0은 도달하지 못했다는 뜻이 아닙니다. inf를 별도로 두며, 정점 자체와 0 비용 연결을 모두 처리합니다."
+      "explanation": "candidate <= 거리로 같을 때까지 계속 넣으면 0 비용 순환에서 반복될 수 있습니다. 새로 개선한 항목만 넣고 현재 거리와 다른 옛 후보를 버립니다."
     },
     {
-      "skill": "음수 조건의 반례",
-      "question": "A → B:2, A → C:5, C → B:-4입니다. 목적지 B를 거리 2로 처음 꺼내자마자 끝낸다면 실제 어떤 더 짧은 경로를 놓치나요? 이 입력에 본문 보장을 적용할 수 있나요?",
+      "skill": "최소 비용 경로 복원",
+      "exerciseType": "implement",
+      "question": "cheapest_path(graph, start, goal) 함수를 직접 작성하세요. 앞 문제와 같은 모든 키·비음수 정수·문자열 정점 계약입니다. start에서 goal까지 (최소 비용, 정점 경로) 또는 도달 불가 None을 반환하세요. 같은 비용 후보는 기존 부모를 유지하고 힙 동률은 문자열 순서입니다. 자기 자신은 (0,[start]), 빈 graph의 두 입력 None은 None입니다. 0 비용 순환과 중복 간선을 허용하며 원본은 불변입니다. 제시한 확인 사례와 경계 조건을 함께 검증하세요. 이웃으로 지정한 모든 정점도 graph의 키입니다. 빈 그래프 특례를 제외한 start, goal는 graph의 키입니다.",
+      "code": "확인 입력 → 반환값\ncheapest_path({'A': [('B', 4), ('C', 1)], 'B': [('D', 1)], 'C': [('B', 2), ('D', 5)], 'D': [], 'E': []}, 'A', 'D') → (4, ['A', 'C', 'B', 'D'])\ncheapest_path({'A': [('B', 0)], 'B': [('A', 0)], 'C': []}, 'A', 'B') → (0, ['A', 'B'])\ncheapest_path({'A': []}, 'A', 'A') → (0, ['A'])\ncheapest_path({'A': [], 'B': []}, 'A', 'B') → None",
+      "codeKind": "text",
       "solution": {
-        "answer": "A → C → B의 비용 5-4 = 1을 놓칩니다. 음수 간선이 있어 본문의 다익스트라 적용 보장 밖입니다."
+        "answer": "입력·반환 계약과 경계 조건을 만족하는 구현 한 가지입니다.",
+        "code": {
+          "kind": "python",
+          "source": "from heapq import heappop, heappush\n\ndef dijkstra_core(graph, start):\n    distance = {v: float(\"inf\") for v in graph}\n    parent = {v: None for v in graph}\n    stale = 0\n    if not graph:\n        return distance, parent, stale\n    distance[start] = 0\n    heap = [(0, start)]\n    while heap:\n        current, vertex = heappop(heap)\n        if current != distance[vertex]:\n            stale = stale + 1\n            continue\n        for neighbor, weight in graph[vertex]:\n            candidate = current + weight\n            if candidate < distance[neighbor]:\n                distance[neighbor] = candidate\n                parent[neighbor] = vertex\n                heappush(heap, (candidate, neighbor))\n    return distance, parent, stale\n\ndef cheapest_path(graph, start, goal):\n    if not graph:\n        return None\n    distance, parent, _ = dijkstra_core(graph, start)\n    if distance[goal] == float(\"inf\"):\n        return None\n    path = []\n    vertex = goal\n    while vertex is not None:\n        path.append(vertex)\n        vertex = parent[vertex]\n    return distance[goal], path[::-1]\n\nprint(cheapest_path({'A': [('B', 4), ('C', 1)], 'B': [('D', 1)], 'C': [('B', 2), ('D', 5)], 'D': [], 'E': []}, 'A', 'D'))\nprint(cheapest_path({'A': [('B', 0)], 'B': [('A', 0)], 'C': []}, 'A', 'B'))\nprint(cheapest_path({'A': []}, 'A', 'A'))\nprint(cheapest_path({'A': [], 'B': []}, 'A', 'B'))",
+          "output": "(4, ['A', 'C', 'B', 'D'])\n(0, ['A', 'B'])\n(0, ['A'])\nNone\n"
+        }
       },
-      "explanation": "음수가 없을 때만 뒤의 경로가 현재 최소 후보보다 갑자기 작아지지 않는다는 논리가 성립합니다. 음수 입력을 임의로 고치거나 동일 보장이 있다고 주장하지 않습니다."
+      "explanation": "부모는 엄격히 더 짧아질 때 갱신합니다. 거리만 맞는지뿐 아니라 경로의 간선·합·양 끝도 함께 확인합니다."
     },
     {
-      "skill": "힙과 반환 계약",
-      "question": "거리가 개선될 때마다 새 (거리, 정점)을 힙에 넣는 구현입니다. 힙 공간이 항상 정점 수 이하라고 할 수 있나요? 거리표 외에 실제 경로를 원하면 무엇을 추가해야 하나요?",
+      "skill": "비용 한도 내 정점 조회",
+      "exerciseType": "implement",
+      "question": "within_cost(graph, start, limit) 함수를 직접 작성하세요. 모든 정점을 키로 둔 비음수 정수 방향 가중치 graph에서 start로부터 최소 비용이 limit 이하인 정점 목록을 키 순서로 반환하세요. limit은 0 이상 유한 정수이고 도달 불가는 제외합니다. 시작점은 비용 0으로 포함됩니다. 0 비용·중복 간선을 허용하며 빈 graph의 start=None은 []입니다. graph는 불변입니다. 제시한 확인 사례와 경계 조건을 함께 검증하세요. 이웃으로 지정한 모든 정점도 graph의 키입니다. 빈 그래프 특례를 제외한 start는 graph의 키입니다. 정점 ID는 서로 비교 가능한 문자열로 통일합니다.",
+      "code": "확인 입력 → 반환값\nwithin_cost({'A': [('B', 4), ('C', 1)], 'B': [('D', 1)], 'C': [('B', 2), ('D', 5)], 'D': [], 'E': []}, 'A', 3) → ['A', 'B', 'C']\nwithin_cost({'A': [('B', 0)], 'B': [('A', 0)], 'C': []}, 'A', 0) → ['A', 'B']\nwithin_cost({}, None, 0) → []",
+      "codeKind": "text",
       "solution": {
-        "answer": "같은 정점의 오래된 후보가 남아 힙 항목 수는 정점 수를 넘을 수 있습니다. 경로를 원하면 엄격히 개선되는 시점의 이전 정점을 기록해 역추적할 수 있습니다."
+        "answer": "입력·반환 계약과 경계 조건을 만족하는 구현 한 가지입니다.",
+        "code": {
+          "kind": "python",
+          "source": "from heapq import heappop, heappush\n\ndef dijkstra_core(graph, start):\n    distance = {v: float(\"inf\") for v in graph}\n    parent = {v: None for v in graph}\n    stale = 0\n    if not graph:\n        return distance, parent, stale\n    distance[start] = 0\n    heap = [(0, start)]\n    while heap:\n        current, vertex = heappop(heap)\n        if current != distance[vertex]:\n            stale = stale + 1\n            continue\n        for neighbor, weight in graph[vertex]:\n            candidate = current + weight\n            if candidate < distance[neighbor]:\n                distance[neighbor] = candidate\n                parent[neighbor] = vertex\n                heappush(heap, (candidate, neighbor))\n    return distance, parent, stale\n\ndef within_cost(graph, start, limit):\n    distance, _, _ = dijkstra_core(graph, start)\n    return [v for v in graph if distance[v] <= limit]\n\nprint(within_cost({'A': [('B', 4), ('C', 1)], 'B': [('D', 1)], 'C': [('B', 2), ('D', 5)], 'D': [], 'E': []}, 'A', 3))\nprint(within_cost({'A': [('B', 0)], 'B': [('A', 0)], 'C': []}, 'A', 0))\nprint(within_cost({}, None, 0))",
+          "output": "['A', 'B', 'C']\n['A', 'B']\n[]\n"
+        }
       },
-      "explanation": "이 구현의 추가 공간은 일반적으로 O(V+E) 상한으로 다룹니다. 거리 숫자만 반환하는 함수가 이미 경로 목록까지 반환했다고 해석하지 않습니다."
+      "explanation": "한도는 발견 경로의 비용이 아니라 최단 거리표에 적용합니다. 반환 순서를 키 순서로 지정해 힙 처리 순서와 구분합니다."
+    },
+    {
+      "skill": "오래된 후보 수 점검",
+      "exerciseType": "implement",
+      "question": "dijkstra_report(graph, start) 함수를 직접 작성하세요. 위와 같은 비음수 정수 방향 가중치 graph에서 (전체 거리 사전, 버린 오래된 힙 항목 수)를 반환하세요. 오래됨은 꺼낸 비용이 현재 거리와 다른 경우이며 그 항목에서는 이웃을 검사하지 않습니다. 엄격 개선·문자열 힙 동률을 유지하고 0 비용 순환·중복을 허용합니다. 빈 graph의 start=None은 ({},0), 입력은 불변입니다. 제시한 확인 사례와 경계 조건을 함께 검증하세요. 이웃으로 지정한 모든 정점도 graph의 키입니다. 빈 그래프 특례를 제외한 start는 graph의 키입니다.",
+      "code": "확인 입력 → 반환값\ndijkstra_report({'A': [('B', 4), ('C', 1)], 'B': [], 'C': [('B', 1)]}, 'A') → ({'A': 0, 'B': 2, 'C': 1}, 1)\ndijkstra_report({'A': [('B', 0)], 'B': [('A', 0)], 'C': []}, 'A') → ({'A': 0, 'B': 0, 'C': inf}, 0)\ndijkstra_report({}, None) → ({}, 0)",
+      "codeKind": "text",
+      "solution": {
+        "answer": "입력·반환 계약과 경계 조건을 만족하는 구현 한 가지입니다.",
+        "code": {
+          "kind": "python",
+          "source": "from heapq import heappop, heappush\n\ndef dijkstra_core(graph, start):\n    distance = {v: float(\"inf\") for v in graph}\n    parent = {v: None for v in graph}\n    stale = 0\n    if not graph:\n        return distance, parent, stale\n    distance[start] = 0\n    heap = [(0, start)]\n    while heap:\n        current, vertex = heappop(heap)\n        if current != distance[vertex]:\n            stale = stale + 1\n            continue\n        for neighbor, weight in graph[vertex]:\n            candidate = current + weight\n            if candidate < distance[neighbor]:\n                distance[neighbor] = candidate\n                parent[neighbor] = vertex\n                heappush(heap, (candidate, neighbor))\n    return distance, parent, stale\n\ndef dijkstra_report(graph, start):\n    distance, _, stale = dijkstra_core(graph, start)\n    return distance, stale\n\nprint(dijkstra_report({'A': [('B', 4), ('C', 1)], 'B': [], 'C': [('B', 1)]}, 'A'))\nprint(dijkstra_report({'A': [('B', 0)], 'B': [('A', 0)], 'C': []}, 'A'))\nprint(dijkstra_report({}, None))",
+          "output": "({'A': 0, 'B': 2, 'C': 1}, 1)\n({'A': 0, 'B': 0, 'C': inf}, 0)\n({}, 0)\n"
+        }
+      },
+      "explanation": "한 정점에 예전 비용과 개선 비용이 함께 힙에 남을 수 있습니다. 0 비용 동률은 개선이 아니므로 새 항목을 만들지 않습니다."
     }
   ]
 }

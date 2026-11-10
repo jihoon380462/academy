@@ -77,49 +77,77 @@
   ],
   "examples": [
     {
-      "skill": "경계 · 위치와 존재",
-      "question": "[2, 4, 4, 8]에서 5의 lower_bound가 3입니다. 이 결과가 5의 존재를 뜻하는지, 인덱스 3에서 무엇을 확인해야 하는지 적으세요.",
+      "exerciseType": "explain",
+      "skill": "경계와 존재의 차이",
+      "question": "삽입 경계가 0부터 n까지인 이유와 lower_bound·upper_bound의 차이를 설명하세요. bisect가 경계를 반환했다는 사실만으로 존재를 판단할 수 없는 이유, 검색 뒤 실제 삽입 비용도 적으세요.",
       "solution": {
-        "answer": "존재를 뜻하지 않습니다. 3은 5를 넣을 경계이고 현재 원소 8은 5와 다릅니다. 3<len(values)를 확인한 뒤 ==를 검사하면 부재를 알 수 있습니다."
+        "answer": "원소 앞뒤의 경계는 n+1개이며 n은 맨 뒤입니다. lower는 첫 목표 이상, upper는 첫 목표 초과 위치입니다. 존재는 범위와 값 일치를 따로 검사해야 하고, 배열 삽입에는 최악 O(n) 이동이 추가됩니다."
       },
-      "explanation": "경계는 검색 실패에도 나옵니다. 앞 레슨의 첫 일치 함수는 이 확인을 한 뒤 -1을 반환했습니다."
+      "explanation": "원소 인덱스와 삽입 경계, 위치 검색과 실제 변경은 별도 계약입니다."
     },
     {
-      "skill": "경계 추적 · 중복 구간",
-      "question": "[0, 3, 3, 3, 6, 6]에서 목표 3과 6의 lower·upper·개수를 각각 구하세요.",
+      "exerciseType": "implement",
+      "skill": "기본 구현 · 왼쪽 삽입 경계",
+      "question": "lower_bound(values, target)를 직접 작성하세요. 비감소 정수 목록에서 처음으로 target 이상인 위치를 반환하고 없으면 len(values)을 반환합니다. 빈 입력은 0이며 원본을 바꾸지 않습니다. 반복 이진 탐색으로 구현하고 bisect는 쓰지 마세요.",
+      "codeKind": "text",
+      "code": "확인 사례\nlower_bound([1,2,2,5],2) → 1\nlower_bound([1,2,2,5],7) → 4\nlower_bound([],2) → 0",
       "solution": {
-        "answer": "3은 lower=1, upper=4, 개수 3입니다. 6은 lower=4, upper=6, 개수 2입니다."
-      },
-      "explanation": "오른쪽 경계는 마지막 일치 인덱스가 아니라 그다음 경계입니다. 6의 upper=6은 배열 길이와 같습니다."
-    },
-    {
-      "skill": "경계 · 빈 배열과 한 원소",
-      "question": "[]와 [4]에서 목표 4와 7에 대한 두 경계를 적으세요. 어떤 경계에서 원소 읽기를 피해야 하나요?",
-      "solution": {
-        "answer": "[]는 두 목표 모두 (0,0)입니다. [4]에서 4는 (0,1), 7은 (1,1)입니다. 빈 배열의 0과 [4]의 1은 원소가 없는 경계라 읽지 않습니다."
-      },
-      "explanation": "경계를 구하는 일은 빈 배열에서도 정의되지만, 그 위치의 원소가 존재한다는 보장은 없습니다."
-    },
-    {
-      "skill": "작은 적용 · 개수와 첫 위치",
-      "question": "bisect_left와 bisect_right로 [2, 2, 5, 7, 7]에서 목표 2·6·7의 개수와 첫 위치 또는 -1을 출력하세요.",
-      "solution": {
-        "answer": "출력은 개수와 첫 위치가 각각 2/0, 0/-1, 2/3입니다.",
+        "answer": "입력 계약과 확인 사례를 만족하는 함수의 한 가지 구현입니다.",
         "code": {
           "kind": "python",
-          "source": "from bisect import bisect_left, bisect_right\n\nvalues = [2, 2, 5, 7, 7]\nfor target in [2, 6, 7]:\n    left = bisect_left(values, target)\n    right = bisect_right(values, target)\n    first = left if left < len(values) and values[left] == target else -1\n    print(right - left, first)",
-          "output": "2 0\n0 -1\n2 3\n"
+          "source": "def lower_bound(values, target):\n    lo, hi = 0, len(values)\n    while lo < hi:\n        mid = (lo + hi) // 2\n        if values[mid] < target:\n            lo = mid + 1\n        else:\n            hi = mid\n    return lo\n\nprint(lower_bound([1, 2, 2, 5], 2))\nprint(lower_bound([1, 2, 2, 5], 7))\nprint(lower_bound([], 2))",
+          "output": "1\n4\n0\n"
         }
       },
-      "explanation": "정수의 같은 값은 두 경계 사이에 모입니다. 첫 위치는 left가 유효하고 값이 같을 때만 반환합니다."
+      "explanation": "없는 값에도 삽입 위치를 반환합니다. 경계 n을 원소 위치로 읽지 않습니다."
     },
     {
-      "skill": "비용 이유 · 검색 뒤의 삽입",
-      "question": "길이 n의 정렬 배열 맨 앞에 새 최솟값을 insort로 넣습니다. 위치를 O(log n)에 찾았다고 전체도 O(log n)인가요?",
+      "exerciseType": "implement",
+      "skill": "구간 반환 · 중복 양끝",
+      "question": "equal_bounds(values, target)를 직접 작성하세요. 비감소 정수 목록에서 (첫 목표 이상 위치, 첫 목표 초과 위치)를 반환합니다. 목표가 없으면 두 경계가 같고, 빈 입력은 (0,0)입니다. 원본 보존·bisect 금지이며 양쪽 경계를 이진 탐색으로 구하세요.",
+      "codeKind": "text",
+      "code": "확인 사례\nequal_bounds([1,2,2,2,5],2) → (1,4)\nequal_bounds([1,2,5],3) → (2,2)\nequal_bounds([],3) → (0,0)",
       "solution": {
-        "answer": "아닙니다. 기존 n개 참조를 뒤로 밀어야 하므로 삽입은 최악 O(n)이며 검색 비용보다 지배적입니다."
+        "answer": "입력 계약과 확인 사례를 만족하는 함수의 한 가지 구현입니다.",
+        "code": {
+          "kind": "python",
+          "source": "def equal_bounds(values, target):\n    def boundary(after_equal):\n        lo, hi = 0, len(values)\n        while lo < hi:\n            mid = (lo + hi) // 2\n            if values[mid] < target or (after_equal and values[mid] == target):\n                lo = mid + 1\n            else:\n                hi = mid\n        return lo\n    return boundary(False), boundary(True)\n\nprint(equal_bounds([1, 2, 2, 2, 5], 2))\nprint(equal_bounds([1, 2, 5], 3))\nprint(equal_bounds([], 3))",
+          "output": "(1, 4)\n(2, 2)\n(0, 0)\n"
+        }
       },
-      "explanation": "구간 원소를 옮기는 동적 배열의 성질이 그대로 남습니다. 경계 탐색은 이동 비용을 없애지 않습니다."
+      "explanation": "같은 값이 왼쪽 또는 오른쪽 확정 구역 중 어디에 속하는지를 매개변수로 구별합니다. 두 번의 로그 탐색이며 부분 목록은 복사하지 않습니다."
+    },
+    {
+      "exerciseType": "implement",
+      "skill": "조건 범위 · 값 사이 원소 수",
+      "question": "count_between(values, low, high)를 직접 작성하세요. 비감소 정수 목록에서 low 이상 high 이하인 원소 개수를 중복 포함해 반환합니다. low>high이면 ValueError, 빈 입력은 0입니다. 원본을 보존하고 전체 순회·슬라이스·bisect 없이 두 이진 탐색 경계로 계산하세요.",
+      "codeKind": "text",
+      "code": "확인 사례\ncount_between([1,2,2,5,8],2,5) → 3\ncount_between([1,8],3,6) → 0\ncount_between([],0,1) → 0\ncount_between([1],2,1) → ValueError",
+      "solution": {
+        "answer": "입력 계약과 확인 사례를 만족하는 함수의 한 가지 구현입니다.",
+        "code": {
+          "kind": "python",
+          "source": "def count_between(values, low, high):\n    if low > high:\n        raise ValueError(\"low exceeds high\")\n    lo, hi = 0, len(values)\n    while lo < hi:\n        mid = (lo + hi) // 2\n        if values[mid] < low:\n            lo = mid + 1\n        else:\n            hi = mid\n    first = lo\n    lo, hi = 0, len(values)\n    while lo < hi:\n        mid = (lo + hi) // 2\n        if values[mid] <= high:\n            lo = mid + 1\n        else:\n            hi = mid\n    return lo - first\n\nprint(count_between([1, 2, 2, 5, 8], 2, 5))\nprint(count_between([1, 8], 3, 6))\nprint(count_between([], 0, 1))\ntry:\n    count_between([1], 2, 1)\nexcept ValueError:\n    print(\"ValueError\")",
+          "output": "3\n0\n0\nValueError\n"
+        }
+      },
+      "explanation": "첫 low 이상부터 첫 high 초과 전까지의 인덱스 차이가 개수입니다. 범위 안 원소를 새 목록으로 만들 필요가 없습니다."
+    },
+    {
+      "exerciseType": "implement",
+      "skill": "변경 결과 · 지정 쪽으로 삽입",
+      "question": "insert_sorted(values, value, side)를 직접 작성하세요. 비감소 정수 목록을 보존하고 (새 정렬 목록, 삽입 인덱스)를 반환합니다. side가 left면 기존 같은 값 앞, right면 뒤에 삽입하고 다른 문자열이면 ValueError입니다. 경계는 직접 이진 탐색으로 구하고 목록 복사·insert 사용은 허용합니다.",
+      "codeKind": "text",
+      "code": "확인 사례\ninsert_sorted([1,2,2,5],2,\"left\") → ([1,2,2,2,5],1)\ninsert_sorted([1,2,2,5],2,\"right\") → ([1,2,2,2,5],3)\ninsert_sorted([],4,\"left\") → ([4],0)\ninsert_sorted([1],2,\"middle\") → ValueError",
+      "solution": {
+        "answer": "입력 계약과 확인 사례를 만족하는 함수의 한 가지 구현입니다.",
+        "code": {
+          "kind": "python",
+          "source": "def insert_sorted(values, value, side):\n    if side not in (\"left\", \"right\"):\n        raise ValueError(\"invalid side\")\n    lo, hi = 0, len(values)\n    while lo < hi:\n        mid = (lo + hi) // 2\n        if values[mid] < value or (side == \"right\" and values[mid] == value):\n            lo = mid + 1\n        else:\n            hi = mid\n    result = list(values)\n    result.insert(lo, value)\n    return result, lo\n\nprint(insert_sorted([1, 2, 2, 5], 2, \"left\"))\nprint(insert_sorted([1, 2, 2, 5], 2, \"right\"))\nprint(insert_sorted([], 4, \"left\"))\ntry:\n    insert_sorted([1], 2, \"middle\")\nexcept ValueError:\n    print(\"ValueError\")",
+          "output": "([1, 2, 2, 2, 5], 1)\n([1, 2, 2, 2, 5], 3)\n([4], 0)\nValueError\n"
+        }
+      },
+      "explanation": "경계 검색은 로그 반복이지만 새 목록 복사와 실제 참조 이동을 포함한 이 함수의 전체 시간·추가 공간은 O(n)입니다."
     }
   ]
 }
