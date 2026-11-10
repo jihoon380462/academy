@@ -72,3 +72,12 @@
 @media(max-width:380px){.subject-lead{font-size:20px;letter-spacing:-.5px}}
 
 @media(max-width:760px){.catalog-note>.eyebrow,.catalog-note>h2,.catalog-note>p{display:none}.catalog-note .catalog-totals{margin-top:0;padding-top:0;border-top:0}}
+
+/* Math unit completion is derived from its lessons; no separate saved flag. */
+.math-unit-heading,.math-sidebar-unit-title{display:flex;flex-wrap:wrap;align-items:baseline;gap:5px 10px;min-width:0}
+.math-unit-read{display:inline-flex;font-family:var(--sans);font-size:11px;font-weight:600;line-height:1.6;color:var(--forest);white-space:nowrap;letter-spacing:0}
+.math-unit-read[hidden]{display:none}
+.math-sidebar-unit-title{gap:3px 7px}
+.math-contents-back{margin:0 0 24px;min-height:48px}
+@media(max-width:760px){.math-contents-back{width:100%}.math-unit-read{font-size:10px}}
+@media print{.math-contents-back{display:none}}
