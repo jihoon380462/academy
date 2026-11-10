@@ -27,7 +27,7 @@
   apply(current);
 
   function statusText() {
-    return storageOK ? '선택한 테마는 이 브라우저에 자동 저장됩니다. 다른 기기에서는 각각 선택해 주세요.' : '이 브라우저에서 설정을 저장할 수 없어, 현재 열린 화면에만 적용됩니다.';
+    return storageOK ? '선택한 테마는 이 브라우저에 자동 저장됩니다. 다른 기기로 옮길 때 화면 테마도 함께 가져올 수 있습니다.' : '이 브라우저에서 설정을 저장할 수 없어, 현재 열린 화면에만 적용됩니다.';
   }
   function syncControls(announce = false) {
     const root = document.getElementById('theme-settings');
@@ -56,9 +56,9 @@
       </label>
     </div>`;
   }
-  function render() {
-    return `<main id="main" class="wrap settings-page"><div class="page-title"><div class="crumb"><a href="#/">학습 분야</a> / 설정</div><div class="eyebrow">MAKE ROOM FOR LEARNING</div><h1>설정</h1><p>오래 읽기 편한 화면을 골라 보세요.</p></div>
-      <section id="theme-settings" aria-labelledby="theme-settings-title"><div class="settings-section-head"><div><h2 id="theme-settings-title">화면 테마</h2><p>카드를 선택하면 사이트 전체에 바로 적용됩니다.</p></div><p class="theme-current">사용 중 <strong data-theme-current>${find(current).name}</strong></p></div>
+  function render(extra = '') {
+    return `<main id="main" class="wrap settings-page"><div class="page-title"><div class="crumb"><a href="#/">학습 분야</a> / 설정</div><div class="eyebrow">MAKE ROOM FOR LEARNING</div><h1>설정</h1><p>학습 기록을 옮기고, 읽기 편한 화면을 골라 보세요.</p></div>
+      ${extra}<section id="theme-settings" aria-labelledby="theme-settings-title"><div class="settings-section-head"><div><h2 id="theme-settings-title">화면 테마</h2><p>카드를 선택하면 사이트 전체에 바로 적용됩니다.</p></div><p class="theme-current">사용 중 <strong data-theme-current>${find(current).name}</strong></p></div>
       <fieldset class="theme-grid"><legend class="sr-only">화면 테마 선택</legend>${themes.map(card).join('')}</fieldset>
       <p class="theme-storage" data-theme-storage>${statusText()}</p><p class="sr-only" data-theme-status role="status" aria-live="polite"></p></section>
     </main>`;
@@ -75,5 +75,10 @@
     apply(event.key === null ? 'light' : event.newValue);
     syncControls(true);
   });
-  window.AcademyTheme = Object.freeze({ render, bind });
+  function refresh() {
+    try { apply(localStorage.getItem(STORE)); storageOK = true; }
+    catch { storageOK = false; }
+    syncControls();
+  }
+  window.AcademyTheme = Object.freeze({ render, bind, refresh });
 })();
