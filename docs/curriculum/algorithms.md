@@ -168,7 +168,7 @@
 
 ## 챕터 1~5 구현 현황
 
-2026-11-10 KST 기준 현재 소스의 구현 범위다. 전체 9챕터·54레슨 설계와 구분한다. 챕터 1은 PR #10, 챕터 2·3은 [PR #11](https://github.com/jihoon380462/academy/pull/11)로 main에 병합되었다. 병합 SHA `4c85004`의 [Pages 실행](https://github.com/jihoon380462/academy/actions/runs/42775841237)은 성공했으며 공개 브라우저의 새 챕터·기록 이동을 확인했다. 실제 확인 범위는 검증 기록을 따른다. 새 챕터 4·5는 이번 작업의 13레슨·65예제·20복습이며 병합·배포·공개 상태는 검증 기록을 따른다. 다음 집필 시작점은 `algorithms-ch06` / `algorithms-l032`이다.
+2026-11-10 KST 기준 현재 소스의 구현 범위다. 전체 9챕터·54레슨 설계와 구분한다. 챕터 1은 PR #10, 챕터 2·3은 [PR #11](https://github.com/jihoon380462/academy/pull/11)로 main에 병합되었다. 병합 SHA `4c85004`의 [Pages 실행](https://github.com/jihoon380462/academy/actions/runs/42775841237)은 성공했으며 공개 브라우저의 새 챕터·기록 이동을 확인했다. 실제 확인 범위는 검증 기록을 따른다. 챕터 4·5의 13레슨·65예제·20복습도 [PR #15](https://github.com/jihoon380462/academy/pull/15)로 main에 병합되었다. SHA `91e4e82`의 [Pages 실행](https://github.com/jihoon380462/academy/actions/runs/42835323465)은 성공했고 공개 브라우저 확인을 완료했다. 실제 범위는 검증 기록을 따른다. 다음 집필 시작점은 `algorithms-ch06` / `algorithms-l032`이다.
 
 | 범위 | 실제 파일·경로 | 구현 |
 | --- | --- | --- |
