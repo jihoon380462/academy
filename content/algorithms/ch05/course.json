@@ -1,0 +1,17 @@
+{
+  "id": "algorithms-ch05",
+  "slug": "ch05",
+  "number": 5,
+  "title": "정렬하고 찾기",
+  "description": "선형·이진 탐색의 계약과 경계, 단순 정렬·재귀·병합의 원리, 복합 정렬 기준과 안정성을 함께 점검합니다.",
+  "prerequisite": "챕터 2~4의 비용·공간·구조 선택. 변수·반복·함수·리스트와 인덱스의 기초를 사용합니다.",
+  "runtime": "Python 3",
+  "lessonFiles": ["lesson-01.json", "lesson-02.json", "lesson-03.json", "lesson-04.json", "lesson-05.json", "lesson-06.json", "lesson-07.json"],
+  "references": [
+    {"title": "Python 3.12 bisect · 정렬된 목록의 경계", "url": "https://docs.python.org/3.12/library/bisect.html"},
+    {"title": "Python 3.12 정렬 HOWTO · 키와 안정성", "url": "https://docs.python.org/3.12/howto/sorting.html"},
+    {"title": "Python 3.12 튜토리얼 · 함수와 제어 흐름", "url": "https://docs.python.org/3.12/tutorial/controlflow.html"}
+  ],
+  "referenceCheckedAt": "2026-11-10 KST",
+  "validationEnvironment": "CPython 3.12.14 / Linux"
+}
