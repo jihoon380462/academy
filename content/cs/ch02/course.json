@@ -1,0 +1,19 @@
+{
+  "id": "cs-ch02",
+  "slug": "ch02",
+  "number": 2,
+  "title": "데이터를 비트로 표현하기",
+  "description": "0과 1의 자리값부터 시작해 정수·실수·문자를 표현하는 규칙을 배우고, 데이터를 저장하고 옮기는 과정을 따라갑니다.",
+  "prerequisite": "CS 챕터 1의 프로그램과 데이터 구분을 배웠다면 이어서 시작할 수 있습니다. 진법·인코딩·프로그래밍 문법은 처음부터 설명합니다.",
+  "runtime": "그림과 표를 읽고 작은 수를 계산하며 자기 말로 설명하는 개념 학습",
+  "lessonFiles": ["lesson-01.json", "lesson-02.json", "lesson-03.json", "lesson-04.json", "lesson-05.json"],
+  "references": [
+    {"title": "Python 3.12 문서 · 이진 부동소수점 표현과 비교의 한계", "url": "https://docs.python.org/3.12/tutorial/floatingpoint.html"},
+    {"title": "Unicode FAQ · UTF-8, UTF-16, UTF-32와 BOM", "url": "https://www.unicode.org/faq/utf_bom.html"},
+    {"title": "RFC 3629 · UTF-8의 바이트 표현", "url": "https://www.rfc-editor.org/rfc/rfc3629"},
+    {"title": "RFC 8259 · JSON 구조와 UTF-8 전송", "url": "https://www.rfc-editor.org/rfc/rfc8259"},
+    {"title": "RFC 1951 · 무손실 압축과 크기 증가 가능성", "url": "https://www.rfc-editor.org/rfc/rfc1951"}
+  ],
+  "referenceCheckedAt": "2026-11-11 UTC",
+  "validationEnvironment": "작성자 검산: Python 3.12.14 / Node.js 24.22.1 / Linux. 학습자에게 코드 실행 환경 설치를 요구하지 않습니다."
+}
