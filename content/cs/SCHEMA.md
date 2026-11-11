@@ -1,6 +1,6 @@
 # CS 콘텐츠 형식
 
-CS 원본은 `content/cs/chNN/`의 JSON이다. 챕터 메타데이터와 레슨 파일, 복습을 `build-cs.py`가 읽어 운영용 `cs-content.js`를 만든다. 현재 콘텐츠 범위는 `cs-ch01`~`cs-ch02`의 `cs-l001`~`cs-l010`이다. 챕터 1은 챕터 2와 같은 초보 안내·실제 도식·문항 지시/답 형식으로 개정하고 로컬 검증을 완료했으며 다른 챕터는 설계와 실제 구현을 구분한다. [집필 기준](../../docs/AUTHORING.md)과 [CS 과목 문서](../../docs/curriculum/cs.md)를 함께 따른다.
+CS 원본은 `content/cs/chNN/`의 JSON이다. 챕터 메타데이터와 레슨 파일, 복습을 `build-cs.py`가 읽어 운영용 `cs-content.js`를 만든다. 현재 콘텐츠 범위는 `cs-ch01`~`cs-ch02`의 `cs-l001`~`cs-l010`이다. 챕터 1은 챕터 2와 같은 초보 안내·실제 도식·문항 지시/답 형식으로 개정하고 PR #29 / SHA `5d0210c`의 main 병합·Pages 배포를 완료했으며 공개 PC·모바일 확인을 완료했다. 다른 챕터는 설계와 실제 구현을 구분한다. [집필 기준](../../docs/AUTHORING.md)과 [CS 과목 문서](../../docs/curriculum/cs.md)를 함께 따른다.
 
 ## 파일과 생성물
 
