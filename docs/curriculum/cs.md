@@ -7,7 +7,7 @@
 | 목표 | 컴퓨터 안과 서비스 사이의 동작을 계층별로 설명하고, 작은 프로그램의 문제를 조사할 출발점을 고른다. |
 | 진입 지식 | 시작에는 특별한 선행 없음. 후반 사례는 변수·조건·반복·함수 코드 읽기(`python`의 해당 기초 개념)와 파일·주소의 뜻을 사용한다. |
 | 완료 기준 | 작은 데이터 조회 서비스의 입력→코드 실행→저장→통신 흐름을 그려 설명하고, 성능·정확성·보안 문제 각각의 관찰 지점과 근거를 제시한다. |
-| 콘텐츠 상태 | 챕터 1의 5레슨·25예제·10복습 구현·로컬 검증 완료. 챕터 2~9는 설계만 완료, 본문 미작성. main 병합·Pages 배포·공개 확인 전 |
+| 콘텐츠 상태 | 챕터 1의 5레슨·25예제·10복습 구현·로컬 검증 및 PR #25 / SHA `593de2a`의 main 병합·Pages 배포·공개 PC/모바일 확인 완료. 챕터 2~9는 설계만 완료, 본문 미작성 |
 
 ## 범위와 과목 경계
 
@@ -166,21 +166,23 @@
 - [ACM/IEEE-CS/AAAI CS2023 지식 영역](https://csed.acm.org/knowledge-areas/) — 구조·시스템·네트워크·데이터·보안 등 영역 간 구분 확인. 본 과목은 이 중 필요한 연결 원리를 선택한다.
 - [Linux Kernel 메모리 개념](https://docs.kernel.org/admin-guide/mm/concepts.html) — 가상 메모리와 실제 메모리의 구분 확인. 구체 관리 정책은 운영체제 과목으로 분리한다.
 
-설계 수량: 9개 챕터 · 45개 레슨. 챕터 1은 5레슨·25예제·10복습의 로컬 검증을 마쳤으며, 챕터 2~9의 각 레슨 예제 5개·각 챕터 복습 10개는 후속 요청에 따라 작성한다.
+설계 수량: 9개 챕터 · 45개 레슨. 챕터 1은 5레슨·25예제·10복습의 로컬 검증·main 병합·Pages 배포·공개 PC/모바일 확인을 마쳤으며, 챕터 2~9의 각 레슨 예제 5개·각 챕터 복습 10개는 후속 요청에 따라 작성한다.
 
 ## 구현 현황
 
 | 범위 | 상태 | 원본·경로 |
 | --- | --- | --- |
-| `cs-ch01` 메타데이터 | 로컬 검증 완료 | `content/cs/ch01/course.json` · `#/cs/ch01` |
-| `cs-l001` 입력·처리·출력·저장 | 로컬 검증 완료 · 예제 5개 | `content/cs/ch01/lesson-01.json` · `#/cs/ch01/lesson/cs-l001` |
-| `cs-l002` 하드웨어·운영체제·응용 프로그램 | 로컬 검증 완료 · 예제 5개 | `content/cs/ch01/lesson-02.json` · `#/cs/ch01/lesson/cs-l002` |
-| `cs-l003` 추상화와 인터페이스 | 로컬 검증 완료 · 예제 5개 | `content/cs/ch01/lesson-03.json` · `#/cs/ch01/lesson/cs-l003` |
-| `cs-l004` 프로그램과 데이터 | 로컬 검증 완료 · 예제 5개 | `content/cs/ch01/lesson-04.json` · `#/cs/ch01/lesson/cs-l004` |
-| `cs-l005` 상태와 시간의 흐름 | 로컬 검증 완료 · 예제 5개 | `content/cs/ch01/lesson-05.json` · `#/cs/ch01/lesson/cs-l005` |
-| 챕터 1 복습 | 로컬 검증 완료 · 10문제 | `content/cs/ch01/review.json` · `#/cs/ch01/review` |
+| `cs-ch01` 메타데이터 | 공개 | `content/cs/ch01/course.json` · `#/cs/ch01` |
+| `cs-l001` 입력·처리·출력·저장 | 공개 · 예제 5개 | `content/cs/ch01/lesson-01.json` · `#/cs/ch01/lesson/cs-l001` |
+| `cs-l002` 하드웨어·운영체제·응용 프로그램 | 공개 · 예제 5개 | `content/cs/ch01/lesson-02.json` · `#/cs/ch01/lesson/cs-l002` |
+| `cs-l003` 추상화와 인터페이스 | 공개 · 예제 5개 | `content/cs/ch01/lesson-03.json` · `#/cs/ch01/lesson/cs-l003` |
+| `cs-l004` 프로그램과 데이터 | 공개 · 예제 5개 | `content/cs/ch01/lesson-04.json` · `#/cs/ch01/lesson/cs-l004` |
+| `cs-l005` 상태와 시간의 흐름 | 공개 · 예제 5개 | `content/cs/ch01/lesson-05.json` · `#/cs/ch01/lesson/cs-l005` |
+| 챕터 1 복습 | 공개 · 10문제 | `content/cs/ch01/review.json` · `#/cs/ch01/review` |
 | `cs-ch02`~`cs-ch09` / `cs-l006`~`cs-l045` | 설계만 | 본문·문제 없음 |
 
 챕터 1은 특별한 언어·운영체제·도구 설치 없이 작은 학습 메모 사례를 읽고 역할·상태·약속을 설명하는 구성이다. [콘텐츠 형식](../../content/cs/SCHEMA.md)에 따라 `python3 build-cs.py`로 `cs-content.js`를 생성하고 `python3 build-cs.py --check`로 구조와 생성물 일치를 확인한다. 묶음은 `window.CS_COURSES`, 챕터 1 별칭은 `window.CS_CH01`이며, 화면은 `cs-ui.js`에서 제공한다. 텍스트 도식은 읽기 자료이며 코드 실행·자동 채점 기능이 아니다.
 
 분야 홈 `#/subjects/cs`와 챕터 목차·레슨·복습·내 학습을 연결하고, 읽음·최근 레슨은 `academy-cs-ch01-v1`에 따로 저장한다. 파일·복사 코드 옮기기에 포함하되 CS 키가 없는 기존 자료를 가져와도 현재 CS 원문 기록은 보존한다. 기존 수학·파이썬·알고리즘의 ID·URL·저장 키와 테마 키를 유지한다. 실제 검증 결과와 main 병합·Pages 배포·공개 확인 상태는 [검증 기록](../../verification.md)에 구분한다.
+
+[PR #25](https://github.com/jihoon380462/academy/pull/25)의 main 병합 SHA는 `593de2ac4dc46812de5fe1df076d0751953e50de`이며, 해당 소스의 [Pages 실행](https://github.com/jihoon380462/academy/actions/runs/43016086263)이 성공했다. 공개 PC·모바일의 CS 48조합·기록 이동 11그룹을 확인했으며 정확한 경로·화면·기록 보존 검증 범위는 검증 기록을 따른다. 이후 운영 문서 커밋은 이 배포 소스와 구분하고 VERSION `0.1.0`과 기존 자산·캐시를 유지한다.
