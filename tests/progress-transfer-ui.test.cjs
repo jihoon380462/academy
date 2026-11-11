@@ -7,7 +7,7 @@ const { test } = require('node:test');
 const source = fs.readFileSync(path.join(__dirname, '..', 'transfer-ui.js'), 'utf8');
 
 // Exercise the real UI handlers; the engine has its own data/storage tests.
-function ui({ importFails = false, total = 137 } = {}) {
+function ui({ importFails = false, total = 142 } = {}) {
   const elements = new Map(), copies = [], imported = [];
   function element(selector) {
     if (!elements.has(selector)) elements.set(selector, {
@@ -70,7 +70,8 @@ test('the preview identifies algorithms and CS separately and displays the engin
   for (const [total, expected] of [
     [130, /읽음 4 \/ 130개 · 수학 1개 · 파이썬 0개 · 알고리즘·자료구조 2개 · CS 1개/],
     [132, /읽음 4 \/ 132개 · 수학 1개 · 파이썬 0개 · 알고리즘·자료구조 2개 · CS 1개/],
-    [137, /읽음 4 \/ 137개 · 수학 1개 · 파이썬 0개 · 알고리즘·자료구조 2개 · CS 1개/]
+    [137, /읽음 4 \/ 137개 · 수학 1개 · 파이썬 0개 · 알고리즘·자료구조 2개 · CS 1개/],
+    [142, /읽음 4 \/ 142개 · 수학 1개 · 파이썬 0개 · 알고리즘·자료구조 2개 · CS 1개/]
   ]) {
     const view = ui({ total });
     view.click('preview');

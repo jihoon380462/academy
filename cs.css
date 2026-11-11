@@ -1,0 +1,360 @@
+/* CS explanations, structured diagrams, and explicit writing tasks. */
+.cs-emphasis {
+  color: var(--forest);
+  font-weight: 700;
+  text-decoration: underline;
+  text-decoration-color: var(--sage, #bac6a8);
+  text-decoration-thickness: 2px;
+  text-underline-offset: .22em;
+}
+
+.cs-visual {
+  min-width: 0;
+  max-width: 100%;
+  container-type: inline-size;
+  container-name: cs-diagram;
+  margin: 26px 0;
+  padding: 23px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--tint);
+  color: var(--ink);
+}
+
+.cs-visual-caption {
+  display: grid;
+  gap: 8px;
+  margin-bottom: 20px;
+  line-height: 1.85;
+}
+
+.cs-visual-caption > strong {
+  font-size: 15px;
+  color: var(--forest);
+}
+
+.cs-visual-caption > span {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.cs-visual-body,
+.cs-table-wrap {
+  max-width: 100%;
+  min-width: 0;
+  overflow-x: auto;
+  padding: 3px 2px 10px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--muted) transparent;
+}
+
+.cs-visual-body:focus-visible,
+.cs-table-wrap:focus-visible {
+  outline: 2px solid var(--forest);
+  outline-offset: 4px;
+}
+
+.cs-cells {
+  display: grid;
+  grid-template-columns: repeat(var(--cs-cell-count), minmax(68px, 1fr));
+  gap: 8px;
+  min-width: calc(var(--cs-cell-count) * 76px);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.cs-visual .cs-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  text-align: center;
+  min-width: 0;
+  border: 1px solid var(--forest);
+  border-radius: 5px;
+  background: var(--paper);
+  overflow-wrap: anywhere;
+  color: var(--ink);
+  counter-increment: none;
+}
+
+.cs-cell-label {
+  display: block;
+  padding: 7px 5px;
+  border-bottom: 1px solid var(--line);
+  font-size: 11px;
+  line-height: 1.65;
+  color: var(--muted);
+}
+
+.cs-cell-value {
+  display: block;
+  padding: 12px 7px;
+  font: 600 21px/1.5 ui-monospace, Consolas, monospace;
+  color: var(--ink);
+}
+
+.cs-cell-note {
+  display: block;
+  margin-top: auto;
+  padding: 5px 6px 9px;
+  font-size: 11px;
+  line-height: 1.7;
+  color: var(--muted);
+}
+
+.cs-flow {
+  display: flex;
+  align-items: stretch;
+  gap: 26px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.cs-visual .cs-flow-step {
+  position: relative;
+  display: flex;
+  flex: 1 1 0;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+  padding: 17px 13px;
+  border: 1px solid var(--forest);
+  border-radius: 6px;
+  background: var(--paper);
+  line-height: 1.85;
+  overflow-wrap: anywhere;
+  color: var(--ink);
+  counter-increment: none;
+}
+
+.cs-flow-number {
+  font: 600 11px/1.5 ui-monospace, Consolas, monospace;
+  color: var(--muted);
+}
+
+.cs-flow-label {
+  font-size: 14px;
+  color: var(--forest);
+}
+
+.cs-flow-value {
+  font-size: 14px;
+}
+
+.cs-flow-note {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.cs-flow-arrow {
+  position: absolute;
+  right: -24px;
+  top: calc(50% - 12px);
+  width: 21px;
+  font-size: 23px;
+  line-height: 1;
+  text-align: center;
+  color: var(--forest);
+}
+
+.cs-table-wrap table {
+  width: 100%;
+  min-width: 380px;
+  border-collapse: collapse;
+  background: var(--paper);
+  font-size: 13px;
+  line-height: 1.85;
+}
+
+.cs-table-wrap th,
+.cs-table-wrap td {
+  padding: 11px 13px;
+  border: 1px solid var(--line);
+  text-align: left;
+  vertical-align: top;
+}
+
+.cs-table-wrap thead th {
+  border-bottom: 2px solid var(--forest);
+  color: var(--forest);
+  font-weight: 700;
+}
+
+.cs-table-wrap tbody th {
+  font-weight: 600;
+}
+
+.cs-task {
+  margin: 19px 0 22px;
+  padding: 18px 21px;
+  border-left: 3px solid var(--forest);
+  background: var(--tint);
+  font-size: 14px;
+  line-height: 1.9;
+  color: var(--ink);
+}
+
+.cs-task-heading,
+.cs-answer-format > strong {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--forest);
+}
+
+.cs-task .cs-instructions {
+  display: block;
+  margin: 10px 0 0;
+  padding-left: 22px;
+  list-style: decimal;
+  counter-reset: none;
+}
+
+.cs-task .cs-instructions > li {
+  display: list-item;
+  padding: 3px 0 3px 4px;
+  font-size: inherit;
+  line-height: inherit;
+  border: 0;
+}
+
+.cs-task .cs-instructions > li::before {
+  content: none;
+}
+
+.cs-answer-format:not(:first-child) {
+  margin-top: 14px;
+  padding-top: 13px;
+  border-top: 1px solid var(--line);
+}
+
+.cs-answer-format > p {
+  margin: 7px 0 0;
+  font-size: 14px;
+  line-height: 1.9;
+  white-space: pre-line;
+}
+
+@media (max-width: 700px) {
+  .cs-visual {
+    margin: 22px 0;
+    padding: 16px 13px;
+  }
+
+  .cs-visual-caption {
+    margin-bottom: 15px;
+  }
+
+  .cs-visual-caption > strong {
+    font-size: 14px;
+  }
+
+  .cs-visual-caption > span {
+    font-size: 12px;
+  }
+
+  .cs-flow {
+    flex-direction: column;
+    gap: 28px;
+  }
+
+  .cs-visual .cs-flow-step {
+    padding: 14px 16px;
+  }
+
+  .cs-flow-arrow {
+    top: auto;
+    right: calc(50% - 11px);
+    bottom: -26px;
+    transform: rotate(90deg);
+  }
+
+  .cs-task {
+    padding: 15px 14px;
+    font-size: 13px;
+  }
+
+  .cs-answer-format > p {
+    font-size: 13px;
+  }
+}
+
+@media print {
+  .cs-visual,
+  .cs-task {
+    break-inside: avoid;
+    background: white;
+  }
+
+  .cs-visual-body,
+  .cs-table-wrap {
+    overflow: visible;
+  }
+}
+
+.cs-visual .cs-cell::before,
+.cs-visual .cs-flow-step::before {
+  content: none;
+}
+
+.cs-scroll-hint {
+  display: none;
+  margin: -6px 0 12px;
+  font-size: 11px;
+  line-height: 1.7;
+  color: var(--muted);
+}
+
+@container cs-diagram (max-width: 80px) {
+  .cs-scroll-hint[data-columns="1"] { display: block; }
+}
+@container cs-diagram (max-width: 156px) {
+  .cs-scroll-hint[data-columns="2"] { display: block; }
+}
+@container cs-diagram (max-width: 232px) {
+  .cs-scroll-hint[data-columns="3"] { display: block; }
+}
+@container cs-diagram (max-width: 308px) {
+  .cs-scroll-hint[data-columns="4"] { display: block; }
+}
+@container cs-diagram (max-width: 384px) {
+  .cs-scroll-hint[data-columns="5"] { display: block; }
+}
+@container cs-diagram (max-width: 460px) {
+  .cs-scroll-hint[data-columns="6"] { display: block; }
+}
+@container cs-diagram (max-width: 536px) {
+  .cs-scroll-hint[data-columns="7"] { display: block; }
+}
+@container cs-diagram (max-width: 612px) {
+  .cs-scroll-hint[data-columns="8"] { display: block; }
+}
+@container cs-diagram (max-width: 688px) {
+  .cs-scroll-hint[data-columns="9"] { display: block; }
+}
+@container cs-diagram (max-width: 764px) {
+  .cs-scroll-hint[data-columns="10"] { display: block; }
+}
+@container cs-diagram (max-width: 840px) {
+  .cs-scroll-hint[data-columns="11"] { display: block; }
+}
+@container cs-diagram (max-width: 916px) {
+  .cs-scroll-hint[data-columns="12"] { display: block; }
+}
+@container cs-diagram (max-width: 992px) {
+  .cs-scroll-hint[data-columns="13"] { display: block; }
+}
+@container cs-diagram (max-width: 1068px) {
+  .cs-scroll-hint[data-columns="14"] { display: block; }
+}
+@container cs-diagram (max-width: 1144px) {
+  .cs-scroll-hint[data-columns="15"] { display: block; }
+}
+@container cs-diagram (max-width: 1220px) {
+  .cs-scroll-hint[data-columns="16"] { display: block; }
+}
+@container cs-diagram (max-width: 384px) {
+  .cs-scroll-hint[data-columns="table"] { display: block; }
+}

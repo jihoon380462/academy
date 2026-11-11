@@ -54,11 +54,50 @@ def validate_block(block, owner):
         text(block['caption'], owner + '/caption')
 
 
+def validate_visual(visual, owner):
+    require(isinstance(visual, dict), owner, 'visual object required')
+    kind = visual.get('type')
+    require(kind in ('cells', 'flow', 'table'), owner, 'unsupported visual type')
+    for field in ('title', 'caption'):
+        text(visual.get(field), owner + '/' + field)
+    common = {'type', 'title', 'caption'}
+    if kind == 'table':
+        require(set(visual) <= common | {'headers', 'rows'}, owner, 'unsupported table field')
+        text_list(visual.get('headers'), owner + '/headers')
+        rows = visual.get('rows')
+        require(isinstance(rows, list) and bool(rows), owner, 'nonempty table rows required')
+        for index, row in enumerate(rows, 1):
+            text_list(row, f'{owner}/row{index}')
+            require(len(row) == len(visual['headers']), owner, 'table row/header width mismatch')
+    else:
+        require(set(visual) <= common | {'items'}, owner, 'unsupported diagram field')
+        items = visual.get('items')
+        require(isinstance(items, list) and bool(items), owner, 'nonempty diagram items required')
+        for index, item in enumerate(items, 1):
+            item_owner = f'{owner}/item{index}'
+            require(isinstance(item, dict) and set(item) <= {'label', 'value', 'note'},
+                    item_owner, 'diagram item object with label/value/optional note required')
+            for field in ('label', 'value'):
+                text(item.get(field), item_owner + '/' + field)
+            if 'note' in item:
+                text(item['note'], item_owner + '/note')
+
+
+def validate_guidance(block, owner):
+    if 'instructions' in block:
+        text_list(block['instructions'], owner + '/instructions')
+    if 'answerFormat' in block:
+        text(block['answerFormat'], owner + '/answerFormat')
+    if 'visual' in block:
+        validate_visual(block['visual'], owner + '/visual')
+
+
 def validate_question(question, owner, ids, is_review=False):
     require(isinstance(question, dict), owner, 'question object required')
     require(not {'options', 'optionFormat', 'answer'} & set(question), owner, 'written exercises only')
     for field in ['skill', 'question', 'explanation']:
         text(question.get(field), owner + '/' + field)
+    validate_guidance(question, owner)
     if 'exerciseType' in question:
         require(question['exerciseType'] == 'explain', owner, 'CS exercises explain concepts without code execution')
     solution = question.get('solution')
@@ -96,11 +135,14 @@ def validate_lesson(lesson, expected, order, ids):
         text_list(section.get('body'), section_owner + '/body')
         if 'code' in section:
             validate_block(section['code'], section_owner + '/code')
+        if 'visual' in section:
+            validate_visual(section['visual'], section_owner + '/visual')
     worked = lesson.get('worked')
     require(isinstance(worked, dict), owner, 'worked example required')
     text(worked.get('question'), owner + '/worked/question')
     text_list(worked.get('steps'), owner + '/worked/steps')
     text(worked.get('answer'), owner + '/worked/answer')
+    validate_guidance(worked, owner + '/worked')
     if 'code' in worked:
         validate_block(worked['code'], owner + '/worked/code')
     misconception = lesson.get('misconception')
