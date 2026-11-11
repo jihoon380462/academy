@@ -1,0 +1,32 @@
+{
+  "id": "cs-ch04",
+  "slug": "ch04",
+  "number": 4,
+  "title": "시간과 자원을 나누기",
+  "description": "프로세스와 스레드, 값의 수명, 동시 실행을 구분하고 계산·메모리·입출력 비용과 병목을 작은 표로 비교합니다.",
+  "prerequisite": "앞 챕터의 프로그램 실행, CPU·레지스터·메모리·캐시 개념. 코드 작성이나 특정 운영체제 명령 사용은 요구하지 않습니다.",
+  "runtime": "코드 실행 없이 도식과 명시한 가상 모델을 읽고 계산하는 개념 학습",
+  "lessonFiles": [
+    "lesson-01.json",
+    "lesson-02.json",
+    "lesson-03.json",
+    "lesson-04.json",
+    "lesson-05.json"
+  ],
+  "references": [
+    {
+      "title": "Microsoft Learn · About Processes and Threads — Windows에서 프로세스 자원·스레드 실행 상태와 공유 범위 확인",
+      "url": "https://learn.microsoft.com/en-us/windows/win32/procthread/about-processes-and-threads"
+    },
+    {
+      "title": "Java Virtual Machine Specification SE 25 §2.5.2/2.5.3 — JVM의 스레드별 스택과 공유 힙, 관리 방식의 구현 차이 확인",
+      "url": "https://docs.oracle.com/javase/specs/jvms/se25/html/jvms-2.html#jvms-2.5"
+    },
+    {
+      "title": "Python 공식 time 문서 · process_time — 프로세스 CPU 시간과 대기 중 경과시간의 구분 확인",
+      "url": "https://docs.python.org/3/library/time.html#time.process_time"
+    }
+  ],
+  "referenceCheckedAt": "2026-11-11 UTC",
+  "validationEnvironment": "공식 문서의 개념 범위 대조와 명시한 가상 모델의 작성자 계산 검산. 실제 OS·언어 런타임 관찰 실험은 수행하지 않음"
+}

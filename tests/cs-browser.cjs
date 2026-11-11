@@ -12,7 +12,10 @@ const BASE = (process.env.ACADEMY_BASE_URL || 'http://127.0.0.1:8000').replace(/
 const THEME_KEY = 'academy-theme-v1';
 const chapters = [
   { slug: 'ch01', ids: ['cs-l001', 'cs-l002', 'cs-l003', 'cs-l004', 'cs-l005'], titles: ['입력·처리·출력·저장', '하드웨어·운영체제·응용 프로그램', '추상화와 인터페이스', '프로그램과 데이터', '상태와 시간의 흐름'] },
-  { slug: 'ch02', ids: ['cs-l006', 'cs-l007', 'cs-l008', 'cs-l009', 'cs-l010'], titles: ['비트·바이트·진법', '정수의 범위와 부호', '실수와 근삿값', '문자·인코딩·유니코드', '구조화·직렬화·압축'] }
+  { slug: 'ch02', ids: ['cs-l006', 'cs-l007', 'cs-l008', 'cs-l009', 'cs-l010'], titles: ['비트·바이트·진법', '정수의 범위와 부호', '실수와 근삿값', '문자·인코딩·유니코드', '구조화·직렬화·압축'] },
+  { slug: 'ch03', ids: ['cs-l011', 'cs-l012', 'cs-l013', 'cs-l014', 'cs-l015'], titles: ['CPU·레지스터·메모리', '명령어와 논리 연산', '캐시와 메모리 계층', '컴파일·인터프리트·가상머신', '빌드·링크·로드'] },
+  { slug: 'ch04', ids: ['cs-l016', 'cs-l017', 'cs-l018', 'cs-l019', 'cs-l020'], titles: ['프로세스와 스레드의 역할', '스택·힙·객체 수명', '동시성과 병렬성', '계산량·메모리량·입출력 비용', '한계와 병목'] },
+  { slug: 'ch05', ids: ['cs-l021', 'cs-l022', 'cs-l023', 'cs-l024', 'cs-l025'], titles: ['패킷과 네트워크 계층', 'IP 주소·포트·라우팅', 'DNS 이름 해석', 'TCP·UDP·전송의 신뢰성', '지연·대역폭·TLS'] }
 ];
 const ids = chapters.flatMap(chapter => chapter.ids);
 const csKey = chapter => 'academy-cs-' + chapter.slug + '-v1';
@@ -38,8 +41,8 @@ async function visit(page, hash) {
   await page.locator('#main h1').waitFor();
   if (ids.some(id => hash === lessonRoute(id))) await page.locator('[data-cs-complete="' + hash.split('/').at(-1) + '"]').waitFor();
   if (hash === '#/subjects/cs') await page.locator('#main.cs-home').waitFor();
-  if (/^#\/cs\/ch0[12]$/.test(hash)) await page.locator('#main.cs-chapter').waitFor();
-  if (/^#\/cs\/ch0[12]\/review$/.test(hash)) await page.locator('#main.cs-review').waitFor();
+  if (/^#\/cs\/ch0[1-5]$/.test(hash)) await page.locator('#main.cs-chapter').waitFor();
+  if (/^#\/cs\/ch0[1-5]\/review$/.test(hash)) await page.locator('#main.cs-review').waitFor();
 }
 async function expectHash(page, hash) {
   await page.waitForFunction(expected => location.hash === expected, hash);
@@ -140,8 +143,17 @@ async function checkVisual(container, visual) {
     assert.equal(await hint.isVisible(), true, 'overflowing visual explains how to see its remaining cells or columns');
   }
 }
+async function checkCode(container, block) {
+  const figure = container.locator(':scope > figure.py-code');
+  assert.equal(await figure.count(), block ? 1 : 0);
+  if (!block) return;
+  assert.equal(await figure.locator('.py-code-source code').textContent(), block.source);
+  if (block.caption) await checkRichText(figure.locator('figcaption'), block.caption);
+  else assert.equal(await figure.locator('figcaption').count(), 0);
+}
 async function checkQuestions(page, questions) {
   await checkRichList(page.locator('.py-problem > h3'), questions.map(question => question.question));
+  await checkRichList(page.locator('.py-problem-meta > span:last-child'), questions.map(question => question.skill));
   await checkRichList(page.locator('.py-solution-body > p:first-child'), questions.map(question => question.solution.answer));
   await checkRichList(page.locator('.py-solution-body > p:last-of-type'), questions.map(question => question.explanation));
   for (const [index, question] of questions.entries()) {
@@ -151,7 +163,7 @@ async function checkQuestions(page, questions) {
     await checkTask(problem, question);
     await checkVisual(problem, question.visual);
     if (question.code) assert.equal(await problem.locator(':scope > .py-code .py-code-source code').textContent(), question.code);
-    if (question.solution.code) assert.equal(await problem.locator('.py-solution .py-code-source code').textContent(), question.solution.code.source);
+    await checkCode(problem.locator('.py-solution-body'), question.solution.code);
   }
 }
 
@@ -177,7 +189,7 @@ async function checkQuestions(page, questions) {
       assert.ok(lesson.sections.some(section => section.body.some(paragraph => emphasis(paragraph).length > 0)), lesson.id + ' emphasizes key ideas in its body');
     }
   }
-  assert.equal(routes.length, 15, 'one shared subject home and seven routes per chapter');
+  assert.equal(routes.length, 36, 'one shared subject home and seven routes per chapter');
   const options = { headless: true, args: ['--no-sandbox'] };
   if (process.env.CHROMIUM_PATH) options.executablePath = process.env.CHROMIUM_PATH;
   else if (require('node:fs').existsSync('/usr/bin/chromium')) options.executablePath = '/usr/bin/chromium';
@@ -188,13 +200,13 @@ async function checkQuestions(page, questions) {
   await visit(page, '#/');
   assert.equal(await page.locator('.subject-card').count(), 22);
   assert.equal(await page.locator('.subject-card.available').count(), 4);
-  assert.deepEqual(await page.locator('.catalog-totals b').allTextContents(), ['22', '4', '142']);
+  assert.deepEqual(await page.locator('.catalog-totals b').allTextContents(), ['22', '4', '157']);
   await page.locator('.subject-card[href="#/subjects/cs"]').click();
   await expectHash(page, '#/subjects/cs');
   assert.deepEqual(await page.evaluate(() => window.CS_COURSES), chapters.map(chapter => chapter.expected));
   assert.equal(await page.evaluate(() => window.CS_CH01 === window.CS_COURSES[0]), true);
   const cards = page.locator('.py-home-chapter');
-  assert.equal(await cards.count(), 2);
+  assert.equal(await cards.count(), 5);
   for (const [index, chapter] of chapters.entries()) {
     const card = cards.nth(index);
     assert.equal(await card.evaluate(element => element.open), false);
@@ -205,8 +217,8 @@ async function checkQuestions(page, questions) {
     assert.equal(await card.evaluate(element => element.open), false);
   }
   assert.match(await page.locator('.py-course-note').innerText(), /준비 중/);
-  assert.equal(await page.locator('a[href^="#/cs/ch03"]').count(), 0);
-  groups.push('catalog 22/4/142, exact two-chapter source bundle and collapsed/open/closed contents');
+  assert.equal(await page.locator('a[href^="#/cs/ch06"]').count(), 0);
+  groups.push('catalog 22/4/157, exact five-chapter source bundle and collapsed/open/closed contents');
 
   const escaping = await page.evaluate(() => {
     const raw = '<img src=x onerror=window.__csInjected=true>';
@@ -257,18 +269,29 @@ async function checkQuestions(page, questions) {
         assert.equal(await page.locator('#main [data-quiz], #main .quiz-options, #main textarea, #main input').count(), 0);
         if (lesson) {
           await checkRichText(page.locator('#main h1'), lesson.title);
+          await checkRichText(page.locator('.lesson-heading .subtitle'), lesson.subtitle);
           await checkRichText(page.locator('.intro-text'), lesson.intro);
           await checkRichText(page.locator('.py-goal > p'), lesson.goal);
           await checkRichList(page.locator('#concept .concept-step > p'), lesson.sections.flatMap(section => section.body));
-          for (const [index, section] of lesson.sections.entries()) await checkVisual(page.locator('#concept .concept-step').nth(index), section.visual);
+          for (const [index, section] of lesson.sections.entries()) {
+            const sectionNode = page.locator('#concept .concept-step').nth(index);
+            assert.equal(await sectionNode.locator('h2').evaluate(element => { const copy = element.cloneNode(true); copy.querySelector('span').remove(); return copy.textContent; }), plain(section.title));
+            assert.deepEqual(await sectionNode.locator('h2 strong.cs-emphasis').allTextContents(), emphasis(section.title));
+            await checkCode(sectionNode, section.code);
+            await checkVisual(sectionNode, section.visual);
+          }
+          await checkRichText(page.locator('#worked > .question'), lesson.worked.question);
+          await checkCode(page.locator('#worked'), lesson.worked.code);
           await checkRichList(page.locator('#worked > ol > li'), lesson.worked.steps);
           await checkRichText(page.locator('#worked > .answer'), lesson.worked.answer);
           await checkTask(page.locator('#worked'), lesson.worked);
           await checkVisual(page.locator('#worked'), lesson.worked.visual);
           await checkRichList(page.locator('.keypoints li'), lesson.keypoints);
+          await checkRichText(page.locator('.misconception > summary'), lesson.misconception.question);
+          await checkRichText(page.locator('.misconception > p'), lesson.misconception.answer);
           assert.equal(await page.locator('[data-cs-complete]').count(), 1);
         } else if (route.endsWith('/review')) assert.match(await page.locator('#main h1').innerText(), /복습 10문제/);
-        assert.doesNotMatch(await page.locator('#main').textContent(), /\*\*/, 'authored emphasis markers render as strong text');
+        assert.doesNotMatch(await page.locator('#main').evaluate(element => { const copy = element.cloneNode(true); copy.querySelectorAll('pre').forEach(panel => panel.remove()); return copy.textContent; }), /\*\*/, 'prose emphasis renders as strong text while code source stays literal');
         if (questions.length) {
           await checkQuestions(page, questions);
           assert.equal(await page.locator('.py-solution[open]').count(), 0);
@@ -293,8 +316,8 @@ async function checkQuestions(page, questions) {
       }
     }
   }
-  assert.equal(combinations, 90);
-  groups.push('90 combinations: 15 routes × 1440/390/320px × light/glass; exact text, body emphasis and visuals in all 10 lessons, instructions/answer formats in all 70 questions, and internal scrolling');
+  assert.equal(combinations, 216);
+  groups.push('216 combinations: 36 routes × 1440/390/320px × light/glass; exact text, body emphasis and visuals in all 25 lessons, instructions/answer formats in all 175 questions, and internal scrolling');
 
   await page.setViewportSize({ width: 1440, height: 1000 });
   for (const chapter of chapters) {
@@ -313,25 +336,30 @@ async function checkQuestions(page, questions) {
     }
     await page.locator('.lesson-nav a').last().click();
     await expectHash(page, '#/cs/' + chapter.slug + '/review');
-    if (chapter.slug === 'ch01') {
-      const next = page.locator('.actions a[href="#/cs/ch02"]');
+    const nextChapter = chapters[chapters.indexOf(chapter) + 1];
+    if (nextChapter) {
+      const next = page.locator('.actions a[href="#/cs/' + nextChapter.slug + '"]');
       assert.equal(await next.count(), 1);
       await next.click();
-      await expectHash(page, '#/cs/ch02');
-      await visit(page, '#/cs/ch01/review');
-    } else assert.equal(await page.locator('a[href^="#/cs/ch03"]').count(), 0);
+      await expectHash(page, '#/cs/' + nextChapter.slug);
+      await visit(page, '#/cs/' + chapter.slug + '/review');
+    } else assert.equal(await page.locator('a[href^="#/cs/ch06"]').count(), 0);
     await page.locator('.py-solution').first().locator('summary').click();
     const related = page.locator('.py-related a').first(), relatedHash = await related.getAttribute('href');
     assert.ok(ids.map(lessonRoute).includes(relatedHash));
     await related.click();
     await expectHash(page, relatedHash);
   }
-  const invalidRoutes = ['#/cs/ch03', '#/cs/ch03/lesson/cs-l011', '#/cs/ch01/lesson/cs-l006', '#/cs/ch02/lesson/cs-l001', '#/cs/ch02/lesson/python-l001', '#/cs/ch02/review/extra', '#/cs/ch02/extra'];
+  const invalidRoutes = [
+    '#/cs/ch06', '#/cs/ch06/lesson/cs-l026', '#/cs/ch05/lesson/cs-l026',
+    ...chapters.map((chapter, index) => '#/cs/' + chapter.slug + '/lesson/' + chapters[(index + 1) % chapters.length].ids[0]),
+    '#/cs/ch05/lesson/python-l001', '#/cs/ch05/review/extra', '#/cs/ch05/extra'
+  ];
   for (const route of invalidRoutes) {
     await visit(page, route);
     assert.match(await page.locator('#main h1').innerText(), /찾는 페이지/);
   }
-  groups.push('both chapters bidirectional/contents/review/related routes, chapter 1→2 continuation and seven invalid route rejections');
+  groups.push('five chapters bidirectional/contents/review/related routes, four chapter continuations and ' + invalidRoutes.length + ' invalid route rejections');
 
   await visit(page, '#/');
   const seeded = await page.evaluate(themeKey => {
@@ -346,77 +374,83 @@ async function checkQuestions(page, questions) {
     for (const [key, value] of Object.entries(records)) localStorage.setItem(key, value);
     return records;
   }, THEME_KEY);
-  const firstChapter = chapters[0], newChapter = chapters[1];
-  await visit(page, lessonRoute(firstChapter.ids[0]));
-  await page.locator('[data-cs-complete]').click();
-  const firstRaw = (await values(page))[csKey(firstChapter)];
-  assert.deepEqual(JSON.parse(firstRaw).completed, [firstChapter.ids[0]]);
-  await visit(page, lessonRoute(newChapter.ids[0]));
-  const complete = page.locator('[data-cs-complete]');
-  assert.equal(await complete.getAttribute('aria-pressed'), 'false');
-  await complete.click();
-  assert.equal(await complete.getAttribute('aria-pressed'), 'true');
-  assert.match(await page.locator('[data-cs-read-status]').innerText(), /읽음 표시됨/);
-  assert.match(await page.locator('[data-cs-lesson="cs-l006"]').innerText(), /^✓/);
-  await page.reload();
-  await complete.waitFor();
-  assert.equal(await complete.getAttribute('aria-pressed'), 'true');
-  await complete.click();
-  assert.equal(await complete.getAttribute('aria-pressed'), 'false');
-  assert.doesNotMatch(await page.locator('[data-cs-lesson="cs-l006"]').innerText(), /^✓/);
-  assert.deepEqual(JSON.parse((await values(page))[csKey(newChapter)]).completed, []);
-  await complete.click();
-  const current = await values(page), marked = JSON.parse(current[csKey(newChapter)]);
-  assert.deepEqual(marked.completed, [newChapter.ids[0]]);
-  assert.deepEqual(marked.scores, {});
-  assert.equal(marked.last, newChapter.ids[0]);
-  assert.ok(marked.visitedAt > 3000);
-  assert.equal(current[csKey(firstChapter)], firstRaw, 'chapter 2 visits and read toggles preserve chapter 1 raw record');
-  for (const [key, value] of Object.entries(seeded)) assert.equal(current[key], value, key + ' raw record preserved');
+  for (const chapter of chapters) {
+    const before = await values(page);
+    await visit(page, lessonRoute(chapter.ids[0]));
+    const complete = page.locator('[data-cs-complete]');
+    assert.equal(await complete.getAttribute('aria-pressed'), 'false');
+    await complete.click();
+    assert.equal(await complete.getAttribute('aria-pressed'), 'true');
+    assert.match(await page.locator('[data-cs-read-status]').innerText(), /읽음 표시됨/);
+    assert.match(await page.locator('[data-cs-lesson="' + chapter.ids[0] + '"]').innerText(), /^✓/);
+    await page.reload();
+    await complete.waitFor();
+    assert.equal(await complete.getAttribute('aria-pressed'), 'true');
+    await complete.click();
+    assert.equal(await complete.getAttribute('aria-pressed'), 'false');
+    assert.doesNotMatch(await page.locator('[data-cs-lesson="' + chapter.ids[0] + '"]').innerText(), /^✓/);
+    assert.deepEqual(JSON.parse((await values(page))[csKey(chapter)]).completed, []);
+    await complete.click();
+    const current = await values(page), marked = JSON.parse(current[csKey(chapter)]);
+    assert.deepEqual(marked.completed, [chapter.ids[0]]);
+    assert.deepEqual(marked.scores, {});
+    assert.equal(marked.last, chapter.ids[0]);
+    assert.ok(marked.visitedAt > 3000);
+    for (const [key, value] of Object.entries(before)) if (key !== csKey(chapter)) assert.equal(current[key], value, key + ' raw record preserved while visiting ' + chapter.slug);
+    for (const [key, value] of Object.entries(seeded)) assert.equal(current[key], value, key + ' original raw record preserved');
+  }
+  const current = await values(page);
   assert.deepEqual(Object.keys(current).sort(), [...Object.keys(seeded), ...chapters.map(csKey)].sort());
-  groups.push('chapter 2 read/reload/cancel, independent chapter 1/2 keys and preservation of all 19 earlier course records, scores and theme');
+  const exports = await page.evaluate(() => {
+    const api = window.AcademyProgressTransfer, snapshot = api.capture();
+    return { total: api.summary(snapshot).total, snapshot, parsed: api.parse(api.encode(snapshot)), fileParsed: api.parse(JSON.stringify(snapshot)) };
+  });
+  assert.equal(exports.total, 157);
+  assert.equal(Object.keys(exports.snapshot.records).length, 24);
+  assert.deepEqual(exports.parsed.records, exports.snapshot.records);
+  assert.deepEqual(exports.fileParsed.records, exports.snapshot.records);
+  for (const chapter of chapters) assert.deepEqual(exports.parsed.records[csKey(chapter)].completed, [chapter.ids[0]]);
+  groups.push('all five CS keys read/reload/cancel independently, file/copy-code export preserves 24 courses, and every earlier raw record/score/theme stays intact');
 
+  const activeChapter = chapters.at(-1);
   await page.evaluate(() => {
     window.__csWrites = 0;
+    window.__csStorageEvents = [];
     const setItem = Storage.prototype.setItem;
     Storage.prototype.setItem = function (...args) { window.__csWrites++; return setItem.apply(this, args); };
+    window.addEventListener('storage', event => { if (event.key?.startsWith('academy-cs-')) window.__csStorageEvents.push(event.key); });
   });
   const other = await context.newPage(); watch(other);
   await visit(other, '#/');
-  const secondRaw = (await values(page))[csKey(newChapter)];
-  await other.evaluate(key => {
-    const record = JSON.parse(localStorage.getItem(key));
-    record.completed = [];
-    record.last = 'cs-l005';
-    record.visitedAt = Date.now();
-    localStorage.setItem(key, JSON.stringify(record));
-  }, csKey(firstChapter));
-  await page.waitForFunction(() => document.querySelector('[data-cs-complete]').getAttribute('aria-pressed') === 'true');
-  assert.equal((await values(page))[csKey(newChapter)], secondRaw, 'other chapter storage event preserves current chapter raw state');
-  await other.evaluate(key => {
-    const record = JSON.parse(localStorage.getItem(key));
-    record.completed = [];
-    record.last = 'cs-l010';
-    record.visitedAt = Date.now();
-    localStorage.setItem(key, JSON.stringify(record));
-  }, csKey(newChapter));
-  await page.waitForFunction(() => document.querySelector('[data-cs-complete]').getAttribute('aria-pressed') === 'false');
+  const activeRaw = (await values(page))[csKey(activeChapter)];
+  for (const chapter of chapters) {
+    await other.evaluate(({ key, id }) => {
+      const record = JSON.parse(localStorage.getItem(key));
+      record.completed = [];
+      record.last = id;
+      record.visitedAt = Date.now() - 10000;
+      localStorage.setItem(key, JSON.stringify(record));
+    }, { key: csKey(chapter), id: chapter.ids.at(-1) });
+    await page.waitForFunction(key => window.__csStorageEvents.includes(key), csKey(chapter));
+    assert.equal(await page.locator('[data-cs-complete]').getAttribute('aria-pressed'), chapter === activeChapter ? 'false' : 'true');
+    if (chapter !== activeChapter) assert.equal((await values(page))[csKey(activeChapter)], activeRaw, 'another chapter storage event preserves active chapter raw state');
+  }
   assert.equal(await page.evaluate(() => window.__csWrites), 0, 'storage refresh never rewrites the visit');
   await other.close();
-  await visit(page, lessonRoute(newChapter.ids[4]));
+  await visit(page, lessonRoute(activeChapter.ids[4]));
   await visit(page, '#/progress');
-  assert.equal(await page.locator('.cs-progress').count(), 2);
+  assert.equal(await page.locator('.cs-progress').count(), 5);
   assert.equal(await page.locator('.algo-progress').count(), 9);
   assert.equal(await page.locator('.py-progress:not(.algo-progress):not(.cs-progress)').count(), 9);
-  assert.equal(await page.locator('.learning-resume a').getAttribute('href'), lessonRoute(newChapter.ids[4]));
-  await noOverflow(page, 'progress with two CS chapters');
+  assert.equal(await page.locator('.learning-resume a').getAttribute('href'), lessonRoute(activeChapter.ids[4]));
+  await noOverflow(page, 'progress with five CS chapters');
   await visit(page, '#/');
-  assert.equal(await page.locator('.catalog-footer a').getAttribute('href'), lessonRoute(newChapter.ids[4]));
+  assert.equal(await page.locator('.catalog-footer a').getAttribute('href'), lessonRoute(activeChapter.ids[4]));
   await visit(page, '#/subjects/cs');
-  assert.equal(await page.locator('.actions .btn').first().getAttribute('href'), lessonRoute(newChapter.ids[4]));
+  assert.equal(await page.locator('.actions .btn').first().getAttribute('href'), lessonRoute(activeChapter.ids[4]));
   const after = await values(page);
   for (const [key, value] of Object.entries(seeded)) assert.equal(after[key], value, key + ' preserved after cross-tab and resume');
-  groups.push('both chapter keys refresh across tabs without visit writes and latest chapter 2 resume on catalog/subject/progress');
+  groups.push('all five chapter keys refresh across tabs without visit writes and chapter 5 latest lesson resumes on catalog/subject/progress');
 
   const previewCases = [
     ['subject=cs', '/subjects/cs', 0, /CS/],
@@ -440,29 +474,31 @@ async function checkQuestions(page, questions) {
       assert.ok((await frame.evaluate(() => document.documentElement.scrollWidth)) <= (await frame.evaluate(() => document.documentElement.clientWidth)));
     }
   }
-  groups.push('nine CS PC/mobile preview destinations for both chapters, correct titles and no frame document overflow');
+  groups.push('21 CS PC/mobile preview destinations for five chapters, correct titles and no frame document overflow');
 
   const previewDir = process.env.ACADEMY_SCREENSHOT_DIR || path.join(root, 'previews');
-  // Select one chapter so refreshing its evidence preserves the other chapter's captures.
-  const screenshotSlug = process.env.ACADEMY_SCREENSHOT_CHAPTER || 'ch01';
-  const screenshotChapter = chapters.find(chapter => chapter.slug === screenshotSlug);
-  assert.ok(screenshotChapter, 'ACADEMY_SCREENSHOT_CHAPTER must be ch01 or ch02');
-  const screenshotExample = screenshotSlug === 'ch01' ? 0 : 1;
+  // Default to new evidence only; an explicit chapter selection can refresh older captures.
+  const screenshotSlugs = (process.env.ACADEMY_SCREENSHOT_CHAPTERS || process.env.ACADEMY_SCREENSHOT_CHAPTER || 'ch03,ch04,ch05').split(',').map(value => value.trim());
+  assert.ok(screenshotSlugs.length && screenshotSlugs.every(slug => chapters.some(chapter => chapter.slug === slug)), 'screenshot chapters must be implemented ch01 through ch05');
   await fs.mkdir(previewDir, { recursive: true });
   const screenshots = [];
-  for (const shot of [{ width: 1440, theme: 'light', name: 'pc', open: true }, { width: 390, theme: 'glass', name: 'mobile', open: false }]) {
-    await page.setViewportSize({ width: shot.width, height: 1100 });
-    await visit(page, lessonRoute(screenshotChapter.ids[0]));
-    await page.reload();
-    await page.locator('[data-cs-complete="' + screenshotChapter.ids[0] + '"]').waitFor();
-    await page.evaluate(([key, value]) => { localStorage.setItem(key, value); window.AcademyTheme.refresh(); }, [THEME_KEY, shot.theme]);
-    if (shot.open) await page.locator('.py-solution').nth(screenshotExample).locator('summary').click();
-    else assert.equal(await page.locator('.py-solution[open]').count(), 0);
-    const target = shot.open ? page.locator('#practice-' + (screenshotExample + 1)) : screenshotSlug === 'ch01' ? page.locator('#concept .concept-step').first().locator(':scope > p').last() : page.locator('#concept figure.cs-visual').first();
-    await target.evaluate(element => window.scrollTo({ top: window.scrollY + element.getBoundingClientRect().top - 16, behavior: 'instant' }));
-    const file = path.join(previewDir, 'cs-' + screenshotSlug + '-' + shot.name + '.png');
-    await page.screenshot({ path: file });
-    screenshots.push(file);
+  for (const screenshotSlug of screenshotSlugs) {
+    const screenshotChapter = chapters.find(chapter => chapter.slug === screenshotSlug);
+    const screenshotExample = screenshotSlug === 'ch01' ? 0 : 1;
+    for (const shot of [{ width: 1440, theme: 'light', name: 'pc', open: true }, { width: 390, theme: 'glass', name: 'mobile', open: false }]) {
+      await page.setViewportSize({ width: shot.width, height: 1100 });
+      await visit(page, lessonRoute(screenshotChapter.ids[0]));
+      await page.reload();
+      await page.locator('[data-cs-complete="' + screenshotChapter.ids[0] + '"]').waitFor();
+      await page.evaluate(([key, value]) => { localStorage.setItem(key, value); window.AcademyTheme.refresh(); }, [THEME_KEY, shot.theme]);
+      if (shot.open) await page.locator('.py-solution').nth(screenshotExample).locator('summary').click();
+      else assert.equal(await page.locator('.py-solution[open]').count(), 0);
+      const target = shot.open ? page.locator('#practice-' + (screenshotExample + 1)) : screenshotSlug === 'ch01' ? page.locator('#concept .concept-step').first().locator(':scope > p').last() : page.locator('#concept figure.cs-visual').first();
+      await target.evaluate(element => window.scrollTo({ top: window.scrollY + element.getBoundingClientRect().top - 16, behavior: 'instant' }));
+      const file = path.join(previewDir, 'cs-' + screenshotSlug + '-' + shot.name + '.png');
+      await page.screenshot({ path: file });
+      screenshots.push(file);
+    }
   }
   assert.deepEqual(errors, []);
   assert.deepEqual(requestErrors, []);

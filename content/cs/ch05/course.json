@@ -1,0 +1,51 @@
+{
+  "id": "cs-ch05",
+  "slug": "ch05",
+  "number": 5,
+  "title": "네트워크로 연결하기",
+  "description": "작은 조회 요청이 패킷·주소·이름·전송·보호 구간을 지나가는 과정을 따라가고, 어디까지 성공했는지 관찰 근거로 구분합니다.",
+  "prerequisite": "CS 챕터 1의 프로그램·데이터·계층 구분과 바이트가 데이터 크기의 단위라는 뜻만 사용합니다. 네트워크 용어는 처음부터 설명하며 프로그램 설치나 명령 실행은 필요하지 않습니다.",
+  "runtime": "실제 상자·흐름·표와 가상의 요청 기록을 읽고, 작은 시간 계산과 자기 말로 된 설명을 작성하는 개념 학습",
+  "lessonFiles": [
+    "lesson-01.json",
+    "lesson-02.json",
+    "lesson-03.json",
+    "lesson-04.json",
+    "lesson-05.json"
+  ],
+  "references": [
+    {
+      "title": "RFC 1122 §1.1.3 · 인터넷의 응용·전송·IP·링크 계층 책임",
+      "url": "https://www.rfc-editor.org/rfc/rfc1122"
+    },
+    {
+      "title": "RFC 791 · IP의 주소 지정과 데이터그램 전달 범위",
+      "url": "https://www.rfc-editor.org/rfc/rfc791"
+    },
+    {
+      "title": "RFC 1034 · DNS 이름·리졸버·캐시와 TTL",
+      "url": "https://www.rfc-editor.org/rfc/rfc1034"
+    },
+    {
+      "title": "RFC 9293 §2.2·§3.7 · TCP의 순서 있는 바이트 스트림과 메시지 경계",
+      "url": "https://www.rfc-editor.org/rfc/rfc9293"
+    },
+    {
+      "title": "RFC 768 · UDP 데이터그램과 전달·중복 방지의 비보장",
+      "url": "https://www.rfc-editor.org/rfc/rfc768"
+    },
+    {
+      "title": "RFC 9000 §1 · UDP 위에서 신뢰성 있는 스트림을 제공하는 QUIC",
+      "url": "https://www.rfc-editor.org/rfc/rfc9000"
+    },
+    {
+      "title": "RFC 8446 §1·부록 E · TLS의 인증·기밀성·무결성과 트래픽 분석의 경계",
+      "url": "https://www.rfc-editor.org/rfc/rfc8446"
+    },
+    {
+      "title": "RFC 5737 · 문서용 IPv4 주소 범위",
+      "url": "https://www.rfc-editor.org/rfc/rfc5737"
+    }
+  ],
+  "referenceCheckedAt": "2026-11-11 UTC"
+}

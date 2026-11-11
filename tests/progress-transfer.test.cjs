@@ -11,10 +11,13 @@ const source = fs.readFileSync(path.join(root, 'progress-transfer.js'), 'utf8');
 const MATH = 'understand-math-grade1-v1';
 const CS = 'academy-cs-ch01-v1';
 const CS2 = 'academy-cs-ch02-v1';
-const csKeys = [CS, CS2];
+const csKeys = [CS, CS2, 'academy-cs-ch03-v1', 'academy-cs-ch04-v1', 'academy-cs-ch05-v1'];
 const csLessonIds = [
   ['cs-l001', 'cs-l002', 'cs-l003', 'cs-l004', 'cs-l005'],
-  ['cs-l006', 'cs-l007', 'cs-l008', 'cs-l009', 'cs-l010']
+  ['cs-l006', 'cs-l007', 'cs-l008', 'cs-l009', 'cs-l010'],
+  ['cs-l011', 'cs-l012', 'cs-l013', 'cs-l014', 'cs-l015'],
+  ['cs-l016', 'cs-l017', 'cs-l018', 'cs-l019', 'cs-l020'],
+  ['cs-l021', 'cs-l022', 'cs-l023', 'cs-l024', 'cs-l025']
 ];
 const ALGORITHMS = 'academy-algorithms-ch01-v1';
 const algorithmKeys = Array.from({ length: 9 }, (_, index) => 'academy-algorithms-ch' + String(index + 1).padStart(2, '0') + '-v1');
@@ -65,7 +68,7 @@ function mutations(storage) {
   return storage.calls.filter(call => call[0] !== 'get');
 }
 
-test('exports the frozen API and captures all twenty-one courses with the real 142 lesson IDs in learning order', () => {
+test('exports the frozen API and captures all twenty-four courses with the real 157 lesson IDs in learning order', () => {
   const storage = memory(), api = engine(storage), captured = api.capture();
   assert.ok(Object.isFrozen(api));
   assert.equal(api.MAX_BYTES, 1048576);
@@ -75,7 +78,7 @@ test('exports the frozen API and captures all twenty-one courses with the real 1
   assert.deepEqual(json(curriculum.window.ALGORITHMS_COURSES.map(course => course.lessons.map(lesson => lesson.id))), algorithmLessonIds);
   assert.equal(algorithmLessonIds.flat().length, 56);
   assert.deepEqual(json(curriculum.window.CS_COURSES.map(course => course.lessons.map(lesson => lesson.id))), csLessonIds);
-  assert.equal(api.summary(captured).total, 142);
+  assert.equal(api.summary(captured).total, 157);
   assert.equal(api.summary(captured).completed, 0);
   assert.ok(Number.isFinite(Date.parse(captured.exportedAt)));
   assert.equal(mutations(storage).length, 0);
@@ -94,7 +97,7 @@ test('JSON and copy-code round trips preserve every course, review score and opt
   const code = api.encode(captured);
   assert.match(code, /^ACADEMY1\./);
   assert.deepEqual(json(api.parse(` \n${code}\n `)), expected);
-  assert.deepEqual(json(api.summary(captured)), { completed: 21, total: 142, mathCompleted: 1, pythonCompleted: 9, algorithmsCompleted: 9, csCompleted: 2, scoreCount: 42, exportedAt: captured.exportedAt, theme: 'ink' });
+  assert.deepEqual(json(api.summary(captured)), { completed: 24, total: 157, mathCompleted: 1, pythonCompleted: 9, algorithmsCompleted: 9, csCompleted: 5, scoreCount: 48, exportedAt: captured.exportedAt, theme: 'ink' });
 });
 
 test('old ten-course version 1 files preserve the local algorithms record and unrelated keys', () => {
@@ -128,7 +131,7 @@ test('algorithms records round-trip, merge independently and count under their o
   const incoming = snapshot({ [ALGORITHMS]: state({ completed: ['algorithms-l002', 'algorithms-l006'], last: 'algorithms-l006', visitedAt: 20 }) });
   const parsed = api.parse(api.encode(incoming));
   assert.deepEqual(json(parsed), incoming);
-  assert.deepEqual(json(api.summary(parsed)), { completed: 2, total: 142, mathCompleted: 0, pythonCompleted: 0, algorithmsCompleted: 2, csCompleted: 0, scoreCount: 0, exportedAt: date });
+  assert.deepEqual(json(api.summary(parsed)), { completed: 2, total: 157, mathCompleted: 0, pythonCompleted: 0, algorithmsCompleted: 2, csCompleted: 0, scoreCount: 0, exportedAt: date });
   const result = api.apply(parsed);
   assert.equal(result.addedCompleted, 2);
   assert.deepEqual(json(result.records[ALGORITHMS]), state({ completed: ['algorithms-l001', 'algorithms-l002', 'algorithms-l006'], last: 'algorithms-l006', visitedAt: 20 }));
@@ -165,7 +168,7 @@ test('old eleven-course files preserve new chapters byte-for-byte and cross-chap
   assert.deepEqual(json(result.records[algorithmKeys[2]]), state({ completed: ['algorithms-l013', 'algorithms-l014', 'algorithms-l018'], last: 'algorithms-l018', visitedAt: 500 }));
   assert.equal(result.addedCompleted, 4);
   assert.deepEqual(mutations(storage).map(call => call[1]), algorithmKeys.slice(1, 3));
-  assert.deepEqual(json(api.summary(incoming)), { completed: 4, total: 142, mathCompleted: 0, pythonCompleted: 0, algorithmsCompleted: 4, csCompleted: 0, scoreCount: 0, exportedAt: date });
+  assert.deepEqual(json(api.summary(incoming)), { completed: 4, total: 157, mathCompleted: 0, pythonCompleted: 0, algorithmsCompleted: 4, csCompleted: 0, scoreCount: 0, exportedAt: date });
   for (const [key, wrongId] of [[algorithmKeys[1], 'algorithms-l013'], [algorithmKeys[2], 'algorithms-l007']]) {
     expectCode(() => api.parse(JSON.stringify(snapshot({ [key]: state({ completed: [wrongId] }) }))), 'INVALID_DATA');
   }
@@ -262,7 +265,7 @@ test('a nineteen-course file from before the inserted lessons retains old reads 
   assert.ok(!result.records[algorithmKeys[2]].completed.includes('algorithms-l055'));
   assert.ok(!result.records[algorithmKeys[7]].completed.includes('algorithms-l056'));
   assert.deepEqual(mutations(storage).map(call => call[1]), [algorithmKeys[2], algorithmKeys[7]]);
-  assert.equal(api.summary(api.capture()).total, 142);
+  assert.equal(api.summary(api.capture()).total, 157);
 });
 
 test('inserted lessons round-trip under existing chapter keys and survive merging older nineteen-course records', () => {
@@ -271,7 +274,7 @@ test('inserted lessons round-trip under existing chapter keys and survive mergin
     [algorithmKeys[7]]: JSON.stringify(state({ completed: ['algorithms-l056'], last: 'algorithms-l056', visitedAt: 600 }))
   });
   const api = engine(sourceStorage), captured = api.capture();
-  assert.equal(Object.keys(captured.records).length, 21);
+  assert.equal(Object.keys(captured.records).length, 24);
   for (const text of [JSON.stringify(captured), api.encode(captured)]) {
     const parsed = api.parse(text);
     assert.deepEqual(json(parsed), json(captured));
@@ -323,7 +326,7 @@ test('CS file and copy-code imports merge only CS reads and newest visits withou
     const parsed = api.parse(text), summary = api.summary(parsed);
     assert.equal(summary.csCompleted, 2);
     assert.equal(summary.completed, 2);
-    assert.equal(summary.total, 142);
+    assert.equal(summary.total, 157);
     assert.deepEqual([...storage.values], before, 'parse and summary must not change storage');
     assert.deepEqual(mutations(storage), []);
     const result = api.apply(parsed);
@@ -340,7 +343,7 @@ test('CS file and copy-code imports merge only CS reads and newest visits withou
 test('CS chapter two file and copy-code imports merge independently and preserve chapter one raw data', () => {
   const sourceStorage = memory({ [CS2]: JSON.stringify(state({ completed: ['cs-l007', 'cs-l010'], last: 'cs-l010', visitedAt: 500 })) });
   const sourceApi = engine(sourceStorage), captured = sourceApi.capture();
-  assert.equal(Object.keys(captured.records).length, 21);
+  assert.equal(Object.keys(captured.records).length, 24);
   assert.equal(sourceApi.summary(captured).csCompleted, 2);
   for (const text of [JSON.stringify(captured), sourceApi.encode(captured)]) {
     const preserved = {
@@ -354,7 +357,7 @@ test('CS chapter two file and copy-code imports merge independently and preserve
     const api = engine(storage), before = [...storage.values];
     const parsed = api.parse(text), summary = api.summary(parsed);
     assert.equal(summary.csCompleted, 2);
-    assert.equal(summary.total, 142);
+    assert.equal(summary.total, 157);
     assert.deepEqual([...storage.values], before, 'chapter two parse and summary must not write');
     assert.deepEqual(mutations(storage), []);
     const result = api.apply(parsed);
@@ -371,7 +374,7 @@ test('CS chapter two file and copy-code imports merge independently and preserve
 test('an older twenty-course backup preserves omitted chapter two raw data and does not invent new reads', () => {
   const sourceApi = engine(memory({ [CS]: JSON.stringify(state({ completed: ['cs-l002'], last: 'cs-l002', visitedAt: 900 })) }));
   const older = sourceApi.capture();
-  delete older.records[CS2];
+  for (const key of csKeys.slice(1)) delete older.records[key];
   assert.equal(Object.keys(older.records).length, 20);
   assert.equal(Object.hasOwn(older.records, CS2), false);
   for (const text of [JSON.stringify(older), sourceApi.encode(older)]) {
@@ -388,6 +391,60 @@ test('an older twenty-course backup preserves omitted chapter two raw data and d
     emptyApi.apply(emptyApi.parse(text));
     assert.equal(empty.values.has(CS2), false, 'old files cannot create a chapter two record');
     assert.deepEqual(json(emptyApi.capture().records[CS2]), state());
+  }
+});
+
+test('all five CS chapters round-trip by file and copy code while merging only the selected chapter', () => {
+  for (const [index, key] of csKeys.entries()) {
+    const ids = csLessonIds[index];
+    const sourceApi = engine(memory({ [key]: JSON.stringify(state({ completed: [ids[2], ids[4]], last: ids[4], visitedAt: 500 })) }));
+    const captured = sourceApi.capture();
+    assert.equal(Object.keys(captured.records).length, 24);
+    assert.equal(sourceApi.summary(captured).csCompleted, 2);
+    for (const text of [JSON.stringify(captured), sourceApi.encode(captured)]) {
+      const existing = Object.fromEntries(csKeys.map((courseKey, chapter) => {
+        const oldIds = csLessonIds[chapter];
+        return [courseKey, JSON.stringify(state({ completed: oldIds.slice(0, 2), last: oldIds[1], visitedAt: 200 }), null, 2)];
+      }));
+      const storage = memory({ ...existing, [THEME]: 'forest', unrelated: 'preserve' }), api = engine(storage);
+      const before = [...storage.values], parsed = api.parse(text);
+      api.summary(parsed);
+      assert.deepEqual([...storage.values], before, 'preview never writes any chapter');
+      const result = api.apply(parsed);
+      assert.equal(result.addedCompleted, 2);
+      assert.deepEqual(json(result.records[key]), state({ completed: [ids[0], ids[1], ids[2], ids[4]], last: ids[4], visitedAt: 500 }));
+      assert.equal(api.summary(api.capture()).csCompleted, 12);
+      for (const other of csKeys.filter(item => item !== key)) assert.equal(storage.values.get(other), existing[other], 'other CS chapter remains byte-for-byte unchanged');
+      assert.equal(storage.values.get(THEME), 'forest');
+      assert.equal(storage.values.get('unrelated'), 'preserve');
+      assert.deepEqual(mutations(storage).map(call => call[1]), [key]);
+    }
+  }
+});
+
+test('older twenty-one-course backups preserve all three omitted CS chapters without inventing records', () => {
+  const sourceApi = engine(memory({ [CS2]: JSON.stringify(state({ completed: ['cs-l007'], last: 'cs-l007', visitedAt: 900 })) }));
+  const captured = sourceApi.capture();
+  const older = { ...captured, records: Object.fromEntries(Object.entries(captured.records).slice(0, 21)) };
+  assert.equal(Object.keys(older.records).length, 21);
+  for (const key of csKeys.slice(2)) assert.equal(Object.hasOwn(older.records, key), false);
+  for (const text of [JSON.stringify(older), sourceApi.encode(older)]) {
+    const existing = Object.fromEntries(csKeys.slice(2).map((key, offset) => {
+      const id = csLessonIds[offset + 2][3];
+      return [key, JSON.stringify({ ...state({ completed: [id], last: id, visitedAt: 600 }), legacyExtra: 'preserve raw' }, null, 2)];
+    }));
+    const storage = memory({ ...existing, [THEME]: 'ink' }), api = engine(storage), parsed = api.parse(text);
+    assert.equal(api.summary(parsed).csCompleted, 1);
+    assert.equal(api.apply(parsed).addedCompleted, 1);
+    for (const [key, raw] of Object.entries(existing)) assert.equal(storage.values.get(key), raw);
+    assert.equal(storage.values.get(THEME), 'ink');
+    assert.deepEqual(mutations(storage).map(call => call[1]), [CS2]);
+    const empty = memory(), emptyApi = engine(empty);
+    emptyApi.apply(emptyApi.parse(text));
+    for (const key of csKeys.slice(2)) {
+      assert.equal(empty.values.has(key), false, 'old files cannot create new chapter records');
+      assert.deepEqual(json(emptyApi.capture().records[key]), state());
+    }
   }
 });
 
@@ -432,7 +489,7 @@ test('CS imports reject unknown chapters, future lessons and IDs owned by anothe
       expectCode(() => api.parse(JSON.stringify(snapshot({ [CS]: state({ [field]: value }) }))), 'INVALID_DATA');
     }
   }
-  expectCode(() => api.parse(JSON.stringify(snapshot({ 'academy-cs-ch03-v1': state() }))), 'INVALID_DATA');
+  expectCode(() => api.parse(JSON.stringify(snapshot({ 'academy-cs-ch06-v1': state() }))), 'INVALID_DATA');
   for (const id of ['cs-l001', 'cs-l005', 'cs-l011', 'python-l001']) {
     for (const field of ['completed', 'last']) {
       const value = field === 'completed' ? [id] : id;
@@ -440,6 +497,14 @@ test('CS imports reject unknown chapters, future lessons and IDs owned by anothe
     }
   }
   assert.deepEqual(json(api.parse(JSON.stringify(snapshot({ [CS2]: state({ completed: ['cs-l006', 'cs-l010'], last: 'cs-l010' }) }))).records[CS2].completed), ['cs-l006', 'cs-l010']);
+  for (const [index, key] of csKeys.entries()) {
+    const ids = csLessonIds[index], foreign = csLessonIds[(index + 1) % csKeys.length][0];
+    for (const id of [foreign, 'cs-l026']) {
+      expectCode(() => api.parse(JSON.stringify(snapshot({ [key]: state({ completed: [id] }) }))), 'INVALID_DATA');
+      expectCode(() => api.parse(JSON.stringify(snapshot({ [key]: state({ last: id }) }))), 'INVALID_DATA');
+    }
+    assert.deepEqual(json(api.parse(JSON.stringify(snapshot({ [key]: state({ completed: [ids[0], ids[4]], last: ids[4] }) }))).records[key].completed), [ids[0], ids[4]]);
+  }
   assert.deepEqual(mutations(storage), []);
 });
 
@@ -488,7 +553,7 @@ test('apply rereads fresh storage and merges union, maximum best, newest latest 
   storage.values.set(MATH, JSON.stringify(live));
   const result = api.apply(incoming);
   assert.equal(result.addedCompleted, 1);
-  assert.equal(Object.keys(result.records).length, 21);
+  assert.equal(Object.keys(result.records).length, 24);
   assert.deepEqual(json(result.records[MATH]), state({ completed: ['prime', 'factorization', 'gcd-lcm'], scores: { prime: score(1, 5, later), factorization: score(2, 5, later), review: score(7, 10, later) }, last: 'factorization', visitedAt: 250 }));
   assert.deepEqual(json(result.records[pyKey(9)].scores), { 'python-l046': score(4, 5) });
   assert.equal(result.theme, 'forest');

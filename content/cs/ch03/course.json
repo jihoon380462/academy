@@ -1,0 +1,48 @@
+{
+  "id": "cs-ch03",
+  "slug": "ch03",
+  "number": 3,
+  "title": "명령은 어떻게 실행되는가",
+  "description": "CPU와 메모리 사이의 작은 값 이동부터 시작해, 조건에 따른 실행·캐시·언어 실행 방식·빌드와 실행 준비를 연결합니다.",
+  "prerequisite": "CS 챕터 1~2의 프로그램과 데이터, 비트와 값의 해석을 사용합니다. 변수·조건·함수의 뜻과 의사코드 표기는 필요한 곳에서 짧게 설명합니다.",
+  "runtime": "그림과 표, 설명용 의사코드를 손으로 읽고 추적하는 개념 학습. 특정 언어 설치나 사이트 안의 코드 실행은 필요하지 않습니다.",
+  "lessonFiles": [
+    "lesson-01.json",
+    "lesson-02.json",
+    "lesson-03.json",
+    "lesson-04.json",
+    "lesson-05.json"
+  ],
+  "references": [
+    {
+      "title": "RISC-V ISA v20260120 · RV32I 레지스터·프로그램 카운터·메모리 읽기와 쓰기",
+      "url": "https://docs.riscv.org/reference/isa/v20260120/unpriv/rv32.html"
+    },
+    {
+      "title": "GCC 공식 문서 · 전처리·컴파일·어셈블·링크의 구분",
+      "url": "https://gcc.gnu.org/onlinedocs/gcc/Overall-Options.html"
+    },
+    {
+      "title": "GCC 공식 문서 · 캐시 지역성과 최적화의 조건",
+      "url": "https://gcc.gnu.org/onlinedocs/gcc/Optimize-Options.html"
+    },
+    {
+      "title": "Python 3.12 용어집 · CPython 바이트코드와 인터프리트의 구분",
+      "url": "https://docs.python.org/3.12/glossary.html"
+    },
+    {
+      "title": "Java Virtual Machine Specification SE 25 · 추상 기계와 구현의 구분",
+      "url": "https://docs.oracle.com/javase/specs/jvms/se25/html/jvms-2.html"
+    },
+    {
+      "title": "GNU C Library 공식 문서 · 동적 링커와 실행 시 의존성 로드",
+      "url": "https://sourceware.org/glibc/manual/latest/html_node/Dynamic-Linker.html"
+    },
+    {
+      "title": "Linux Kernel 공식 문서 · CPU별 캐시 관리와 메모리 매핑의 차이",
+      "url": "https://docs.kernel.org/core-api/cachetlb.html"
+    }
+  ],
+  "referenceCheckedAt": "2026-11-11 UTC",
+  "validationEnvironment": "공식 문서 HTTPS 본문 확인과 설명용 모델의 손 추적. 실제 ISA·CPU 성능·빌드 실행을 측정한 자료가 아니며 학습자에게 도구 설치를 요구하지 않습니다."
+}

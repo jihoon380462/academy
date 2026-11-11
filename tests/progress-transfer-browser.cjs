@@ -12,7 +12,14 @@ const BASE = (process.env.ACADEMY_BASE_URL || 'http://127.0.0.1:8000').replace(/
 const MATH = 'understand-math-grade1-v1';
 const CS = 'academy-cs-ch01-v1';
 const CS2 = 'academy-cs-ch02-v1';
-const csKeys = [CS, CS2];
+const csKeys = [CS, CS2, 'academy-cs-ch03-v1', 'academy-cs-ch04-v1', 'academy-cs-ch05-v1'];
+const csLessonIds = [
+  ['cs-l001', 'cs-l002', 'cs-l003', 'cs-l004', 'cs-l005'],
+  ['cs-l006', 'cs-l007', 'cs-l008', 'cs-l009', 'cs-l010'],
+  ['cs-l011', 'cs-l012', 'cs-l013', 'cs-l014', 'cs-l015'],
+  ['cs-l016', 'cs-l017', 'cs-l018', 'cs-l019', 'cs-l020'],
+  ['cs-l021', 'cs-l022', 'cs-l023', 'cs-l024', 'cs-l025']
+];
 const ALGORITHMS = 'academy-algorithms-ch01-v1';
 const algorithmKeys = Array.from({ length: 9 }, (_, index) => 'academy-algorithms-ch' + String(index + 1).padStart(2, '0') + '-v1');
 const algorithmLessonIds = [
@@ -111,18 +118,17 @@ function watch(page) { page.on('pageerror', error => errors.push(error.message))
     local[py].scores[ids[py][0]] = { latest: 1, best: 5, date: oldDate };
     return { ids, source, local, newDate };
   }, algorithmReadSamples);
-  assert.equal(Object.keys(fixture.ids).length, 21);
+  assert.equal(Object.keys(fixture.ids).length, 24);
   assert.deepEqual(algorithmKeys.map(key => fixture.ids[key]), algorithmLessonIds, 'the real catalog uses the approved insertion order');
   await seed(pc, fixture.source, 'glass');
   const captured = await pc.evaluate(() => window.AcademyProgressTransfer.capture());
   const summary = await pc.evaluate(() => window.AcademyProgressTransfer.summary(window.AcademyProgressTransfer.capture()));
-  assert.equal(summary.total, 142);
+  assert.equal(summary.total, 157);
   assert.equal(summary.pythonCompleted, 18);
   assert.equal(summary.algorithmsCompleted, 18);
-  assert.equal(summary.csCompleted, 4);
-  assert.deepEqual(fixture.ids[CS], ['cs-l001', 'cs-l002', 'cs-l003', 'cs-l004', 'cs-l005']);
-  assert.deepEqual(fixture.ids[CS2], ['cs-l006', 'cs-l007', 'cs-l008', 'cs-l009', 'cs-l010']);
-  assert.deepEqual(captured.records[CS2].completed, ['cs-l006', 'cs-l007']);
+  assert.equal(summary.csCompleted, 10);
+  assert.deepEqual(csKeys.map(key => fixture.ids[key]), csLessonIds, 'all five CS chapters have their own approved lesson IDs');
+  for (const [index, key] of csKeys.entries()) assert.deepEqual(captured.records[key].completed, csLessonIds[index].slice(0, 2));
   assert.deepEqual(captured.records[algorithmKeys[2]].completed, ['algorithms-l013', 'algorithms-l055']);
   assert.deepEqual(captured.records[algorithmKeys[7]].completed, ['algorithms-l047', 'algorithms-l056']);
   const downloadPromise = pc.waitForEvent('download');
@@ -145,7 +151,7 @@ function watch(page) { page.on('pageerror', error => errors.push(error.message))
   let before = await snapshot(mobile);
   await mobile.locator('#transfer-file').setInputFiles({ name: 'academy-records.json', mimeType: 'application/json', buffer: Buffer.from(fileText) });
   await mobile.locator('[data-transfer-preview-panel]').waitFor({ state: 'visible' });
-  assert.match(await mobile.locator('[data-transfer-summary]').innerText(), /알고리즘·자료구조 18개 · CS 4개/);
+  assert.match(await mobile.locator('[data-transfer-summary]').innerText(), /알고리즘·자료구조 18개 · CS 10개/);
   assert.deepEqual(await snapshot(mobile), before, 'file preview must not write');
   assert.equal(await mobile.locator('#transfer-include-theme').isChecked(), false);
   await mobile.locator('[data-transfer-confirm]').click();
@@ -155,7 +161,7 @@ function watch(page) { page.on('pageerror', error => errors.push(error.message))
   await mobile.locator('.py-progress:not(.algo-progress):not(.cs-progress)').first().waitFor();
   assert.equal(await mobile.locator('.py-progress:not(.algo-progress):not(.cs-progress)').count(), 9);
   assert.equal(await mobile.locator('.algo-progress').count(), 9);
-  assert.equal(await mobile.locator('.cs-progress').count(), 2);
+  assert.equal(await mobile.locator('.cs-progress').count(), 5);
   for (const panel of await mobile.locator('.cs-progress').all()) assert.match(await panel.locator('.py-reading-count').innerText(), /3\s*\/\s*5/);
   for (const [index, panel] of (await mobile.locator('.algo-progress').all()).entries()) assert.match(await panel.innerText(), new RegExp('3\\s*\\/\\s*' + algorithmLessonIds[index].length));
   assert.match(await mobile.locator('.py-progress:not(.algo-progress):not(.cs-progress)').first().locator('.py-reading-count').innerText(), /3\s*\/\s*5/);
@@ -179,7 +185,7 @@ function watch(page) { page.on('pageerror', error => errors.push(error.message))
   assert.deepEqual(await snapshot(mobile), once, 'repeated import must be idempotent');
   passed('Copy-code merge, explicit theme import, and repeated-import idempotence');
 
-  for (const count of [10, 11, 13, 15, 19, 20]) {
+  for (const count of [10, 11, 13, 15, 19, 20, 21]) {
     const legacyRecords = Object.fromEntries(Object.entries(captured.records).slice(0, count));
     const legacy = { ...captured, records: legacyRecords };
     const prior = await snapshot(mobile);
@@ -188,9 +194,10 @@ function watch(page) { page.on('pageerror', error => errors.push(error.message))
     await mobile.locator('[data-transfer-confirm]').click();
     const after = await snapshot(mobile);
     for (const key of Object.keys(captured.records).slice(count)) assert.equal(after[key], prior[key], 'old ' + count + '-course files preserve omitted course state ' + key);
-    assert.equal(after[CS2], prior[CS2], 'every older file including twenty-course backups preserves chapter two raw state');
+    if (count <= 20) assert.equal(after[CS2], prior[CS2], 'backups through twenty courses preserve omitted chapter two raw state');
+    for (const key of csKeys.slice(2)) assert.equal(after[key], prior[key], 'older files including twenty-one-course backups preserve all three new chapters byte-for-byte');
   }
-  passed('Old ten/eleven/thirteen/fifteen/nineteen/twenty-course files preserve omitted algorithms and CS chapter two');
+  passed('Old ten/eleven/thirteen/fifteen/nineteen/twenty/twenty-one-course files preserve omitted algorithms and all new CS chapters');
 
   const legacyFull = JSON.parse(JSON.stringify(captured));
   for (const key of csKeys) delete legacyFull.records[key];
@@ -224,10 +231,11 @@ function watch(page) { page.on('pageerror', error => errors.push(error.message))
   await mobile.locator('#transfer-import-code').fill(exportCode + '!');
   assert.ok(await mobile.locator('[data-transfer-preview-panel]').isHidden() || await mobile.locator('[data-transfer-confirm]').isDisabled(), 'editing must invalidate stale preview');
   assert.deepEqual(await snapshot(mobile), before);
-  const invalidCS = { ...captured, records: { [CS]: { completed: ['cs-l006'] } } };
-  const invalidCS2 = { ...captured, records: { [CS2]: { completed: ['cs-l005'] } } };
-  const futureCS2 = { ...captured, records: { [CS2]: { last: 'cs-l011' } } };
-  for (const bad of ['{', 'null', '{"format":"another-app","version":1}', 'ACADEMY1.!broken', JSON.stringify(invalidCS), JSON.stringify(invalidCS2), JSON.stringify(futureCS2)]) {
+  const invalidCS = csKeys.flatMap((key, index) => [
+    JSON.stringify({ ...captured, records: { [key]: { completed: [csLessonIds[(index + 1) % csKeys.length][0]] } } }),
+    JSON.stringify({ ...captured, records: { [key]: { last: 'cs-l026' } } })
+  ]);
+  for (const bad of ['{', 'null', '{"format":"another-app","version":1}', 'ACADEMY1.!broken', ...invalidCS]) {
     await mobile.locator('#transfer-import-code').fill(bad);
     await mobile.locator('[data-transfer-preview]').click();
     assert.ok((await mobile.locator('[data-transfer-status]').innerText()).trim());

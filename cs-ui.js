@@ -54,8 +54,16 @@
     return `<a class="lesson-row py-lesson-row" href="${lessonPath(item.id, ctx)}"><span class="lesson-no">${pad(lessonNumber(item.id, ctx))}</span><div><strong>${inlineText(item.title)}</strong><p>${inlineText(item.subtitle)}</p></div><span class="lesson-state ${read(item.id, ctx) ? 'done' : ''}">${read(item.id, ctx) ? '✓ 읽음' : esc(item.minutes) + '분 · 예제 ' + item.examples.length + '개'}</span></a>`;
   }
 
+  const chapterGuides = Object.freeze({
+    1: { introduction: '선행 지식 없이, 입력·저장처럼 익숙한 행동에서 컴퓨터의 역할을 찾습니다.', heading: '사용자 행동에서 각 층의 역할까지.' },
+    2: { introduction: '프로그램·데이터 개념을 바탕으로, 수와 글자를 비트로 표현하는 방법을 배웁니다.', heading: '작은 수와 글자에서 표현 원리까지.' },
+    3: { introduction: 'CPU·레지스터·메모리 그림에서 명령과 값의 이동을 따라가고, 소스에서 실행 중인 프로그램까지의 단계를 구분합니다.', heading: '소스에서 실행까지, 단계를 따라가요.' },
+    4: { introduction: '작업의 실행 순서와 공유하는 값을 나누어 적고, 계산·메모리·입출력 비용을 비교합니다.', heading: '같은 작업을 자원과 시간으로 살펴봐요.' },
+    5: { introduction: '요청이 이름·주소·포트와 전송 단계를 지나는 경로를 따라가고, 관찰한 증상으로 확인할 부분을 고릅니다.', heading: '이름에서 전송까지, 요청의 길을 찾아요.' }
+  });
+
   function learningNote(ctx) {
-    const introduction = !ctx ? '컴퓨터 안에서 일어나는 일을 작은 예로 나누어 배웁니다.' : number(ctx) === 1 ? '선행 지식 없이, 입력·저장처럼 익숙한 행동에서 컴퓨터의 역할을 찾습니다.' : '앞 챕터의 프로그램·데이터 개념을 바탕으로, 수와 글자를 비트로 표현하는 방법을 배웁니다.';
+    const introduction = ctx ? chapterGuides[number(ctx)]?.introduction || '이 챕터의 작은 예에서 컴퓨터의 동작 원리를 연결합니다.' : '데이터를 표현하고 명령을 실행하며, 자원을 나누고 네트워크로 연결하는 원리를 작은 예로 배웁니다.';
     return `<aside class="py-reading-note"><strong>이렇게 배워 보세요</strong><br>${introduction} 프로그램 설치 없이 읽을 수 있습니다. 그림의 이름과 값을 확인하고 종이나 메모장에 자신의 계산·설명을 적어 보세요. 문제마다 제시한 조건을 따라 답을 완성한 뒤 접힌 예시 답·해설과 비교합니다.</aside>`;
   }
 
@@ -68,12 +76,13 @@
     const next = nextLesson(current), total = all.reduce((sum, item) => sum + items(item).length, 0);
     const completed = all.reduce((sum, item) => sum + readCount(item), 0);
     return `<main id="main" class="wrap py-home cs-home"><div class="crumb subject-crumb"><a href="#/">학습 분야</a> / CS</div>
-      <section class="home-hero py-hero"><div><div class="eyebrow">COMPUTER SCIENCE · THE FOUNDATIONS</div><h1>CS</h1><p class="subject-lead">익숙한 작은 행동에서,<br>컴퓨터의 원리를 찾아요.</p><p class="hero-copy">같은 숫자와 글자를 컴퓨터는 어떻게 읽을까요?<br>컴퓨터의 역할에서 데이터 표현까지 원리를 연결합니다.<br>현재 ${all.length}개 챕터 · ${total}개 레슨을 학습할 수 있어요.</p><div class="actions"><a class="btn primary" href="${lessonPath(next.id, current)}">${visited.length ? '이어서 배우기' : '첫 레슨 시작하기'} <span>→</span></a><a class="text-link" href="${chapterPath(all[0])}">챕터 ${number(all[0])} 목차 보기</a></div></div>
-      <div class="py-intro-card"><div class="eyebrow">FROM AN ACTION TO DATA</div>${visual({
+      <section class="home-hero py-hero"><div><div class="eyebrow">COMPUTER SCIENCE · THE FOUNDATIONS</div><h1>CS</h1><p class="subject-lead">익숙한 작은 행동에서,<br>컴퓨터의 원리를 찾아요.</p><p class="hero-copy">코드는 어떻게 실행되고, 다른 컴퓨터와 어떻게 통신할까요?<br>데이터 표현·실행·자원·네트워크의 원리를 연결합니다.<br>현재 ${all.length}개 챕터 · ${total}개 레슨을 학습할 수 있어요.</p><div class="actions"><a class="btn primary" href="${lessonPath(next.id, current)}">${visited.length ? '이어서 배우기' : '첫 레슨 시작하기'} <span>→</span></a><a class="text-link" href="${chapterPath(all[0])}">챕터 ${number(all[0])} 목차 보기</a></div></div>
+      <div class="py-intro-card"><div class="eyebrow">FROM DATA TO CONNECTED SYSTEMS</div>${visual({
         type: 'flow', title: '질문을 하나씩 넓혀 가요', items: [
-          { label: '누가 이 일을 할까요?', value: '컴퓨터의 층과 역할', note: '챕터 1 · 입력·처리·출력·저장' },
-          { label: '어떻게 표현할까요?', value: '비트·숫자·문자', note: '챕터 2 · 데이터의 표현과 해석' }
-        ], caption: '화살표는 학습할 질문의 순서입니다. 익숙한 행동에서 시작해 안쪽의 표현 방법으로 이어 갑니다.'
+          { label: '무엇을 다룰까요?', value: '컴퓨터와 데이터', note: '챕터 1~2 · 역할과 표현' },
+          { label: '어떻게 실행할까요?', value: '명령과 자원', note: '챕터 3~4 · 실행·메모리·동시성' },
+          { label: '어떻게 연결할까요?', value: '네트워크', note: '챕터 5 · 주소·전송·보호' }
+        ], caption: '화살표는 학습할 질문의 순서입니다. 익숙한 행동과 데이터에서 시작해 명령 실행과 네트워크 연결로 이어 갑니다.'
       })}</div></section>
       ${learningNote()}
       <div class="section-head"><div><div class="eyebrow">THE FIRST STEPS</div><h2>한 가지 질문부터 차근차근.</h2></div><p>챕터를 누르면 레슨 목차가 펼쳐집니다.</p></div>
@@ -85,7 +94,7 @@
   function chapter(ctx) {
     return `<main id="main" class="wrap py-chapter cs-chapter"><div class="page-title"><div class="crumb"><a href="#/">학습 분야</a> / <a href="#/subjects/cs">CS</a> / 챕터 ${number(ctx)}</div><div class="eyebrow">CHAPTER ${pad(number(ctx))} · CS</div><h1>${inlineText(ctx.course.title)}</h1><p>${inlineText(ctx.course.description)}</p></div>
       <section class="chapter-banner"><div><h2>챕터 ${number(ctx)} · ${items(ctx).length}개 레슨</h2><p>${inlineText(ctx.course.prerequisite)}<br>${readCount(ctx)} / ${items(ctx).length} 레슨 읽음</p></div>${stats(ctx)}</section>
-      ${learningNote(ctx)}<div class="section-head"><div><div class="eyebrow">THE CONTENTS</div><h2>${number(ctx) === 1 ? '사용자 행동에서 각 층의 역할까지.' : '작은 수와 글자에서 표현 원리까지.'}</h2></div><p>레슨마다 원리 설명과 예제 5문제</p></div><div class="py-lesson-list">${items(ctx).map(item => row(item, ctx)).join('')}</div>
+      ${learningNote(ctx)}<div class="section-head"><div><div class="eyebrow">THE CONTENTS</div><h2>${inlineText(chapterGuides[number(ctx)]?.heading || '작은 예에서 동작 원리까지.')}</h2></div><p>레슨마다 원리 설명과 예제 5문제</p></div><div class="py-lesson-list">${items(ctx).map(item => row(item, ctx)).join('')}</div>
       <section class="review-band"><div><div class="eyebrow">CHAPTER ${pad(number(ctx))} REVIEW</div><h2>배운 원리를, ${ctx.course.review.length}문제로.</h2><p>${inlineText(ctx.course.description)}</p></div><a class="btn primary" href="${reviewPath(ctx)}">챕터 복습 시작 <span>→</span></a></section></main>`;
   }
 

@@ -23,7 +23,7 @@
 | 02 | 파이썬 | 기초 9챕터·46레슨 구현, 챕터 7~9 로컬 검증·PR #6 병합·Pages 배포·공개 화면 확인 완료. 확인 범위는 검증 기록 참고 |
 | 03 | C++/# | 준비 중 |
 | 04 | 알고리즘·자료구조 | 챕터 1~9 · 56레슨·280예제·90복습 구현. 학습 단계 보완도 PR #23 병합·Pages 배포·공개 확인 완료. 병합·공개 배포는 검증 기록과 구분 |
-| 05 | CS | 챕터 1 초기판의 5레슨·25예제·10복습 공개(PR #25 / SHA `593de2a`), 초보 안내 개정은 PR #29 / SHA `5d0210c`의 main 병합·Pages 배포 완료, 공개 PC·모바일 확인 완료. 챕터 2 「데이터를 비트로 표현하기」의 새 5레슨·25예제·10복습은 PR #27 / SHA `733d7bc`의 main 병합·Pages 배포 완료, 공개 PC·모바일 확인 완료 |
+| 05 | CS | 챕터 1 초기판의 5레슨·25예제·10복습 공개(PR #25 / SHA `593de2a`), 초보 안내 개정은 PR #29 / SHA `5d0210c`의 main 병합·Pages 배포 완료, 공개 PC·모바일 확인 완료. 챕터 2 「데이터를 비트로 표현하기」의 새 5레슨·25예제·10복습은 PR #27 / SHA `733d7bc`의 main 병합·Pages 배포 완료, 공개 PC·모바일 확인 완료. 챕터 3~5의 15레슨·75예제·30복습은 구현·로컬 검증 완료 |
 | 06 | 운영체제 | 준비 중 |
 | 07 | 디버깅·테스트 | 준비 중 |
 | 08 | 개체지향·설계 | 준비 중 |
@@ -57,19 +57,21 @@
 
 ## CS 과정 구성
 
-현재 챕터 1의 5레슨·25예제·10복습을 초보자가 따라가기 쉽게 개정하고 로컬 검증을 완료했습니다. 이번 개정은 [PR #29](https://github.com/jihoon380462/academy/pull/29)로 main에 병합했고 SHA `5d0210c`의 [Pages 실행](https://github.com/jihoon380462/academy/actions/runs/43028002455)이 성공했습니다. 공개 PC·모바일 확인을 완료했습니다. 용어 정의와 작은 작동 예·중간 과정을 먼저 설명하고, 실제 도식·핵심 강조·모든 예제/복습의 해야 할 일과 답 형식을 제공합니다. 관찰 가능한 범위와 고쳐 쓸 문장·조건을 명시합니다. 기존 공개 초기판과 이번 개정의 검증·병합·배포·공개 확인을 구분하며, 레슨 수·ID·URL·기록 키와 챕터 2 콘텐츠는 유지합니다.
+현재 챕터 3 「명령은 어떻게 실행되는가」·챕터 4 「시간과 자원을 나누기」·챕터 5 「네트워크로 연결하기」의 새 15레슨(`cs-l011`~`cs-l025`)·75예제·30복습을 구현하고 로컬 검증을 완료했습니다. 기존 챕터 1~2의 콘텐츠와 ID·URL·기록은 유지합니다. 현재 소스는 CS 5챕터·25레슨·125예제·50복습, 전체 157레슨·24개 과정 키이며 현재 공개된 CS 2챕터·142레슨·21개 과정 키와 구분합니다. 새 세 챕터의 구현·로컬 검증은 완료했으며 main 병합·Pages 배포·공개 확인은 아직 하지 않았습니다.
+
+앞선 작업에서 챕터 1의 5레슨·25예제·10복습을 초보자가 따라가기 쉽게 개정하고 로컬 검증을 완료했습니다. 이번 개정은 [PR #29](https://github.com/jihoon380462/academy/pull/29)로 main에 병합했고 SHA `5d0210c`의 [Pages 실행](https://github.com/jihoon380462/academy/actions/runs/43028002455)이 성공했습니다. 공개 PC·모바일 확인을 완료했습니다. 용어 정의와 작은 작동 예·중간 과정을 먼저 설명하고, 실제 도식·핵심 강조·모든 예제/복습의 해야 할 일과 답 형식을 제공합니다. 관찰 가능한 범위와 고쳐 쓸 문장·조건을 명시합니다. 기존 공개 초기판과 이번 개정의 검증·병합·배포·공개 확인을 구분하며, 레슨 수·ID·URL·기록 키와 챕터 2 콘텐츠는 유지합니다.
 
 [과목 문서](docs/curriculum/cs.md)의 챕터 1 「컴퓨터를 설명하는 층」 초기판을 구현했습니다. [PR #25](https://github.com/jihoon380462/academy/pull/25)로 main에 병합했고 SHA `593de2a`의 [Pages 실행](https://github.com/jihoon380462/academy/actions/runs/43016086263) 성공과 공개 PC·모바일 화면 확인을 완료했습니다. 특별한 프로그래밍 선행 없이 작은 학습 메모 사례로 입력·처리·출력·저장, 하드웨어·운영체제·응용 프로그램의 책임, 추상화·인터페이스, 프로그램·데이터, 상태 변화를 설명합니다.
 
 - 개정판의 main 병합·Pages 배포·공개 확인을 마친 챕터 1: `cs-l001`~`cs-l005`의 5레슨·25예제·10복습
-- main 병합·Pages 배포를 마친 챕터 2 「데이터를 비트로 표현하기」: `cs-l006`~`cs-l010`의 5레슨·25예제·10복습. 두 챕터를 합친 현재 소스는 10레슨·50예제·20복습
-- 챕터 2의 실제 도식(cells/flow/table), 핵심 강조·문항 안내 방식을 챕터 1에도 적용하는 개정. 챕터 1~2의 모든 예제·복습에 해야 할 일과 답 형식을 명시
+- main 병합·Pages 배포를 마친 챕터 2 「데이터를 비트로 표현하기」: `cs-l006`~`cs-l010`의 5레슨·25예제·10복습. 당시 두 챕터를 합친 소스는 10레슨·50예제·20복습
+- 새 챕터 3~5에도 기존 실제 도식(cells/flow/table), 핵심 강조·문항 안내 방식을 유지. 챕터 1~5의 모든 예제·복습에 해야 할 일과 답 형식을 명시
 - 자기 말로 설명·역할 구분·작은 흐름 추적을 연습하는 세로 문제 목록과 접힌 예시 답·해설
 - 분야 홈·접힌 챕터 목차·레슨·복습·내 학습과 읽음·최근 레슨 연결
-- `academy-cs-ch01-v1`·`academy-cs-ch02-v1`에 챕터별로 독립 기록하며 파일·복사 코드 옮기기에 포함. 챕터 2 추가 전 20개 과정 키·테마를 보존하고 챕터 2가 없는 옛 자료를 가져와도 현재 챕터 2 원문 기록을 지우지 않음
+- `academy-cs-ch01-v1`~`academy-cs-ch05-v1`에 챕터별로 독립 기록하며 파일·복사 코드 옮기기에 포함하는 구성. 기존 21개 과정 키·테마를 보존하고 이전 21개 과정 자료에 챕터 3~5가 없으면 현재 해당 챕터 원문 기록을 지우거나 다시 쓰지 않음
 - 텍스트·도식은 읽기 자료이며 코드 실행·자동 채점·점수를 제공하지 않음
 
-원본은 `content/cs/ch01/`·`ch02/`이며 [콘텐츠 형식](content/cs/SCHEMA.md)에 따라 `python3 build-cs.py`로 `cs-content.js`를 생성하고 `python3 build-cs.py --check`로 구조·생성물 일치를 확인합니다. `window.CS_COURSES`와 `window.CS_CH01`을 제공하며 `cs-ui.js`가 화면을 렌더합니다. 챕터 2는 main 병합·Pages 배포를 완료했고 공개 PC·모바일 확인을 완료했습니다. 챕터 3~9는 설계만 완료했습니다. 챕터 1의 공개 이력과 새 챕터 2의 실제 검증 결과·main 병합·Pages 배포·공개 확인은 [verification.md](verification.md)에서 구분합니다.
+원본은 `content/cs/ch01/`~`ch05/`이며 [콘텐츠 형식](content/cs/SCHEMA.md)에 따라 `python3 build-cs.py`로 `cs-content.js`를 생성하고 `python3 build-cs.py --check`로 구조·생성물 일치를 확인합니다. `window.CS_COURSES`와 `window.CS_CH01`을 제공하며 `cs-ui.js`가 화면을 렌더합니다. 챕터 2는 main 병합·Pages 배포를 완료했고 공개 PC·모바일 확인을 완료했습니다. 챕터 3~5는 구현·로컬 검증을 완료했으며 챕터 6~9는 설계만 완료했습니다. 챕터 1의 공개 이력과 새 챕터 2의 실제 검증 결과·main 병합·Pages 배포·공개 확인은 [verification.md](verification.md)에서 구분합니다.
 
 ## 알고리즘·자료구조 과정 구성
 
@@ -165,7 +167,8 @@ node tests/progress-transfer-ui.test.cjs
 | `cs-ui.js` | CS 분야·목차·레슨·복습·학습 기록 화면 |
 | `cs-content.js` | CS 콘텐츠 생성 묶음 |
 | `content/cs/ch01/` | CS 챕터 1의 메타데이터·5레슨·25예제·10복습 원본 |
-| `content/cs/ch02/` | 로컬 검증을 마친 CS 챕터 2의 메타데이터·5레슨·25예제·10복습 원본 |
+| `content/cs/ch02/` | CS 챕터 2의 메타데이터·5레슨·25예제·10복습 원본 |
+| `content/cs/ch03/`~`ch05/` | 로컬 검증을 마친 CS 챕터 3~5의 메타데이터·15레슨·75예제·30복습 원본 |
 | `content/cs/SCHEMA.md` | CS 텍스트 도식·레슨·문제의 데이터 형식 |
 | `build-cs.py` | CS 구조·ID·수량 검사와 묶음 생성 |
 | `content/algorithms/ch01/` | 알고리즘 챕터 1의 원본·6레슨·30예제·10복습 |
@@ -206,7 +209,7 @@ node tests/progress-transfer-ui.test.cjs
 | `build-python.py` | 파이썬 구조 검사, 선택적 코드 실행 검사, 묶음 생성 |
 | `python-content.js` | `window.PYTHON_COURSES`의 아홉 챕터 콘텐츠 묶음, 자동 생성 |
 | `preview.html` | PC·모바일 화면 비교 |
-| `previews/` | 과목 홈페이지와 기존 중1 화면 캡처 |
+| `previews/` | 과목별 PC·모바일 검증 화면 캡처 |
 | `verification.md` | 검증 범위와 알려진 제약 |
 
 수학 JSON 콘텐츠를 수정한 뒤 아래 명령으로 `curriculum.js`를 다시 생성합니다.
@@ -271,6 +274,9 @@ node --check app.js
 - `#/cs/ch02`: CS 챕터 2 목차
 - `#/cs/ch02/lesson/cs-l006`: CS 챕터 2 첫 레슨 (`cs-l010`까지)
 - `#/cs/ch02/review`: CS 챕터 2 복습
+- `#/cs/ch03` · `#/cs/ch03/lesson/cs-l011` · `#/cs/ch03/review`: 로컬 검증을 마친 챕터 3 목차·첫 레슨(`cs-l015`까지)·복습
+- `#/cs/ch04` · `#/cs/ch04/lesson/cs-l016` · `#/cs/ch04/review`: 로컬 검증을 마친 챕터 4 목차·첫 레슨(`cs-l020`까지)·복습
+- `#/cs/ch05` · `#/cs/ch05/lesson/cs-l021` · `#/cs/ch05/review`: 로컬 검증을 마친 챕터 5 목차·첫 레슨(`cs-l025`까지)·복습
 - `#/subjects/algorithms`: 알고리즘·자료구조 분야 홈
 - `#/algorithms/ch01`: 알고리즘 챕터 1 목차
 - `#/algorithms/ch01/lesson/algorithms-l001`: 알고리즘 첫 레슨 (`algorithms-l006`까지)
@@ -294,7 +300,7 @@ node --check app.js
 
 ## 학습 기록
 
-기존 수학 저장 키(`understand-math-grade1-v1`)와 수학의 예제·복습 점수 기능을 유지합니다. 파이썬은 `academy-python-ch01-v1`·`academy-python-ch02-v1`·`academy-python-ch03-v1`·`academy-python-ch04-v1`·`academy-python-ch05-v1`·`academy-python-ch06-v1`·`academy-python-ch07-v1`·`academy-python-ch08-v1`·`academy-python-ch09-v1`에 챕터별 읽음 표시와 최근 레슨을 따로 기록합니다. 파이썬의 이전 버전에서 저장한 유효한 `scores` 데이터는 삭제하지 않지만 표시하거나 새로 채점하지 않습니다. 알고리즘 챕터 1~9의 읽음·최근 레슨은 `academy-algorithms-ch01-v1`·`academy-algorithms-ch02-v1`·`academy-algorithms-ch03-v1`·`academy-algorithms-ch04-v1`·`academy-algorithms-ch05-v1`·`academy-algorithms-ch06-v1`·`academy-algorithms-ch07-v1`·`academy-algorithms-ch08-v1`·`academy-algorithms-ch09-v1`에 각각 따로 저장하며 점수를 새로 기록하지 않습니다. CS 챕터 1은 `academy-cs-ch01-v1`, 이번 챕터 2는 `academy-cs-ch02-v1`에 읽음·최근 레슨을 따로 저장하는 구성입니다. 현재 소스는 전체 21개 과정 키를 사용하며 챕터 2 추가 전 20개 키를 보존합니다. 챕터 2가 없는 이전 기록 자료를 가져와도 현재 해당 챕터 원문 기록을 지우지 않습니다. 새 챕터를 추가해도 기존 모든 파이썬 챕터·알고리즘·수학 기록과 테마 설정은 유지합니다.
+기존 수학 저장 키(`understand-math-grade1-v1`)와 수학의 예제·복습 점수 기능을 유지합니다. 파이썬은 `academy-python-ch01-v1`·`academy-python-ch02-v1`·`academy-python-ch03-v1`·`academy-python-ch04-v1`·`academy-python-ch05-v1`·`academy-python-ch06-v1`·`academy-python-ch07-v1`·`academy-python-ch08-v1`·`academy-python-ch09-v1`에 챕터별 읽음 표시와 최근 레슨을 따로 기록합니다. 파이썬의 이전 버전에서 저장한 유효한 `scores` 데이터는 삭제하지 않지만 표시하거나 새로 채점하지 않습니다. 알고리즘 챕터 1~9의 읽음·최근 레슨은 `academy-algorithms-ch01-v1`·`academy-algorithms-ch02-v1`·`academy-algorithms-ch03-v1`·`academy-algorithms-ch04-v1`·`academy-algorithms-ch05-v1`·`academy-algorithms-ch06-v1`·`academy-algorithms-ch07-v1`·`academy-algorithms-ch08-v1`·`academy-algorithms-ch09-v1`에 각각 따로 저장하며 점수를 새로 기록하지 않습니다. CS는 `academy-cs-ch01-v1`~`academy-cs-ch05-v1`에 읽음·최근 레슨을 챕터별로 따로 저장하는 구성입니다. 현재 공개의 21개 과정 키를 유지하고 새 챕터 3~5의 키 3개를 더하는 전체 24개 과정 키가 작업 범위입니다. 이전 21개 과정 자료에 새 챕터 3~5가 없으면 현재 해당 챕터 원문 기록을 지우거나 다시 쓰지 않습니다. 새 챕터를 추가해도 기존 모든 파이썬 챕터·알고리즘·수학 기록과 테마 설정은 유지합니다.
 
 학습 기록은 현재 브라우저의 `localStorage`에 저장됩니다. **기록은 이 브라우저에 저장되며, 설정에서 다른 기기로 옮길 수 있습니다.** 계정이나 서버 저장소를 사용하지 않고, 사이트가 기록을 서버로 보내지 않습니다. 기기 간 자동 동기화는 없으며 다른 브라우저·도메인으로 접속해도 기록이 자동으로 나타나지 않습니다.
 
