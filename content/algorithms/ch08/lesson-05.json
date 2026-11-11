@@ -30,17 +30,17 @@
       }
     },
     {
-      "title": "작은 금액부터 채우는 이유와 사용 횟수를 구별합니다",
+      "title": "양의 동전이면 작은 금액의 답이 먼저 준비됩니다",
       "body": [
         "동전 c가 양수이므로 x-c<x입니다. 따라서 금액을 1부터 A까지 오름차순으로 채우면 필요한 이전 칸이 이미 완성되어 있습니다. 동전 종류는 모든 금액에서 다시 사용할 수 있으므로 이 전이는 무제한 사용 문제입니다. 0 동전을 넣으면 자기 칸에 의존하고 음수 동전이면 더 큰 금액을 참조할 수 있어 이번 설계를 적용하지 않습니다.",
-        "각 동전을 한 번만 사용하는 0/1 문제에는 같은 전이를 아무 순서로나 적용하면 안 됩니다. 1차원 표를 쓴다면 동전을 바깥 반복으로 하나씩 처리하고, 금액은 A에서 해당 동전까지 내림차순으로 갱신해야 같은 동전을 이번 단계에 재사용하지 않습니다. 동전 바깥·금액 오름차순이면 방금 갱신한 칸을 다시 써 무제한 사용이 됩니다. 단순히 어느 반복 하나를 뒤집는다는 암기보다 칸이 어느 단계의 답인지 확인합니다."
+        "이 레슨에서는 동전 종류를 무제한으로 사용합니다. 예를 들어 종류 [2]로 금액 4를 만들 때 같은 종류를 두 번 써도 되므로 best[4]=best[2]+1=2가 맞습니다. 각 위치를 한 번만 사용하는 문제는 다음 레슨 ‘0/1 DP(동적 계획법)의 단계와 갱신 순서’에서 이전 단계와 다음 단계의 표를 나누어 배웁니다."
       ]
     },
     {
       "title": "상태 수와 각 상태의 작업으로 비용을 셉니다",
       "body": [
         "A+1개 칸과 각 칸의 k종 동전 검사를 상수 정수 연산 모델에서 세면, 표 초기화를 포함한 시간은 O((A+1)(k+1)), 보조 표 공간은 O(A+1)입니다. 이전 Recursion(재귀)과 달리 호출 스택이 금액만큼 늘어나지 않습니다. 다만 금액 숫자 A가 매우 크면 표 자체가 커집니다. A의 자릿수가 아니라 A개의 상태를 채우는 비용임을 구별합니다.",
-        "아래 코드는 입력을 바꾸지 않고 최소 개수 또는 None만 반환합니다. 실제 조합이 필요하면 어떤 동전에서 갱신했는지도 저장해야 하며 다음 레슨에서 다룹니다. 답 숫자를 구했다는 것과 사용할 목록까지 복원했다는 것은 다른 결과입니다."
+        "아래 코드는 입력을 바꾸지 않고 최소 개수 또는 None만 반환합니다. 실제 조합이 필요하면 어떤 동전에서 갱신했는지도 저장해야 하며, 뒤의 ‘방법 선택과 결과 복원’ 레슨에서 다룹니다. 답 숫자를 구했다는 것과 사용할 목록까지 복원했다는 것은 다른 결과입니다."
       ],
       "code": {
         "kind": "python",
@@ -65,13 +65,13 @@
     "answer": "최소 개수는 3입니다. 각 칸이 정확한 금액의 최솟값이라는 뜻과 불가능 초기값, 오름차순 계산이 함께 맞습니다."
   },
   "misconception": {
-    "question": "최솟값 표를 전부 0으로 시작하거나, 한 번만 쓰는 동전에도 같은 오름차순 갱신을 쓰면 되나요?",
-    "answer": "0은 그 금액을 동전 없이 만들 수 있다는 잘못된 뜻이 되어 불가능한 상태가 후보에 섞입니다. 또 동전 바깥·금액 오름차순은 이번 동전으로 갱신한 칸을 다시 써 무제한 사용을 허용합니다. 0/1 문제는 단계의 의미를 구분하고, 1차원 표에서는 동전 바깥·금액 내림차순으로 이전 단계 값을 사용합니다."
+    "question": "표의 모든 칸을 0으로 시작하거나, 도달 불가능한 칸을 동전 0개짜리 답처럼 사용해도 되나요?",
+    "answer": "0개 동전으로 만들 수 있는 금액은 0뿐입니다. 나머지 칸은 불가능 표시로 시작하고, 이전 칸이 가능한 경우에만 동전 하나를 붙여 후보를 만듭니다. 이 레슨의 동전 종류는 무제한 사용이므로 작은 금액에서 사용한 종류를 현재 금액에서도 다시 사용할 수 있습니다."
   },
   "keypoints": [
     "상태는 정확한 부분 문제의 답이며 초기값·불가능 표시·함수 반환 의미를 맞춥니다.",
     "가능한 마지막 선택을 떼어 더 작은 답에서 후보를 만들고, 필요한 답이 먼저 계산되는 순서를 정합니다.",
-    "무제한과 0/1 사용 제한은 다른 문제이며 표 갱신 순서·시간·공간·금액 규모를 함께 확인합니다."
+    "무제한 동전 종류를 작은 금액마다 다시 검사하며 상태 수·상태별 작업·표 공간과 금액 규모를 함께 확인합니다."
   ],
   "examples": [
     {
@@ -81,7 +81,11 @@
       "solution": {
         "answer": "0개로 가능한 금액은 0뿐이라 나머지는 불가능으로 시작해야 합니다. 양수 c에 대해 x-c<x이므로 작은 금액부터 채우면 전이에 필요한 이전 답이 준비됩니다."
       },
-      "explanation": "상태 의미·초기값·전이·계산 순서를 한 약속으로 맞춥니다."
+      "explanation": "상태 의미·초기값·전이·계산 순서를 한 약속으로 맞춥니다.",
+      "related": [
+        "algorithms-l047",
+        "algorithms-l056"
+      ]
     },
     {
       "skill": "무제한 최소 동전 표",
@@ -116,20 +120,23 @@
       "explanation": "반환 범위를 모든 금액으로 넓히면 표 의미를 직접 검사할 수 있습니다. 숫자 0과 불가능 None을 섞지 않습니다."
     },
     {
-      "skill": "0/1 동전의 반복 순서",
+      "skill": "반환 조건 변경 · 동전 개수 한도",
       "exerciseType": "implement",
-      "question": "once_min_dp(values, amount) 함수를 직접 작성하세요. values는 양의 정수 동전 목록이고 중복 값도 별도 위치입니다. 각 위치를 한 번만 써 0 이상 amount를 만드는 최소 개수 또는 None을 반환하세요. 동전 바깥 반복·금액 내림차순의 1차원 표를 사용합니다. 빈 입력 목표 0은 0, 양수는 None이며 입력은 불변입니다. 제시한 확인 사례와 경계 조건을 함께 검증하세요.",
-      "code": "확인 입력 → 반환값\nonce_min_dp([2], 4) → None\nonce_min_dp([2, 2], 4) → 2\nonce_min_dp([2, 3], 5) → 2\nonce_min_dp([], 0) → 0",
+      "question": "within_coin_budget(coins, amount, budget) 함수를 직접 작성하세요. coins는 서로 다른 양의 정수 종류이며 각 종류를 무제한 사용합니다. 0 이상 정수 amount를 budget개 이하의 동전으로 정확히 만들 수 있는지 bool을 반환하세요. budget도 0 이상 정수입니다. 앞에서 배운 금액별 최소 개수 표를 만들고 마지막 칸이 가능한지와 개수 한도를 확인합니다. 목표 0은 budget=0도 True, 빈 종류의 양수 목표는 False이며 입력은 바꾸지 않습니다. 제시한 확인 사례와 경계 조건을 함께 검증하세요.",
+      "code": "확인 입력 → 반환값\nwithin_coin_budget([2, 3], 7, 2) → False\nwithin_coin_budget([2, 3], 7, 3) → True\nwithin_coin_budget([4], 6, 9) → False\nwithin_coin_budget([], 0, 0) → True",
       "codeKind": "text",
       "solution": {
-        "answer": "입력·반환 계약과 경계 조건을 만족하는 구현 한 가지입니다.",
+        "answer": "정확한 금액의 최소 개수를 구한 뒤 불가능 여부와 budget 이하인지 검사합니다. 최소 개수가 한도보다 크면 그보다 적은 개수의 다른 조합도 없습니다.",
         "code": {
           "kind": "python",
-          "source": "def once_min_dp(values, amount):\n    infinity = float(\"inf\")\n    best = [infinity] * (amount + 1)\n    best[0] = 0\n    for coin in values:\n        for value in range(amount, coin - 1, -1):\n            if best[value - coin] != infinity:\n                candidate = best[value - coin] + 1\n                if candidate < best[value]:\n                    best[value] = candidate\n    return None if best[amount] == infinity else best[amount]\n\nprint(once_min_dp([2], 4))\nprint(once_min_dp([2, 2], 4))\nprint(once_min_dp([2, 3], 5))\nprint(once_min_dp([], 0))",
-          "output": "None\n2\n2\n0\n"
+          "source": "def within_coin_budget(coins, amount, budget):\n    infinity = float(\"inf\")\n    best = [infinity] * (amount + 1)\n    best[0] = 0\n    for value in range(1, amount + 1):\n        for coin in coins:\n            if coin <= value and best[value - coin] != infinity:\n                candidate = best[value - coin] + 1\n                if candidate < best[value]:\n                    best[value] = candidate\n    return best[amount] != infinity and best[amount] <= budget\n\nprint(within_coin_budget([2, 3], 7, 2))\nprint(within_coin_budget([2, 3], 7, 3))\nprint(within_coin_budget([4], 6, 9))\nprint(within_coin_budget([], 0, 0))",
+          "output": "False\nTrue\nFalse\nTrue\n"
         }
       },
-      "explanation": "내림차순은 이번 동전으로 방금 갱신한 작은 칸을 같은 단계에서 다시 쓰지 않게 합니다. 무제한 사용과 입력 종류가 다릅니다."
+      "explanation": "문제의 반환 조건만 바뀌며 best[x]의 뜻과 무제한 전이는 그대로입니다. 불가능을 뜻하는 무한대를 0개로 취급하지 않고, 금액 0의 빈 조합은 정상 결과로 처리합니다.",
+      "related": [
+        "algorithms-l047"
+      ]
     },
     {
       "skill": "만들 수 있는 금액 목록",

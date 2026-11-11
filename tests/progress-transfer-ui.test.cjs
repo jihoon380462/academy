@@ -7,7 +7,7 @@ const { test } = require('node:test');
 const source = fs.readFileSync(path.join(__dirname, '..', 'transfer-ui.js'), 'utf8');
 
 // Exercise the real UI handlers; the engine has its own data/storage tests.
-function ui({ importFails = false } = {}) {
+function ui({ importFails = false, total = 132 } = {}) {
   const elements = new Map(), copies = [], imported = [];
   function element(selector) {
     if (!elements.has(selector)) elements.set(selector, {
@@ -27,7 +27,7 @@ function ui({ importFails = false } = {}) {
     encode(snapshot) { return 'ACADEMY1.request-' + snapshot.sequence; },
     parse() { return { theme: 'light' }; },
     summary() {
-      return { completed: 3, total: 130, mathCompleted: 1, pythonCompleted: 0, algorithmsCompleted: 2,
+      return { completed: 3, total, mathCompleted: 1, pythonCompleted: 0, algorithmsCompleted: 2,
         scoreCount: 0, exportedAt: '2026-11-10T00:00:00.000Z' };
     },
     apply() {
@@ -65,11 +65,17 @@ test('late clipboard completion preserves the successful import announcement', a
   assert.equal(view.status.focused, true);
 });
 
-test('the preview identifies algorithms separately from Python and includes the expanded total', () => {
-  const view = ui();
-  view.click('preview');
-  assert.match(view.element('[data-transfer-summary]').textContent, /읽음 3 \/ 130개 · 수학 1개 · 파이썬 0개 · 알고리즘·자료구조 2개/);
-  assert.equal(view.imported.length, 0);
+test('the preview identifies algorithms separately and displays the engine supplied total', () => {
+  // This handler fixture does not load the catalog; real totals belong to engine/browser tests.
+  for (const [total, expected] of [
+    [130, /읽음 3 \/ 130개 · 수학 1개 · 파이썬 0개 · 알고리즘·자료구조 2개/],
+    [132, /읽음 3 \/ 132개 · 수학 1개 · 파이썬 0개 · 알고리즘·자료구조 2개/]
+  ]) {
+    const view = ui({ total });
+    view.click('preview');
+    assert.match(view.element('[data-transfer-summary]').textContent, expected);
+    assert.equal(view.imported.length, 0);
+  }
 });
 
 test('late clipboard completion preserves an import failure and its retry preview', async () => {

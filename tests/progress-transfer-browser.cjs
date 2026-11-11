@@ -12,6 +12,19 @@ const BASE = (process.env.ACADEMY_BASE_URL || 'http://127.0.0.1:8000').replace(/
 const MATH = 'understand-math-grade1-v1';
 const ALGORITHMS = 'academy-algorithms-ch01-v1';
 const algorithmKeys = Array.from({ length: 9 }, (_, index) => 'academy-algorithms-ch' + String(index + 1).padStart(2, '0') + '-v1');
+const algorithmLessonIds = [
+  [1, 2, 3, 4, 5, 6],
+  [7, 8, 9, 10, 11, 12],
+  [13, 55, 14, 15, 16, 17, 18],
+  [19, 20, 21, 22, 23, 24],
+  [25, 26, 27, 28, 29, 30, 31],
+  [32, 33, 34, 35, 36],
+  [37, 38, 39, 40, 41, 42],
+  [43, 44, 45, 46, 47, 56, 48],
+  [49, 50, 51, 52, 53, 54]
+].map(numbers => numbers.map(number => 'algorithms-l' + String(number).padStart(3, '0')));
+const algorithmReadSamples = Object.fromEntries(algorithmKeys.map((key, index) => [key, algorithmLessonIds[index].slice(0, 3)]));
+algorithmReadSamples[algorithmKeys[7]] = ['algorithms-l047', 'algorithms-l056', 'algorithms-l048'];
 const THEME = 'academy-theme-v1';
 const OTHER = 'transfer-test-unrelated';
 const checks = [], errors = [];
@@ -44,8 +57,9 @@ async function records(page) { return (await page.evaluate(() => window.AcademyP
 async function expectMerged(page, fixture, theme) {
   const actual = await records(page);
   for (const [key, ids] of Object.entries(fixture.ids)) {
-    assert.deepEqual([...actual[key].completed].sort(), ids.slice(0, 3).sort(), key + ': read union');
-    assert.equal(actual[key].last, ids[1], key + ': newest lesson');
+    const samples = algorithmReadSamples[key] || ids.slice(0, 3);
+    assert.deepEqual([...actual[key].completed].sort(), [...samples].sort(), key + ': read union');
+    assert.equal(actual[key].last, samples[1], key + ': newest lesson');
     assert.equal(actual[key].visitedAt, fixture.source[key].visitedAt, key + ': timestamp retained');
   }
   assert.deepEqual(actual[MATH].scores[fixture.ids[MATH][0]], { latest: 3, best: 5, date: fixture.newDate });
@@ -73,14 +87,15 @@ function watch(page) { page.on('pageerror', error => errors.push(error.message))
     Object.defineProperty(navigator, 'clipboard', { configurable: true, value: { writeText: async () => { throw new DOMException('Denied', 'NotAllowedError'); } } });
   });
   const pc = await pcContext.newPage(); watch(pc); await settings(pc);
-  const fixture = await pc.evaluate(() => {
+  const fixture = await pc.evaluate(samples => {
     const ids = { 'understand-math-grade1-v1': window.CURRICULUM.lessons.map(lesson => lesson.id) };
     for (const course of window.PYTHON_COURSES) ids['academy-python-' + course.slug + '-v1'] = course.lessons.map(lesson => lesson.id);
     for (const course of window.ALGORITHMS_COURSES) ids['academy-algorithms-' + course.slug + '-v1'] = course.lessons.map(lesson => lesson.id);
     const source = {}, local = {}, time = Date.parse('2026-11-01T10:00:00.000Z');
     for (const [index, [key, values]] of Object.entries(ids).entries()) {
-      source[key] = { completed: values.slice(0, 2), scores: {}, last: values[1], visitedAt: time + 10000 + index };
-      local[key] = { completed: [values[0], values[2]], scores: {}, last: values[2], visitedAt: time + index };
+      const selected = samples[key] || values.slice(0, 3);
+      source[key] = { completed: selected.slice(0, 2), scores: {}, last: selected[1], visitedAt: time + 10000 + index };
+      local[key] = { completed: [selected[0], selected[2]], scores: {}, last: selected[2], visitedAt: time + index };
     }
     const oldDate = '2026-10-01T10:00:00.000Z', newDate = '2026-11-01T10:00:00.000Z';
     const math = 'understand-math-grade1-v1', py = 'academy-python-ch01-v1';
@@ -91,14 +106,17 @@ function watch(page) { page.on('pageerror', error => errors.push(error.message))
     source[py].scores[ids[py][0]] = { latest: 2, best: 4, date: newDate };
     local[py].scores[ids[py][0]] = { latest: 1, best: 5, date: oldDate };
     return { ids, source, local, newDate };
-  });
+  }, algorithmReadSamples);
   assert.equal(Object.keys(fixture.ids).length, 19);
+  assert.deepEqual(algorithmKeys.map(key => fixture.ids[key]), algorithmLessonIds, 'the real catalog uses the approved insertion order');
   await seed(pc, fixture.source, 'glass');
   const captured = await pc.evaluate(() => window.AcademyProgressTransfer.capture());
   const summary = await pc.evaluate(() => window.AcademyProgressTransfer.summary(window.AcademyProgressTransfer.capture()));
-  assert.equal(summary.total, 130);
+  assert.equal(summary.total, 132);
   assert.equal(summary.pythonCompleted, 18);
   assert.equal(summary.algorithmsCompleted, 18);
+  assert.deepEqual(captured.records[algorithmKeys[2]].completed, ['algorithms-l013', 'algorithms-l055']);
+  assert.deepEqual(captured.records[algorithmKeys[7]].completed, ['algorithms-l047', 'algorithms-l056']);
   const downloadPromise = pc.waitForEvent('download');
   await pc.locator('[data-transfer-download]').click();
   const download = await downloadPromise;
@@ -129,7 +147,7 @@ function watch(page) { page.on('pageerror', error => errors.push(error.message))
   await mobile.locator('.py-progress:not(.algo-progress)').first().waitFor();
   assert.equal(await mobile.locator('.py-progress:not(.algo-progress)').count(), 9);
   assert.equal(await mobile.locator('.algo-progress').count(), 9);
-  for (const [index, panel] of (await mobile.locator('.algo-progress').all()).entries()) assert.match(await panel.innerText(), new RegExp('3\\s*\\/\\s*' + fixture.ids[algorithmKeys[index]].length));
+  for (const [index, panel] of (await mobile.locator('.algo-progress').all()).entries()) assert.match(await panel.innerText(), new RegExp('3\\s*\\/\\s*' + algorithmLessonIds[index].length));
   assert.match(await mobile.locator('.py-progress:not(.algo-progress)').first().locator('.py-reading-count').innerText(), /3\s*\/\s*5/);
   assert.equal(await mobile.locator('.py-progress:not(.algo-progress)').first().getByText(/최고|최근 결과|점수/).count(), 0);
   await mobile.reload();
@@ -162,6 +180,29 @@ function watch(page) { page.on('pageerror', error => errors.push(error.message))
     for (const key of algorithmKeys.slice(count - 10)) assert.equal(after[key], prior[key], 'old ' + count + '-course files preserve omitted algorithms state ' + key);
   }
   passed('Old ten/eleven/thirteen/fifteen-course files preserve omitted algorithms chapters');
+
+  const legacyFull = JSON.parse(JSON.stringify(captured));
+  for (const [key, newId, oldLast] of [
+    [algorithmKeys[2], 'algorithms-l055', 'algorithms-l013'],
+    [algorithmKeys[7], 'algorithms-l056', 'algorithms-l047']
+  ]) {
+    legacyFull.records[key].completed = legacyFull.records[key].completed.filter(id => id !== newId);
+    legacyFull.records[key].last = oldLast;
+    legacyFull.records[key].visitedAt = 1;
+  }
+  assert.equal(Object.keys(legacyFull.records).length, 19);
+  const beforeLegacyFull = await snapshot(mobile);
+  await preview(mobile, JSON.stringify(legacyFull));
+  assert.match(await mobile.locator('[data-transfer-summary]').innerText(), /알고리즘·자료구조 16개/);
+  assert.deepEqual(await snapshot(mobile), beforeLegacyFull, 'old full-file preview does not change new reads');
+  await mobile.locator('[data-transfer-confirm]').click();
+  assert.deepEqual(await snapshot(mobile), beforeLegacyFull, 'older files with the same nineteen stores preserve both inserted lessons and recent visits');
+  for (const [key, newId] of [[algorithmKeys[2], 'algorithms-l055'], [algorithmKeys[7], 'algorithms-l056']]) {
+    const record = (await records(mobile))[key];
+    assert.ok(record.completed.includes(newId));
+    assert.equal(record.last, newId);
+  }
+  passed('New prerequisite IDs survive file/code round trips and an older nineteen-course file without new IDs');
 
   before = await snapshot(mobile);
   await preview(mobile, exportCode);

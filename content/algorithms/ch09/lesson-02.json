@@ -36,8 +36,31 @@
       "title": "포인터가 되돌아가지 않아 누적 이동 수가 제한됩니다",
       "body": [
         "오른쪽 위치는 각 원소를 한 번 추가합니다. left도 증가만 하므로 각 원소는 많아야 한 번 제거됩니다. while이 for 안에 있어도 제거 횟수 전체는 n을 넘지 않아 총 O(n)입니다. 목록을 이미 보유하고 정수 연산을 상수로 세면 포인터와 합의 추가 공간은 O(1)입니다.",
-        "이 함수는 조건을 만족하는 구간 하나를 반환합니다. 최단 구간이나 모든 정답 구간을 찾는다는 약속은 하지 않습니다. 그런 요구라면 동률·빈 구간·0이 여러 개일 때까지 포함해 별도 절차를 설계해야 합니다."
+        "앞의 함수는 합이 정확히 같은 구간 하나를 처음 찾으면 반환합니다. 길이를 고정하거나 최소 길이를 찾는 요구에서는 무엇을 갱신하고 언제 멈출지 달라집니다. 다음 두 설명에서 그 차이를 작은 구간으로 먼저 확인합니다."
       ]
+    },
+    {
+      "title": "고정 길이에서는 들어올 위치와 빠질 위치가 정해집니다",
+      "body": [
+        "정확히 width개인 모든 연속 구간을 확인할 때는 합이 크고 작은 것으로 왼쪽을 정하지 않습니다. 오른쪽 위치 right의 값을 더한 뒤, 이미 width개가 있던 경우에는 위치 right-width의 값을 뺍니다. 길이가 정해져 빠질 원소가 하나로 결정되므로 음수도 허용할 수 있습니다.",
+        "width=2인 [4, -1, 2]에서 처음 완성된 [0, 2)의 합은 3입니다. 다음 2를 더하고 빠질 위치 0의 값 4를 빼면 [1, 3)의 합 1이 됩니다. 첫 완성 시점은 right=width-1이고, 그 뒤 구간의 시작 위치는 right-width+1입니다. width가 입력보다 크면 완성된 구간이 없습니다."
+      ],
+      "code": {
+        "kind": "text",
+        "source": "width=2, values=[4,-1,2]\nright=0: 4 추가 → 아직 1개, 완성 전\nright=1: -1 추가 → [0,2), 합 3, 첫 완성\nright=2: 2 추가 → 잠시 합 5\n         right-width=0의 4 제거 → [1,3), 합 1"
+      }
+    },
+    {
+      "title": "최소 길이는 같은 오른쪽 끝에서 더 줄여 봅니다",
+      "body": [
+        "이번에는 모든 원소와 target이 양수이고, 합이 target 이상인 구간의 최소 길이를 구합니다. left·right·total에 지금까지 확인한 유효 구간의 최소 길이 best를 더합니다. 아직 유효 구간을 못 찾았으면 best는 None입니다. 정확한 합 하나를 찾던 방식과 달리, 합이 충분한 순간 반환하지 않습니다.",
+        "오른쪽 원소를 더한 뒤 total이 target 이상인 동안 현재 길이 right-left+1로 best를 갱신하고 왼쪽 값을 뺍니다. 뺀 뒤에도 충분하면 같은 right에서 다시 갱신하고 줄입니다. 아래에서 right=2를 그대로 둔 채 길이 3과 2를 차례로 확인하는 것이 핵심입니다.",
+        "양수 원소를 빼면 합이 줄어듭니다. 충분한 동안 차례로 줄이면 같은 오른쪽 끝에서 가능한 더 짧은 후보를 확인하고, 부족해진 뒤에는 더 줄여도 성공하지 못하므로 다음 오른쪽 원소를 기다립니다. 이미 제거한 왼쪽을 이후 더 먼 오른쪽과 묶은 구간은 앞서 기록한 유효 구간보다 길어 최솟값을 개선할 수 없습니다. 이 근거로 왼쪽을 되돌리지 않아도 됩니다."
+      ],
+      "code": {
+        "kind": "text",
+        "source": "values=[2,1,3,2], target=4, best=None\nright  현재 구간   합   할 일                     best\n0      [0,1)     2    부족하므로 다음 원소       None\n1      [0,2)     3    부족하므로 다음 원소       None\n2      [0,3)     6    길이 3 기록, 왼쪽 2 제거  3\n2      [1,3)     4    길이 2 기록, 왼쪽 1 제거  2\n2      [2,3)     3    부족하므로 다음 원소       2\n3      [2,4)     5    길이 2 확인, 왼쪽 3 제거  2\n3      [3,4)     2    부족, 입력도 끝            2\n최소 길이 2 반환. 유효 구간이 끝까지 없으면 None 반환."
+      }
     },
     {
       "title": "음수에서는 같은 버리는 근거를 쓸 수 없습니다",
@@ -133,17 +156,17 @@
       "exerciseType": "implement",
       "skill": "변형 구현 · 양수의 최소 길이",
       "question": "양의 정수 목록과 양의 target에서 합이 target 이상인 비어 있지 않은 구간의 최소 길이를 반환하는 min_positive_window_length(values,target)를 작성하세요. 없거나 입력이 비면 None이며 입력은 유지합니다. 합이 충분한 동안 답을 갱신하고 왼쪽을 더 줄여 보세요.",
-      "code": "values / target → 반환값\n[2,1,3] / 4 → 2\n[5] / 4 → 1\n[1,1] / 3 → None\n[] / 1 → None",
+      "code": "values / target → 반환값\n[2,1,3,2] / 4 → 2 (같은 right에서 길이 3, 2를 차례로 확인)\n[5] / 4 → 1\n[1,1] / 3 → None\n[] / 1 → None",
       "codeKind": "text",
       "solution": {
         "answer": "충분한 합을 찾은 첫 순간에 끝내지 않고 같은 오른쪽 끝에서 더 짧게 만들 수 있는지 확인합니다.",
         "code": {
           "kind": "python",
-          "source": "def min_positive_window_length(values, target):\n    left = 0\n    total = 0\n    best = None\n    for right, value in enumerate(values):\n        total += value\n        while left <= right and total >= target:\n            length = right - left + 1\n            if best is None or length < best:\n                best = length\n            total -= values[left]\n            left += 1\n    return best\n\nprint(min_positive_window_length([2, 1, 3], 4))\nprint(min_positive_window_length([5], 4))\nprint(min_positive_window_length([1, 1], 3))\nprint(min_positive_window_length([], 1))",
+          "source": "def min_positive_window_length(values, target):\n    left = 0\n    total = 0\n    best = None\n    for right, value in enumerate(values):\n        total += value\n        while left <= right and total >= target:\n            length = right - left + 1\n            if best is None or length < best:\n                best = length\n            total -= values[left]\n            left += 1\n    return best\n\nprint(min_positive_window_length([2, 1, 3, 2], 4))\nprint(min_positive_window_length([5], 4))\nprint(min_positive_window_length([1, 1], 3))\nprint(min_positive_window_length([], 1))",
           "output": "2\n1\nNone\nNone\n"
         }
       },
-      "explanation": "정확히 같은 합 하나를 찾는 앞 문제와 달리 임계값 이상인 최소 길이 계약입니다. 모든 값과 target이 양수라는 조건 아래 왼쪽 제거가 합을 줄이므로 이 반복의 근거가 성립합니다."
+      "explanation": "정확히 같은 합 하나를 찾는 앞 문제와 달리 임계값 이상인 최소 길이 계약입니다. 본문의 상태표처럼 같은 right에서 충분한 동안 best를 갱신하고 줄입니다. 양수 조건 덕분에 부족해지면 더 줄여도 성공하지 못하며, 이미 기록한 구간을 더 길게 늘릴 필요도 없습니다."
     }
   ]
 }

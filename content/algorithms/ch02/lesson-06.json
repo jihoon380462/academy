@@ -12,7 +12,8 @@
       "body": [
         "동적 배열은 실제 원소 개수와 담을 수 있는 칸 수인 용량을 구분합니다. 여기서는 빈 상태·용량 1에서 시작하고, 가득 찼을 때만 용량을 정확히 두 배로 늘리는 이론 모델을 사용합니다. 새 원소를 맨 뒤에 추가하는 작업만 하며 삭제는 하지 않습니다.",
         "한 원소를 새 칸에 쓰는 비용과 기존 원소 한 개를 새 공간으로 옮기는 비용을 각각 1로 셉니다. 빈 칸이 있으면 새 원소 쓰기 1회입니다. 원소가 n개 들어 있고 용량이 꽉 찼다면 n개를 옮기고 새 원소를 써서 n+1회가 됩니다. 그 한 번의 비용은 현재 원소 수에 비례합니다.",
-        "이것은 확장 전략을 이해하기 위한 모델이며 CPython 리스트의 실제 용량 증가율이나 정확한 시간 약속이 아닙니다. 메모리 할당·관리 등의 실제 비용을 숫자 1로 모두 표현한 것도 아닙니다. 용량만큼 초기화하는 비용까지 세는 모델에서도 두 배 용량들의 합은 같은 선형 성장으로 묶이지만 상수는 달라집니다."
+        "이것은 확장 전략을 이해하기 위한 모델이며 CPython 리스트의 실제 용량 증가율이나 정확한 시간 약속이 아닙니다. 메모리 할당·관리 등의 실제 비용을 숫자 1로 모두 표현한 것도 아닙니다. 용량만큼 초기화하는 비용까지 세는 모델에서도 두 배 용량들의 합은 같은 선형 성장으로 묶이지만 상수는 달라집니다.",
+        "이 레슨에서는 원소를 담을 목록을 직접 만들지 않고 원소 수·용량·비용을 나타내는 숫자만 바꿉니다. 가득 찼으면 이동 수에 현재 원소 수를 더하고 용량을 바꾼 뒤, 새 원소 쓰기 1회를 셉니다. 실제 칸을 만들고 값을 복사하는 구현은 다음 챕터의 동적 배열 레슨에서 단계별로 다룹니다."
       ],
       "code": {
         "kind": "text",
@@ -82,51 +83,51 @@
     },
     {
       "exerciseType": "implement",
-      "skill": "구현 · 두 배 확장 버퍼",
-      "question": "doubling_append_costs(count)를 직접 구현하세요. count는 0 이상 정수입니다. 용량 1의 빈 교육용 버퍼에서 0부터 count-1까지 차례로 저장하고, 가득 차면 두 배 목록을 만들어 기존 값을 실제로 복사하세요. 각 추가의 (기존 원소 이동 수+새 원소 쓰기 1) 비용 목록을 반환합니다. count=0이면 []입니다. 새 빈 칸 초기화·할당은 이 비용 단위에 포함하지 않습니다. 입력 자료는 변경하지 않습니다. 함수의 결과는 반환하며, 아래 확인 호출의 기대 반환값과 비교하세요.",
+      "skill": "구현 · 숫자 상태로 두 배 확장 비용 계산",
+      "question": "doubling_append_costs(count)를 직접 구현하세요. count는 0 이상 정수입니다. 원소 수 0·용량 1에서 count번 추가한다고 할 때, 각 추가의 (기존 원소 이동 수+새 원소 쓰기 1) 비용을 새 목록으로 반환합니다. 추가 직전 원소 수와 용량이 같으면 이번 이동 수는 현재 원소 수이고 용량을 두 배로 바꾸며, 그 외 이동 수는 0입니다. 그 뒤 원소 수를 1 늘립니다. 실제 저장 버퍼를 만들거나 원소를 복사하지 말고 숫자 상태만 갱신하세요. count=0이면 []입니다. 빈 칸 초기화·할당은 비용에서 제외하며 입력을 변경하지 않습니다. 아래 사례로 직접 작성한 함수를 확인하세요.",
       "code": "확인 호출 → 기대 반환값\ndoubling_append_costs(0) → []\ndoubling_append_costs(1) → [1]\ndoubling_append_costs(5) → [1, 2, 3, 1, 5]\ndoubling_append_costs(9) → [1, 2, 3, 1, 5, 1, 1, 1, 9]",
       "codeKind": "text",
       "solution": {
-        "answer": "다음은 계약을 만족하는 구현 한 가지입니다. 확인 호출의 결과뿐 아니라 입력 경계와 변수의 의미도 비교하세요.",
+        "answer": "size와 capacity를 분리하고, 추가 직전 가득 찬 경우에만 moved=size로 셉니다. 새 값 쓰기 비용 1을 더해 이번 비용을 기록합니다.",
         "code": {
           "kind": "python",
-          "source": "def doubling_append_costs(count):\n    storage = [None]\n    size = 0\n    costs = []\n    for item in range(count):\n        moved = 0\n        if size == len(storage):\n            larger = [None] * (2 * len(storage))\n            for i in range(size):\n                larger[i] = storage[i]\n                moved += 1\n            storage = larger\n            del larger\n        storage[size] = item\n        size += 1\n        costs.append(moved + 1)\n    return costs\n\nprint(doubling_append_costs(0))\nprint(doubling_append_costs(1))\nprint(doubling_append_costs(5))\nprint(doubling_append_costs(9))\n",
+          "source": "def doubling_append_costs(count):\n    size = 0\n    capacity = 1\n    costs = []\n    for _ in range(count):\n        moved = 0\n        if size == capacity:\n            moved = size\n            capacity *= 2\n        size += 1\n        costs.append(moved + 1)\n    return costs\n\nprint(doubling_append_costs(0))\nprint(doubling_append_costs(1))\nprint(doubling_append_costs(5))\nprint(doubling_append_costs(9))\n",
           "output": "[]\n[1]\n[1, 2, 3, 1, 5]\n[1, 2, 3, 1, 5, 1, 1, 1, 9]\n"
         }
       },
-      "explanation": "교육용 모델의 확장·복사·쓰기 절차를 구현한 것입니다. 버퍼가 가득 찬 직후가 아니라, 다음 원소를 추가할 빈칸이 필요할 때 확장합니다. CPython list의 실제 용량 증가 규칙을 재현하거나 실행 시간을 측정한 결과는 아닙니다."
+      "explanation": "본문의 숫자 추적을 함수로 옮긴 것입니다. 실제 복사 없이도 약속한 모델의 비용을 계산할 수 있습니다. size를 먼저 늘리면 확장 판단 시점과 옮길 기존 원소 수가 달라지므로, 확장 판단 뒤에 원소 수를 늘립니다. 비용 목록은 실제 시간이나 CPython 내부 관측값이 아닙니다."
     },
     {
       "exerciseType": "implement",
-      "skill": "구현 · 한 칸 확장 정책 대조",
-      "question": "single_step_growth(count)를 직접 구현하세요. count는 0 이상 정수입니다. 용량 1의 빈 교육용 버퍼에 count개를 저장하되 가득 차면 새 용량을 한 칸만 늘려 실제로 기존 값을 복사합니다. (총 이동 수, 새 원소 쓰기 수, 둘의 합)을 반환하고 count=0이면 (0, 0, 0)입니다. 초기화·할당은 비용에서 제외합니다. 입력 자료는 변경하지 않습니다. 함수의 결과는 반환하며, 아래 확인 호출의 기대 반환값과 비교하세요.",
+      "skill": "구현 · 숫자 상태로 한 칸 확장 정책 대조",
+      "question": "single_step_growth(count)를 직접 구현하세요. count는 0 이상 정수입니다. 원소 수 0·용량 1에서 count번 추가하되, 추가 직전 가득 차면 현재 원소 수만큼 이동 비용을 더하고 용량을 한 칸만 늘립니다. 매 추가의 새 원소 쓰기는 1회입니다. (총 이동 수, 새 원소 쓰기 수, 둘의 합)을 반환하고 count=0이면 (0, 0, 0)입니다. 실제 저장 버퍼·복사 없이 원소 수·용량·비용의 숫자 상태만 갱신하세요. 초기화·할당은 비용에서 제외하며 입력은 변경하지 않습니다. 아래 사례로 확인하세요.",
       "code": "확인 호출 → 기대 반환값\nsingle_step_growth(0) → (0, 0, 0)\nsingle_step_growth(1) → (0, 1, 1)\nsingle_step_growth(5) → (10, 5, 15)",
       "codeKind": "text",
       "solution": {
-        "answer": "다음은 계약을 만족하는 구현 한 가지입니다. 확인 호출의 결과뿐 아니라 입력 경계와 변수의 의미도 비교하세요.",
+        "answer": "두 배 확장과 같은 숫자 상태를 유지하되, 가득 찼을 때 capacity를 1만 늘립니다. 이동 수와 새 원소 쓰기 수는 따로 누적해 반환합니다.",
         "code": {
           "kind": "python",
-          "source": "def single_step_growth(count):\n    storage = [None]\n    size = 0\n    moves = 0\n    writes = 0\n    for item in range(count):\n        if size == len(storage):\n            larger = [None] * (len(storage) + 1)\n            for i in range(size):\n                larger[i] = storage[i]\n                moves += 1\n            storage = larger\n            del larger\n        storage[size] = item\n        size += 1\n        writes += 1\n    return moves, writes, moves + writes\n\nprint(single_step_growth(0))\nprint(single_step_growth(1))\nprint(single_step_growth(5))\n",
+          "source": "def single_step_growth(count):\n    size = 0\n    capacity = 1\n    moves = 0\n    writes = 0\n    for _ in range(count):\n        if size == capacity:\n            moves += size\n            capacity += 1\n        size += 1\n        writes += 1\n    return moves, writes, moves + writes\n\nprint(single_step_growth(0))\nprint(single_step_growth(1))\nprint(single_step_growth(5))\n",
           "output": "(0, 0, 0)\n(0, 1, 1)\n(10, 5, 15)\n"
         }
       },
-      "explanation": "추가할 때마다 직전 자료를 자주 옮기게 됩니다. 두 배 확장과 같은 반환 계약을 비교하더라도 정책이 다르면 이동 합과 분할 상환 비용이 달라집니다."
+      "explanation": "실제 칸을 복사하는 방법을 새로 설계하지 않고 확장 정책 하나를 바꾸어 비교합니다. 원소 수 1·2·3·4에서 차례로 확장하므로 5번 추가의 이동 합은 1+2+3+4=10이고 쓰기는 5입니다. 다른 정책에는 두 배 확장의 분할 상환 결론을 그대로 붙이지 않습니다."
     },
     {
       "exerciseType": "implement",
-      "skill": "구현 · 초기 자료가 있는 추가",
-      "question": "append_from_state(size, capacity, added)를 직접 구현하세요. capacity는 양수이고 size·added는 0 이상 정수이며 size≤capacity입니다. 용량 capacity에 size개가 이미 있는 버퍼를 준비한 뒤, added개를 더 저장하며 가득 차면 두 배로 확장해 복사합니다. 초기 준비 비용은 제외하고 (최종 원소 수, 최종 용량, 이후 이동·쓰기 총비용)을 반환하세요. added=0의 비용은 0입니다. 입력 자료는 변경하지 않습니다. 함수의 결과는 반환하며, 아래 확인 호출의 기대 반환값과 비교하세요.",
+      "skill": "구현 · 시작 상태가 다른 비용 계산",
+      "question": "append_from_state(size, capacity, added)를 직접 구현하세요. capacity는 양수이고 size·added는 0 이상 정수이며 size≤capacity입니다. 이미 원소 수 size·용량 capacity인 상태에서 added번 더 추가합니다. 매 추가 직전 가득 차면 현재 원소 수만큼 이동 비용을 더하고 용량을 두 배로 바꾼 뒤, 원소 수와 새 값 쓰기 비용을 각각 1 늘리세요. (최종 원소 수, 최종 용량, 이후 이동·쓰기 총비용)을 반환합니다. 실제 버퍼나 초기 원소를 만들지 말고 숫자 상태만 다룹니다. 초기 상태를 준비한 비용은 제외하며 added=0의 비용은 0입니다. 입력 자료는 변경하지 않습니다. 아래 사례로 확인하세요.",
       "code": "확인 호출 → 기대 반환값\nappend_from_state(4, 4, 1) → (5, 8, 5)\nappend_from_state(2, 4, 2) → (4, 4, 2)\nappend_from_state(0, 1, 0) → (0, 1, 0)",
       "codeKind": "text",
       "solution": {
-        "answer": "다음은 계약을 만족하는 구현 한 가지입니다. 확인 호출의 결과뿐 아니라 입력 경계와 변수의 의미도 비교하세요.",
+        "answer": "매개변수의 size·capacity를 시작 상태로 사용하고 cost만 0으로 초기화합니다. 이후 추가들에 대한 이동·쓰기만 누적합니다.",
         "code": {
           "kind": "python",
-          "source": "def append_from_state(size, capacity, added):\n    storage = [None] * capacity\n    for i in range(size):\n        storage[i] = i\n    cost = 0\n    for offset in range(added):\n        if size == len(storage):\n            larger = [None] * (2 * len(storage))\n            for i in range(size):\n                larger[i] = storage[i]\n                cost += 1\n            storage = larger\n            del larger\n        storage[size] = size\n        size += 1\n        cost += 1\n    return size, len(storage), cost\n\nprint(append_from_state(4, 4, 1))\nprint(append_from_state(2, 4, 2))\nprint(append_from_state(0, 1, 0))\n",
+          "source": "def append_from_state(size, capacity, added):\n    cost = 0\n    for _ in range(added):\n        if size == capacity:\n            cost += size\n            capacity *= 2\n        size += 1\n        cost += 1\n    return size, capacity, cost\n\nprint(append_from_state(4, 4, 1))\nprint(append_from_state(2, 4, 2))\nprint(append_from_state(0, 1, 0))\n",
           "output": "(5, 8, 5)\n(4, 4, 2)\n(0, 1, 0)\n"
         }
       },
-      "explanation": "계산 시작 상태를 바꾸면 추가 한 번의 비용이 달라집니다. 이미 가득 찬 상태에서의 확장 비용을 빈 배열에서 시작한 긴 연산열의 분할 상환 상수와 혼동하지 않습니다. 새 칸 초기화 비용은 이 모델의 이동·쓰기 집계에서 제외합니다."
+      "explanation": "앞 문제의 갱신 규칙을 유지하면서 계산 시작점만 바꿉니다. 이미 가득 찬 상태의 추가 한 번은 큰 이동 비용을 가질 수 있습니다. 빈 상태부터 긴 연산열을 계산한 분할 상환 상수와, 초기 준비를 제외한 한 번의 비용을 혼동하지 않습니다."
     },
     {
       "exerciseType": "implement",

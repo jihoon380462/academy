@@ -1,6 +1,6 @@
 {
   "id": "algorithms-l016",
-  "order": 4,
+  "order": 5,
   "title": "스택과 되돌리기",
   "subtitle": "가장 나중에 쌓은 것을 먼저 꺼내, 중첩된 작업을 거꾸로 되짚습니다.",
   "minutes": 13,

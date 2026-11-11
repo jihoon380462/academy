@@ -1,6 +1,6 @@
 {
   "id": "algorithms-l015",
-  "order": 3,
+  "order": 4,
   "title": "삽입과 삭제의 위치",
   "subtitle": "위치를 찾는 일과, 찾은 뒤 바꾸는 일을 함께 세기",
   "minutes": 18,
@@ -52,6 +52,33 @@
         "kind": "text",
         "source": "빈 상태: head = 없음, tail = 없음\n첫 노드 X를 앞에 넣기\n    X.next ← head\n    head ← X\n    tail이 없음이면 tail ← X\n상태: head → X → 없음, tail → X\n\n머리 X 삭제\n    head ← head.next\n    head가 없음이면 tail ← 없음\n상태: head = 없음, tail = 없음",
         "caption": "머리 삭제는 비어 있지 않을 때만 실행합니다. 빈 상태의 삭제 요청은 먼저 계약에 따라 처리합니다."
+      }
+    },
+    {
+      "title": "첫 일치를 찾을 때 이전 노드와 현재 노드를 함께 움직입니다",
+      "body": [
+        "값이 처음 일치하는 노드를 지우려면 node는 지금 비교할 노드, previous는 그 바로 앞 노드로 둡니다. 시작은 node=head, previous=None입니다. previous가 None이라는 것은 현재 후보가 머리라서 앞 노드가 없다는 뜻입니다. 값이 다르면 먼저 previous=node로 현재 노드를 기억한 뒤 node=node.next로 이동합니다. 순서를 바꿔 이전 노드까지 한 칸 앞서가지 않도록 합니다.",
+        "A(1) → B(2) → C(2)에서 2를 찾으면 A를 지난 뒤 previous=A, node=B입니다. B가 일치하므로 previous.next를 node.next인 C로 바꿉니다. head는 A 그대로이고 A → C가 남습니다. B의 값을 바꾸지 않으므로 살아남은 A와 C는 원래 노드입니다. 첫 일치 하나만 지우는 계약이므로 여기서 성공을 반환하고 C는 더 검사하지 않습니다.",
+        "머리 A(2)가 첫 일치라면 previous는 None입니다. 바꿀 앞 노드의 next가 없으므로 node.next를 새 head로 반환합니다. 호출자는 반환받은 head를 사용해야 합니다. 한 노드만 있었다면 새 head는 None이 됩니다. 이번 예제 함수는 tail을 따로 관리하지 않으므로 head와 노드 연결만 갱신합니다.",
+        "빈 연결에서는 node가 처음부터 None이어서 검사 없이 실패합니다. 끝까지 일치가 없어도 어떤 next도 바꾸지 않은 원래 head와 실패를 반환합니다. 검색 중에는 이름 previous와 node만 옮기고, 실제로 일치한 순간에만 head 또는 이전 노드의 연결을 바꿉니다."
+      ],
+      "code": {
+        "kind": "text",
+        "source": "중간 첫 일치: head → A(1) → B(2) → C(2) → None, target=2\n비교할 때    previous    node    할 일\n처음        None        A       1은 다름\n이동        A           B       previous를 A에 둔 뒤 node를 B로 이동\n첫 일치     A           B       A.next를 C로 바꾸고 즉시 성공 반환\n결과        head → A(1) → C(2) → None\n\n머리 첫 일치: head → A(2) → B(1) → C(2) → None, target=2\n첫 일치     None        A       앞 노드가 없으므로 새 head로 B를 반환\n반환할 시작점은 node.next인 B이며 첫 일치에서 즉시 종료\n결과        새 head → B(1) → C(2) → None\n\n호출자는 (새 head, 제거 여부)를 받아 head를 갱신한다.",
+        "caption": "노드 이름 A·B·C와 저장값 1·2를 구분합니다. 두 결과 모두 뒤의 두 번째 2 노드를 그대로 남깁니다."
+      }
+    },
+    {
+      "title": "연결 예제는 같은 준비 코드로 확인합니다",
+      "body": [
+        "예제 4~5에는 앞 레슨의 Node·make_chain·chain_values를 그대로 사용합니다. 아래 코드를 PC 파일 위쪽에 두고 그 아래에 요청한 삽입·삭제 함수를 작성하세요. 준비 도구를 다시 구현하는 과제가 아닙니다. make_chain은 원래 순서의 새 연결을 만들고, chain_values는 연결을 바꾸지 않고 순서만 확인합니다.",
+        "make_chain은 입력을 뒤에서부터 읽으며 노드를 head 앞에 붙이는 도구입니다. 직접 추적할 핵심은 도구 내부가 아니라, 요청한 함수가 어느 노드까지 찾아가 어떤 next 또는 head를 바꾸는지입니다. 함수 호출 뒤 반환받은 새 head를 사용해 chain_values로 결과를 확인하고, 다음 사례는 make_chain으로 새로 준비하세요."
+      ],
+      "code": {
+        "kind": "python",
+        "source": "class Node:\n    def __init__(self, value, next=None):\n        self.value = value\n        self.next = next\n\ndef make_chain(values):\n    head = None\n    for value in reversed(values):\n        head = Node(value, head)\n    return head\n\ndef chain_values(head):\n    result = []\n    while head is not None:\n        result.append(head.value)\n        head = head.next\n    return result\n\nhead = make_chain([1, 2, 2])\nprint(chain_values(head))\nprint(chain_values(make_chain([])))",
+        "output": "[1, 2, 2]\n[]\n",
+        "caption": "읽기 전용 준비 도구입니다. 직접 작성할 핵심 함수는 linked_insert_at과 linked_remove_first이며 전체 예시 풀이는 문제마다 접혀 있습니다."
       }
     }
   ],
@@ -156,7 +183,7 @@
           "output": "[] False\n[1, 2] True\n[1, 2] True\n[1] False\n"
         }
       },
-      "explanation": "머리 삭제와 중간 삭제의 갱신 대상을 구분합니다. first 계약이므로 처음 삭제한 뒤 끝내고 나머지 같은 값은 보존합니다."
+      "explanation": "본문의 previous/node 추적처럼 머리 삭제와 중간 삭제의 갱신 대상을 구분합니다. 첫 일치에서 성공을 반환하므로 뒤의 같은 값은 보존합니다. 호출자는 반환받은 새 head로 이후 연결을 읽습니다."
     }
   ]
 }

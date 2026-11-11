@@ -1,6 +1,6 @@
 {
   "id": "algorithms-l018",
-  "order": 6,
+  "order": 7,
   "title": "ADT(추상 자료형)와 구현",
   "subtitle": "어떤 동작을 약속할지와, 그 약속을 어떤 저장 방법으로 지킬지 나눕니다.",
   "minutes": 14,

@@ -22,7 +22,7 @@
 | 01 | 수학 | 중학교 1학년 과정 학습 가능 |
 | 02 | 파이썬 | 기초 9챕터·46레슨 구현, 챕터 7~9 로컬 검증·PR #6 병합·Pages 배포·공개 화면 확인 완료. 확인 범위는 검증 기록 참고 |
 | 03 | C++/# | 준비 중 |
-| 04 | 알고리즘·자료구조 | 챕터 1~9 · 54레슨·270예제·90복습 구성 완료. 병합·공개 배포는 검증 기록과 구분 |
+| 04 | 알고리즘·자료구조 | 챕터 1~9 · 56레슨·280예제·90복습 구현. 학습 단계 보완은 작업 브랜치 기준. 병합·공개 배포는 검증 기록과 구분 |
 | 05 | CS | 준비 중 |
 | 06 | 운영체제 | 준비 중 |
 | 07 | 디버깅·테스트 | 준비 중 |
@@ -42,7 +42,7 @@
 | 21 | GitHub | 준비 중 |
 | 22 | vim | 준비 중 |
 
-현재 소스에는 수학·파이썬·알고리즘·자료구조의 **3개 분야 · 총 130개 레슨**이 구현되어 있습니다. 수학 30레슨·파이썬 46레슨·알고리즘 54레슨이며, 나머지 19개 분야는 준비 중입니다. 알고리즘 챕터 1은 PR #10, 챕터 2·3은 [PR #11](https://github.com/jihoon380462/academy/pull/11)로 main에 병합했고, 병합 SHA `4c85004`의 [Pages 배포](https://github.com/jihoon380462/academy/actions/runs/42775841237)가 성공했고 공개 브라우저에서 새 챕터와 기록 이동을 확인했습니다. 실제 확인 범위와 소스는 검증 기록으로 구분합니다. 챕터 4·5도 [PR #15](https://github.com/jihoon380462/academy/pull/15)로 main에 병합했고 SHA `91e4e82`의 [Pages 배포](https://github.com/jihoon380462/academy/actions/runs/42835323465)와 공개 브라우저 확인을 완료했습니다. 챕터 6~9의 23레슨도 [PR #17](https://github.com/jihoon380462/academy/pull/17)로 main에 병합했고 SHA `3966739`의 [Pages 배포](https://github.com/jihoon380462/academy/actions/runs/42840665951)와 공개 브라우저 확인을 완료했습니다. 파이썬 기초와 파이썬 실전, 터미널·Git과 GitHub 등은 각각 별도의 분야로 구분합니다. 실제 배포·화면 검증 기록은 [verification.md](verification.md)를 확인합니다.
+현재 소스에는 수학·파이썬·알고리즘·자료구조의 **3개 분야 · 총 132개 레슨**이 구현되어 있습니다. 수학 30레슨·파이썬 46레슨·알고리즘 56레슨이며, 나머지 19개 분야는 준비 중입니다. 알고리즘 챕터 1은 PR #10, 챕터 2·3은 [PR #11](https://github.com/jihoon380462/academy/pull/11)로 main에 병합했고, 병합 SHA `4c85004`의 [Pages 배포](https://github.com/jihoon380462/academy/actions/runs/42775841237)가 성공했고 공개 브라우저에서 새 챕터와 기록 이동을 확인했습니다. 실제 확인 범위와 소스는 검증 기록으로 구분합니다. 챕터 4·5도 [PR #15](https://github.com/jihoon380462/academy/pull/15)로 main에 병합했고 SHA `91e4e82`의 [Pages 배포](https://github.com/jihoon380462/academy/actions/runs/42835323465)와 공개 브라우저 확인을 완료했습니다. 챕터 6~9의 23레슨도 [PR #17](https://github.com/jihoon380462/academy/pull/17)로 main에 병합했고 SHA `3966739`의 [Pages 배포](https://github.com/jihoon380462/academy/actions/runs/42840665951)와 공개 브라우저 확인을 완료했습니다. 파이썬 기초와 파이썬 실전, 터미널·Git과 GitHub 등은 각각 별도의 분야로 구분합니다. 실제 배포·화면 검증 기록은 [verification.md](verification.md)를 확인합니다.
 
 ## 수학 과정 구성
 
@@ -61,18 +61,18 @@
 
 레슨의 예제는 1번에서 핵심 개념을 설명하고, 중요한 개념은 2번까지 설명합니다. 나머지는 함수의 입력·반환 조건과 확인 사례를 보고 알고리즘을 직접 작성·실행하는 문제입니다. 예시 구현과 출력은 접힌 풀이에서 확인합니다. 전체 54레슨의 설명 55개·직접 구현 215개 개편은 [PR #19](https://github.com/jihoon380462/academy/pull/19)로 main에 병합했고 해당 코드의 Pages 배포·공개 PC/모바일 확인을 완료했습니다. 정확한 소스와 검증 범위는 `verification.md`에 구분합니다.
 
-[과목 문서](docs/curriculum/algorithms.md)의 9챕터·54레슨 설계 중 **전체 9챕터 · 54레슨·270예제·90복습**을 구현했습니다. 설계된 9개 챕터를 모두 구현했으며 추가 집필은 사용자 요청에 따릅니다. 6~9챕터까지 main 병합·Pages 배포·공개 PC·모바일 브라우저 확인을 완료했으며 정확한 소스와 확인 범위는 검증 기록을 따릅니다.
+[과목 문서](docs/curriculum/algorithms.md)의 **전체 9챕터 · 56레슨·280예제·90복습**을 현재 소스에 구현했습니다. [학습 단계 보완](docs/ALGORITHMS-PROGRESSION.md)에 따라 동적 배열 실습 l055와 0/1 DP l056을 추가하고 연결 리스트·검색·트리·BFS·DP·윈도우의 발판을 보완했습니다. 기존 ID·URL·저장 키와 예제/복습 수량을 유지합니다. 기존 54레슨의 main 병합·Pages 배포·공개 확인 기록과 이번 작업 브랜치 구현·로컬 검증은 구분하며 정확한 상태는 검증 기록을 따릅니다.
 
 - 챕터 1 ‘문제를 절차로 바꾸기’ (`algorithms-l001`~`algorithms-l006`): 계약·제약·작은 사례·반례·불변식·종료와 경계
 - 챕터 2 ‘시간과 공간을 세는 법’ (`algorithms-l007`~`algorithms-l012`): 연산 수·성장률·반복 비용·경우별 비용·추가 공간·분할 상환과 측정
-- 챕터 3 ‘순서를 저장하는 구조’ (`algorithms-l013`~`algorithms-l018`): 배열·연결 리스트·삽입과 삭제·스택·큐/덱·추상 자료형
+- 챕터 3 ‘순서를 저장하는 구조’ (`algorithms-l013` → `algorithms-l055` → `algorithms-l014`~`algorithms-l018`): 배열·확장 직접 구현·연결 리스트·삽입과 삭제·스택·큐/덱·추상 자료형
 - 챕터 4 ‘키로 찾는 집합과 맵’ (`algorithms-l019`~`algorithms-l024`): 집합·맵·해시·충돌·부하율·키의 동일성·중복 제거/빈도표
 - 챕터 5 ‘정렬하고 찾기’ (`algorithms-l025`~`algorithms-l031`): 선형/이진 탐색·경계 위치·선택/삽입 정렬·재귀·병합 정렬·정렬 키와 안정성
 - 챕터 6 ‘트리와 우선순위’ (`algorithms-l032`~`algorithms-l036`): 트리 구조·순회·탐색 트리·힙·상위 항목 선택
 - 챕터 7 ‘관계를 그래프로 다루기’ (`algorithms-l037`~`algorithms-l042`): 그래프 표현·DFS/BFS·순환과 위상 정렬·다익스트라·비용
-- 챕터 8 ‘문제를 나누는 전략’ (`algorithms-l043`~`algorithms-l048`): 완전 탐색·백트래킹·탐욕·메모이제이션·동적 계획법·결과 복원
+- 챕터 8 ‘문제를 나누는 전략’ (`algorithms-l043`~`algorithms-l047` → `algorithms-l056` → `algorithms-l048`): 완전 탐색·백트래킹·탐욕·메모이제이션·동적 계획법·결과 복원
 - 챕터 9 ‘실제 데이터 처리에 적용하기’ (`algorithms-l049`~`algorithms-l054`): 누적값·두 포인터·문자열·스트리밍·캐시·두 해법 선택 보고서
-- 챕터 5는 7레슨·35예제, 챕터 6은 5레슨·25예제이며 나머지 7챕터는 각각 6레슨·30예제입니다. 모든 챕터에 복습 10개와 관련 레슨 연결을 둡니다. 레슨마다 원리 설명·의사코드·추적·작동 예시·오개념·핵심 정리·예제 5개를 제공합니다.
+- 챕터 3·5·8은 각각 7레슨·35예제, 챕터 6은 5레슨·25예제이며 나머지 5챕터는 각각 6레슨·30예제입니다. 모든 챕터에 복습 10개와 관련 레슨 연결을 둡니다. 레슨마다 원리 설명·의사코드·추적·작동 예시·오개념·핵심 정리·예제 5개를 제공합니다.
 - 손으로 명세·상태·비용을 적고 Python 구현은 PC에서 직접 실행합니다. 예시 답·해설은 접혀 있으며 사이트 내부 실행·자동 채점·점수는 제공하지 않습니다.
 - 읽음·최근 레슨은 `academy-algorithms-ch01-v1`·`academy-algorithms-ch02-v1`·`academy-algorithms-ch03-v1`·`academy-algorithms-ch04-v1`·`academy-algorithms-ch05-v1`·`academy-algorithms-ch06-v1`·`academy-algorithms-ch07-v1`·`academy-algorithms-ch08-v1`·`academy-algorithms-ch09-v1`에 각각 저장하며 내 학습과 파일·복사 코드 옮기기에 포함합니다. 이전 10개/11개/13개/15개 과정만 든 자료를 가져와도 새 챕터 기록은 지우지 않습니다. 새 키를 포함한 자료는 해당 챕터를 지원하는 사이트에서 가져와야 합니다.
 
@@ -147,9 +147,9 @@ node tests/progress-transfer-ui.test.cjs
 | `algorithms-ui.js` | 알고리즘 분야·목차·레슨·복습·학습 기록 화면 |
 | `algorithms-content.js` | 알고리즘 콘텐츠 생성 묶음 |
 | `content/algorithms/ch01/` | 알고리즘 챕터 1의 원본·6레슨·30예제·10복습 |
-| `content/algorithms/ch02/`·`ch03/` | 알고리즘 챕터 2·3의 원본·12레슨·60예제·20복습 |
+| `content/algorithms/ch02/`·`ch03/` | 알고리즘 챕터 2·3의 원본·13레슨·65예제·20복습 |
 | `content/algorithms/ch04/`·`ch05/` | 알고리즘 챕터 4·5의 원본·13레슨·65예제·20복습 |
-| `content/algorithms/ch06/`~`ch09/` | 알고리즘 챕터 6~9의 원본·23레슨·115예제·40복습 |
+| `content/algorithms/ch06/`~`ch09/` | 알고리즘 챕터 6~9의 원본·24레슨·120예제·40복습 |
 | `build-algorithms.py` | 알고리즘 구조·작성자 코드 검증과 묶음 생성 |
 | `subjects.js` | 학습 분야, 소개, 준비 상태, 예정 주제 |
 | `visuals.js` | 정확한 수학 SVG 도식 |
