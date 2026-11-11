@@ -7,7 +7,7 @@ const { test } = require('node:test');
 const source = fs.readFileSync(path.join(__dirname, '..', 'transfer-ui.js'), 'utf8');
 
 // Exercise the real UI handlers; the engine has its own data/storage tests.
-function ui({ importFails = false, total = 132 } = {}) {
+function ui({ importFails = false, total = 137 } = {}) {
   const elements = new Map(), copies = [], imported = [];
   function element(selector) {
     if (!elements.has(selector)) elements.set(selector, {
@@ -27,7 +27,7 @@ function ui({ importFails = false, total = 132 } = {}) {
     encode(snapshot) { return 'ACADEMY1.request-' + snapshot.sequence; },
     parse() { return { theme: 'light' }; },
     summary() {
-      return { completed: 3, total, mathCompleted: 1, pythonCompleted: 0, algorithmsCompleted: 2,
+      return { completed: 4, total, mathCompleted: 1, pythonCompleted: 0, algorithmsCompleted: 2, csCompleted: 1,
         scoreCount: 0, exportedAt: '2026-11-10T00:00:00.000Z' };
     },
     apply() {
@@ -65,11 +65,12 @@ test('late clipboard completion preserves the successful import announcement', a
   assert.equal(view.status.focused, true);
 });
 
-test('the preview identifies algorithms separately and displays the engine supplied total', () => {
+test('the preview identifies algorithms and CS separately and displays the engine supplied total', () => {
   // This handler fixture does not load the catalog; real totals belong to engine/browser tests.
   for (const [total, expected] of [
-    [130, /읽음 3 \/ 130개 · 수학 1개 · 파이썬 0개 · 알고리즘·자료구조 2개/],
-    [132, /읽음 3 \/ 132개 · 수학 1개 · 파이썬 0개 · 알고리즘·자료구조 2개/]
+    [130, /읽음 4 \/ 130개 · 수학 1개 · 파이썬 0개 · 알고리즘·자료구조 2개 · CS 1개/],
+    [132, /읽음 4 \/ 132개 · 수학 1개 · 파이썬 0개 · 알고리즘·자료구조 2개 · CS 1개/],
+    [137, /읽음 4 \/ 137개 · 수학 1개 · 파이썬 0개 · 알고리즘·자료구조 2개 · CS 1개/]
   ]) {
     const view = ui({ total });
     view.click('preview');

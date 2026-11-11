@@ -53,7 +53,7 @@
         pending = engine().parse(text);
         const s = engine().summary(pending);
         const date = new Date(s.exportedAt).toLocaleString('ko-KR', {timeZone:'Asia/Seoul'});
-        find('[data-transfer-summary]').textContent = `읽음 ${s.completed} / ${s.total}개 · 수학 ${s.mathCompleted}개 · 파이썬 ${s.pythonCompleted}개 · 알고리즘·자료구조 ${s.algorithmsCompleted}개 · 점수 기록 ${s.scoreCount}개 · 내보낸 시각 ${date} (한국 시간)`;
+        find('[data-transfer-summary]').textContent = `읽음 ${s.completed} / ${s.total}개 · 수학 ${s.mathCompleted}개 · 파이썬 ${s.pythonCompleted}개 · 알고리즘·자료구조 ${s.algorithmsCompleted}개 · CS ${s.csCompleted}개 · 점수 기록 ${s.scoreCount}개 · 내보낸 시각 ${date} (한국 시간)`;
         theme.checked = false;
         theme.disabled = !pending.theme;
         find('[data-transfer-theme]').textContent = pending.theme ? `(${themeNames[pending.theme]})` : '(포함되지 않음)';

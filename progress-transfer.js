@@ -16,6 +16,9 @@
   for (const course of window.ALGORITHMS_COURSES || []) {
     courses.set('academy-algorithms-' + (course.slug || course.id.replace('algorithms-', '')) + '-v1', course.lessons.map(lesson => lesson.id));
   }
+  for (const course of window.CS_COURSES || []) {
+    courses.set('academy-cs-' + (course.slug || course.id.replace('cs-', '')) + '-v1', course.lessons.map(lesson => lesson.id));
+  }
   const total = [...courses.values()].reduce((count, ids) => count + ids.length, 0);
   const encoder = new TextEncoder();
   const own = (object, key) => Object.prototype.hasOwnProperty.call(object, key);
@@ -211,7 +214,8 @@
     const countSubject = prefix => Object.entries(clean.records).reduce((sum, [key, record]) => sum + (key.startsWith(prefix) ? record.completed.length : 0), 0);
     const pythonCompleted = countSubject('academy-python-');
     const algorithmsCompleted = countSubject('academy-algorithms-');
-    return { completed, total, mathCompleted, pythonCompleted, algorithmsCompleted, scoreCount, exportedAt: clean.exportedAt, theme: clean.theme };
+    const csCompleted = countSubject('academy-cs-');
+    return { completed, total, mathCompleted, pythonCompleted, algorithmsCompleted, csCompleted, scoreCount, exportedAt: clean.exportedAt, theme: clean.theme };
   }
 
   function mergeState(local, incoming, ids) {
