@@ -10,6 +10,7 @@ catch { playwright = require('/opt/codex/runtimes/codex-primary-runtime/dependen
 const { chromium } = playwright;
 const BASE = (process.env.ACADEMY_BASE_URL || 'http://127.0.0.1:8000').replace(/\/$/, '');
 const MATH = 'understand-math-grade1-v1';
+const CS = 'academy-cs-ch01-v1';
 const ALGORITHMS = 'academy-algorithms-ch01-v1';
 const algorithmKeys = Array.from({ length: 9 }, (_, index) => 'academy-algorithms-ch' + String(index + 1).padStart(2, '0') + '-v1');
 const algorithmLessonIds = [
@@ -91,6 +92,7 @@ function watch(page) { page.on('pageerror', error => errors.push(error.message))
     const ids = { 'understand-math-grade1-v1': window.CURRICULUM.lessons.map(lesson => lesson.id) };
     for (const course of window.PYTHON_COURSES) ids['academy-python-' + course.slug + '-v1'] = course.lessons.map(lesson => lesson.id);
     for (const course of window.ALGORITHMS_COURSES) ids['academy-algorithms-' + course.slug + '-v1'] = course.lessons.map(lesson => lesson.id);
+    for (const course of window.CS_COURSES) ids['academy-cs-' + course.slug + '-v1'] = course.lessons.map(lesson => lesson.id);
     const source = {}, local = {}, time = Date.parse('2026-11-01T10:00:00.000Z');
     for (const [index, [key, values]] of Object.entries(ids).entries()) {
       const selected = samples[key] || values.slice(0, 3);
@@ -107,14 +109,16 @@ function watch(page) { page.on('pageerror', error => errors.push(error.message))
     local[py].scores[ids[py][0]] = { latest: 1, best: 5, date: oldDate };
     return { ids, source, local, newDate };
   }, algorithmReadSamples);
-  assert.equal(Object.keys(fixture.ids).length, 19);
+  assert.equal(Object.keys(fixture.ids).length, 20);
   assert.deepEqual(algorithmKeys.map(key => fixture.ids[key]), algorithmLessonIds, 'the real catalog uses the approved insertion order');
   await seed(pc, fixture.source, 'glass');
   const captured = await pc.evaluate(() => window.AcademyProgressTransfer.capture());
   const summary = await pc.evaluate(() => window.AcademyProgressTransfer.summary(window.AcademyProgressTransfer.capture()));
-  assert.equal(summary.total, 132);
+  assert.equal(summary.total, 137);
   assert.equal(summary.pythonCompleted, 18);
   assert.equal(summary.algorithmsCompleted, 18);
+  assert.equal(summary.csCompleted, 2);
+  assert.deepEqual(fixture.ids[CS], ['cs-l001', 'cs-l002', 'cs-l003', 'cs-l004', 'cs-l005']);
   assert.deepEqual(captured.records[algorithmKeys[2]].completed, ['algorithms-l013', 'algorithms-l055']);
   assert.deepEqual(captured.records[algorithmKeys[7]].completed, ['algorithms-l047', 'algorithms-l056']);
   const downloadPromise = pc.waitForEvent('download');
@@ -137,21 +141,23 @@ function watch(page) { page.on('pageerror', error => errors.push(error.message))
   let before = await snapshot(mobile);
   await mobile.locator('#transfer-file').setInputFiles({ name: 'academy-records.json', mimeType: 'application/json', buffer: Buffer.from(fileText) });
   await mobile.locator('[data-transfer-preview-panel]').waitFor({ state: 'visible' });
-  assert.match(await mobile.locator('[data-transfer-summary]').innerText(), /알고리즘·자료구조 18개/);
+  assert.match(await mobile.locator('[data-transfer-summary]').innerText(), /알고리즘·자료구조 18개 · CS 2개/);
   assert.deepEqual(await snapshot(mobile), before, 'file preview must not write');
   assert.equal(await mobile.locator('#transfer-include-theme').isChecked(), false);
   await mobile.locator('[data-transfer-confirm]').click();
   await mobile.waitForFunction(({ key, id }) => JSON.parse(localStorage.getItem(key)).completed.includes(id), { key: MATH, id: fixture.ids[MATH][1] });
   await expectMerged(mobile, fixture, 'forest');
   await mobile.evaluate(() => { location.hash = '#/progress'; });
-  await mobile.locator('.py-progress:not(.algo-progress)').first().waitFor();
-  assert.equal(await mobile.locator('.py-progress:not(.algo-progress)').count(), 9);
+  await mobile.locator('.py-progress:not(.algo-progress):not(.cs-progress)').first().waitFor();
+  assert.equal(await mobile.locator('.py-progress:not(.algo-progress):not(.cs-progress)').count(), 9);
   assert.equal(await mobile.locator('.algo-progress').count(), 9);
+  assert.equal(await mobile.locator('.cs-progress').count(), 1);
+  assert.match(await mobile.locator('.cs-progress .py-reading-count').innerText(), /3\s*\/\s*5/);
   for (const [index, panel] of (await mobile.locator('.algo-progress').all()).entries()) assert.match(await panel.innerText(), new RegExp('3\\s*\\/\\s*' + algorithmLessonIds[index].length));
-  assert.match(await mobile.locator('.py-progress:not(.algo-progress)').first().locator('.py-reading-count').innerText(), /3\s*\/\s*5/);
-  assert.equal(await mobile.locator('.py-progress:not(.algo-progress)').first().getByText(/최고|최근 결과|점수/).count(), 0);
+  assert.match(await mobile.locator('.py-progress:not(.algo-progress):not(.cs-progress)').first().locator('.py-reading-count').innerText(), /3\s*\/\s*5/);
+  assert.equal(await mobile.locator('.py-progress:not(.algo-progress):not(.cs-progress)').first().getByText(/최고|최근 결과|점수/).count(), 0);
   await mobile.reload();
-  await mobile.locator('.py-progress:not(.algo-progress)').first().waitFor();
+  await mobile.locator('.py-progress:not(.algo-progress):not(.cs-progress)').first().waitFor();
   await expectMerged(mobile, fixture, 'forest');
   passed('Separate mobile context: JSON file preview, merge, score preservation, same-tab state and reload');
 
@@ -169,7 +175,7 @@ function watch(page) { page.on('pageerror', error => errors.push(error.message))
   assert.deepEqual(await snapshot(mobile), once, 'repeated import must be idempotent');
   passed('Copy-code merge, explicit theme import, and repeated-import idempotence');
 
-  for (const count of [10, 11, 13, 15]) {
+  for (const count of [10, 11, 13, 15, 19]) {
     const legacyRecords = Object.fromEntries(Object.entries(captured.records).slice(0, count));
     const legacy = { ...captured, records: legacyRecords };
     const prior = await snapshot(mobile);
@@ -177,11 +183,12 @@ function watch(page) { page.on('pageerror', error => errors.push(error.message))
     assert.match(await mobile.locator('[data-transfer-summary]').innerText(), new RegExp('알고리즘·자료구조 ' + ((count - 10) * 2) + '개'));
     await mobile.locator('[data-transfer-confirm]').click();
     const after = await snapshot(mobile);
-    for (const key of algorithmKeys.slice(count - 10)) assert.equal(after[key], prior[key], 'old ' + count + '-course files preserve omitted algorithms state ' + key);
+    for (const key of [...algorithmKeys.slice(count - 10), CS]) assert.equal(after[key], prior[key], 'old ' + count + '-course files preserve omitted course state ' + key);
   }
-  passed('Old ten/eleven/thirteen/fifteen-course files preserve omitted algorithms chapters');
+  passed('Old ten/eleven/thirteen/fifteen/nineteen-course files preserve omitted algorithms and CS chapters');
 
   const legacyFull = JSON.parse(JSON.stringify(captured));
+  delete legacyFull.records[CS];
   for (const [key, newId, oldLast] of [
     [algorithmKeys[2], 'algorithms-l055', 'algorithms-l013'],
     [algorithmKeys[7], 'algorithms-l056', 'algorithms-l047']
@@ -212,7 +219,8 @@ function watch(page) { page.on('pageerror', error => errors.push(error.message))
   await mobile.locator('#transfer-import-code').fill(exportCode + '!');
   assert.ok(await mobile.locator('[data-transfer-preview-panel]').isHidden() || await mobile.locator('[data-transfer-confirm]').isDisabled(), 'editing must invalidate stale preview');
   assert.deepEqual(await snapshot(mobile), before);
-  for (const bad of ['{', 'null', '{"format":"another-app","version":1}', 'ACADEMY1.!broken']) {
+  const invalidCS = { ...captured, records: { [CS]: { completed: ['cs-l006'] } } };
+  for (const bad of ['{', 'null', '{"format":"another-app","version":1}', 'ACADEMY1.!broken', JSON.stringify(invalidCS)]) {
     await mobile.locator('#transfer-import-code').fill(bad);
     await mobile.locator('[data-transfer-preview]').click();
     assert.ok((await mobile.locator('[data-transfer-status]').innerText()).trim());
@@ -236,8 +244,8 @@ function watch(page) { page.on('pageerror', error => errors.push(error.message))
   assert.equal(await oldTab.locator('#transfer-import-code').inputValue(), pending);
   assert.ok(await oldTab.locator('#transfer-import-code').evaluate(element => element === document.activeElement));
   await oldTab.evaluate(() => { location.hash = '#/progress'; });
-  await oldTab.locator('.py-progress:not(.algo-progress)').first().waitFor();
-  assert.match(await oldTab.locator('.py-progress:not(.algo-progress)').first().locator('.py-reading-count').innerText(), /4\s*\/\s*5/);
+  await oldTab.locator('.py-progress:not(.algo-progress):not(.cs-progress)').first().waitFor();
+  assert.match(await oldTab.locator('.py-progress:not(.algo-progress):not(.cs-progress)').first().locator('.py-reading-count').innerText(), /4\s*\/\s*5/);
   await oldTab.close();
   passed('Other-tab progress updates preserve pending input/focus and refresh learning state');
 
@@ -260,7 +268,7 @@ function watch(page) { page.on('pageerror', error => errors.push(error.message))
     window.__restoreTransferStorage = () => { Storage.prototype.setItem = original; };
     let writes = 0;
     Storage.prototype.setItem = function (key, value) {
-      if (key === 'understand-math-grade1-v1' || /^academy-(?:python|algorithms)-ch\d+-v1$/.test(key)) {
+      if (key === 'understand-math-grade1-v1' || /^academy-(?:python|algorithms|cs)-ch\d+-v1$/.test(key)) {
         writes += 1;
         if (writes === 2) throw new DOMException('Injected quota failure', 'QuotaExceededError');
       }
@@ -272,8 +280,8 @@ function watch(page) { page.on('pageerror', error => errors.push(error.message))
   assert.deepEqual(await snapshot(mobile), before, 'partial write failure must restore exact original raw values');
   assert.ok((await mobile.locator('[data-transfer-status]').innerText()).trim());
   await mobile.evaluate(() => { location.hash = '#/progress'; });
-  await mobile.locator('.py-progress:not(.algo-progress)').first().waitFor();
-  assert.match(await mobile.locator('.py-progress:not(.algo-progress)').first().locator('.py-reading-count').innerText(), /2\s*\/\s*5/);
+  await mobile.locator('.py-progress:not(.algo-progress):not(.cs-progress)').first().waitFor();
+  assert.match(await mobile.locator('.py-progress:not(.algo-progress):not(.cs-progress)').first().locator('.py-reading-count').innerText(), /2\s*\/\s*5/);
   passed('Mid-import quota failure rolls back records and leaves same-tab state unchanged');
 
   await settings(mobile);

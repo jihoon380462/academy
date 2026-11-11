@@ -1,0 +1,22 @@
+{
+  "id": "cs-ch01",
+  "slug": "ch01",
+  "number": 1,
+  "title": "컴퓨터를 설명하는 층",
+  "description": "입력·처리·출력·저장과 하드웨어·운영체제·응용 프로그램을 구분하고, 작은 작업의 약속과 상태 변화를 따라갑니다.",
+  "prerequisite": "특별한 선행지식은 없습니다. 프로그래밍 경험 없이 일상적인 컴퓨터 사용 사례로 시작합니다.",
+  "runtime": "코드 실행 없이 읽고 설명하는 개념 학습",
+  "lessonFiles": [
+    "lesson-01.json",
+    "lesson-02.json",
+    "lesson-03.json",
+    "lesson-04.json",
+    "lesson-05.json"
+  ],
+  "references": [
+    {
+      "title": "ACM/IEEE-CS/AAAI CS2023 지식 영역 · 기존 과목 설계의 범위 참고",
+      "url": "https://csed.acm.org/knowledge-areas/"
+    }
+  ]
+}

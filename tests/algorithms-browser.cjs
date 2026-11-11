@@ -69,9 +69,9 @@ async function expectHash(page, hash) {
   await visit(page, '#/');
 
   assert.equal(await page.locator('.subject-card').count(), 22);
-  assert.equal(await page.locator('.subject-card.available').count(), 3);
+  assert.equal(await page.locator('.subject-card.available').count(), 4);
   const catalogTotals = await page.locator('.catalog-totals b').allTextContents();
-  assert.deepEqual(catalogTotals, ['22', '3', '132']);
+  assert.deepEqual(catalogTotals, ['22', '4', '137']);
   await page.locator('.subject-card[href="#/subjects/algorithms"]').click();
   await expectHash(page, '#/subjects/algorithms');
   const actualCourses = await page.evaluate(() => window.ALGORITHMS_COURSES.map(course => ({ slug: course.slug, ids: course.lessons.map(lesson => lesson.id) })));
