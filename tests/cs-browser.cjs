@@ -140,16 +140,14 @@ async function checkVisual(container, visual) {
     assert.equal(await hint.isVisible(), true, 'overflowing visual explains how to see its remaining cells or columns');
   }
 }
-async function checkQuestions(page, questions, requireTask) {
+async function checkQuestions(page, questions) {
   await checkRichList(page.locator('.py-problem > h3'), questions.map(question => question.question));
   await checkRichList(page.locator('.py-solution-body > p:first-child'), questions.map(question => question.solution.answer));
   await checkRichList(page.locator('.py-solution-body > p:last-of-type'), questions.map(question => question.explanation));
   for (const [index, question] of questions.entries()) {
     const problem = page.locator('.py-problem').nth(index);
-    if (requireTask) {
-      assert.ok(Array.isArray(question.instructions) && question.instructions.length > 0, 'chapter 2 question has steps');
-      assert.ok(typeof question.answerFormat === 'string' && question.answerFormat.trim(), 'chapter 2 question gives an answer format');
-    }
+    assert.ok(Array.isArray(question.instructions) && question.instructions.length > 0, 'every CS question has explicit steps');
+    assert.ok(typeof question.answerFormat === 'string' && question.answerFormat.trim(), 'every CS question gives an answer format');
     await checkTask(problem, question);
     await checkVisual(problem, question.visual);
     if (question.code) assert.equal(await problem.locator(':scope > .py-code .py-code-source code').textContent(), question.code);
@@ -170,9 +168,15 @@ async function checkQuestions(page, questions, requireTask) {
     delete chapter.expected.lessonFiles;
   }
   const lessons = chapters.flatMap(chapter => chapter.lessons);
-  const sourceVisuals = chapters[1].lessons.flatMap(lesson => [...lesson.sections.map(section => section.visual), lesson.worked.visual, ...lesson.examples.map(question => question.visual)]).concat(chapters[1].review.map(question => question.visual)).filter(Boolean);
+  const chapterVisuals = chapter => chapter.lessons.flatMap(lesson => [...lesson.sections.map(section => section.visual), lesson.worked.visual, ...lesson.examples.map(question => question.visual)]).concat(chapter.review.map(question => question.visual)).filter(Boolean);
+  const sourceVisuals = chapters.flatMap(chapterVisuals);
   assert.deepEqual([...new Set(sourceVisuals.map(visual => visual.type))].sort(), ['cells', 'flow', 'table']);
-  assert.ok(chapters[1].lessons.every(lesson => JSON.stringify(lesson).includes('**')), 'each new lesson authors visible emphasis');
+  for (const chapter of chapters) {
+    for (const lesson of chapter.lessons) {
+      assert.ok(lesson.sections.some(section => section.visual) || lesson.worked.visual, lesson.id + ' explains concepts with an authored visual');
+      assert.ok(lesson.sections.some(section => section.body.some(paragraph => emphasis(paragraph).length > 0)), lesson.id + ' emphasizes key ideas in its body');
+    }
+  }
   assert.equal(routes.length, 15, 'one shared subject home and seven routes per chapter');
   const options = { headless: true, args: ['--no-sandbox'] };
   if (process.env.CHROMIUM_PATH) options.executablePath = process.env.CHROMIUM_PATH;
@@ -266,7 +270,7 @@ async function checkQuestions(page, questions, requireTask) {
         } else if (route.endsWith('/review')) assert.match(await page.locator('#main h1').innerText(), /복습 10문제/);
         assert.doesNotMatch(await page.locator('#main').textContent(), /\*\*/, 'authored emphasis markers render as strong text');
         if (questions.length) {
-          await checkQuestions(page, questions, chapter.slug === 'ch02');
+          await checkQuestions(page, questions);
           assert.equal(await page.locator('.py-solution[open]').count(), 0);
           const first = page.locator('.py-solution').first();
           await first.locator('summary').click();
@@ -290,7 +294,7 @@ async function checkQuestions(page, questions, requireTask) {
     }
   }
   assert.equal(combinations, 90);
-  groups.push('90 combinations: 15 routes × 1440/390/320px × light/glass; exact text, semantic emphasis, cells/flow/tables, instructions/answer formats and internal scrolling');
+  groups.push('90 combinations: 15 routes × 1440/390/320px × light/glass; exact text, body emphasis and visuals in all 10 lessons, instructions/answer formats in all 70 questions, and internal scrolling');
 
   await page.setViewportSize({ width: 1440, height: 1000 });
   for (const chapter of chapters) {
@@ -439,23 +443,28 @@ async function checkQuestions(page, questions, requireTask) {
   groups.push('nine CS PC/mobile preview destinations for both chapters, correct titles and no frame document overflow');
 
   const previewDir = process.env.ACADEMY_SCREENSHOT_DIR || path.join(root, 'previews');
+  // Select one chapter so refreshing its evidence preserves the other chapter's captures.
+  const screenshotSlug = process.env.ACADEMY_SCREENSHOT_CHAPTER || 'ch01';
+  const screenshotChapter = chapters.find(chapter => chapter.slug === screenshotSlug);
+  assert.ok(screenshotChapter, 'ACADEMY_SCREENSHOT_CHAPTER must be ch01 or ch02');
+  const screenshotExample = screenshotSlug === 'ch01' ? 0 : 1;
   await fs.mkdir(previewDir, { recursive: true });
   const screenshots = [];
   for (const shot of [{ width: 1440, theme: 'light', name: 'pc', open: true }, { width: 390, theme: 'glass', name: 'mobile', open: false }]) {
     await page.setViewportSize({ width: shot.width, height: 1100 });
-    await visit(page, lessonRoute(newChapter.ids[0]));
+    await visit(page, lessonRoute(screenshotChapter.ids[0]));
     await page.reload();
-    await page.locator('[data-cs-complete="cs-l006"]').waitFor();
+    await page.locator('[data-cs-complete="' + screenshotChapter.ids[0] + '"]').waitFor();
     await page.evaluate(([key, value]) => { localStorage.setItem(key, value); window.AcademyTheme.refresh(); }, [THEME_KEY, shot.theme]);
-    if (shot.open) await page.locator('.py-solution').nth(1).locator('summary').click();
+    if (shot.open) await page.locator('.py-solution').nth(screenshotExample).locator('summary').click();
     else assert.equal(await page.locator('.py-solution[open]').count(), 0);
-    const target = shot.open ? page.locator('#practice-2') : page.locator('#concept figure.cs-visual').first();
+    const target = shot.open ? page.locator('#practice-' + (screenshotExample + 1)) : screenshotSlug === 'ch01' ? page.locator('#concept .concept-step').first().locator(':scope > p').last() : page.locator('#concept figure.cs-visual').first();
     await target.evaluate(element => window.scrollTo({ top: window.scrollY + element.getBoundingClientRect().top - 16, behavior: 'instant' }));
-    const file = path.join(previewDir, 'cs-ch02-' + shot.name + '.png');
+    const file = path.join(previewDir, 'cs-' + screenshotSlug + '-' + shot.name + '.png');
     await page.screenshot({ path: file });
     screenshots.push(file);
   }
   assert.deepEqual(errors, []);
   assert.deepEqual(requestErrors, []);
-  console.log(JSON.stringify({ browser: browser.version(), groups, combinations, authoredVisuals: sourceVisuals.length, pageErrors: errors, requestErrors, screenshots }, null, 2));
+  console.log(JSON.stringify({ browser: browser.version(), groups, combinations, authoredVisuals: sourceVisuals.length, visualsByChapter: Object.fromEntries(chapters.map(chapter => [chapter.slug, chapterVisuals(chapter).length])), pageErrors: errors, requestErrors, screenshots }, null, 2));
 })().catch(error => { console.error(error); process.exitCode = 1; }).finally(async () => { await browser?.close(); });
