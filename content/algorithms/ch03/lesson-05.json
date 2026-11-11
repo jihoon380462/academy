@@ -1,6 +1,6 @@
 {
   "id": "algorithms-l017",
-  "order": 5,
+  "order": 6,
   "title": "큐·덱과 순서 처리",
   "subtitle": "먼저 들어온 일을 먼저 처리하고, 필요하면 양끝을 따로 다룹니다.",
   "minutes": 13,

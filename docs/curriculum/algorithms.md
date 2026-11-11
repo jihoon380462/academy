@@ -1,5 +1,7 @@
 # 알고리즘·자료구조
 
+현재 변경: [학습 단계 보완](../ALGORITHMS-PROGRESSION.md)을 콘텐츠 수정 전에 문서화한 뒤 l055/l056을 추가해 56레슨으로 구현했다. 작업 브랜치의 구현·로컬 검증과 기존 54레슨의 공개 기록을 구분한다. ID 번호와 학습 순서를 혼동하지 않는다.
+
 | 항목 | 설계 |
 | --- | --- |
 | 과목 ID | `algorithms` |
@@ -7,7 +9,7 @@
 | 목표 | 입력 규모와 필요한 연산을 바탕으로 자료구조와 알고리즘을 선택하고, 작은 구현의 정확성과 비용을 설명한다. |
 | 진입 지식 | `python` 또는 `c-family`의 변수·조건·반복·함수·배열 개념. 수학의 사칙연산·비교·간단한 함수 관계. 과목 전체 완주나 이산수학 선행은 요구하지 않는다. |
 | 완료 기준 | 검색·집계·작업 순서 처리 중 한 작업을 두 방식으로 구현하여 경계 입력, 연산 비용, 측정 결과와 선택 이유를 제시한다. |
-| 콘텐츠 상태 | 설계된 9챕터·54레슨·270예제·90복습 구현. 6~9챕터 23레슨도 PR #17 main 병합·해당 코드 Pages 배포·공개 브라우저 확인 완료. 병합·배포·공개 확인은 검증 기록에서 구분 |
+| 콘텐츠 상태 | 현재 소스 9챕터·56레슨·280예제·90복습. 새 l055/l056과 기존 레슨의 학습 단계 보완은 작업 브랜치 구현이며 검증 기록에 실제 결과를 남긴다. 기존 54레슨의 병합·Pages 배포·공개 확인 기록과 분리 |
 
 ## 범위와 과목 경계
 
@@ -59,6 +61,7 @@
 | 레슨 ID | 레슨 | 이해·수행 목표 |
 | --- | --- | --- |
 | `algorithms-l013` | 배열과 동적 배열 | 연속 저장과 크기 확장이 주요 연산 비용에 주는 영향을 설명한다. |
+| `algorithms-l055` | 동적 배열의 확장 직접 구현 | 유효 원소 수와 용량을 구분하고 확장·복사·참조 교체·추가 순서로 저장소를 구현한다. |
 | `algorithms-l014` | 연결 리스트 | 노드 연결을 따라가는 비용과 연결 변경 비용을 구분한다. |
 | `algorithms-l015` | 삽입과 삭제의 위치 | 위치 탐색 비용을 포함해 배열과 연결 리스트를 비교한다. |
 | `algorithms-l016` | 스택과 되돌리기 | 후입선출이 중첩 상태와 되돌리기에 맞는 이유를 설명한다. |
@@ -138,6 +141,7 @@
 | `algorithms-l045` | Greedy(탐욕법)의 선택과 반례 | 지금의 좋은 선택이 전체의 좋은 결과를 보장하는지 검토한다. |
 | `algorithms-l046` | 겹치는 부분 문제와 Memoization(메모이제이션) | 반복 계산을 식별해 결과 재사용 구조를 만든다. |
 | `algorithms-l047` | DP(동적 계획법)의 상태와 전이 | 상태 의미·초기값·계산 순서를 일관되게 정의한다. |
+| `algorithms-l056` | 0/1 DP(동적 계획법)의 단계와 갱신 순서 | 이전/다음 단계 표에서 각 위치를 한 번만 쓰는 조건을 확인한 뒤 한 배열의 내림차순 갱신으로 연결한다. |
 | `algorithms-l048` | 방법 선택과 결과 복원 | 작은 결과를 비교하고 선택 과정까지 복원할지 판단한다. |
 
 - 복습 10문제 설계: 전략 구분 2·상태/전이 3·탐색 조건 2·반례와 비교 3. 정답 숫자만 맞고 상태 의미는 틀린 설계를 걸러낸다.
@@ -172,22 +176,22 @@
 
 ## 챕터 1~9 구현 현황
 
-2026-11-11 KST 기준 현재 소스의 구현 범위다. 전체 9챕터·54레슨 설계와 구분한다. 챕터 1은 PR #10, 챕터 2·3은 [PR #11](https://github.com/jihoon380462/academy/pull/11)로 main에 병합되었다. 병합 SHA `4c85004`의 [Pages 실행](https://github.com/jihoon380462/academy/actions/runs/42775841237)은 성공했으며 공개 브라우저의 새 챕터·기록 이동을 확인했다. 실제 확인 범위는 검증 기록을 따른다. 챕터 4·5의 13레슨·65예제·20복습도 [PR #15](https://github.com/jihoon380462/academy/pull/15)로 main에 병합되었다. SHA `91e4e82`의 [Pages 실행](https://github.com/jihoon380462/academy/actions/runs/42835323465)은 성공했고 공개 브라우저 확인을 완료했다. 실제 범위는 검증 기록을 따른다. 6~9챕터의 23레슨·115예제·40복습도 [PR #17](https://github.com/jihoon380462/academy/pull/17)로 main에 병합했다. SHA `3966739`의 [Pages 실행](https://github.com/jihoon380462/academy/actions/runs/42840665951)은 성공했고 공개 브라우저 438화면 조합과 기록 옮기기 10개 그룹을 통과했다. 실제 범위와 소스는 검증 기록을 따른다. 설계된 9챕터를 모두 구현했으므로 추가 집필은 사용자 요청에 따른다.
+현재 소스는 9챕터·56레슨·280예제·90복습이다. 새 l055/l056은 각각 ch03의 l013 뒤, ch08의 l047 뒤에 삽입하며 기존 ID·URL·저장 키를 유지한다. 아래 병합·배포 기록은 학습 단계 보완 이전의 54레슨에 관한 것이며 이번 구현·검증 상태와 구분한다. 챕터 1은 PR #10, 챕터 2·3은 [PR #11](https://github.com/jihoon380462/academy/pull/11)로 main에 병합되었다. 병합 SHA `4c85004`의 [Pages 실행](https://github.com/jihoon380462/academy/actions/runs/42775841237)은 성공했으며 공개 브라우저의 새 챕터·기록 이동을 확인했다. 실제 확인 범위는 검증 기록을 따른다. 챕터 4·5의 13레슨·65예제·20복습도 [PR #15](https://github.com/jihoon380462/academy/pull/15)로 main에 병합되었다. SHA `91e4e82`의 [Pages 실행](https://github.com/jihoon380462/academy/actions/runs/42835323465)은 성공했고 공개 브라우저 확인을 완료했다. 실제 범위는 검증 기록을 따른다. 6~9챕터의 23레슨·115예제·40복습도 [PR #17](https://github.com/jihoon380462/academy/pull/17)로 main에 병합했다. SHA `3966739`의 [Pages 실행](https://github.com/jihoon380462/academy/actions/runs/42840665951)은 성공했고 공개 브라우저 438화면 조합과 기록 옮기기 10개 그룹을 통과했다. 실제 범위와 소스는 검증 기록을 따른다. 설계된 9챕터를 모두 구현했으므로 추가 집필은 사용자 요청에 따른다.
 
 | 범위 | 실제 파일·경로 | 구현 |
 | --- | --- | --- |
 | 챕터 1 `algorithms-l001`~`algorithms-l006` | `content/algorithms/ch01/lesson-01.json`~`lesson-06.json` | 6레슨·30예제·복습 10개 |
 | 챕터 2 `algorithms-l007`~`algorithms-l012` | `content/algorithms/ch02/lesson-01.json`~`lesson-06.json` | 6레슨·30예제·복습 10개 |
-| 챕터 3 `algorithms-l013`~`algorithms-l018` | `content/algorithms/ch03/lesson-01.json`~`lesson-06.json` | 6레슨·30예제·복습 10개 |
+| 챕터 3 l013 → l055 → l014~l018 | `content/algorithms/ch03/lesson-01.json`~`lesson-07.json` | 7레슨·35예제·복습 10개 |
 | 챕터 4 `algorithms-l019`~`algorithms-l024` | `content/algorithms/ch04/lesson-01.json`~`lesson-06.json` | 6레슨·30예제·복습 10개 |
 | 챕터 5 `algorithms-l025`~`algorithms-l031` | `content/algorithms/ch05/lesson-01.json`~`lesson-07.json` | 7레슨·35예제·복습 10개 |
 | 챕터 6 `algorithms-l032`~`algorithms-l036` | `content/algorithms/ch06/lesson-01.json`~`lesson-05.json` | 5레슨·25예제·복습 10개 |
 | 챕터 7 `algorithms-l037`~`algorithms-l042` | `content/algorithms/ch07/lesson-01.json`~`lesson-06.json` | 6레슨·30예제·복습 10개 |
-| 챕터 8 `algorithms-l043`~`algorithms-l048` | `content/algorithms/ch08/lesson-01.json`~`lesson-06.json` | 6레슨·30예제·복습 10개 |
+| 챕터 8 l043~l047 → l056 → l048 | `content/algorithms/ch08/lesson-01.json`~`lesson-07.json` | 7레슨·35예제·복습 10개 |
 | 챕터 9 `algorithms-l049`~`algorithms-l054` | `content/algorithms/ch09/lesson-01.json`~`lesson-06.json` | 6레슨·30예제·복습 10개 |
 | 분야 홈·각 챕터 목차·레슨·복습 | `#/subjects/algorithms`, `#/algorithms/ch01`~`ch09`, 각 `/lesson/<레슨 ID>`·`/review` | 읽음·최근 레슨·내 학습 연결 |
 | 학습 기록 | `academy-algorithms-ch01-v1`~`academy-algorithms-ch09-v1` | 챕터별 독립 저장·파일/복사 코드 옮기기, 기존 키 유지 |
-| 과목 전체 | 설계된 9챕터·54레슨 | 본문·예제·복습 구성 완료, 학습자 숙달 보장을 의미하지 않음 |
+| 과목 전체 | 9챕터·56레슨 | 본문·예제·복습 구성 완료, 학습자 숙달 보장을 의미하지 않음 |
 
 챕터 2 복습은 성장률 3·비용 계산 3·공간 2·측정 해석 2, 챕터 3은 구조 원리 3·연산 비용 3·순서 추적 2·구조 선택 2로 구성한다. 언어 중립 명세·의사코드·손 추적 후 Python 구현 예시를 둔다. 점근적 상계와 긴밀한 성장 차수, 최선/평균/최악과 분할 상환, 총 할당량과 동시 추가 공간, 이론 배열 모델과 CPython의 참조 배열을 구분한다. 연결 리스트는 위치 탐색과 연결 변경 비용을 함께 다루며 단일 연결 삭제의 앞 노드 가정을 명시한다.
 

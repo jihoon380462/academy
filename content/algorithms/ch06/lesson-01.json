@@ -46,7 +46,8 @@
       "body": [
         "루트부터 자식 하나씩 내려가며 찾는 절차는 방문할 수 있는 층 수가 높이에 영향을 받습니다. 노드가 같은 수여도 가지가 고르게 나뉘는 트리와 한 줄로 기운 트리의 높이는 다릅니다. 뒤의 BST(이진 탐색 트리)에서 이 차이가 조회 비용을 바꿉니다.",
         "높이를 직접 구할 때는 각 자식 부분 트리의 높이 중 가장 큰 값에 1을 더할 수 있습니다. 잎은 자식이 없으므로 0이고, 빈 트리 높이를 -1로 정하면 자식이 없는 시작값과도 맞출 수 있습니다. 앞 챕터의 작은 Recursion(재귀)과 종료 조건을 연결한 것입니다.",
-        "모든 노드를 확인해 높이를 구하는 절차와, 높이를 이미 알고 이용하는 조회 절차는 다른 작업입니다. 높이를 계산하는 데는 노드 전체를 방문할 수 있으며, Recursion(재귀) 구현에서는 내려가는 깊이만큼 호출 스택도 사용합니다."
+        "모든 노드를 확인해 높이를 구하는 절차와, 높이를 이미 알고 이용하는 조회 절차는 다른 작업입니다. 높이를 계산하는 데는 노드 전체를 방문할 수 있으며, Recursion(재귀) 구현에서는 내려가는 깊이만큼 호출 스택도 사용합니다.",
+        "이 레슨에서는 자식 하나의 재귀 호출이 반환한 뒤 다음 자식으로 넘어갑니다. 높이는 자식의 결과에서 최댓값을 모으고, 노드 수 같은 정보는 자식의 결과를 더해 현재 노드의 결과를 만듭니다. 코드는 트리의 높이가 Python Recursion(재귀) 깊이 제한보다 충분히 작은 입력에 사용합니다."
       ]
     }
   ],
@@ -54,9 +55,9 @@
     "question": "자식 목록으로 A(B(D,E),C)를 나타내고 간선 수 관례로 A·B·E와 빈 트리의 높이를 구하세요.",
     "code": {
       "kind": "python",
-      "source": "children = {\n    \"A\": [\"B\", \"C\"],\n    \"B\": [\"D\", \"E\"],\n    \"C\": [], \"D\": [], \"E\": []\n}\n\ndef height(node):\n    if node is None:\n        return -1\n    longest_child = -1\n    for child in children[node]:\n        longest_child = max(longest_child, height(child))\n    return 1 + longest_child\n\nprint(height(\"A\"))\nprint(height(\"B\"))\nprint(height(\"E\"))\nprint(height(None))",
+      "source": "children = {\n    \"A\": [\"B\", \"C\"],\n    \"B\": [\"D\", \"E\"],\n    \"C\": [], \"D\": [], \"E\": []\n}\n\ndef tree_height(children, root):\n    if root is None:\n        return -1\n    longest_child = -1\n    for child in children[root]:\n        longest_child = max(longest_child, tree_height(children, child))\n    return 1 + longest_child\n\nprint(tree_height(children, \"A\"))\nprint(tree_height(children, \"B\"))\nprint(tree_height(children, \"E\"))\nprint(tree_height({}, None))",
       "output": "2\n1\n0\n-1\n",
-      "caption": "입력은 유한하고 순환·공유 자식이 없는 트리입니다. None은 빈 트리만 나타냅니다."
+      "caption": "children은 노드 ID마다 자식 ID 목록을 갖습니다. 순환·공유 자식이 없는 작은 트리이며 높이는 Python Recursion(재귀) 제한보다 작습니다. None은 빈 트리만 나타냅니다."
     },
     "steps": [
       "D와 E는 자식이 없으므로 longest_child가 -1로 남아 높이 0을 반환합니다.",
@@ -88,18 +89,18 @@
     {
       "exerciseType": "implement",
       "skill": "기본 구현 · 트리 높이",
-      "question": "tree_height(children, root)를 직접 작성하세요. children은 모든 노드 ID를 키로, 그 노드의 자식 ID 목록을 값으로 갖는 작은 유한 트리입니다. 순환·공유 자식은 없고 root가 None이면 빈 트리입니다. 간선 수로 높이를 반환하세요(빈 트리 -1, 잎 0). 입력 사전과 목록을 변경하지 않습니다.",
+      "question": "tree_height(children, root)를 직접 작성하세요. children은 모든 노드 ID를 키로, 그 노드의 자식 ID 목록을 값으로 갖는 작은 유한 트리입니다. 순환·공유 자식은 없고 root가 None이면 빈 트리입니다. 본문처럼 각 자식의 높이를 Recursion(재귀)으로 구해 간선 수 기준 높이를 반환하세요(빈 트리 -1, 잎 0). 입력 사전과 목록을 변경하지 않으며 높이는 Python Recursion 제한보다 충분히 작다고 가정합니다.",
       "codeKind": "text",
       "code": "확인 사례\nchildren={\"A\":[\"B\",\"C\"],\"B\":[\"D\"],\"C\":[],\"D\":[]}\ntree_height(children,\"A\") → 2\ntree_height(children,\"C\") → 0\ntree_height({},None) → -1",
       "solution": {
         "answer": "입력 계약과 확인 사례를 만족하는 함수의 한 가지 구현입니다.",
         "code": {
           "kind": "python",
-          "source": "def tree_height(children, root):\n    if root is None:\n        return -1\n    height = 0\n    stack = [(root, 0)]\n    while stack:\n        node, depth = stack.pop()\n        height = max(height, depth)\n        for child in children[node]:\n            stack.append((child, depth + 1))\n    return height\n\nchildren = {\"A\": [\"B\", \"C\"], \"B\": [\"D\"], \"C\": [], \"D\": []}\n\nprint(tree_height(children, \"A\"))\nprint(tree_height(children, \"C\"))\nprint(tree_height({}, None))",
+          "source": "def tree_height(children, root):\n    if root is None:\n        return -1\n    longest_child = -1\n    for child in children[root]:\n        longest_child = max(longest_child, tree_height(children, child))\n    return 1 + longest_child\n\nchildren = {\"A\": [\"B\", \"C\"], \"B\": [\"D\"], \"C\": [], \"D\": []}\n\nprint(tree_height(children, \"A\"))\nprint(tree_height(children, \"C\"))\nprint(tree_height({}, None))",
           "output": "2\n0\n-1\n"
         }
       },
-      "explanation": "각 노드를 한 번 방문하므로 n개 노드의 시간은 O(n), 명시적 스택은 최악 O(n)입니다. 일반 트리에서는 자식이 많은 한 노드의 형제를 스택에 함께 넣으므로 공간을 높이만으로 단정하지 않습니다."
+      "explanation": "자식 높이 중 최댓값에 1을 더합니다. 잎은 반복 없이 longest_child=-1을 유지해 0을 반환합니다. n개 노드를 한 번씩 확인하므로 시간 O(n), 높이 h에 대해 호출 스택 O(h+1)이며 자식 호출은 차례로 계산합니다."
     },
     {
       "exerciseType": "implement",
@@ -120,34 +121,34 @@
     {
       "exerciseType": "implement",
       "skill": "출력 변경 · 잎 목록 수집",
-      "question": "leaf_ids(children, root)를 직접 작성하세요. 모든 노드가 키에 있으며 자식 ID 목록으로 표현한 유효한 유한 트리입니다. 자식 목록의 왼쪽부터 DFS(깊이 우선 탐색) 방문했을 때 만나는 잎 ID만 새 목록으로 반환합니다. root=None이면 [], 단일 노드이면 그 ID 하나입니다. 입력을 변경하지 마세요.",
+      "question": "leaf_ids(children, root)를 직접 작성하세요. 모든 노드가 키에 있으며 자식 ID 목록으로 표현한 작은 유효 트리입니다. 자식 목록 순서대로 한 자식 아래를 모두 살핀 뒤 다음 자식으로 넘어가며, 자식이 없는 잎 ID만 새 목록에 모아 반환하세요. 본문처럼 Recursion(재귀)을 사용합니다. root=None이면 [], 단일 노드이면 그 ID 하나입니다. 입력은 보존하며 높이는 Python Recursion 제한보다 충분히 작습니다.",
       "codeKind": "text",
       "code": "확인 사례\nchildren={\"A\":[\"B\",\"C\"],\"B\":[\"D\",\"E\"],\"C\":[],\"D\":[],\"E\":[]}\nleaf_ids(children,\"A\") → [\"D\",\"E\",\"C\"]\nleaf_ids(children,\"C\") → [\"C\"]\nleaf_ids({},None) → []",
       "solution": {
         "answer": "입력 계약과 확인 사례를 만족하는 함수의 한 가지 구현입니다.",
         "code": {
           "kind": "python",
-          "source": "def leaf_ids(children, root):\n    if root is None:\n        return []\n    leaves = []\n    stack = [root]\n    while stack:\n        node = stack.pop()\n        if not children[node]:\n            leaves.append(node)\n        else:\n            for child in reversed(children[node]):\n                stack.append(child)\n    return leaves\n\nchildren = {\"A\": [\"B\", \"C\"], \"B\": [\"D\", \"E\"], \"C\": [], \"D\": [], \"E\": []}\n\nprint(leaf_ids(children, \"A\"))\nprint(leaf_ids(children, \"C\"))\nprint(leaf_ids({}, None))",
+          "source": "def leaf_ids(children, root):\n    leaves = []\n    def collect(node):\n        if not children[node]:\n            leaves.append(node)\n            return\n        for child in children[node]:\n            collect(child)\n    if root is not None:\n        collect(root)\n    return leaves\n\nchildren = {\"A\": [\"B\", \"C\"], \"B\": [\"D\", \"E\"], \"C\": [], \"D\": [], \"E\": []}\n\nprint(leaf_ids(children, \"A\"))\nprint(leaf_ids(children, \"C\"))\nprint(leaf_ids({}, None))",
           "output": "['D', 'E', 'C']\n['C']\n[]\n"
         }
       },
-      "explanation": "스택은 마지막에 넣은 것을 먼저 꺼내므로 자식을 역순으로 넣어 원래 자식 순서를 지킵니다. n개 노드에 O(n) 시간, 결과와 스택을 합쳐 최악 O(n) 공간입니다."
+      "explanation": "자식이 없으면 현재 ID를 결과 목록에 한 번 추가하고, 자식이 있으면 목록 순서대로 재귀 호출합니다. 한 자식 아래가 끝난 뒤 다음 자식으로 가므로 D·E·C 순서를 얻습니다. 시간 O(n), 결과 공간은 잎 수에 비례하고 호출 스택은 높이 h에 대해 O(h+1)입니다."
     },
     {
       "exerciseType": "implement",
       "skill": "집계 변경 · 노드·간선·높이",
-      "question": "tree_profile(children, root)를 직접 작성하세요. 모든 노드가 키에 있는 자식 목록 사전으로 유효한 유한 트리를 받습니다. root에서 시작하는 부분 트리의 (노드 수, 간선 수, 높이)를 반환하세요. 높이는 간선 수 기준이며 root=None은 (0,0,-1), 단일 노드는 (1,0,0)입니다. 사전·목록은 보존합니다.",
+      "question": "tree_profile(children, root)를 직접 작성하세요. 모든 노드가 키에 있는 자식 목록 사전으로 작은 유효 트리를 받습니다. root에서 시작하는 부분 트리의 (노드 수, 간선 수, 높이)를 Recursion(재귀)으로 반환하세요. 자식 부분 트리의 결과를 구한 뒤 현재 노드 1개와 자식으로 향하는 간선을 더하고, 높이는 자식 높이의 최댓값에 1을 더합니다. 높이는 간선 수 기준이며 root=None은 (0,0,-1), 단일 노드는 (1,0,0)입니다. 입력은 보존하며 높이는 Python Recursion 제한보다 충분히 작습니다.",
       "codeKind": "text",
       "code": "확인 사례\nchildren={\"A\":[\"B\",\"C\"],\"B\":[\"D\"],\"C\":[],\"D\":[]}\ntree_profile(children,\"A\") → (4,3,2)\ntree_profile(children,\"B\") → (2,1,1)\ntree_profile({},None) → (0,0,-1)\ntree_profile({\"X\":[]},\"X\") → (1,0,0)",
       "solution": {
         "answer": "입력 계약과 확인 사례를 만족하는 함수의 한 가지 구현입니다.",
         "code": {
           "kind": "python",
-          "source": "def tree_profile(children, root):\n    if root is None:\n        return 0, 0, -1\n    nodes = edges = 0\n    height = 0\n    stack = [(root, 0)]\n    while stack:\n        node, depth = stack.pop()\n        nodes += 1\n        height = max(height, depth)\n        edges += len(children[node])\n        for child in children[node]:\n            stack.append((child, depth + 1))\n    return nodes, edges, height\n\nchildren = {\"A\": [\"B\", \"C\"], \"B\": [\"D\"], \"C\": [], \"D\": []}\n\nprint(tree_profile(children, \"A\"))\nprint(tree_profile(children, \"B\"))\nprint(tree_profile({}, None))\nprint(tree_profile({\"X\": []}, \"X\"))",
+          "source": "def tree_profile(children, root):\n    if root is None:\n        return 0, 0, -1\n    nodes = 1\n    edges = 0\n    height = 0\n    for child in children[root]:\n        child_nodes, child_edges, child_height = tree_profile(children, child)\n        nodes += child_nodes\n        edges += child_edges + 1\n        height = max(height, child_height + 1)\n    return nodes, edges, height\n\nchildren = {\"A\": [\"B\", \"C\"], \"B\": [\"D\"], \"C\": [], \"D\": []}\n\nprint(tree_profile(children, \"A\"))\nprint(tree_profile(children, \"B\"))\nprint(tree_profile({}, None))\nprint(tree_profile({\"X\": []}, \"X\"))",
           "output": "(4, 3, 2)\n(2, 1, 1)\n(0, 0, -1)\n(1, 0, 0)\n"
         }
       },
-      "explanation": "연결된 비어 있지 않은 트리는 간선 수가 노드 수보다 1 작습니다. 집계는 root 아래만 방문하며 사전 평균 접근 비용을 일정하게 보면 시간 O(n), 스택 최악 O(n)입니다."
+      "explanation": "현재 노드 하나에서 시작해 자식의 노드·간선 수를 더하되, 각 자식으로 내려가는 연결 간선도 하나씩 더합니다. 높이는 더하지 않고 자식 높이+1 중 최댓값을 유지합니다. 비어 있지 않은 부분 트리의 간선 수=노드 수-1 관계로 결과도 점검할 수 있습니다. 시간 O(n), 호출 스택은 높이 h에 대해 O(h+1)입니다."
     }
   ]
 }

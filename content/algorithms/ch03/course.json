@@ -3,10 +3,18 @@
   "slug": "ch03",
   "number": 3,
   "title": "순서를 저장하는 구조",
-  "description": "배열·연결 리스트·스택·큐·덱의 저장 원리와 연산 계약을 비교하고, 위치 탐색 비용까지 포함해 필요한 구조를 고릅니다.",
+  "description": "배열의 크기와 용량을 구분해 확장을 직접 구현하고, 연결 리스트·스택·큐·덱의 저장 원리와 연산 계약을 비교합니다.",
   "prerequisite": "챕터 2 · 시간과 공간을 세는 법, 배열 또는 Python 리스트의 생성·조회·변경·순회 기초.",
   "runtime": "Python 3",
-  "lessonFiles": ["lesson-01.json", "lesson-02.json", "lesson-03.json", "lesson-04.json", "lesson-05.json", "lesson-06.json"],
+  "lessonFiles": [
+    "lesson-01.json",
+    "lesson-07.json",
+    "lesson-02.json",
+    "lesson-03.json",
+    "lesson-04.json",
+    "lesson-05.json",
+    "lesson-06.json"
+  ],
   "references": [
     {
       "title": "Python 3.12 튜토리얼 · 리스트를 스택과 큐로 사용하기",
@@ -19,8 +27,16 @@
     {
       "title": "Python 3.12 collections.deque · 양끝 연산",
       "url": "https://docs.python.org/3.12/library/collections.html#collections.deque"
+    },
+    {
+      "title": "Python 3.12 튜토리얼 · 이름과 객체의 별칭",
+      "url": "https://docs.python.org/3.12/tutorial/classes.html#a-word-about-names-and-objects"
+    },
+    {
+      "title": "Python 3.12 시퀀스 · 반복과 얕은 복사",
+      "url": "https://docs.python.org/3.12/library/stdtypes.html#common-sequence-operations"
     }
   ],
-  "referenceCheckedAt": "2026-11-10 KST",
+  "referenceCheckedAt": "2026-11-11 KST",
   "validationEnvironment": "CPython 3.12.14 / Linux"
 }
