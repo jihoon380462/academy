@@ -67,11 +67,22 @@ def validate_text_list(value, owner, field):
 
 def validate_practice(question, owner, chapter_number, expected_stage):
     # Optional extension: restored legacy chapter sources still build unchanged.
-    if not PRACTICE_FIELDS.intersection(question):
+    if not (PRACTICE_FIELDS | {'taskType', 'expectedOutput'}).intersection(question):
         return
-    assert chapter_number == 1 and PRACTICE_FIELDS <= question.keys(), (owner, 'chapter 1 practice fields')
+    assert chapter_number == 1, (owner, 'chapter 1 practice fields')
     assert question['practiceStage'] == expected_stage, (owner, 'practice stage', expected_stage)
-    for field in ['instructions', 'hints', 'selfCheck']:
+    validate_text_list(question.get('hints'), owner, 'hints')
+    if 'taskType' in question:
+        assert question['taskType'] in ['coding', 'written'], (owner, 'task type')
+        if question['taskType'] == 'coding':
+            assert not {'instructions', 'answerFormat', 'selfCheck'}.intersection(question), (owner, 'coding task must not require a written worksheet')
+            if 'expectedOutput' in question:
+                assert isinstance(question['expectedOutput'], str), (owner, 'expected output text')
+                assert question['expectedOutput'] == question['solution'].get('code', {}).get('output'), (owner, 'expected output must match solution')
+            return
+    assert 'expectedOutput' not in question, (owner, 'expectedOutput requires coding task')
+    assert PRACTICE_FIELDS <= question.keys(), (owner, 'written or legacy practice fields')
+    for field in ['instructions', 'selfCheck']:
         validate_text_list(question[field], owner, field)
     assert isinstance(question['answerFormat'], str) and question['answerFormat'].strip(), (owner, 'answerFormat')
 
