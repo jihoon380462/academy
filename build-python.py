@@ -56,6 +56,40 @@ args = parser.parse_args()
 blocks = []
 courses = []
 all_ids = set()
+PRACTICE_STAGES = ('guided', 'completion', 'independent', 'recall', 'transfer')
+PRACTICE_FIELDS = {'practiceStage', 'instructions', 'answerFormat', 'hints', 'selfCheck'}
+
+
+def validate_text_list(value, owner, field):
+    assert isinstance(value, list) and value, (owner, field, 'nonempty list')
+    assert all(isinstance(text, str) and text.strip() for text in value), (owner, field, 'nonempty text')
+
+
+def validate_practice(question, owner, chapter_number, expected_stage):
+    # Optional extension: restored legacy chapter sources still build unchanged.
+    if not PRACTICE_FIELDS.intersection(question):
+        return
+    assert chapter_number == 1 and PRACTICE_FIELDS <= question.keys(), (owner, 'chapter 1 practice fields')
+    assert question['practiceStage'] == expected_stage, (owner, 'practice stage', expected_stage)
+    for field in ['instructions', 'hints', 'selfCheck']:
+        validate_text_list(question[field], owner, field)
+    assert isinstance(question['answerFormat'], str) and question['answerFormat'].strip(), (owner, 'answerFormat')
+
+
+def validate_learning(lesson, chapter_number, ids):
+    if not {'learningGuide', 'spacedReview'}.intersection(lesson):
+        return
+    owner = lesson['id']
+    assert chapter_number == 1, (owner, 'chapter 1 learning guide')
+    validate_text_list(lesson.get('learningGuide'), owner, 'learningGuide')
+    reviews = lesson.get('spacedReview')
+    assert isinstance(reviews, list) and len(reviews) == 2, (owner, 'two spaced review suggestions')
+    for entry in reviews:
+        assert isinstance(entry, dict) and set(entry) == {'when', 'task', 'lessonId', 'exampleNumber'}, (owner, 'spaced review fields')
+        for field in ['when', 'task', 'lessonId']:
+            assert isinstance(entry[field], str) and entry[field].strip(), (owner, 'spaced review', field)
+        assert entry['lessonId'] in ids, (owner, 'spaced review lesson')
+        assert type(entry['exampleNumber']) is int and entry['exampleNumber'] in [4, 5], (owner, 'spaced review example')
 
 
 def validate_filename(name, owner):
@@ -138,9 +172,12 @@ for spec in SPECS:
             validate_block(lesson['worked']['code'], owner + '/worked')
         assert lesson['misconception']['question'] and lesson['misconception']['answer']
         assert len(lesson['keypoints']) == 3 and len(lesson['examples']) == 5
+        validate_learning(lesson, spec['number'], ids)
     assert len(review) == 10, (slug, 'review count')
     for owner, questions in [(l['id'], l['examples']) for l in lessons] + [(slug + '/review', review)]:
         for i, question in enumerate(questions, 1):
+            expected_stage = 'recall' if owner.endswith('/review') else PRACTICE_STAGES[i - 1]
+            validate_practice(question, f'{owner}/question{i}', spec['number'], expected_stage)
             assert question['question'] and question['skill'] and question['explanation'], (owner, i)
             assert not any(key in question for key in ['options', 'optionFormat', 'answer']), (owner, i, 'written exercises only')
             assert isinstance(question['solution']['answer'], str) and question['solution']['answer'].strip(), (owner, i, 'solution')
