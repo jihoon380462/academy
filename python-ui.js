@@ -8,6 +8,8 @@
   const chapterNumber = ctx => Number(ctx.course.number) || Number(String(ctx.course.slug || ctx.course.id || '').match(/ch(\d+)$/)?.[1]) || 1;
   const chapterSlug = ctx => /^ch\d+$/.test(ctx.course.slug || '') ? ctx.course.slug : 'ch' + String(chapterNumber(ctx)).padStart(2, '0');
   const guided = ctx => chapterNumber(ctx) === 1 && lessonList(ctx).some(lesson => Array.isArray(lesson.learningGuide) && lesson.learningGuide.length > 0);
+  const coding = (q, ctx) => guided(ctx) && q.taskType === 'coding';
+  const typedTasks = ctx => guided(ctx) && [...lessonList(ctx).flatMap(lesson => lesson.examples), ...ctx.course.review].some(q => q.taskType === 'coding' || q.taskType === 'written');
   const text = (value, ctx) => guided(ctx) ? esc(value).replace(/\*\*([^*\n]+)\*\*/g, '<strong class="py-emphasis">$1</strong>') : esc(value);
   const practiceStages = Object.freeze({ guided: '따라 작성', completion: '일부 완성', independent: '혼자 작성', recall: '가리고 재현', transfer: '조건 바꾸기' });
   const chapterPath = ctx => '#/python/' + encodeURIComponent(chapterSlug(ctx));
@@ -61,13 +63,25 @@
     return guided(ctx) && block?.caption ? html.replace(`<figcaption class="py-code-caption">${esc(block.caption)}</figcaption>`, `<figcaption class="py-code-caption">${text(block.caption, ctx)}</figcaption>`) : html;
   }
 
+  function questionCode(q, ctx) {
+    if (!q.code) return '';
+    if (!coding(q, ctx)) return chapterCode({source:q.code, kind:q.codeKind || 'python', caption:q.codeLabel || '문제의 코드'}, ctx);
+    const label = q.practiceStage === 'completion' ? '완성할 코드' : q.codeKind === 'console' ? '대화형 기록' : '시작 코드';
+    return `<figure class="py-code py-task-code"><figcaption class="py-task-code-label">${label}</figcaption><pre class="py-code-source" tabindex="0" aria-label="${label}"><code>${esc(q.code)}</code></pre></figure>`;
+  }
+
+  function expectedOutput(q, ctx) {
+    if (!coding(q, ctx) || typeof q.expectedOutput !== 'string') return '';
+    return `<figure class="py-expected-output"><figcaption>예상 출력${q.expectedOutput === '' ? ' · 출력 없음' : ''}</figcaption><pre tabindex="0" aria-label="예상 출력"><code>${esc(q.expectedOutput)}</code></pre></figure>`;
+  }
+
   function learningGuide(l, ctx) {
     if (!guided(ctx)) return '';
     return `<aside class="py-learning-guide"><h2>오늘의 연습 순서</h2>${l.id === 'python-l001' ? '<p class="py-execution-setup">실행 준비가 처음이라면 <a href="#/python/ch01/lesson/python-l002">레슨 2의 편집·저장·실행 안내</a>를 먼저 확인한 뒤 돌아오세요.</p>' : ''}${l.learningGuide?.length ? `<ol>${l.learningGuide.map(item => `<li>${text(item, ctx)}</li>`).join('')}</ol>` : ''}<p class="py-training-reminder">힌트나 예시 답을 봤다면 닫고, 빈 파일에서 직접 작성·저장·실행하며 자신의 결과를 확인하세요.</p></aside>`;
   }
 
   function questionGuide(q, ctx, label, index) {
-    if (!guided(ctx)) return '';
+    if (!guided(ctx) || coding(q, ctx)) return '';
     return `${q.instructions?.length || q.answerFormat ? `<aside class="py-training-task" aria-label="${esc(label)} ${index + 1} 풀이 안내">${q.instructions?.length ? `<strong>해야 할 일</strong><ol class="py-instructions">${q.instructions.map(item => `<li>${text(item, ctx)}</li>`).join('')}</ol>` : ''}${q.answerFormat ? `<div class="py-answer-format"><strong>답 적는 형식</strong><p>${text(q.answerFormat, ctx)}</p></div>` : ''}</aside>` : ''}`;
   }
 
@@ -77,7 +91,7 @@
   }
 
   function selfCheck(q, ctx) {
-    return guided(ctx) && q.selfCheck?.length ? `<aside class="py-self-check"><strong>스스로 확인하기</strong><ul>${q.selfCheck.map(item => `<li>${text(item, ctx)}</li>`).join('')}</ul></aside>` : '';
+    return guided(ctx) && !coding(q, ctx) && q.selfCheck?.length ? `<aside class="py-self-check"><strong>스스로 확인하기</strong><ul>${q.selfCheck.map(item => `<li>${text(item, ctx)}</li>`).join('')}</ul></aside>` : '';
   }
 
   function spacedReview(l, ctx) {
@@ -90,7 +104,7 @@
 
   function reviewSchedule(ctx, insideReview = false) {
     if (!guided(ctx)) return '';
-    return `<aside class="py-review-schedule"><h2>복습도 나누어 직접 작성해요</h2><ol><li><strong>오늘 · 복습 1~5</strong><span>문제부터 읽고 자신의 코드를 작성·실행한 뒤 결과와 이유를 확인하세요.</span></li><li><strong>다음 날 · 복습 6~10</strong><span>본문과 풀이를 먼저 보지 않고, 빈 파일에서 다시 작성·실행해 보세요.</span></li><li><strong>며칠 뒤 · 다시 풀기</strong><span>힌트나 답을 봤던 문제를 골라, 도움을 닫은 채 다시 작성하고 실행하세요.</span></li></ol><p>간격은 예시이며 직접 다시 방문하는 방식입니다. 복습 10문제와 각 예시 답은 언제든 펼쳐 볼 수 있습니다.</p><div class="actions">${insideReview ? `<a class="text-link" href="${reviewPath(ctx)}" data-scroll="review-1">복습 1~5로 →</a><a class="text-link" href="${reviewPath(ctx)}" data-scroll="review-6">복습 6~10으로 →</a>` : `<a class="text-link" href="${reviewPath(ctx)}">복습 10문제 열기 →</a>`}</div></aside>`;
+    return `<aside class="py-review-schedule"><h2>복습도 나누어 직접 작성해요</h2><ol><li><strong>오늘 · 복습 1~5</strong><span>${typedTasks(ctx) ? '문제의 요구에 맞게 코드를 실행하거나 짧게 답하고 결과를 확인하세요.' : '문제부터 읽고 자신의 코드를 작성·실행한 뒤 결과와 이유를 확인하세요.'}</span></li><li><strong>다음 날 · 복습 6~10</strong><span>${typedTasks(ctx) ? '본문과 풀이를 먼저 보지 않고 다시 풀어 보세요. 코딩 문제는 빈 파일에서 작성·실행합니다.' : '본문과 풀이를 먼저 보지 않고, 빈 파일에서 다시 작성·실행해 보세요.'}</span></li><li><strong>며칠 뒤 · 다시 풀기</strong><span>${typedTasks(ctx) ? '힌트나 답을 봤던 문제를 골라, 도움을 닫은 채 다시 풀어 보세요.' : '힌트나 답을 봤던 문제를 골라, 도움을 닫은 채 다시 작성하고 실행하세요.'}</span></li></ol><p>간격은 예시이며 직접 다시 방문하는 방식입니다. 복습 10문제와 각 예시 답은 언제든 펼쳐 볼 수 있습니다.</p><div class="actions">${insideReview ? `<a class="text-link" href="${reviewPath(ctx)}" data-scroll="review-1">복습 1~5로 →</a><a class="text-link" href="${reviewPath(ctx)}" data-scroll="review-6">복습 6~10으로 →</a>` : `<a class="text-link" href="${reviewPath(ctx)}">복습 10문제 열기 →</a>`}</div></aside>`;
   }
 
   function home(ctx) {
@@ -123,11 +137,11 @@
     const items = lessonList(ctx), index = items.findIndex(item => item.id === l.id), prev = items[index - 1], next = items[index + 1], number = chapterNumber(ctx);
     return `<div class="lesson-shell py-lesson-shell${guided(ctx) ? ' py-guided-ch01' : ''}">${sidebar(l, ctx)}<main id="main" class="article py-article"><div class="mobile-contents"><span>파이썬 · 챕터 ${number}</span><a href="${chapterPath(ctx)}">전체 목차 ↗</a></div><div class="crumb"><a href="#/subjects/python">파이썬</a> / <a href="${chapterPath(ctx)}">챕터 ${number}</a> / 레슨 ${pad(index + 1)}</div><header class="lesson-heading"><div class="eyebrow">LESSON ${pad(index + 1)} / ${items.length} · PYTHON 3</div><h1>${text(l.title, ctx)}</h1><p class="subtitle">${text(l.subtitle, ctx)}</p><div class="lesson-meta"><span>개념 읽기 약 ${esc(l.minutes)}분</span><span>예제 ${l.examples.length}문제</span><span class="py-read-state" data-py-read-status>${isRead(ctx, l.id) ? '✓ 읽음 표시됨' : '천천히 이해해도 괜찮아요'}</span></div></header><nav class="lesson-tabs" aria-label="이 레슨에서"><a href="${lessonPath(l.id, ctx)}" data-scroll="concept">01 개념 이해</a><a href="${lessonPath(l.id, ctx)}" data-scroll="worked">02 작동 예시</a><a href="${lessonPath(l.id, ctx)}" data-scroll="practice">03 예제 ${l.examples.length}문제</a></nav>
       ${learningGuide(l, ctx)}<section id="concept"><aside class="py-goal"><strong>이 레슨의 목표</strong><p>${text(l.goal, ctx)}</p></aside><p class="intro-text">${text(l.intro, ctx)}</p>${l.sections.map((section, i) => `<section class="concept-step"><h2><span>${pad(i + 1)}.</span>${text(section.title, ctx)}</h2>${section.body.map(p => `<p>${text(p, ctx)}</p>`).join('')}${chapterCode(section.code, ctx)}</section>`).join('')}</section><section class="worked" id="worked"><div class="eyebrow">READ THE CODE, FOLLOW THE REASON</div><h2>코드와 결과를 연결해 볼까요?</h2><p class="question">${text(l.worked.question, ctx)}</p>${chapterCode(l.worked.code, ctx)}<ol>${l.worked.steps.map(step => `<li>${text(step, ctx)}</li>`).join('')}</ol><div class="answer">${text(l.worked.answer, ctx)}</div></section><details class="misconception"><summary>${text(l.misconception.question, ctx)}</summary><p>${text(l.misconception.answer, ctx)}</p></details><section class="keypoints"><h2>이 레슨에서 가져갈 세 가지</h2><ul>${l.keypoints.map(point => `<li>${text(point, ctx)}</li>`).join('')}</ul></section>
-      <section class="py-practice" id="practice"><div class="eyebrow">PUT IT INTO PRACTICE</div><h2>직접 풀어 보는 ${l.examples.length}문제</h2><p class="py-practice-note">${guided(ctx) ? '단계마다 도움을 조금씩 줄여 봅니다. 문제의 해야 할 일과 답 형식을 따라 자신의 PC에서 작성·저장·실행하세요. 막히면 힌트를 하나씩 펼치고, 예시 답을 본 뒤에는 닫고 다시 작성합니다.' : 'PC에서 코드를 직접 입력하고 실행해 보세요. 풀어 본 뒤 각 문제의 예시 답과 해설을 펼쳐 비교할 수 있습니다.'}</p>${problemList(l.examples, '예제', ctx, 'practice')}</section>${spacedReview(l, ctx)}<div class="finish"><button class="btn" data-py-complete="${esc(l.id)}">${isRead(ctx, l.id) ? '✓ 읽음 표시됨 · 취소하기' : '이 레슨 읽음 표시하기'}</button><p>${guided(ctx) ? '읽음 표시는 이 레슨을 읽은 기록입니다.<br>혼자 풀 수 있는지는 답을 닫고 다시 작성·실행하며 확인하세요.' : '개념을 읽었다면 표시를 남겨 두세요.<br>문제는 자신의 속도에 맞춰 풀면 됩니다.'}</p></div><nav class="lesson-nav" aria-label="이전 다음 레슨">${prev ? `<a href="${lessonPath(prev.id, ctx)}"><small>← 이전 레슨</small>${esc(prev.title)}</a>` : `<a href="${chapterPath(ctx)}"><small>← CONTENTS</small>챕터 ${number} 목차</a>`}${next ? `<a href="${lessonPath(next.id, ctx)}"><small>다음 레슨 →</small>${esc(next.title)}</a>` : `<a href="${reviewPath(ctx)}"><small>CHAPTER REVIEW →</small>챕터 복습 ${ctx.course.review.length}문제</a>`}</nav></main></div>`;
+      <section class="py-practice" id="practice"><div class="eyebrow">PUT IT INTO PRACTICE</div><h2>직접 풀어 보는 ${l.examples.length}문제</h2><p class="py-practice-note">${typedTasks(ctx) ? '코딩 문제는 조건과 예상 출력을 보고 자신의 PC에서 작성·실행하세요. 설명을 묻는 문제는 요구한 내용을 짧게 적습니다. 막히면 힌트를 확인하고 다시 시도하세요.' : guided(ctx) ? '단계마다 도움을 조금씩 줄여 봅니다. 문제의 해야 할 일과 답 형식을 따라 자신의 PC에서 작성·저장·실행하세요. 막히면 힌트를 하나씩 펼치고, 예시 답을 본 뒤에는 닫고 다시 작성합니다.' : 'PC에서 코드를 직접 입력하고 실행해 보세요. 풀어 본 뒤 각 문제의 예시 답과 해설을 펼쳐 비교할 수 있습니다.'}</p>${problemList(l.examples, '예제', ctx, 'practice')}</section>${spacedReview(l, ctx)}<div class="finish"><button class="btn" data-py-complete="${esc(l.id)}">${isRead(ctx, l.id) ? '✓ 읽음 표시됨 · 취소하기' : '이 레슨 읽음 표시하기'}</button><p>${guided(ctx) ? '읽음 표시는 이 레슨을 읽은 기록입니다.<br>혼자 풀 수 있는지는 답을 닫고 다시 작성·실행하며 확인하세요.' : '개념을 읽었다면 표시를 남겨 두세요.<br>문제는 자신의 속도에 맞춰 풀면 됩니다.'}</p></div><nav class="lesson-nav" aria-label="이전 다음 레슨">${prev ? `<a href="${lessonPath(prev.id, ctx)}"><small>← 이전 레슨</small>${esc(prev.title)}</a>` : `<a href="${chapterPath(ctx)}"><small>← CONTENTS</small>챕터 ${number} 목차</a>`}${next ? `<a href="${lessonPath(next.id, ctx)}"><small>다음 레슨 →</small>${esc(next.title)}</a>` : `<a href="${reviewPath(ctx)}"><small>CHAPTER REVIEW →</small>챕터 복습 ${ctx.course.review.length}문제</a>`}</nav></main></div>`;
   }
 
   function problemList(questions, label, ctx, prefix) {
-    return `<ol class="py-problems" aria-label="${esc(label)} 문제 목록">${questions.map((q, i) => `<li class="py-problem" id="${esc(prefix)}-${i + 1}"${guided(ctx) && practiceStages[q.practiceStage] ? ` data-practice-stage="${esc(q.practiceStage)}"` : ''}><div class="py-problem-meta"><span>${esc(label)} ${pad(i + 1)}${guided(ctx) && practiceStages[q.practiceStage] ? ` · <b class="py-practice-stage">${esc(practiceStages[q.practiceStage])}</b>` : ''}</span><span>${text(q.skill, ctx)}</span></div><h3>${text(q.question, ctx)}</h3>${questionGuide(q, ctx, label, i)}${q.code ? chapterCode({source:q.code, kind:q.codeKind || 'python', caption:q.codeLabel || '문제의 코드'}, ctx) : ''}${hints(q, ctx, label, i)}${selfCheck(q, ctx)}<details class="py-solution"><summary><span class="sr-only">${esc(label)} ${i + 1} </span>예시 답·해설 보기</summary><div class="py-solution-body"><p>${text(q.solution.answer, ctx)}</p>${chapterCode(q.solution.code, ctx)}<p>${text(q.explanation, ctx)}</p>${q.related?.length ? `<nav class="py-related" aria-label="${esc(label)} ${i + 1} 관련 레슨">${q.related.map(id => {
+    return `<ol class="py-problems" aria-label="${esc(label)} 문제 목록">${questions.map((q, i) => `<li class="py-problem" id="${esc(prefix)}-${i + 1}"${guided(ctx) && ['coding', 'written'].includes(q.taskType) ? ` data-task-type="${esc(q.taskType)}"` : ''}${guided(ctx) && practiceStages[q.practiceStage] ? ` data-practice-stage="${esc(q.practiceStage)}"` : ''}><div class="py-problem-meta"><span>${esc(label)} ${pad(i + 1)}${guided(ctx) && practiceStages[q.practiceStage] ? ` · <b class="py-practice-stage">${esc(practiceStages[q.practiceStage])}</b>` : ''}</span><span>${text(q.skill, ctx)}</span></div><h3${coding(q, ctx) ? ' class="py-coding-question"' : ''}>${text(q.question, ctx)}</h3>${questionGuide(q, ctx, label, i)}${questionCode(q, ctx)}${expectedOutput(q, ctx)}${hints(q, ctx, label, i)}${selfCheck(q, ctx)}<details class="py-solution"><summary><span class="sr-only">${esc(label)} ${i + 1} </span>예시 답·해설 보기</summary><div class="py-solution-body"><p>${text(q.solution.answer, ctx)}</p>${chapterCode(q.solution.code, ctx)}<p>${text(q.explanation, ctx)}</p>${q.related?.length ? `<nav class="py-related" aria-label="${esc(label)} ${i + 1} 관련 레슨">${q.related.map(id => {
       const owner = lessonList(ctx).some(l => l.id === id) ? ctx : chapterContexts(ctx).find(item => lessonList(item).some(l => l.id === id)) || ctx;
       return `<a href="${lessonPath(id, owner)}">${text(lessonList(owner).find(l => l.id === id)?.title || id, ctx)} ↗</a>`;
     }).join('')}</nav>` : ''}</div></details></li>`).join('')}</ol>`;

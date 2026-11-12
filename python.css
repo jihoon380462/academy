@@ -76,6 +76,47 @@
   line-height: 1.7;
 }
 
+.py-guided-ch01 .py-problems > .py-problem[data-task-type="coding"] > .py-coding-question {
+  font-weight: 400;
+  font-size: 17px;
+  line-height: 1.95;
+}
+
+.py-guided-ch01 .py-task-code > .py-task-code-label {
+  padding: 8px 14px;
+  border-bottom: 1px solid var(--line);
+  font-size: 11px;
+  line-height: 1.7;
+  color: var(--muted);
+}
+
+.py-guided-ch01 .py-expected-output {
+  min-width: 0;
+  max-width: 100%;
+  margin: 16px 0;
+  border: 1px solid var(--line);
+  background: var(--output-bg, var(--tint));
+}
+
+.py-guided-ch01 .py-expected-output > figcaption {
+  padding: 8px 14px;
+  border-bottom: 1px solid var(--line);
+  font-size: 11px;
+  line-height: 1.7;
+  color: var(--muted);
+}
+
+.py-guided-ch01 .py-expected-output > pre {
+  min-width: 0;
+  max-width: 100%;
+  margin: 0;
+  padding: 14px 16px;
+  overflow-x: auto;
+  white-space: pre;
+  font: 13px/1.9 ui-monospace, Consolas, monospace;
+  color: var(--ink);
+}
+
 .py-guided-ch01 .py-training-task {
   margin: 18px 0;
   padding: 17px 20px;
@@ -207,6 +248,10 @@
 }
 
 @media (max-width: 700px) {
+  .py-guided-ch01 .py-problems > .py-problem[data-task-type="coding"] > .py-coding-question {
+    font-size: 15px;
+  }
+
   .py-guided-ch01 .py-learning-guide,
   .py-guided-ch01 .py-review-schedule,
   .py-guided-ch01 .py-spaced-review {
