@@ -519,3 +519,13 @@
 - 기존 파이썬 2~9 실제 57경로 DOM과 공유 codeBlock·CS/알고리즘 렌더를 보존했다. 시범 전 `2444a18`과 수정 직전 `c84cf29` 콘텐츠를 현재 UI로 표시하는 각각 74개 렌더 결과가 해당 백업과 같다. 다섯 레슨 읽음·취소·재로드, 유효한 과거 점수·다른 23개 과정 및 테마 원문, 157레슨·24개 과정 키, 재학습 링크를 확인했다. 기록 이동 엔진은 수정하지 않았으며 별도 11그룹 브라우저를 추가 실행하지 않았다.
 - 사용자가 제시한 레슨 1 예제 2를 390px/블랙 글래스에서 독립 비교했다. 질문 시작에서 코드 첫 줄까지 550→131px, 질문 끝에서 코드 블록까지 381→20px, 접힌 문항 높이 1065→562px다. 읽을 내용이 코드 앞을 가리지 않고 짧은 요구·코드·1000의 기대 출력이 이어진다. 새 `previews/python-ch01-coding-pc.png`·`python-ch01-coding-mobile.png`와 임시 320px 캡처를 직접 검토했고 이전 training 캡처를 보존했다. 실제 학습 효과를 측정한 사용자 실험이나 모든 OS/휴대전화 검증은 아니다.
 - JavaScript 구문·문서 상대 링크·`git diff --check`를 통과했다. 변경한 Python 자산 캐시만 `0.1.0-python-ch01-coding-1`로 갱신했다. PATCH 수정을 미확정 최초 목표 `0.1.0`의 Unreleased에 포함하며 저장 키·VERSION·태그를 바꾸지 않는다. 이 절은 로컬 검증이고 병합·Pages·공개 확인은 후속 절에 기록한다. 로그는 `/tmp/academy-python-coding-local/`, 독립 화면 비교는 `/tmp/python-ch01-coding-visual/`에 보관한다.
+
+
+## 파이썬 챕터 1 코딩 문항 간소화 병합·Pages·공개 확인 (2026-11-12 KST)
+
+- [PR #35](https://github.com/jihoon380462/academy/pull/35)을 main에 병합했다. 병합 직전 head는 `1041d3cd6e41d0ef770689bf1b2c73193c25e9d6`, 기준 main은 `c84cf295f9ff8c8cd5e780eba5833fb3d5baa759`이며 mergeable/clean과 체크 0개를 확인했다. 구현 소스 `c336b9e` 이후 차이는 `verification.md`뿐이었다. 기대 head를 지정한 병합 결과와 SHA `ae7adfb47c7d969de6ca226a03b86255d7916cd1`을 확인하고 로컬 main을 fast-forward했다.
+- 해당 SHA의 [Pages 실행 43169945799](https://github.com/jihoon380462/academy/actions/runs/43169945799)은 completed/success이며 updated_at은 `2026-11-12T06:42:19Z`다. 공개 index.html·preview.html·python-content.js·python-ui.js·python.css·app.js·progress-transfer.js·cs-content.js·algorithms-content.js의 9파일을 기본 TLS 검증으로 받아 모두 HTTP 200 및 병합 소스와 바이트 동일함을 확인했다.
+- 실제 [공개 레슨 1](https://jihoon380462.github.io/academy/#/python/ch01/lesson/python-l001)에서 최종 `tests/python-training-browser.cjs` 7그룹·48조합을 통과했다. Chromium 156.0.8078.79 / Linux, 8경로 × 1440/390/320px × 밝음/블랙 글래스 조건이다. 공개 콘텐츠와 최종 저자 JSON/생성물 전체 일치, 28 coding·7 written의 210회 대조, 코드/출력의 원문·escaping, 코딩 3패널 부재와 질문 일반 굵기·코드 바로 노출, 독립 힌트/풀이·넘침 없음을 확인했다. 페이지·사이트 자산 요청 오류는 0개다.
+- 기존 57경로와 두 백업 형식 각 74개 렌더, 공유 codeBlock·CS/알고리즘의 보존을 확인했다. 다섯 읽음·취소·재로드, 유효한 과거 점수·다른 23개 과정과 테마 원문·157레슨/24키·기록 왕복 및 재학습 연결도 통과했다. 기존 단위 42+4와 별도 기록 이동 브라우저 11그룹을 공개 주소에서 반복한 것으로 주장하지 않는다.
+- 공개 1440·390·320px 캡처 3장을 `/tmp/academy-python-coding-public/previews/`에 저장해 직접 검토했다. 사용자가 제시한 예제 2에서 짧은 문제 바로 아래 코드와 예상 출력 1000이 이어지고, 힌트와 답은 닫혀 있으며 세 작업지 패널·가로 넘침·toast가 없다. 테스트와 저장소 training/coding 캡처 4장의 사전·사후 해시를 보존했다. 상속 프록시와 기본 HTTPS 인증서 검증을 유지했고 인증서 오류 무시나 인증서 저장소 변경은 하지 않았다. 실제 휴대전화·모든 OS/브라우저 검증은 아니다.
+- 로그와 공개 자산 대조는 `/tmp/academy-python-coding-public/`에 보관했다. 후속 변경은 이 공개 근거와 현행 상태를 기록하는 운영 문서뿐이며 앱·콘텐츠·정적 자산·캐시·VERSION은 위 배포 소스와 동일하다. 두 백업과 기존 ID·URL·기록 키 및 목표 `0.1.0`을 보존하며 릴리스 태그·GitHub Release는 생성하지 않았다.
