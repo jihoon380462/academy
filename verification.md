@@ -497,3 +497,13 @@
 - 다섯 레슨의 읽음·취소·재로드와 예전 유효 점수의 보존·미표시, 다른 23개 과정 및 테마 원문의 보존, 새 저장 키 없음, 복습/재학습 링크와 같은 페이지 스크롤을 확인했다. 최초 브라우저 검사에서 스크롤 위치 기대값이 기존 scroll-padding 105px와 scroll-margin 120px의 합을 반영하지 못해 시간 초과가 났고, 실제 문항의 화면 내 위치를 확인하도록 검사만 고친 뒤 전체 검사를 통과했다. 기존 자동 favicon 요청은 앱 자산과 구분하며 앱 자체 요청 오류 수집은 유지한다.
 - 최종 표시 문구를 쉬운 말로 정리한 뒤 번들을 재생성했고 영향받은 레슨 1·복습의 원본/생성물/표시 안내를 추가 확인했다. PC·모바일 새 캡처 `previews/python-ch01-training-pc.png`·`python-ch01-training-mobile.png`와 별도 학습 안내·긴 문항·복습 화면을 직접 검토했다. PC 캡처는 힌트만 열고 정답은 닫혀 있으며 모바일은 둘 다 닫힌 상태다. 실제 휴대전화·모든 운영체제/브라우저를 검사한 것은 아니다.
 - JavaScript 구문·문서 상대 링크·`git diff --check`를 통과했다. 수정한 Python 자산의 캐시 참조만 `0.1.0-python-ch01-training-1`로 갱신했다. PATCH 종류의 개정을 미확정 최초 목표 `0.1.0`의 같은 Unreleased에 포함하며 태그·GitHub Release는 만들지 않았다. 이 절은 로컬 검증이며 main 병합·Pages·공개 확인은 후속 절에서 기록한다. 로그는 작업 환경의 `/tmp/academy-python-ch01-local/`에 보관한다.
+
+
+## 파이썬 챕터 1 시범 병합·Pages·공개 확인 (2026-11-12 KST)
+
+- [PR #33](https://github.com/jihoon380462/academy/pull/33)을 main에 병합했다. 병합 직전 head는 `d8dc4b159b4590506c8d6e32563f16c57d6a327f`, 기준 main은 `2444a18bf4260c1a003183d209a3f5b2d1d6843e`이며 mergeable/clean과 체크 0개를 확인했다. 검증 구현 소스 `cafa5d2` 이후 차이는 `verification.md`뿐이었다. 기대 head를 지정해 병합했고 SHA `3673598b06253636bc8f91a521c7c9650859b161`과 GitHub merged 결과를 확인했다. 로컬 main도 같은 SHA로 fast-forward했다.
+- 해당 SHA의 [Pages 실행 43165496607](https://github.com/jihoon380462/academy/actions/runs/43165496607)은 completed/success이며 updated_at은 `2026-11-12T06:04:11Z`다. 공개 index.html·preview.html·python-content.js·python-ui.js·python.css·app.js·progress-transfer.js·cs-content.js·algorithms-content.js의 9파일을 기본 TLS 검증이 켜진 HTTPS로 받아 HTTP 200 및 병합 소스와 바이트 동일함을 확인했다.
+- 실제 [공개 파이썬 챕터 1](https://jihoon380462.github.io/academy/#/python/ch01)에서 `tests/python-training-browser.cjs` 7그룹·48조합을 통과했다. Chromium 156.0.8078.79 / Linux, 8경로 × 1440/390/320px × 밝음/블랙 글래스 조건이다. 최종 저자 JSON·생성물·공개 콘텐츠 전체 일치, 35문항의 210회 표시/힌트/풀이 대조, 안전한 강조·코드 원문·스크롤·문서 넘침 없음, 파이썬 2~9의 기존 57경로 DOM 일치와 전용 연습 UI 미적용을 확인했다. 페이지·사이트 자산 요청 오류는 0개다.
+- 공개 브라우저에서 다섯 레슨의 읽음·취소·재로드, 기존 과거 점수의 보존·미표시, 다른 23개 과정과 테마 원문 보존, 새 저장 키 없음, 157레슨·24개 과정 키 집계와 기록 왕복, 간격 복습 링크·복습 1/6번 이동을 확인했다. 별도 기록 이동 브라우저 11그룹이나 다른 과목 전체 검사를 이번 공개 주소에서 추가 실행한 것으로 주장하지 않는다.
+- 공개 PC·모바일 캡처를 `/tmp/academy-python-ch01-public/previews/`에 따로 저장해 직접 검토했다. PC는 첫 힌트만 열고, 모바일은 힌트도 닫힌 상태이며 둘 다 예시 답은 닫혀 있다. 테스트 파일과 저장소 캡처 2장의 사전·사후 SHA-256이 동일하다. 브라우저는 상속 프록시와 기본 HTTPS 검증을 유지했으며 인증서 오류 무시나 인증서 저장소 변경을 하지 않았다. 실제 휴대전화·모든 운영체제/브라우저를 검사한 것은 아니다.
+- 로그·자산 비교 근거는 `/tmp/academy-python-ch01-public/`에 보관했다. 후속 변경은 공개 상태와 이 검증 근거를 갱신하는 운영 문서뿐이며 앱·콘텐츠·정적 자산·캐시·VERSION은 위 배포 소스와 동일하다. 수정 전 원격 백업과 압축 파일을 보존하고 기존 ID·URL·학습 기록 키 및 목표 `0.1.0`을 유지한다. 릴리스 태그·GitHub Release는 생성하지 않았다.
